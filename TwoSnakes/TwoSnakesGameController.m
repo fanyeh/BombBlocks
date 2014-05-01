@@ -13,11 +13,13 @@
 {
     UIView *dotView;
     Snake *playerSnake;
+    Snake *computerSnake;
     NSTimer *moveTimer;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *snakeHeadView;
 @property (weak, nonatomic) IBOutlet UIButton *startButton;
+@property (weak, nonatomic) IBOutlet UIView *computerSnakeHead;
 
 @end
 
@@ -36,7 +38,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView];
+    playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView andDirection:kMoveDirectionRight];
+    computerSnake = [[Snake alloc]initWithSnakeHead:_computerSnakeHead andDirection:kMoveDirectionUp];
     [self createDot];
 }
 
@@ -73,10 +76,18 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    for (UIView *v in [playerSnake snakeBody]) {
+        [v removeFromSuperview];
+    }
     [dotView removeFromSuperview];
     [self createDot];
     _snakeHeadView.frame = CGRectMake(144, 160, 16, 16);
-    playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView];
+    _computerSnakeHead.frame = CGRectMake(144,340, 16, 16);
+    
+    [playerSnake resetSnake:_snakeHeadView andDirection:kMoveDirectionRight];
+    [self.view addSubview:_snakeHeadView];
+//    playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView andDirection:kMoveDirectionRight];
+//    computerSnake = [[Snake alloc]initWithSnakeHead:_computerSnakeHead andDirection:kMoveDirectionUp];
     moveTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
 }
 

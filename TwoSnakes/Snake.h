@@ -25,7 +25,7 @@ typedef enum {
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
 
-- (id)initWithSnakeHead:(UIView *)headView;
+- (id)initWithSnakeHead:(UIView *)headView andDirection:(MoveDirection)direction;
 - (UIView *)addSnakeBody;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
@@ -34,5 +34,6 @@ typedef enum {
 - (BOOL)isEatingDot:(UIView*)dot;
 - (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver moveTimer:(NSTimer *)timer;
 - (BOOL)isOverlayWithDotFrame:(CGRect)dotFrame;
+- (void)resetSnake:(UIView *)headView andDirection:(MoveDirection)direction;
 
 @end

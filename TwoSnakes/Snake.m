@@ -19,7 +19,7 @@
     return self;
 }
 
-- (id)initWithSnakeHead:(UIView *)headView
+- (id)initWithSnakeHead:(UIView *)headView andDirection:(MoveDirection)direction
 {
     self = [self initWithFrame:headView.frame];
     if (self) {
@@ -31,9 +31,22 @@
         _xOffset = headView.frame.size.width;
         _yOffset = headView.frame.size.height;
         [_snakeBody addObject:headView];
-        [_bodyDirections setObject:[NSNumber numberWithInt:kMoveDirectionRight] forKey:[NSNumber numberWithInteger:0]];
+        [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
     }
     return self;
+}
+
+- (void)resetSnake:(UIView *)headView andDirection:(MoveDirection)direction
+{
+    [_snakeBody removeAllObjects];
+    [_turningNodes removeAllObjects];
+    [_bodyDirections removeAllObjects];
+    _snakeLength = 1;
+    headView.tag = 0;
+    _xOffset = headView.frame.size.width;
+    _yOffset = headView.frame.size.height;
+    [_snakeBody addObject:headView];
+    [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
 }
 
 - (UIView *)addSnakeBody
