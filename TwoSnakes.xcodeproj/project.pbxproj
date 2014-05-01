@@ -1,0 +1,494 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4C7F13571911F36D00565A01 /* Snake.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F13561911F36D00565A01 /* Snake.m */; };
+		4CB108A5190FF6440085C747 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A4190FF6440085C747 /* Foundation.framework */; };
+		4CB108A7190FF6440085C747 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A6190FF6440085C747 /* CoreGraphics.framework */; };
+		4CB108A9190FF6440085C747 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A8190FF6440085C747 /* UIKit.framework */; };
+		4CB108AB190FF6440085C747 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108AA190FF6440085C747 /* CoreData.framework */; };
+		4CB108B1190FF6440085C747 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CB108AF190FF6440085C747 /* InfoPlist.strings */; };
+		4CB108B3190FF6440085C747 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108B2190FF6440085C747 /* main.m */; };
+		4CB108B7190FF6440085C747 /* MKAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108B6190FF6440085C747 /* MKAppDelegate.m */; };
+		4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108B8190FF6440085C747 /* TwoSnakes.xcdatamodeld */; };
+		4CB108BC190FF6440085C747 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CB108BB190FF6440085C747 /* Images.xcassets */; };
+		4CB108C3190FF6440085C747 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108C2190FF6440085C747 /* XCTest.framework */; };
+		4CB108C4190FF6440085C747 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A4190FF6440085C747 /* Foundation.framework */; };
+		4CB108C5190FF6440085C747 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A8190FF6440085C747 /* UIKit.framework */; };
+		4CB108C6190FF6440085C747 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108AA190FF6440085C747 /* CoreData.framework */; };
+		4CB108CE190FF6440085C747 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CB108CC190FF6440085C747 /* InfoPlist.strings */; };
+		4CB108D0190FF6440085C747 /* TwoSnakesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108CF190FF6440085C747 /* TwoSnakesTests.m */; };
+		4CB108DF190FF6A10085C747 /* TwoSnakesGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108DD190FF6A10085C747 /* TwoSnakesGameController.m */; };
+		4CB108E0190FF6A10085C747 /* TwoSnakesGameController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CB108DE190FF6A10085C747 /* TwoSnakesGameController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4CB108C7190FF6440085C747 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CB10899190FF6440085C747 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4CB108A0190FF6440085C747;
+			remoteInfo = TwoSnakes;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		4C7F13551911F36D00565A01 /* Snake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snake.h; sourceTree = "<group>"; };
+		4C7F13561911F36D00565A01 /* Snake.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Snake.m; sourceTree = "<group>"; };
+		4CB108A1190FF6440085C747 /* TwoSnakes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwoSnakes.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CB108A4190FF6440085C747 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		4CB108A6190FF6440085C747 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		4CB108A8190FF6440085C747 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		4CB108AA190FF6440085C747 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		4CB108AE190FF6440085C747 /* TwoSnakes-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwoSnakes-Info.plist"; sourceTree = "<group>"; };
+		4CB108B0190FF6440085C747 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4CB108B2190FF6440085C747 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		4CB108B4190FF6440085C747 /* TwoSnakes-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TwoSnakes-Prefix.pch"; sourceTree = "<group>"; };
+		4CB108B5190FF6440085C747 /* MKAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKAppDelegate.h; sourceTree = "<group>"; };
+		4CB108B6190FF6440085C747 /* MKAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKAppDelegate.m; sourceTree = "<group>"; };
+		4CB108B9190FF6440085C747 /* TwoSnakes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TwoSnakes.xcdatamodel; sourceTree = "<group>"; };
+		4CB108BB190FF6440085C747 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		4CB108C1190FF6440085C747 /* TwoSnakesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwoSnakesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CB108C2190FF6440085C747 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		4CB108CB190FF6440085C747 /* TwoSnakesTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwoSnakesTests-Info.plist"; sourceTree = "<group>"; };
+		4CB108CD190FF6440085C747 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4CB108CF190FF6440085C747 /* TwoSnakesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwoSnakesTests.m; sourceTree = "<group>"; };
+		4CB108DC190FF6A10085C747 /* TwoSnakesGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoSnakesGameController.h; sourceTree = "<group>"; };
+		4CB108DD190FF6A10085C747 /* TwoSnakesGameController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoSnakesGameController.m; sourceTree = "<group>"; };
+		4CB108DE190FF6A10085C747 /* TwoSnakesGameController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwoSnakesGameController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4CB1089E190FF6440085C747 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CB108A7190FF6440085C747 /* CoreGraphics.framework in Frameworks */,
+				4CB108AB190FF6440085C747 /* CoreData.framework in Frameworks */,
+				4CB108A9190FF6440085C747 /* UIKit.framework in Frameworks */,
+				4CB108A5190FF6440085C747 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4CB108BE190FF6440085C747 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CB108C3190FF6440085C747 /* XCTest.framework in Frameworks */,
+				4CB108C6190FF6440085C747 /* CoreData.framework in Frameworks */,
+				4CB108C5190FF6440085C747 /* UIKit.framework in Frameworks */,
+				4CB108C4190FF6440085C747 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4CB10898190FF6440085C747 = {
+			isa = PBXGroup;
+			children = (
+				4CB108AC190FF6440085C747 /* TwoSnakes */,
+				4CB108C9190FF6440085C747 /* TwoSnakesTests */,
+				4CB108A3190FF6440085C747 /* Frameworks */,
+				4CB108A2190FF6440085C747 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4CB108A2190FF6440085C747 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4CB108A1190FF6440085C747 /* TwoSnakes.app */,
+				4CB108C1190FF6440085C747 /* TwoSnakesTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4CB108A3190FF6440085C747 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4CB108A4190FF6440085C747 /* Foundation.framework */,
+				4CB108A6190FF6440085C747 /* CoreGraphics.framework */,
+				4CB108A8190FF6440085C747 /* UIKit.framework */,
+				4CB108AA190FF6440085C747 /* CoreData.framework */,
+				4CB108C2190FF6440085C747 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4CB108AC190FF6440085C747 /* TwoSnakes */ = {
+			isa = PBXGroup;
+			children = (
+				4CB108B5190FF6440085C747 /* MKAppDelegate.h */,
+				4CB108B6190FF6440085C747 /* MKAppDelegate.m */,
+				4CB108BB190FF6440085C747 /* Images.xcassets */,
+				4CB108B8190FF6440085C747 /* TwoSnakes.xcdatamodeld */,
+				4CB108AD190FF6440085C747 /* Supporting Files */,
+				4CB108DC190FF6A10085C747 /* TwoSnakesGameController.h */,
+				4CB108DD190FF6A10085C747 /* TwoSnakesGameController.m */,
+				4CB108DE190FF6A10085C747 /* TwoSnakesGameController.xib */,
+				4C7F13551911F36D00565A01 /* Snake.h */,
+				4C7F13561911F36D00565A01 /* Snake.m */,
+			);
+			path = TwoSnakes;
+			sourceTree = "<group>";
+		};
+		4CB108AD190FF6440085C747 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4CB108AE190FF6440085C747 /* TwoSnakes-Info.plist */,
+				4CB108AF190FF6440085C747 /* InfoPlist.strings */,
+				4CB108B2190FF6440085C747 /* main.m */,
+				4CB108B4190FF6440085C747 /* TwoSnakes-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4CB108C9190FF6440085C747 /* TwoSnakesTests */ = {
+			isa = PBXGroup;
+			children = (
+				4CB108CF190FF6440085C747 /* TwoSnakesTests.m */,
+				4CB108CA190FF6440085C747 /* Supporting Files */,
+			);
+			path = TwoSnakesTests;
+			sourceTree = "<group>";
+		};
+		4CB108CA190FF6440085C747 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4CB108CB190FF6440085C747 /* TwoSnakesTests-Info.plist */,
+				4CB108CC190FF6440085C747 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4CB108A0190FF6440085C747 /* TwoSnakes */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4CB108D3190FF6450085C747 /* Build configuration list for PBXNativeTarget "TwoSnakes" */;
+			buildPhases = (
+				4CB1089D190FF6440085C747 /* Sources */,
+				4CB1089E190FF6440085C747 /* Frameworks */,
+				4CB1089F190FF6440085C747 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TwoSnakes;
+			productName = TwoSnakes;
+			productReference = 4CB108A1190FF6440085C747 /* TwoSnakes.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4CB108C0190FF6440085C747 /* TwoSnakesTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4CB108D6190FF6450085C747 /* Build configuration list for PBXNativeTarget "TwoSnakesTests" */;
+			buildPhases = (
+				4CB108BD190FF6440085C747 /* Sources */,
+				4CB108BE190FF6440085C747 /* Frameworks */,
+				4CB108BF190FF6440085C747 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4CB108C8190FF6440085C747 /* PBXTargetDependency */,
+			);
+			name = TwoSnakesTests;
+			productName = TwoSnakesTests;
+			productReference = 4CB108C1190FF6440085C747 /* TwoSnakesTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4CB10899190FF6440085C747 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = MK;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = MarriageKiller;
+				TargetAttributes = {
+					4CB108C0190FF6440085C747 = {
+						TestTargetID = 4CB108A0190FF6440085C747;
+					};
+				};
+			};
+			buildConfigurationList = 4CB1089C190FF6440085C747 /* Build configuration list for PBXProject "TwoSnakes" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 4CB10898190FF6440085C747;
+			productRefGroup = 4CB108A2190FF6440085C747 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4CB108A0190FF6440085C747 /* TwoSnakes */,
+				4CB108C0190FF6440085C747 /* TwoSnakesTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4CB1089F190FF6440085C747 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CB108B1190FF6440085C747 /* InfoPlist.strings in Resources */,
+				4CB108BC190FF6440085C747 /* Images.xcassets in Resources */,
+				4CB108E0190FF6A10085C747 /* TwoSnakesGameController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4CB108BF190FF6440085C747 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CB108CE190FF6440085C747 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4CB1089D190FF6440085C747 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C7F13571911F36D00565A01 /* Snake.m in Sources */,
+				4CB108B7190FF6440085C747 /* MKAppDelegate.m in Sources */,
+				4CB108DF190FF6A10085C747 /* TwoSnakesGameController.m in Sources */,
+				4CB108B3190FF6440085C747 /* main.m in Sources */,
+				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4CB108BD190FF6440085C747 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CB108D0190FF6440085C747 /* TwoSnakesTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4CB108C8190FF6440085C747 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4CB108A0190FF6440085C747 /* TwoSnakes */;
+			targetProxy = 4CB108C7190FF6440085C747 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		4CB108AF190FF6440085C747 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4CB108B0190FF6440085C747 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		4CB108CC190FF6440085C747 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4CB108CD190FF6440085C747 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		4CB108D1190FF6450085C747 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		4CB108D2190FF6450085C747 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4CB108D4190FF6450085C747 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TwoSnakes/TwoSnakes-Prefix.pch";
+				INFOPLIST_FILE = "TwoSnakes/TwoSnakes-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		4CB108D5190FF6450085C747 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TwoSnakes/TwoSnakes-Prefix.pch";
+				INFOPLIST_FILE = "TwoSnakes/TwoSnakes-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		4CB108D7190FF6450085C747 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/TwoSnakes.app/TwoSnakes";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TwoSnakes/TwoSnakes-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "TwoSnakesTests/TwoSnakesTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		4CB108D8190FF6450085C747 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/TwoSnakes.app/TwoSnakes";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TwoSnakes/TwoSnakes-Prefix.pch";
+				INFOPLIST_FILE = "TwoSnakesTests/TwoSnakesTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4CB1089C190FF6440085C747 /* Build configuration list for PBXProject "TwoSnakes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4CB108D1190FF6450085C747 /* Debug */,
+				4CB108D2190FF6450085C747 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4CB108D3190FF6450085C747 /* Build configuration list for PBXNativeTarget "TwoSnakes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4CB108D4190FF6450085C747 /* Debug */,
+				4CB108D5190FF6450085C747 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4CB108D6190FF6450085C747 /* Build configuration list for PBXNativeTarget "TwoSnakesTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4CB108D7190FF6450085C747 /* Debug */,
+				4CB108D8190FF6450085C747 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		4CB108B8190FF6440085C747 /* TwoSnakes.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				4CB108B9190FF6440085C747 /* TwoSnakes.xcdatamodel */,
+			);
+			currentVersion = 4CB108B9190FF6440085C747 /* TwoSnakes.xcdatamodel */;
+			path = TwoSnakes.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 4CB10899190FF6440085C747 /* Project object */;
+}
