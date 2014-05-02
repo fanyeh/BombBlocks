@@ -6,7 +6,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TwoSnakesGameController">
             <connections>
-                <outlet property="computerSnakeHead" destination="Afv-sf-1yg" id="GuN-j8-wcb"/>
                 <outlet property="snakeHeadView" destination="Ek5-ao-ehg" id="WJH-Zi-9Id"/>
                 <outlet property="startButton" destination="WF0-sE-D6g" id="GjB-PU-8de"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -31,11 +30,6 @@
                     <rect key="frame" x="144" y="160" width="16" height="16"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
-                <view contentMode="scaleToFill" id="Afv-sf-1yg">
-                    <rect key="frame" x="144" y="340" width="16" height="16"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

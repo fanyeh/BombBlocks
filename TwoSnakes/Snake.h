@@ -26,7 +26,7 @@ typedef enum {
 @property (nonatomic) CGFloat yOffset;
 
 - (id)initWithSnakeHead:(UIView *)headView andDirection:(MoveDirection)direction;
-- (UIView *)addSnakeBody;
+- (UIView *)addSnakeBodyWithColor:(UIColor *)color;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
 - (UIView *)snakeTail;
@@ -35,5 +35,8 @@ typedef enum {
 - (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver moveTimer:(NSTimer *)timer;
 - (BOOL)isOverlayWithDotFrame:(CGRect)dotFrame;
 - (void)resetSnake:(UIView *)headView andDirection:(MoveDirection)direction;
+- (void)removeSnakeBody:(UIView *)body;
+- (void)removeSnakeBodyFromArray:(NSMutableArray *)removeArray;
+- (void)updateTurningNode;
 
 @end

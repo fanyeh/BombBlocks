@@ -25,6 +25,7 @@
 		4CB108D0190FF6440085C747 /* TwoSnakesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108CF190FF6440085C747 /* TwoSnakesTests.m */; };
 		4CB108DF190FF6A10085C747 /* TwoSnakesGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108DD190FF6A10085C747 /* TwoSnakesGameController.m */; };
 		4CB108E0190FF6A10085C747 /* TwoSnakesGameController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CB108DE190FF6A10085C747 /* TwoSnakesGameController.xib */; };
+		4CC0560E1913895600BB70E2 /* SnakeDot.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC0560D1913895600BB70E2 /* SnakeDot.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,8 @@
 		4CB108DC190FF6A10085C747 /* TwoSnakesGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoSnakesGameController.h; sourceTree = "<group>"; };
 		4CB108DD190FF6A10085C747 /* TwoSnakesGameController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoSnakesGameController.m; sourceTree = "<group>"; };
 		4CB108DE190FF6A10085C747 /* TwoSnakesGameController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwoSnakesGameController.xib; sourceTree = "<group>"; };
+		4CC0560C1913895600BB70E2 /* SnakeDot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeDot.h; sourceTree = "<group>"; };
+		4CC0560D1913895600BB70E2 /* SnakeDot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeDot.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +134,8 @@
 				4CB108DC190FF6A10085C747 /* TwoSnakesGameController.h */,
 				4CB108DD190FF6A10085C747 /* TwoSnakesGameController.m */,
 				4CB108DE190FF6A10085C747 /* TwoSnakesGameController.xib */,
+				4CC0560C1913895600BB70E2 /* SnakeDot.h */,
+				4CC0560D1913895600BB70E2 /* SnakeDot.m */,
 				4C7F13551911F36D00565A01 /* Snake.h */,
 				4C7F13561911F36D00565A01 /* Snake.m */,
 			);
@@ -266,6 +271,7 @@
 				4C7F13571911F36D00565A01 /* Snake.m in Sources */,
 				4CB108B7190FF6440085C747 /* MKAppDelegate.m in Sources */,
 				4CB108DF190FF6A10085C747 /* TwoSnakesGameController.m in Sources */,
+				4CC0560E1913895600BB70E2 /* SnakeDot.m in Sources */,
 				4CB108B3190FF6440085C747 /* main.m in Sources */,
 				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,
 			);

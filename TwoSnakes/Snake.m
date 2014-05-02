@@ -9,6 +9,9 @@
 #import "Snake.h"
 
 @implementation Snake
+{
+    NSMutableDictionary *turningNodeTags;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -26,6 +29,7 @@
         _snakeBody = [[NSMutableArray alloc]init];
         _turningNodes = [[NSMutableDictionary alloc]init];
         _bodyDirections = [[NSMutableDictionary alloc]init];
+        turningNodeTags = [[NSMutableDictionary alloc]init];
         _snakeLength = 1;
         headView.tag = 0;
         _xOffset = headView.frame.size.width;
@@ -41,6 +45,7 @@
     [_snakeBody removeAllObjects];
     [_turningNodes removeAllObjects];
     [_bodyDirections removeAllObjects];
+    [turningNodeTags removeAllObjects];
     _snakeLength = 1;
     headView.tag = 0;
     _xOffset = headView.frame.size.width;
@@ -49,7 +54,7 @@
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
 }
 
-- (UIView *)addSnakeBody
+- (UIView *)addSnakeBodyWithColor:(UIColor *)color
 {
     CGRect bodyFrame;
     CGRect snakeTailFrame = [self snakeTail].frame;
@@ -71,11 +76,18 @@
     }
     
     UIView *snakeBody = [[UIView alloc]initWithFrame:bodyFrame];
-    snakeBody.layer.borderWidth = 1;
+    UILabel *bodyLabel = [[UILabel alloc]initWithFrame:snakeBody.bounds];
+    bodyLabel.backgroundColor = [UIColor clearColor];
+    [snakeBody addSubview:bodyLabel];
+    bodyLabel.textColor = [UIColor blackColor];
+    bodyLabel.textAlignment = NSTextAlignmentCenter;
+    bodyLabel.text = [NSString stringWithFormat:@"%d",_snakeLength];
+    snakeBody.backgroundColor = color;
     snakeBody.tag = _snakeLength;
-    _snakeLength ++;
     [_snakeBody addObject:snakeBody];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];
+    _snakeLength ++;
+
     return snakeBody;
 }
 
@@ -149,7 +161,7 @@
             // Set new direction for body
             [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:view.tag]];
             
-            // Remove turning node if last boyd has passed the node
+            // Remove turning node if last body has passed the node
             if (view.tag == tail.tag) {
                 [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:view.frame]];
             }
@@ -239,6 +251,34 @@
     }
     else
         return NO;
+}
+
+- (void)removeSnakeBody:(UIView *)body
+{
+
+    [_bodyDirections removeObjectForKey:[NSNumber numberWithInteger:body.tag]];
+    [_snakeBody removeObject:body];
+}
+
+- (void)removeSnakeBodyFromArray:(NSMutableArray *)removeArray
+{
+    for (UIView *body in removeArray) {
+        [_bodyDirections removeObjectForKey:[NSNumber numberWithInteger:body.tag]];
+    }
+    
+    [_snakeBody removeObjectsInArray:removeArray];
+}
+
+- (void)updateTurningNode
+{
+    UIView *tail = [self snakeTail];
+        
+    NSValue *directionValue = [_turningNodes objectForKey:[NSValue valueWithCGRect:tail.frame]];
+    
+    // If body frame = turning node frame , then there's a direction change
+    if (directionValue)
+        [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:tail.frame]];
+
 }
 
 @end
