@@ -16,10 +16,17 @@
     NSTimer *moveTimer;
     NSTimer *dotTimer;
     NSMutableArray *dotArray;
+    float timeInterval;
+    NSInteger numDotAte;
+    NSInteger chain;
+    NSInteger level;
+    BOOL hasCombo;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *snakeHeadView;
 @property (weak, nonatomic) IBOutlet UIButton *startButton;
+@property (weak, nonatomic) IBOutlet UILabel *dots;
+@property (weak, nonatomic) IBOutlet UIView *gamePad;
 
 @end
 
@@ -38,20 +45,25 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    timeInterval = 0.15;
+    numDotAte = 0;
+    chain = 2;
     playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView andDirection:kMoveDirectionRight];
     [self createAllDots];
+    level = 1;
+    hasCombo = NO;
 }
 
 -(void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     UITouch *touch = [[event allTouches] anyObject];
     CGPoint location = [touch locationInView:touch.view];
-    [playerSnake setTurningNode:location];
+//    [playerSnake setTurningNode:location];
 }
 
 - (IBAction)startGame:(id)sender
 {
-    moveTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
     dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
 
     _startButton.hidden = YES;
@@ -89,9 +101,23 @@
         if (!d.hidden) {
             if ([[NSValue valueWithCGRect:[playerSnake snakeHead].frame] isEqualToValue:[NSValue valueWithCGRect:d.frame]]) {
                 d.hidden = YES;
-                [self.view addSubview:[playerSnake addSnakeBodyWithColor:d.smallDot.backgroundColor]];
+                [_gamePad addSubview:[playerSnake addSnakeBodyWithColor:d.smallDot.backgroundColor]];
                 // Check if any snake body can be cancelled
                 [self cancelSnakeBody];
+                if (hasCombo ) {
+                    if (level%2 == 0) {
+                        chain++;
+                    } else {
+                        timeInterval -= 0.02;
+                        [moveTimer invalidate];
+                        moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+
+                    }
+                    level++;
+                    hasCombo = NO;
+                }
+                numDotAte++;
+                _dots.text = [NSString stringWithFormat:@"%ld",numDotAte];
                 break;
             }
         }
@@ -113,8 +139,9 @@
             endIndex = [snakeBody indexOfObject:v];
         }
         
-        if (endIndex - startIndex > 3) {
+        if (endIndex - startIndex == chain) {
             // Remove body
+            hasCombo = YES;
             [self removeSnakeBodyStartIndex:startIndex endIndex:endIndex];
             break;
         }
@@ -172,22 +199,32 @@
     [self cancelSnakeBodyByColor:color];
 }
 
+#pragma mark -  Reset game
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     for (UIView *v in [playerSnake snakeBody]) {
         [v removeFromSuperview];
     }
-    _snakeHeadView.frame = CGRectMake(144, 160, 16, 16);
+    _snakeHeadView.frame = CGRectMake(144, 144, 16, 16);
     
     [playerSnake resetSnake:_snakeHeadView andDirection:kMoveDirectionRight];
-    [self.view addSubview:_snakeHeadView];
-    moveTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+    [_gamePad addSubview:_snakeHeadView];
+    timeInterval = 0.15;
+    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
     
     for (SnakeDot *d in dotArray) {
         d.hidden = NO;
         d.smallDot.backgroundColor = [self dotColor];
     }
+    
+    numDotAte = 0;
+    _dots.text = [NSString stringWithFormat:@"%ld",(long)numDotAte];
+    chain = 2;
+    level = 1;
+    hasCombo = NO;
+
+    
 }
 
 - (void)createAllDots
@@ -196,7 +233,7 @@
     CGFloat dotPosX;
     CGFloat dotPosY;
     for (int i = 0 ; i < 19; i ++ ) {
-        for (int j = 0 ; j < 30 ; j++) {
+        for (int j = 0 ; j < 19 ; j++) {
             if (i%2==1 && j%2==1) {
                 
                 dotPosX = i * 16;
@@ -205,7 +242,7 @@
                 SnakeDot *dot = [[SnakeDot alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 16, 16)];
                 dot.layer.cornerRadius = 8;
                 dot.smallDot.backgroundColor = [self dotColor];
-                [self.view addSubview:dot];
+                [_gamePad addSubview:dot];
                 [dotArray addObject:dot];
             }
         }
@@ -214,7 +251,7 @@
 
 -(UIColor *)dotColor
 {
-    int index = arc4random()%4;
+    int index = arc4random()%3;
     UIColor *color;
     switch (index) {
         case 0:
@@ -222,23 +259,45 @@
             break;
         case 1:
             color = [UIColor blueColor];
-
             break;
         case 2:
             color = [UIColor greenColor];
 
             break;
         case 3:
-            color = [UIColor yellowColor];
-
-            break;
-        case 4:
             color = [UIColor orangeColor];
 
             break;
     }
     
     return color;
+}
+
+- (IBAction)moveUp:(id)sender {
+    if ([playerSnake headDirection] != kMoveDirectionUp && [playerSnake headDirection] != kMoveDirectionDown)
+        [playerSnake setTurningNodeWithDirection:kMoveDirectionUp];
+}
+
+- (IBAction)moveDown:(id)sender {
+    if ([playerSnake headDirection] != kMoveDirectionUp &&  [playerSnake headDirection] != kMoveDirectionDown)
+
+    [playerSnake setTurningNodeWithDirection:kMoveDirectionDown];
+
+}
+
+- (IBAction)moveLeft:(id)sender {
+    if ([playerSnake headDirection] != kMoveDirectionLeft &&  [playerSnake headDirection] != kMoveDirectionRight)
+
+    [playerSnake setTurningNodeWithDirection:kMoveDirectionLeft];
+
+}
+
+- (IBAction)moveRight:(id)sender {
+    
+    if ([playerSnake headDirection] != kMoveDirectionLeft &&  [playerSnake headDirection] != kMoveDirectionRight)
+
+    [playerSnake setTurningNodeWithDirection:kMoveDirectionRight];
+
 }
 
 -(BOOL)prefersStatusBarHidden

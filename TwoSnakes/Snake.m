@@ -129,19 +129,23 @@
                 direction = kMoveDirectionLeft;
             break;
         case kMoveDirectionLeft:
-            if (location.y < headOrigin.y)
-                direction = kMoveDirectionUp;
-            else if (location.y > headOrigin.y)
+            if (location.y > headOrigin.y)
                 direction = kMoveDirectionDown;
+            else if (location.y < headOrigin.y)
+                direction = kMoveDirectionUp;
             break;
         case kMoveDirectionRight:
-            if (location.y < headOrigin.y)
-                direction = kMoveDirectionUp;
-            else if (location.y > headOrigin.y)
+            if (location.y > headOrigin.y)
                 direction = kMoveDirectionDown;
+            else if (location.y < headOrigin.y)
+                direction = kMoveDirectionUp;
             break;
     }
-    
+    [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:[self snakeHead].frame]];
+}
+
+- (void)setTurningNodeWithDirection:(MoveDirection)direction
+{
     [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:[self snakeHead].frame]];
 }
 
