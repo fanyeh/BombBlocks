@@ -14,8 +14,8 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        _smallDot = [[UIView alloc]initWithFrame:CGRectMake(4, 4, 8, 8)];
-        _smallDot.layer.cornerRadius = 4;
+        _smallDot = [[UIView alloc]initWithFrame:CGRectMake(4, 4, 12, 12)];
+        _smallDot.layer.cornerRadius = 6;
         //        _smallDot.center = self.center;
         [self addSubview:_smallDot];    }
     return self;

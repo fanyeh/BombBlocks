@@ -20,7 +20,6 @@
     NSInteger numDotAte;
     NSInteger chain;
     NSInteger level;
-    BOOL hasCombo;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *snakeHeadView;
@@ -51,7 +50,7 @@
     playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView andDirection:kMoveDirectionRight];
     [self createAllDots];
     level = 1;
-    hasCombo = NO;
+    _gamePad.layer.borderWidth = 1;
 }
 
 -(void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -103,18 +102,15 @@
                 d.hidden = YES;
                 [_gamePad addSubview:[playerSnake addSnakeBodyWithColor:d.smallDot.backgroundColor]];
                 // Check if any snake body can be cancelled
-                [self cancelSnakeBody];
-                if (hasCombo ) {
+                if ([self checkCombo] ) {
                     if (level%2 == 0) {
                         chain++;
                     } else {
                         timeInterval -= 0.02;
-                        [moveTimer invalidate];
-                        moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
-
+//                        [moveTimer invalidate];
                     }
                     level++;
-                    hasCombo = NO;
+                    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
                 }
                 numDotAte++;
                 _dots.text = [NSString stringWithFormat:@"%ld",numDotAte];
@@ -124,7 +120,7 @@
     }
 }
 
-- (void)cancelSnakeBody
+- (BOOL)checkCombo
 {
     UIColor *repeatColor;
     NSInteger startIndex = 0;
@@ -141,28 +137,12 @@
         
         if (endIndex - startIndex == chain) {
             // Remove body
-            hasCombo = YES;
-            [self removeSnakeBodyStartIndex:startIndex endIndex:endIndex];
-            break;
+            [moveTimer invalidate];
+            [self cancelSnakeBodyByColor:v.backgroundColor];
+            return YES;
         }
     }
-}
-
-- (void)removeSnakeBodyStartIndex:(NSInteger)start endIndex:(NSInteger)end
-{
-    NSMutableArray *snakeBody = [playerSnake snakeBody];
-    NSMutableArray *removedArray = [[NSMutableArray alloc]init];
-    UIColor *color;
-    
-    for (NSInteger i = start ; i < end+1;i++) {
-
-        UIView *body = [snakeBody objectAtIndex:i];
-        [body removeFromSuperview];
-        color = body.backgroundColor;
-        [removedArray addObject:body];
-    }
-
-    [self cancelSnakeBodyByColor:color];
+    return NO;
 }
 
 
@@ -177,7 +157,7 @@
         }
     }
     
-    [self cancelSnakeBody];
+//    [self checkCombo];
 }
 
 -(void)removeSnakeBodyByIndex:(NSInteger)index andBody:(UIView *)removingBody andColor:(UIColor *)color
@@ -189,7 +169,11 @@
             // Next body
             UIView *currentBody = [snakeBody objectAtIndex:i];
             UIView *nextBody = [snakeBody objectAtIndex:i+1];
-            currentBody.backgroundColor = nextBody.backgroundColor;
+            [UIView animateWithDuration:2 animations:^{
+                currentBody.backgroundColor = nextBody.backgroundColor;
+
+            }];
+//            currentBody.backgroundColor = nextBody.backgroundColor;
         }
     }
     [playerSnake.snakeTail removeFromSuperview];
@@ -206,7 +190,7 @@
     for (UIView *v in [playerSnake snakeBody]) {
         [v removeFromSuperview];
     }
-    _snakeHeadView.frame = CGRectMake(144, 144, 16, 16);
+    _snakeHeadView.frame = CGRectMake(140, 140, 20, 20);
     
     [playerSnake resetSnake:_snakeHeadView andDirection:kMoveDirectionRight];
     [_gamePad addSubview:_snakeHeadView];
@@ -222,9 +206,6 @@
     _dots.text = [NSString stringWithFormat:@"%ld",(long)numDotAte];
     chain = 2;
     level = 1;
-    hasCombo = NO;
-
-    
 }
 
 - (void)createAllDots
@@ -232,14 +213,14 @@
     dotArray = [[NSMutableArray alloc]init];
     CGFloat dotPosX;
     CGFloat dotPosY;
-    for (int i = 0 ; i < 19; i ++ ) {
-        for (int j = 0 ; j < 19 ; j++) {
+    for (int i = 0 ; i < 14; i ++ ) {
+        for (int j = 0 ; j < 14 ; j++) {
             if (i%2==1 && j%2==1) {
                 
-                dotPosX = i * 16;
-                dotPosY = j * 16;
+                dotPosX = i * 20;
+                dotPosY = j * 20;
                 
-                SnakeDot *dot = [[SnakeDot alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 16, 16)];
+                SnakeDot *dot = [[SnakeDot alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20)];
                 dot.layer.cornerRadius = 8;
                 dot.smallDot.backgroundColor = [self dotColor];
                 [_gamePad addSubview:dot];

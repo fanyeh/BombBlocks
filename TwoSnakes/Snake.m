@@ -76,9 +76,12 @@
     }
     
     UIView *snakeBody = [[UIView alloc]initWithFrame:bodyFrame];
+    UIView *bodyBack = [[UIView alloc]initWithFrame:CGRectMake(19, 0, 1, 20)];
+    bodyBack.backgroundColor = [UIColor whiteColor];
+    [snakeBody addSubview:bodyBack];
     UILabel *bodyLabel = [[UILabel alloc]initWithFrame:snakeBody.bounds];
     bodyLabel.backgroundColor = [UIColor clearColor];
-    [snakeBody addSubview:bodyLabel];
+//    [snakeBody addSubview:bodyLabel];
     bodyLabel.textColor = [UIColor blackColor];
     bodyLabel.textAlignment = NSTextAlignmentCenter;
     bodyLabel.text = [NSString stringWithFormat:@"%d",_snakeLength];
