@@ -23,10 +23,12 @@
     NSInteger combos;
     NSMutableArray *colorArray;
     BOOL pauseGame;
+    UILabel *exclamation;
+    NSTimer *countDownTimer;
+    NSInteger counter;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *snakeHeadView;
-@property (weak, nonatomic) IBOutlet UIButton *startButton;
 @property (weak, nonatomic) IBOutlet UILabel *dots;
 @property (weak, nonatomic) IBOutlet UIView *gamePad;
 @property (weak, nonatomic) IBOutlet UILabel *levelLabel;
@@ -34,6 +36,8 @@
 @property (weak, nonatomic) IBOutlet UIView *rightEye;
 @property (weak, nonatomic) IBOutlet UILabel *comboLabel;
 @property (weak, nonatomic) IBOutlet UIButton *pauseButton;
+@property (weak, nonatomic) IBOutlet UILabel *countDownLabel;
+
 
 @end
 
@@ -82,6 +86,33 @@
     [colorArray addObject:[UIColor colorWithRed:0.682 green:0.933 blue:0.000 alpha:1.000]];
     
     pauseGame = NO;
+    
+    exclamation = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
+    exclamation.hidden = YES;
+    exclamation.text = @"!";
+    exclamation.textColor = [UIColor blackColor];
+    exclamation.textAlignment = NSTextAlignmentCenter;
+    exclamation.font = [UIFont fontWithName:@"Helvetica-Bold" size:20];
+    [_gamePad addSubview:exclamation];
+    
+    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+    counter =  3;
+}
+
+- (void)countDown
+{
+    if (counter == 0) {
+        [countDownTimer invalidate];
+        counter = 3;
+        _countDownLabel.text = [NSString stringWithFormat:@"%ld",counter];
+
+        _countDownLabel.hidden = YES;
+        [self startGame];
+    }
+    else {
+        _countDownLabel.text = [NSString stringWithFormat:@"%ld",counter];
+        counter--;
+    }
 }
 
 -(void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -90,6 +121,9 @@
     CGPoint location = [touch locationInView:self.view];
     [playerSnake setTurningNode:location];
 }
+
+#pragma mark - Buttons
+
 - (IBAction)pauseGame:(id)sender
 {
     if (!pauseGame) {
@@ -102,16 +136,12 @@
         moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
         [_pauseButton setTitle:@"Pause" forState:UIControlStateNormal];
     }
-
-    
 }
 
-- (IBAction)startGame:(id)sender
+- (void)startGame
 {
     moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
     dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
-
-    _startButton.hidden = YES;
 }
 
 - (void)restartTimer:(NSNotification *)notif
@@ -135,8 +165,8 @@
 
 -(void)changeDirection
 {
-    if ([playerSnake changeDirectionWithGameIsOver:NO moveTimer:moveTimer]) {
-        
+    if ([playerSnake changeDirectionWithGameIsOver:NO ]) {
+        [moveTimer invalidate];
         UIAlertView *gameOverAlert = [[UIAlertView alloc]initWithTitle:@"Game Over" message:nil delegate:self cancelButtonTitle:@"Restart" otherButtonTitles:nil , nil];
         [gameOverAlert show];
         
@@ -166,11 +196,7 @@
                 }
                 numDotAte++;
                 _dots.text = [NSString stringWithFormat:@"%ld",numDotAte];
-
-
                 break;
-
-
             }
         }
     }
@@ -193,20 +219,32 @@
         
         if (endIndex - startIndex == chain) {
             [moveTimer invalidate];
+            exclamation.hidden = NO;
+            
+            switch ([playerSnake headDirection]) {
+                case kMoveDirectionUp:
+                    exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, -21, 0);
+                    break;
+                case kMoveDirectionDown:
+                    exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, -21, 0);
+                    break;
+                case kMoveDirectionRight:
+                    exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, 0, -21);
+                    break;
+                case kMoveDirectionLeft:
+                    exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, 0, -21);
+                    break;
+            }
             _leftEye.alpha = 0;
             _rightEye.alpha = 0;
             [UIView animateWithDuration:0.5 animations:^{
                 _leftEye.alpha = 1;
                 _rightEye.alpha = 1;
-
-
             }];
             [self cancelSnakeBodyByColor:v.backgroundColor];
             combos++;
             _comboLabel.hidden = NO;
-
             _comboLabel.text =  [NSString stringWithFormat:@"Combo : %ld",combos];
-
             return YES;
         }
     }
@@ -233,6 +271,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"comboComplete" object:nil];
             _comboLabel.hidden = YES;
             combos = 0;
+            exclamation.hidden = YES;
         } 
     }
 }
@@ -246,7 +285,9 @@
             // Next body
             UIView *currentBody = [snakeBody objectAtIndex:i];
             UIView *nextBody = [snakeBody objectAtIndex:i+1];
+            
             [UIView animateWithDuration:0.0 animations:^{
+                
                 currentBody.backgroundColor = nextBody.backgroundColor;
 
             }];
@@ -254,7 +295,9 @@
     }
     
     [UIView animateWithDuration:0.1 animations:^{
+        
         playerSnake.snakeTail.alpha = 0;
+        
     } completion:^(BOOL finished) {
         
         [playerSnake.snakeTail removeFromSuperview];
@@ -277,8 +320,9 @@
     [playerSnake resetSnake:_snakeHeadView andDirection:[playerSnake headDirection]];
     [_gamePad addSubview:_snakeHeadView];
     timeInterval = 0.2;
-    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
-    
+//    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+    _countDownLabel.hidden = NO;
     for (SnakeDot *d in dotArray) {
         d.hidden = NO;
         d.smallDot.backgroundColor = [self dotColor];

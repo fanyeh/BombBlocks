@@ -33,7 +33,7 @@ typedef enum {
 - (UIView *)snakeTail;
 - (void)setTurningNode:(CGPoint)location;
 - (BOOL)isEatingDot:(UIView*)dot;
-- (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver moveTimer:(NSTimer *)timer;
+- (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver;
 - (BOOL)isOverlayWithDotFrame:(CGRect)dotFrame;
 - (void)resetSnake:(UIView *)headView andDirection:(MoveDirection)direction;
 - (void)removeSnakeBody:(UIView *)body;

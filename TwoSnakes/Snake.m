@@ -50,6 +50,8 @@
             case kMoveDirectionRight:
                 break;
         }
+        
+
     }
     return self;
 }
@@ -151,9 +153,45 @@
             break;
     }
 
-    CGRect newFrame = [(UIView *)[_snakeBody firstObject]frame];
+    switch ([self headDirection] ) {
+        case kMoveDirectionRight:
+            if (direction == kMoveDirectionDown)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
+            else if (direction == kMoveDirectionUp)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+            break;
+        case kMoveDirectionLeft:
+            if (direction == kMoveDirectionDown)
+                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
+            else if (direction == kMoveDirectionUp)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+            break;
+        case kMoveDirectionUp:
+            if (direction == kMoveDirectionLeft)
+                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
+            else if (direction == kMoveDirectionRight)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+            break;
+        case kMoveDirectionDown:
+            if (direction == kMoveDirectionLeft)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
+            
+            else if (direction == kMoveDirectionRight)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+            
+            break;
+    }
+    
+    CGRect newFrame = [self snakeHead].frame;
     newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
-    [(UIView *)[_snakeBody firstObject] setFrame:newFrame];
+    [self snakeHead].frame = newFrame;
+
+    
+//    CGRect newFrame = [(UIView *)[_snakeBody firstObject]frame];
+//    newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+//    [(UIView *)[_snakeBody firstObject] setFrame:newFrame];
+    
+    
 
     [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:newFrame]];
 }
@@ -163,11 +201,11 @@
     [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:[self snakeHead].frame]];
 }
 
-- (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver moveTimer:(NSTimer *)timer
+- (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver
 {
     MoveDirection direction;
-    MoveDirection headDirection = [self headDirection];
-    CGRect headFrame = CGRectMake((int)ceilf(self.snakeHead.frame.origin.x), (int)ceilf(self.snakeHead.frame.origin.y), (int)ceilf(self.snakeHead.frame.size.width), (int)ceilf(self.snakeHead.frame.size.height));
+//    MoveDirection headDirection = [self headDirection];
+//    CGRect headFrame = CGRectMake((int)ceilf(self.snakeHead.frame.origin.x), (int)ceilf(self.snakeHead.frame.origin.y), (int)ceilf(self.snakeHead.frame.size.width), (int)ceilf(self.snakeHead.frame.size.height));
 
     UIView *tail = [self snakeTail];
     
@@ -194,6 +232,7 @@
             direction = [[_bodyDirections objectForKey:[NSNumber numberWithInteger:view.tag]] intValue];
         
         CGRect newPosition;
+        
         switch (direction) {
             case kMoveDirectionUp:
                 newPosition = CGRectOffset(view.frame, 0, -_yOffset);
@@ -214,7 +253,6 @@
             for (UIView *v in _snakeBody) {
                 // If head touched body , game is over
                 if (CGRectIntersectsRect(newPosition, v.frame) && v.tag != 0) {
-                    [timer invalidate];
                     NSLog(@"Game over");
                     gameIsOver  = YES;
                     break;
@@ -222,7 +260,6 @@
             }
             
             if ([self touchedScreenBounds:newPosition]) {
-                [timer invalidate];
                 NSLog(@"Game over : out bound");
                 gameIsOver  = YES;
             }
@@ -232,41 +269,41 @@
             CGRect newFrame = newPosition;
             view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
 
-            if (view.tag == 0 && [_turningNodes objectForKey:[NSValue valueWithCGRect:headFrame]]) {
-
-                    switch (headDirection ) {
-                        case kMoveDirectionRight:
-                            if (direction == kMoveDirectionDown)
-                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
-                            else if (direction == kMoveDirectionUp)
-                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-                            break;
-                        case kMoveDirectionLeft:
-                            if (direction == kMoveDirectionDown)
-                                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
-                            else if (direction == kMoveDirectionUp)
-                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-                            break;
-                        case kMoveDirectionUp:
-                            if (direction == kMoveDirectionLeft)
-                                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
-                            else if (direction == kMoveDirectionRight)
-                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-                            break;
-                        case kMoveDirectionDown:
-                            if (direction == kMoveDirectionLeft)
-                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
-
-                            else if (direction == kMoveDirectionRight)
-                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-
-                            break;
-                    }
-                
-                CGRect newFrame = [self snakeHead].frame;
-                newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
-                [self snakeHead].frame = newFrame;
-            }
+//            if (view.tag == 0 && [_turningNodes objectForKey:[NSValue valueWithCGRect:headFrame]]) {
+//
+//                    switch (headDirection ) {
+//                        case kMoveDirectionRight:
+//                            if (direction == kMoveDirectionDown)
+//                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
+//                            else if (direction == kMoveDirectionUp)
+//                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+//                            break;
+//                        case kMoveDirectionLeft:
+//                            if (direction == kMoveDirectionDown)
+//                                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
+//                            else if (direction == kMoveDirectionUp)
+//                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+//                            break;
+//                        case kMoveDirectionUp:
+//                            if (direction == kMoveDirectionLeft)
+//                                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
+//                            else if (direction == kMoveDirectionRight)
+//                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+//                            break;
+//                        case kMoveDirectionDown:
+//                            if (direction == kMoveDirectionLeft)
+//                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
+//
+//                            else if (direction == kMoveDirectionRight)
+//                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+//
+//                            break;
+//                    }
+//                
+//                CGRect newFrame = [self snakeHead].frame;
+//                newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+//                [self snakeHead].frame = newFrame;
+//            }
         }
         else
             return YES;
