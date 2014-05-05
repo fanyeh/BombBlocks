@@ -21,6 +21,7 @@ typedef enum {
 @property (strong,nonatomic) NSMutableArray *snakeBody;
 @property (strong,nonatomic) NSMutableDictionary *bodyDirections;
 @property (strong,nonatomic) NSMutableDictionary *turningNodes;
+@property (strong,nonatomic) UIView *gamePad;
 
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;

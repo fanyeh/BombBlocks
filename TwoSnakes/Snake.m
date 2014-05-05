@@ -32,10 +32,24 @@
         turningNodeTags = [[NSMutableDictionary alloc]init];
         _snakeLength = 1;
         headView.tag = 0;
-        _xOffset = headView.frame.size.width;
-        _yOffset = headView.frame.size.height;
+        _xOffset = headView.frame.size.width+1;
+        _yOffset = headView.frame.size.height+1;
         [_snakeBody addObject:headView];
         [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
+        
+        switch (direction ) {
+            case kMoveDirectionLeft:
+                    [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI);
+                break;
+            case kMoveDirectionUp:
+                    [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2);
+                break;
+            case kMoveDirectionDown:
+                    [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2);
+                break;
+            case kMoveDirectionRight:
+                break;
+        }
     }
     return self;
 }
@@ -48,8 +62,8 @@
     [turningNodeTags removeAllObjects];
     _snakeLength = 1;
     headView.tag = 0;
-    _xOffset = headView.frame.size.width;
-    _yOffset = headView.frame.size.height;
+    _xOffset = headView.frame.size.width+1;
+    _yOffset = headView.frame.size.height+1;
     [_snakeBody addObject:headView];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
 }
@@ -57,7 +71,7 @@
 - (UIView *)addSnakeBodyWithColor:(UIColor *)color
 {
     CGRect bodyFrame;
-    CGRect snakeTailFrame = [self snakeTail].frame;
+    CGRect snakeTailFrame =  [self snakeTail].frame;
     MoveDirection direction = [self getBodyDirection:[self snakeTail]];
     
     switch (direction) {
@@ -76,15 +90,7 @@
     }
     
     UIView *snakeBody = [[UIView alloc]initWithFrame:bodyFrame];
-    UIView *bodyBack = [[UIView alloc]initWithFrame:CGRectMake(19, 0, 1, 20)];
-    bodyBack.backgroundColor = [UIColor whiteColor];
-    [snakeBody addSubview:bodyBack];
-    UILabel *bodyLabel = [[UILabel alloc]initWithFrame:snakeBody.bounds];
-    bodyLabel.backgroundColor = [UIColor clearColor];
-//    [snakeBody addSubview:bodyLabel];
-    bodyLabel.textColor = [UIColor blackColor];
-    bodyLabel.textAlignment = NSTextAlignmentCenter;
-    bodyLabel.text = [NSString stringWithFormat:@"%d",_snakeLength];
+    
     snakeBody.backgroundColor = color;
     snakeBody.tag = _snakeLength;
     [_snakeBody addObject:snakeBody];
@@ -144,7 +150,12 @@
                 direction = kMoveDirectionUp;
             break;
     }
-    [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:[self snakeHead].frame]];
+
+    CGRect newFrame = [(UIView *)[_snakeBody firstObject]frame];
+    newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+    [(UIView *)[_snakeBody firstObject] setFrame:newFrame];
+
+    [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:newFrame]];
 }
 
 - (void)setTurningNodeWithDirection:(MoveDirection)direction
@@ -155,23 +166,30 @@
 - (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver moveTimer:(NSTimer *)timer
 {
     MoveDirection direction;
+    MoveDirection headDirection = [self headDirection];
+    CGRect headFrame = CGRectMake((int)ceilf(self.snakeHead.frame.origin.x), (int)ceilf(self.snakeHead.frame.origin.y), (int)ceilf(self.snakeHead.frame.size.width), (int)ceilf(self.snakeHead.frame.size.height));
+
     UIView *tail = [self snakeTail];
     
     for (UIView *view in _snakeBody) {
         
-        NSValue *directionValue = [_turningNodes objectForKey:[NSValue valueWithCGRect:view.frame]];
+        CGRect newFrame = CGRectMake((int)roundf(view.frame.origin.x), (int)roundf(view.frame.origin.y), (int)roundf(view.frame.size.width), (int)roundf(view.frame.size.height));
+
+        NSValue *directionValue = [_turningNodes objectForKey:[NSValue valueWithCGRect:newFrame]];
         
         // If body frame = turning node frame , then there's a direction change
         if (directionValue) {
-            direction = [[_turningNodes objectForKey:[NSValue valueWithCGRect:view.frame]] intValue];
+            direction = [[_turningNodes objectForKey:[NSValue valueWithCGRect:newFrame]] intValue];
             
             // Set new direction for body
             [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:view.tag]];
             
             // Remove turning node if last body has passed the node
             if (view.tag == tail.tag) {
-                [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:view.frame]];
+                [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:newFrame]];
             }
+            
+            
         } else
             direction = [[_bodyDirections objectForKey:[NSNumber numberWithInteger:view.tag]] intValue];
         
@@ -205,13 +223,51 @@
             
             if ([self touchedScreenBounds:newPosition]) {
                 [timer invalidate];
-                NSLog(@"Game over");
+                NSLog(@"Game over : out bound");
                 gameIsOver  = YES;
             }
         }
         
-        if (!gameIsOver)
-            view.frame = newPosition;
+        if (!gameIsOver) {
+            CGRect newFrame = newPosition;
+            view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+
+            if (view.tag == 0 && [_turningNodes objectForKey:[NSValue valueWithCGRect:headFrame]]) {
+
+                    switch (headDirection ) {
+                        case kMoveDirectionRight:
+                            if (direction == kMoveDirectionDown)
+                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
+                            else if (direction == kMoveDirectionUp)
+                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+                            break;
+                        case kMoveDirectionLeft:
+                            if (direction == kMoveDirectionDown)
+                                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
+                            else if (direction == kMoveDirectionUp)
+                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+                            break;
+                        case kMoveDirectionUp:
+                            if (direction == kMoveDirectionLeft)
+                                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
+                            else if (direction == kMoveDirectionRight)
+                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+                            break;
+                        case kMoveDirectionDown:
+                            if (direction == kMoveDirectionLeft)
+                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
+
+                            else if (direction == kMoveDirectionRight)
+                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+
+                            break;
+                    }
+                
+                CGRect newFrame = [self snakeHead].frame;
+                newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+                [self snakeHead].frame = newFrame;
+            }
+        }
         else
             return YES;
     }
@@ -238,13 +294,12 @@
 
 - (BOOL)touchedScreenBounds:(CGRect)newPostion
 {
-    CGRect screen= [[UIScreen mainScreen]bounds];
-
-    CGRect topBound = CGRectMake(0, -1, screen.size.width, 1);
+    CGRect screen= _gamePad.bounds;
+    CGRect topBound = CGRectMake(0, -2, screen.size.width, 1);
     CGRect botBound = CGRectMake(0, screen.size.height+1, screen.size.width, 1);
-    CGRect leftBound = CGRectMake(-1, 0, 1, screen.size.height);
+    CGRect leftBound = CGRectMake(-2, 0, 1, screen.size.height);
     CGRect rightBound = CGRectMake(screen.size.width+1, 0, 1, screen.size.height);
-    
+ 
     if (CGRectIntersectsRect(newPostion, topBound)) {
         return YES;
     } else if (CGRectIntersectsRect(newPostion, botBound)) {
