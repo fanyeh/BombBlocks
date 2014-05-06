@@ -39,6 +39,5 @@ typedef enum {
 - (void)removeSnakeBody:(UIView *)body;
 - (void)removeSnakeBodyFromArray:(NSMutableArray *)removeArray;
 - (void)updateTurningNode;
-- (void)setTurningNodeWithDirection:(MoveDirection)direction;
 
 @end

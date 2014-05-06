@@ -21,11 +21,11 @@
     NSInteger chain;
     NSInteger level;
     NSInteger combos;
-    NSMutableArray *colorArray;
     BOOL pauseGame;
     UILabel *exclamation;
     NSTimer *countDownTimer;
     NSInteger counter;
+    NSInteger maxCombos;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *snakeHeadView;
@@ -55,15 +55,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    timeInterval = 0.2;
-    numDotAte = 0;
-    chain = 3;
+    
+    // View Settings
     playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView andDirection:kMoveDirectionLeft];
     [self createAllDots];
-    level = 1;
     _levelLabel.text = [NSString stringWithFormat:@"Levle : %ld",level];
-
+    
     _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
     _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
     
@@ -74,18 +71,6 @@
     _rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     
     playerSnake.gamePad = _gamePad;
-//    _gamePad.layer.borderWidth = 1;
-
-    [[NSNotificationCenter defaultCenter]addObserver:self
-                                            selector:@selector(restartTimer:)
-                                                name:@"comboComplete" object:nil];
-    
-    colorArray = [[NSMutableArray alloc]init];
-    [colorArray addObject:[UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000]];
-    [colorArray addObject:[UIColor colorWithRed:0.004 green:0.690 blue:0.941 alpha:1.000]];
-    [colorArray addObject:[UIColor colorWithRed:0.682 green:0.933 blue:0.000 alpha:1.000]];
-    
-    pauseGame = NO;
     
     exclamation = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
     exclamation.hidden = YES;
@@ -94,9 +79,16 @@
     exclamation.textAlignment = NSTextAlignmentCenter;
     exclamation.font = [UIFont fontWithName:@"Helvetica-Bold" size:20];
     [_gamePad addSubview:exclamation];
-    
+
+    // Game Settings
+    timeInterval = 0.2;
+    numDotAte = 0;
+    chain = 2;
+    level = 1;
+    pauseGame = NO;
     countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
     counter =  3;
+    maxCombos = 0;
 }
 
 - (void)countDown
@@ -105,7 +97,6 @@
         [countDownTimer invalidate];
         counter = 3;
         _countDownLabel.text = [NSString stringWithFormat:@"%ld",counter];
-
         _countDownLabel.hidden = YES;
         [self startGame];
     }
@@ -122,47 +113,6 @@
     [playerSnake setTurningNode:location];
 }
 
-#pragma mark - Buttons
-
-- (IBAction)pauseGame:(id)sender
-{
-    if (!pauseGame) {
-        pauseGame = YES;
-        [moveTimer invalidate];
-        [_pauseButton setTitle:@"Continue" forState:UIControlStateNormal];
-    } else {
-        pauseGame = NO;
-
-        moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
-        [_pauseButton setTitle:@"Pause" forState:UIControlStateNormal];
-    }
-}
-
-- (void)startGame
-{
-    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
-    dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
-}
-
-- (void)restartTimer:(NSNotification *)notif
-{
-    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
-}
-
-- (void)showDots
-{
-    for (SnakeDot *d in dotArray) {
-        if (d.hidden) {
-            d.smallDot.backgroundColor = [self dotColor];
-            d.alpha = 0;
-            [UIView animateWithDuration:1 animations:^{
-                d.alpha = 1;
-            }];
-            d.hidden = NO;
-        }
-    }
-}
-
 -(void)changeDirection
 {
     if ([playerSnake changeDirectionWithGameIsOver:NO ]) {
@@ -175,35 +125,62 @@
     }
 }
 
-- (void)isEatingDot
-{
-    for (SnakeDot *d in dotArray) {
-        if (!d.hidden) {
-            if (CGRectIntersectsRect([playerSnake snakeHead].frame, d.frame)) {
-                d.hidden = YES;
-                [_gamePad addSubview:[playerSnake addSnakeBodyWithColor:d.smallDot.backgroundColor]];
-                // Check if any snake body can be cancelled
-                
-                combos = 0;
-                [self checkCombo];
+#pragma mark - Game state
 
-                if (numDotAte%30==0 && numDotAte != 0) {
-                    level++;
-                    _levelLabel.text = [NSString stringWithFormat:@"Levle : %ld",level];
-                    timeInterval -= 0.01;
-                    [moveTimer invalidate];
-                    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
-                }
-                numDotAte++;
-                _dots.text = [NSString stringWithFormat:@"%ld",numDotAte];
-                break;
-            }
-        }
+- (IBAction)pauseGame:(id)sender
+{
+    if (!pauseGame) {
+        pauseGame = YES;
+        [moveTimer invalidate];
+        [_pauseButton setTitle:@"Continue" forState:UIControlStateNormal];
+    } else {
+        pauseGame = NO;
+        
+        moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+        [_pauseButton setTitle:@"Pause" forState:UIControlStateNormal];
     }
 }
 
-- (BOOL)checkCombo
+- (void)startGame
 {
+    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+    dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // Game settings
+    timeInterval = 0.2;
+    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+    _countDownLabel.hidden = NO;
+    numDotAte = 0;
+    chain = 2;
+    level = 1;
+    
+    // View settings
+    for (UIView *v in [playerSnake snakeBody]) {
+        [v removeFromSuperview];
+    }
+    _snakeHeadView.frame = CGRectMake(147, 147, 20, 20);
+    
+    for (SnakeDot *d in dotArray) {
+        d.hidden = NO;
+        d.smallDot.backgroundColor = [self dotColor];
+    }
+
+    _dots.text = [NSString stringWithFormat:@"%ld",(long)numDotAte];
+
+    _levelLabel.text = [NSString stringWithFormat:@"Levle : %ld",level];
+
+    [playerSnake resetSnake:_snakeHeadView andDirection:[playerSnake headDirection]];
+    [_gamePad addSubview:_snakeHeadView];
+}
+
+#pragma mark - Combo
+
+- (BOOL)checkCombo:(void(^)(void))completeBlock
+{
+
     UIColor *repeatColor;
     NSInteger startIndex = 0;
     NSInteger endIndex = 0;
@@ -218,7 +195,7 @@
         }
         
         if (endIndex - startIndex == chain) {
-            [moveTimer invalidate];
+            // Invalidate timer if there combo
             exclamation.hidden = NO;
             
             switch ([playerSnake headDirection]) {
@@ -237,47 +214,59 @@
             }
             _leftEye.alpha = 0;
             _rightEye.alpha = 0;
-            [UIView animateWithDuration:0.5 animations:^{
+            
+            [UIView animateWithDuration:1 animations:^{
                 _leftEye.alpha = 1;
                 _rightEye.alpha = 1;
+                
+                for (NSInteger i = startIndex ; i < endIndex +1 ; i ++) {
+                    UIView *u = snakeBody[i];
+                    u.layer.borderWidth = 1;
+                }
+                
+            } completion:^(BOOL finished) {
+                for (NSInteger i = startIndex ; i < endIndex +1 ; i ++) {
+                    UIView *u = snakeBody[i];
+                    u.layer.borderWidth = 0;
+                }
+                combos++;
+                if (combos > maxCombos) {
+                    maxCombos = combos;
+                }
+                _comboLabel.text =  [NSString stringWithFormat:@"Combo : %ld",maxCombos];
+                [self cancelSnakeBodyByColor:v.backgroundColor complete:completeBlock];
             }];
-            [self cancelSnakeBodyByColor:v.backgroundColor];
-            combos++;
-            _comboLabel.hidden = NO;
-            _comboLabel.text =  [NSString stringWithFormat:@"Combo : %ld",combos];
+
             return YES;
         }
     }
+    completeBlock();
     return NO;
 }
 
 // Single body color check
-- (void)cancelSnakeBodyByColor:(UIColor *)color
+- (void)cancelSnakeBodyByColor:(UIColor *)color complete:(void(^)(void))completeBlock
 {
     NSMutableArray *snakeBody = [playerSnake snakeBody];
     BOOL completeCheck = YES;
+    
+    // Remove each body with same color
     for (UIView *v in snakeBody) {
         if ([v.backgroundColor isEqual:color]) {
             NSInteger index = [snakeBody indexOfObject:v];
-            [self removeSnakeBodyByIndex:index andColor:v.backgroundColor];
+            [self removeSnakeBodyByIndex:index andColor:v.backgroundColor complete:completeBlock];
             completeCheck = NO;
             break;
         }
     }
     
     // Check if there is other combos
-    if (completeCheck) {
-        if (![self checkCombo]) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"comboComplete" object:nil];
-            _comboLabel.hidden = YES;
-            combos = 0;
-            exclamation.hidden = YES;
-        } 
-    }
+    if (completeCheck)
+        [self otherCombo:completeBlock];
 }
 
 // Single body removal
--(void)removeSnakeBodyByIndex:(NSInteger)index andColor:(UIColor *)color
+-(void)removeSnakeBodyByIndex:(NSInteger)index andColor:(UIColor *)color complete:(void(^)(void))completeBlock
 {
     NSMutableArray *snakeBody = [playerSnake snakeBody];
     for (NSInteger i=index; i < [snakeBody count];i++) {
@@ -289,7 +278,7 @@
             [UIView animateWithDuration:0.0 animations:^{
                 
                 currentBody.backgroundColor = nextBody.backgroundColor;
-
+                
             }];
         }
     }
@@ -303,36 +292,178 @@
         [playerSnake.snakeTail removeFromSuperview];
         [playerSnake updateTurningNode];
         [playerSnake.snakeBody removeLastObject];
-        [self cancelSnakeBodyByColor:color];
+        [self cancelSnakeBodyByColor:color complete:completeBlock];
     }];
-
 }
 
-#pragma mark -  Reset game
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+-(BOOL)otherCombo:(void(^)(void))completeBlock
 {
-    for (UIView *v in [playerSnake snakeBody]) {
-        [v removeFromSuperview];
-    }
-    _snakeHeadView.frame = CGRectMake(147, 147, 20, 20);
+//    [moveTimer invalidate];
+
+    UIColor *repeatColor;
+    NSInteger startIndex = 0;
+    NSInteger endIndex = 0;
+    BOOL hasCombo = NO;
+    NSMutableArray *snakeBody = [playerSnake snakeBody];
     
-    [playerSnake resetSnake:_snakeHeadView andDirection:[playerSnake headDirection]];
-    [_gamePad addSubview:_snakeHeadView];
-    timeInterval = 0.2;
-//    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
-    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
-    _countDownLabel.hidden = NO;
+    for (UIView *v in snakeBody) {
+        
+        if (![repeatColor isEqual:v.backgroundColor]) {
+            
+            if (hasCombo) {
+                // Invalidate timer if there combo
+                exclamation.hidden = NO;
+                
+                switch ([playerSnake headDirection]) {
+                    case kMoveDirectionUp:
+                        exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, -21, 0);
+                        break;
+                    case kMoveDirectionDown:
+                        exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, -21, 0);
+                        break;
+                    case kMoveDirectionRight:
+                        exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, 0, -21);
+                        break;
+                    case kMoveDirectionLeft:
+                        exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, 0, -21);
+                        break;
+                }
+                _leftEye.alpha = 0;
+                _rightEye.alpha = 0;
+                
+                [UIView animateWithDuration:1 animations:^{
+                    
+                    _leftEye.alpha = 1;
+                    _rightEye.alpha = 1;
+                    
+                    for (NSInteger i = startIndex ; i < endIndex +1 ; i ++) {
+                        UIView *u = snakeBody[i];
+                        u.layer.borderWidth = 1;
+                    }
+                    
+                } completion:^(BOOL finished) {
+                    
+                    for (NSInteger i = startIndex ; i < endIndex +1 ; i ++) {
+                        UIView *u = snakeBody[i];
+                        u.layer.borderWidth = 0;
+                    }
+                    
+                    combos++;
+                    if (combos > maxCombos) {
+                        maxCombos = combos;
+                    }
+                    
+                    _comboLabel.text =  [NSString stringWithFormat:@"Combo : %ld",maxCombos];
+                    [self removeSnakeBodyByRangeStart:startIndex andRange:(endIndex - startIndex) + 1 complete:completeBlock];
+                }];
+                return YES;
+            } else {
+                repeatColor = v.backgroundColor;
+                startIndex = [snakeBody indexOfObject:v];
+                endIndex = startIndex;
+            }
+        } else {
+            endIndex = [snakeBody indexOfObject:v];
+
+            if (endIndex - startIndex == chain) {
+                hasCombo = YES;
+                NSLog(@"has other combo");
+            }
+        }
+        
+    }
+    // If no other combo call the complete block
+    completeBlock();
+    return NO;
+}
+
+-(void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(void(^)(void))completeBlock
+{
+    if (range == 0) {
+        [self otherCombo:completeBlock];
+    } else {
+        NSMutableArray *snakeBody = [playerSnake snakeBody];
+        for (NSInteger i=start; i < [snakeBody count] -1 ;i++) {
+            
+            if (i < [snakeBody count] -1) {
+            
+                // Next body
+                UIView *currentBody = [snakeBody objectAtIndex:i];
+                UIView *nextBody = [snakeBody objectAtIndex:i+1];
+                currentBody.backgroundColor = nextBody.backgroundColor;
+            }
+        }
+        
+        [UIView animateWithDuration:0.1 animations:^{
+            
+            playerSnake.snakeTail.alpha = 0;
+            
+        } completion:^(BOOL finished) {
+            
+            [playerSnake.snakeTail removeFromSuperview];
+            [playerSnake updateTurningNode];
+            [playerSnake.snakeBody removeLastObject];
+            [self removeSnakeBodyByRangeStart:start andRange:range-1 complete:completeBlock];
+        }];
+
+    }
+}
+
+
+#pragma mark - Dot
+
+- (void)isEatingDot
+{
     for (SnakeDot *d in dotArray) {
-        d.hidden = NO;
-        d.smallDot.backgroundColor = [self dotColor];
+        if (!d.hidden) {
+            if (CGRectIntersectsRect([playerSnake snakeHead].frame, d.frame)) {
+                d.hidden = YES;
+                [_gamePad addSubview:[playerSnake addSnakeBodyWithColor:d.smallDot.backgroundColor]];
+                // Check if any snake body can be cancelled
+                
+                combos = 0;
+                [moveTimer invalidate];
+                [self checkCombo:^{
+                    
+                    // Increase speed for every 30 dots eaten
+                    if (numDotAte%30==0 && numDotAte != 0) {
+                        level++;
+                        _levelLabel.text = [NSString stringWithFormat:@"Levle : %ld",level];
+                        timeInterval -= 0.01;
+                        
+                        if (moveTimer.isValid)
+                            [moveTimer invalidate];
+                        
+                        moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+                    } else {
+                        // If moveTimer is not valid (means there's combo) , restart the timer again
+                        if (!moveTimer.isValid)
+                            moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+                    }
+                    numDotAte++;
+                    _dots.text = [NSString stringWithFormat:@"%ld",numDotAte];
+                    combos = 0;
+                    exclamation.hidden = YES;
+                }];
+                
+                break;
+            }
+        }
     }
-    
-    numDotAte = 0;
-    _dots.text = [NSString stringWithFormat:@"%ld",(long)numDotAte];
-    chain = 3;
-    level = 1;
-    _levelLabel.text = [NSString stringWithFormat:@"Levle : %ld",level];
+}
+
+- (void)showDots
+{
+    for (SnakeDot *d in dotArray) {
+        if (d.hidden) {
+            d.smallDot.backgroundColor = [self dotColor];
+            d.alpha = 0;
+            [UIView animateWithDuration:1 animations:^{
+                d.alpha = 1;
+            }];
+            d.hidden = NO;
+        }
+    }
 }
 
 - (void)createAllDots
@@ -384,6 +515,8 @@
     
     return color;
 }
+
+#pragma mark - Hide statu bar
 
 -(BOOL)prefersStatusBarHidden
 {

@@ -56,6 +56,8 @@
     return self;
 }
 
+#pragma mark - Reset Snake
+
 - (void)resetSnake:(UIView *)headView andDirection:(MoveDirection)direction
 {
     [_snakeBody removeAllObjects];
@@ -70,37 +72,7 @@
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
 }
 
-- (UIView *)addSnakeBodyWithColor:(UIColor *)color
-{
-    CGRect bodyFrame;
-    CGRect snakeTailFrame =  [self snakeTail].frame;
-    MoveDirection direction = [self getBodyDirection:[self snakeTail]];
-    
-    switch (direction) {
-        case kMoveDirectionUp:
-            bodyFrame = CGRectOffset(snakeTailFrame, 0, _yOffset);
-            break;
-        case kMoveDirectionDown:
-            bodyFrame = CGRectOffset(snakeTailFrame, 0, -_yOffset);
-            break;
-        case kMoveDirectionLeft:
-            bodyFrame = CGRectOffset(snakeTailFrame, _xOffset, 0);
-            break;
-        case kMoveDirectionRight:
-            bodyFrame = CGRectOffset(snakeTailFrame, -_xOffset, 0);
-            break;
-    }
-    
-    UIView *snakeBody = [[UIView alloc]initWithFrame:bodyFrame];
-    
-    snakeBody.backgroundColor = color;
-    snakeBody.tag = _snakeLength;
-    [_snakeBody addObject:snakeBody];
-    [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];
-    _snakeLength ++;
-
-    return snakeBody;
-}
+#pragma mark - Directions
 
 - (MoveDirection)getBodyDirection:(UIView *)body
 {
@@ -112,107 +84,16 @@
    return [[_bodyDirections objectForKey:[NSNumber numberWithInteger:0]] intValue];
 }
 
-- (UIView *)snakeHead
-{
-    return [_snakeBody firstObject];
-}
-
-- (UIView *)snakeTail
-{
-    return [_snakeBody lastObject];
-}
-
--(void)setTurningNode:(CGPoint)location
-{
-    CGPoint headOrigin = [self snakeHead].frame.origin;
-    MoveDirection direction;
-    switch ([self headDirection]) {
-        case kMoveDirectionUp:
-            if (location.x > headOrigin.x)
-                direction = kMoveDirectionRight;
-            else if (location.x < headOrigin.x)
-                direction = kMoveDirectionLeft;
-            break;
-        case kMoveDirectionDown:
-            if (location.x > headOrigin.x)
-                direction = kMoveDirectionRight;
-            else if (location.x < headOrigin.x)
-                direction = kMoveDirectionLeft;
-            break;
-        case kMoveDirectionLeft:
-            if (location.y > headOrigin.y)
-                direction = kMoveDirectionDown;
-            else if (location.y < headOrigin.y)
-                direction = kMoveDirectionUp;
-            break;
-        case kMoveDirectionRight:
-            if (location.y > headOrigin.y)
-                direction = kMoveDirectionDown;
-            else if (location.y < headOrigin.y)
-                direction = kMoveDirectionUp;
-            break;
-    }
-
-    switch ([self headDirection] ) {
-        case kMoveDirectionRight:
-            if (direction == kMoveDirectionDown)
-                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
-            else if (direction == kMoveDirectionUp)
-                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-            break;
-        case kMoveDirectionLeft:
-            if (direction == kMoveDirectionDown)
-                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
-            else if (direction == kMoveDirectionUp)
-                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-            break;
-        case kMoveDirectionUp:
-            if (direction == kMoveDirectionLeft)
-                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
-            else if (direction == kMoveDirectionRight)
-                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-            break;
-        case kMoveDirectionDown:
-            if (direction == kMoveDirectionLeft)
-                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
-            
-            else if (direction == kMoveDirectionRight)
-                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-            
-            break;
-    }
-    
-    CGRect newFrame = [self snakeHead].frame;
-    newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
-    [self snakeHead].frame = newFrame;
-
-    
-//    CGRect newFrame = [(UIView *)[_snakeBody firstObject]frame];
-//    newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
-//    [(UIView *)[_snakeBody firstObject] setFrame:newFrame];
-    
-    
-
-    [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:newFrame]];
-}
-
-- (void)setTurningNodeWithDirection:(MoveDirection)direction
-{
-    [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:[self snakeHead].frame]];
-}
-
 - (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver
 {
     MoveDirection direction;
-//    MoveDirection headDirection = [self headDirection];
-//    CGRect headFrame = CGRectMake((int)ceilf(self.snakeHead.frame.origin.x), (int)ceilf(self.snakeHead.frame.origin.y), (int)ceilf(self.snakeHead.frame.size.width), (int)ceilf(self.snakeHead.frame.size.height));
-
+    
     UIView *tail = [self snakeTail];
     
     for (UIView *view in _snakeBody) {
         
         CGRect newFrame = CGRectMake((int)roundf(view.frame.origin.x), (int)roundf(view.frame.origin.y), (int)roundf(view.frame.size.width), (int)roundf(view.frame.size.height));
-
+        
         NSValue *directionValue = [_turningNodes objectForKey:[NSValue valueWithCGRect:newFrame]];
         
         // If body frame = turning node frame , then there's a direction change
@@ -268,48 +149,91 @@
         if (!gameIsOver) {
             CGRect newFrame = newPosition;
             view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
-
-//            if (view.tag == 0 && [_turningNodes objectForKey:[NSValue valueWithCGRect:headFrame]]) {
-//
-//                    switch (headDirection ) {
-//                        case kMoveDirectionRight:
-//                            if (direction == kMoveDirectionDown)
-//                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
-//                            else if (direction == kMoveDirectionUp)
-//                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-//                            break;
-//                        case kMoveDirectionLeft:
-//                            if (direction == kMoveDirectionDown)
-//                                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
-//                            else if (direction == kMoveDirectionUp)
-//                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-//                            break;
-//                        case kMoveDirectionUp:
-//                            if (direction == kMoveDirectionLeft)
-//                                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
-//                            else if (direction == kMoveDirectionRight)
-//                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-//                            break;
-//                        case kMoveDirectionDown:
-//                            if (direction == kMoveDirectionLeft)
-//                                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
-//
-//                            else if (direction == kMoveDirectionRight)
-//                                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-//
-//                            break;
-//                    }
-//                
-//                CGRect newFrame = [self snakeHead].frame;
-//                newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
-//                [self snakeHead].frame = newFrame;
-//            }
         }
         else
             return YES;
     }
     return NO;
 }
+
+-(void)setTurningNode:(CGPoint)location
+{
+    CGPoint headOrigin = [self snakeHead].frame.origin;
+    MoveDirection direction;
+    switch ([self headDirection]) {
+        case kMoveDirectionUp:
+            if (location.x > headOrigin.x)
+                direction = kMoveDirectionRight;
+            else if (location.x < headOrigin.x)
+                direction = kMoveDirectionLeft;
+            break;
+        case kMoveDirectionDown:
+            if (location.x > headOrigin.x)
+                direction = kMoveDirectionRight;
+            else if (location.x < headOrigin.x)
+                direction = kMoveDirectionLeft;
+            break;
+        case kMoveDirectionLeft:
+            if (location.y > headOrigin.y)
+                direction = kMoveDirectionDown;
+            else if (location.y < headOrigin.y)
+                direction = kMoveDirectionUp;
+            break;
+        case kMoveDirectionRight:
+            if (location.y > headOrigin.y)
+                direction = kMoveDirectionDown;
+            else if (location.y < headOrigin.y)
+                direction = kMoveDirectionUp;
+            break;
+    }
+    
+    switch ([self headDirection] ) {
+        case kMoveDirectionRight:
+            if (direction == kMoveDirectionDown)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
+            else if (direction == kMoveDirectionUp)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+            break;
+        case kMoveDirectionLeft:
+            if (direction == kMoveDirectionDown)
+                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
+            else if (direction == kMoveDirectionUp)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+            break;
+        case kMoveDirectionUp:
+            if (direction == kMoveDirectionLeft)
+                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
+            else if (direction == kMoveDirectionRight)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+            break;
+        case kMoveDirectionDown:
+            if (direction == kMoveDirectionLeft)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
+            
+            else if (direction == kMoveDirectionRight)
+                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+            
+            break;
+    }
+    
+    CGRect newFrame = [self snakeHead].frame;
+    newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+    [self snakeHead].frame = newFrame;
+    [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:newFrame]];
+}
+
+- (void)updateTurningNode
+{
+    UIView *tail = [self snakeTail];
+    
+    NSValue *directionValue = [_turningNodes objectForKey:[NSValue valueWithCGRect:tail.frame]];
+    
+    // If body frame = turning node frame , then there's a direction change
+    if (directionValue)
+        [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:tail.frame]];
+}
+
+#pragma mark - Dots
 
 - (BOOL)isEatingDot:(UIView *)dot
 {
@@ -328,6 +252,8 @@
     }
     return NO;
 }
+
+#pragma mark - Out of bound
 
 - (BOOL)touchedScreenBounds:(CGRect)newPostion
 {
@@ -352,6 +278,51 @@
         return NO;
 }
 
+
+#pragma mark - Snake Body
+
+- (UIView *)addSnakeBodyWithColor:(UIColor *)color
+{
+    CGRect bodyFrame;
+    CGRect snakeTailFrame =  [self snakeTail].frame;
+    MoveDirection direction = [self getBodyDirection:[self snakeTail]];
+    
+    switch (direction) {
+        case kMoveDirectionUp:
+            bodyFrame = CGRectOffset(snakeTailFrame, 0, _yOffset);
+            break;
+        case kMoveDirectionDown:
+            bodyFrame = CGRectOffset(snakeTailFrame, 0, -_yOffset);
+            break;
+        case kMoveDirectionLeft:
+            bodyFrame = CGRectOffset(snakeTailFrame, _xOffset, 0);
+            break;
+        case kMoveDirectionRight:
+            bodyFrame = CGRectOffset(snakeTailFrame, -_xOffset, 0);
+            break;
+    }
+    
+    UIView *snakeBody = [[UIView alloc]initWithFrame:bodyFrame];
+    
+    snakeBody.backgroundColor = color;
+    snakeBody.tag = _snakeLength;
+    [_snakeBody addObject:snakeBody];
+    [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];
+    _snakeLength ++;
+    
+    return snakeBody;
+}
+
+- (UIView *)snakeHead
+{
+    return [_snakeBody firstObject];
+}
+
+- (UIView *)snakeTail
+{
+    return [_snakeBody lastObject];
+}
+
 - (void)removeSnakeBody:(UIView *)body
 {
 
@@ -366,18 +337,6 @@
     }
     
     [_snakeBody removeObjectsInArray:removeArray];
-}
-
-- (void)updateTurningNode
-{
-    UIView *tail = [self snakeTail];
-        
-    NSValue *directionValue = [_turningNodes objectForKey:[NSValue valueWithCGRect:tail.frame]];
-    
-    // If body frame = turning node frame , then there's a direction change
-    if (directionValue)
-        [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:tail.frame]];
-
 }
 
 @end
