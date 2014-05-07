@@ -20,6 +20,6 @@ typedef enum {
 @property (nonatomic) SnakeButtonState state;
 
 - (id)initWithTitle:(NSString *)title;
-- (void)changeState;
+- (void)changeState:(SnakeButtonState)newState;
 
 @end

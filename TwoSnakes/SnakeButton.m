@@ -36,12 +36,12 @@
 - (id)initWithTitle:(NSString *)title
 {
     length = title.length;
-    space = 10;
+    space = 5;
     blockSize = 24;
     headSize = 40;
     frameWidth = (length*space) + ((length) * blockSize) + headSize + blockSize/2;
     frameHeight = 40;
-    newFrame = CGRectMake((320-frameWidth-headSize - space)/2, 470, frameWidth, frameHeight);
+    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 500, frameWidth, frameHeight);
     
     self = [self initWithFrame:newFrame];
     if (self) {
@@ -98,10 +98,13 @@
         letterLabel.backgroundColor = [self colorByState];
         letterLabel.layer.cornerRadius = blockSize/2;
         letterLabel.layer.masksToBounds = YES;
+        letterLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
         [self addSubview:letterLabel];
         [letterArray addObject:letterLabel];
         xPos += (blockSize + space);
     }
+    
+    self.userInteractionEnabled = YES;
 }
 
 - (void)resetSnakeButton
@@ -109,17 +112,17 @@
     NSString *title;
     switch (_state) {
         case kSnakeButtonPlay:
-            title = @"Play";
+            title = @"play";
             break;
         case kSnakeButtonPause:
-            title = @"Pause";
+            title = @"pause";
             break;
         case kSnakeButtonResume:
-            title = @"Resume";
+            title = @"resume";
             
             break;
         case kSnakeButtonReplay:
-            title = @"Replay";
+            title = @"replay";
             break;
     }
 
@@ -130,7 +133,7 @@
     headSize = 40;
     frameWidth = (length*space) + ((length) * blockSize) + headSize + blockSize/2;
     frameHeight = 40;
-    newFrame = CGRectMake((320-frameWidth-headSize - space)/2, 470, frameWidth, frameHeight);
+    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 500, frameWidth, frameHeight);
     self.frame = newFrame;
     
     [letterArray removeAllObjects];
@@ -141,26 +144,11 @@
     [self setSnakeButton:title];
 }
 
-- (void)changeState
+- (void)changeState:(SnakeButtonState)newState
 {
-    switch (_state) {
-        case kSnakeButtonPlay:
-            _state = kSnakeButtonPause;
-            break;
-        case kSnakeButtonPause:
-            _state = kSnakeButtonResume;
-            break;
-        case kSnakeButtonResume:
-            _state = kSnakeButtonPause;
-
-            break;
-        case kSnakeButtonReplay:
-            _state = kSnakeButtonPause;
-            
-            break;
-    }
+    self.userInteractionEnabled = NO;
+    _state = newState;
     [self showHead];
-
 }
 
 - (void)showHead
@@ -175,8 +163,9 @@
 
 - (void)eatButton
 {
-
-    [UIView animateWithDuration:0.5 animations:^{
+    float duration = 3/(length*2+1);
+    
+    [UIView animateWithDuration:duration animations:^{
         
         snakeHead.frame = CGRectOffset(snakeHead.frame, (blockSize + space) , 0);
         
@@ -189,7 +178,10 @@
 
 - (void)eatNextLetter:(UIView *)letter
 {
-    [UIView animateWithDuration:0.5 animations:^{
+    
+    float duration = 3/(length*2+1);
+    
+    [UIView animateWithDuration:duration animations:^{
         // Eating animation
 //        letter.frame = CGRectInset(letter.frame, blockSize/2, blockSize/2);
         letter.transform = letter.transform = CGAffineTransformScale(letter.transform, 0.1 , 0.1);
@@ -201,7 +193,7 @@
         [letterArray removeObject:letter];
         
         if ([letterArray firstObject]) {
-            [UIView animateWithDuration:0.5 animations:^{
+            [UIView animateWithDuration:duration animations:^{
                 
                 snakeHead.frame = CGRectOffset(snakeHead.frame, (blockSize + space) , 0);
                 mouth.frame = CGRectInset(mouth.frame, -blockSize/2, -blockSize/2);
@@ -233,7 +225,7 @@
             color = [UIColor colorWithRed:0.004 green:0.690 blue:0.941 alpha:1.000];
             break;
         case kSnakeButtonReplay:
-            color = [UIColor colorWithRed:0.682 green:0.933 blue:0.000 alpha:1.000];
+            color = [UIColor colorWithWhite:0.200 alpha:1.000];
             break;
     }
     
