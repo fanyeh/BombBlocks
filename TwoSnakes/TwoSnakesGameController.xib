@@ -8,13 +8,14 @@
             <connections>
                 <outlet property="comboLabel" destination="flG-wZ-7Yl" id="u8N-hJ-sHy"/>
                 <outlet property="countDownLabel" destination="udw-Ea-g4N" id="ihz-rG-qmE"/>
-                <outlet property="dots" destination="txt-h4-3yM" id="AOS-P2-TBc"/>
                 <outlet property="gamePad" destination="wrt-Os-Rk6" id="Sco-z1-EGQ"/>
                 <outlet property="leftEye" destination="nSo-Ll-OU4" id="g69-O0-0qu"/>
                 <outlet property="levelLabel" destination="UnZ-0z-iDN" id="iPy-Q6-ks4"/>
                 <outlet property="pauseButton" destination="Qlr-Nd-435" id="WXj-Wm-ea3"/>
                 <outlet property="rightEye" destination="cao-1i-9B7" id="Ces-em-U0J"/>
+                <outlet property="scoreLabel" destination="txt-h4-3yM" id="jpk-QG-Ryo"/>
                 <outlet property="snakeHeadView" destination="Ek5-ao-ehg" id="WJH-Zi-9Id"/>
+                <outlet property="snakeMouth" destination="7hD-KR-Qja" id="eQX-Li-QJZ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -24,38 +25,36 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" id="wrt-Os-Rk6">
-                    <rect key="frame" x="3" y="88" width="315" height="399"/>
+                    <rect key="frame" x="3" y="105" width="315" height="357"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <view contentMode="scaleToFill" id="Ek5-ao-ehg" userLabel="head">
-                            <rect key="frame" x="147" y="188" width="20" height="20"/>
+                            <rect key="frame" x="147" y="168" width="20" height="20"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <view contentMode="scaleToFill" id="nSo-Ll-OU4">
-                                    <rect key="frame" x="11" y="3" width="5" height="5"/>
+                                <view contentMode="scaleToFill" id="nSo-Ll-OU4" userLabel="left eye">
+                                    <rect key="frame" x="5" y="13" width="5" height="5"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 </view>
-                                <view contentMode="scaleToFill" id="cao-1i-9B7">
-                                    <rect key="frame" x="11" y="12" width="5" height="5"/>
+                                <view contentMode="scaleToFill" id="cao-1i-9B7" userLabel="right eye">
+                                    <rect key="frame" x="5" y="2" width="5" height="5"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                </view>
+                                <view contentMode="scaleToFill" id="7hD-KR-Qja" userLabel="mouth">
+                                    <rect key="frame" x="15" y="4" width="12" height="12"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 </view>
                             </subviews>
                             <color key="backgroundColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scrore" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="txt-h4-3yM">
-                    <rect key="frame" x="241" y="20" width="71" height="21"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Level" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="UnZ-0z-iDN">
-                    <rect key="frame" x="113" y="20" width="94" height="21"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scrore" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="txt-h4-3yM">
+                    <rect key="frame" x="125" y="20" width="71" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -68,7 +67,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Qlr-Nd-435">
-                    <rect key="frame" x="129" y="507" width="62" height="30"/>
+                    <rect key="frame" x="129" y="538" width="62" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" title="Pause">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -81,6 +80,13 @@
                     <rect key="frame" x="139" y="44" width="42" height="36"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Level" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="UnZ-0z-iDN">
+                    <rect key="frame" x="218" y="20" width="94" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>

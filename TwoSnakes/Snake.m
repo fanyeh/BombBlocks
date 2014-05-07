@@ -51,7 +51,7 @@
                 break;
         }
         
-
+        _isRotate = NO;
     }
     return self;
 }
@@ -70,6 +70,8 @@
     _yOffset = headView.frame.size.height+1;
     [_snakeBody addObject:headView];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
+    _isRotate = NO;
+
 }
 
 #pragma mark - Directions
@@ -129,7 +131,7 @@
                 break;
         }
         
-        if (view.tag == 0) {
+        if (view.tag == 0 && !_isRotate) {
             
             for (UIView *v in _snakeBody) {
                 // If head touched body , game is over
@@ -325,7 +327,6 @@
 
 - (void)removeSnakeBody:(UIView *)body
 {
-
     [_bodyDirections removeObjectForKey:[NSNumber numberWithInteger:body.tag]];
     [_snakeBody removeObject:body];
 }
@@ -338,5 +339,89 @@
     
     [_snakeBody removeObjectsInArray:removeArray];
 }
+
+- (void)startRotate
+{
+    _isRotate = YES;
+    [[self snakeHead].layer addAnimation:[self wibbleAnimation] forKey:nil];
+//    [self startWobble];
+}
+
+- (void)stopRotate
+{
+    _isRotate = NO;
+//    [self stopWobble];
+    [[self snakeHead].layer removeAllAnimations];
+}
+
+#define RADIANS(degrees) ((degrees * M_PI) / 180.0)
+
+- (void)startWobble {
+    [self snakeHead].transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(-5));
+    
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:(UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse)
+                     animations:^ {
+                         [self snakeHead].transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(5));
+                     }
+                     completion:NULL
+     ];
+}
+
+- (void)stopWobble {
+    [UIView animateWithDuration:0.25
+                          delay:0.0
+                        options:(UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveLinear)
+                     animations:^ {
+                         [self snakeHead].transform = CGAffineTransformIdentity;
+                     }
+                     completion:NULL
+     ];
+}
+
+-(CABasicAnimation *)wibbleAnimation
+{
+    CGFloat startAngle;
+    CGFloat endAngle;
+    
+    
+    switch ([self headDirection] ) {
+        case kMoveDirectionRight:
+            
+            startAngle = -M_PI/6;
+            endAngle = M_PI/6;
+            
+            break;
+        case kMoveDirectionLeft:
+            
+            startAngle = M_PI-M_PI/6;
+            endAngle = M_PI+M_PI/6;
+
+            break;
+        case kMoveDirectionUp:
+            
+            startAngle = -M_PI/2+M_PI/6;
+            endAngle = -M_PI/2-M_PI/6;
+ 
+            break;
+        case kMoveDirectionDown:
+            
+            startAngle = M_PI/2-M_PI/6;
+            endAngle = M_PI/2+M_PI/6;
+            
+            break;
+    }
+
+    CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    [anim setToValue:[NSNumber numberWithFloat:startAngle]]; // satrt angle
+    [anim setFromValue:[NSNumber numberWithDouble:endAngle]]; // rotation angle
+    [anim setDuration:0.25]; // rotate speed
+    [anim setRepeatCount:HUGE_VAL];
+    [anim setAutoreverses:YES];
+    return anim;
+}
+
+
 
 @end

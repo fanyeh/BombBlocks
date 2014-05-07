@@ -25,13 +25,14 @@ typedef enum {
 
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
+@property (nonatomic) BOOL isRotate;
 
 - (id)initWithSnakeHead:(UIView *)headView andDirection:(MoveDirection)direction;
 - (UIView *)addSnakeBodyWithColor:(UIColor *)color;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
 - (UIView *)snakeTail;
-- (void)setTurningNode:(CGPoint)location;
+-(void)setTurningNode:(CGPoint)location;
 - (BOOL)isEatingDot:(UIView*)dot;
 - (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver;
 - (BOOL)isOverlayWithDotFrame:(CGRect)dotFrame;
@@ -39,5 +40,7 @@ typedef enum {
 - (void)removeSnakeBody:(UIView *)body;
 - (void)removeSnakeBodyFromArray:(NSMutableArray *)removeArray;
 - (void)updateTurningNode;
+- (void)startRotate;
+- (void)stopRotate;
 
 @end
