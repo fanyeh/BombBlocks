@@ -150,7 +150,8 @@
         
         if (!gameIsOver) {
             CGRect newFrame = newPosition;
-            view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+                                        view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+
         }
         else
             return YES;

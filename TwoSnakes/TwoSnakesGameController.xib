@@ -29,13 +29,13 @@
                             <rect key="frame" x="147" y="189" width="20" height="20"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <view contentMode="scaleToFill" id="nSo-Ll-OU4" userLabel="left eye">
-                                    <rect key="frame" x="5" y="13" width="5" height="5"/>
+                                <view contentMode="scaleToFill" id="nSo-Ll-OU4" userLabel="right eye">
+                                    <rect key="frame" x="2" y="13" width="5" height="5"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 </view>
-                                <view contentMode="scaleToFill" id="cao-1i-9B7" userLabel="right eye">
-                                    <rect key="frame" x="5" y="2" width="5" height="5"/>
+                                <view contentMode="scaleToFill" id="cao-1i-9B7" userLabel="left eye">
+                                    <rect key="frame" x="2" y="2" width="5" height="5"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 </view>

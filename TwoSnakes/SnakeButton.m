@@ -22,6 +22,7 @@
     CGFloat frameHeight;
     CGFloat frameWidth;
     CGRect newFrame;
+    CGFloat labelHeight;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -39,14 +40,16 @@
     space = 5;
     blockSize = 24;
     headSize = 40;
+    labelHeight = 30;
     frameWidth = (length*space) + ((length) * blockSize) + headSize + blockSize/2;
-    frameHeight = 40;
-    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 500, frameWidth, frameHeight);
+    frameHeight = 40 + labelHeight;
+    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 480, frameWidth, frameHeight);
     
     self = [self initWithFrame:newFrame];
     if (self) {
         _state = kSnakeButtonPlay;
         [self setSnakeButton:title];
+//        self.layer.borderWidth = 1;
     }
     return self;
 }
@@ -55,38 +58,41 @@
 {
     
     CGFloat xPos = 0;
-    CGFloat yPos = 0;
+    CGFloat yPos = frameHeight - headSize;
 
     snakeHead = [[UIView alloc]initWithFrame:CGRectMake(xPos, yPos, headSize, headSize)];
     snakeHead.backgroundColor = [UIColor colorWithWhite:0.200 alpha:1.000];
     snakeHead.alpha = 0;
     
-    CGFloat eyeSize = headSize/4;
-    leftEye = [[UIView alloc]initWithFrame:CGRectMake(eyeSize, headSize/10, eyeSize, eyeSize)];
+    CGFloat eyeSize = headSize/3;
+    leftEye = [[UIView alloc]initWithFrame:CGRectMake(eyeSize /3, eyeSize/3, eyeSize, eyeSize)];
     leftEye.backgroundColor = [UIColor blackColor];
-    leftEye.layer.borderWidth = eyeSize*.3;
+    leftEye.layer.borderWidth = 4.5;
     leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     leftEye.layer.cornerRadius = eyeSize/2;
     [snakeHead addSubview:leftEye];
     
-    rightEye = [[UIView alloc]initWithFrame:CGRectMake(eyeSize, headSize - headSize/10 - eyeSize, eyeSize, eyeSize)];
+    rightEye = [[UIView alloc]initWithFrame:CGRectMake(eyeSize /3 , headSize -  eyeSize/3 - eyeSize, eyeSize, eyeSize)];
     rightEye.backgroundColor = [UIColor blackColor];
-    rightEye.layer.borderWidth = eyeSize*.3;
+    rightEye.layer.borderWidth = 4.5;
     rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     rightEye.layer.cornerRadius = eyeSize/2;
     [snakeHead addSubview:rightEye];
     
     CGFloat mouthSize = blockSize;
-    mouth = [[UIView alloc]initWithFrame:CGRectMake(headSize - mouthSize/2, (frameHeight - blockSize) / 2, mouthSize, mouthSize)];
+    mouth = [[UIView alloc]initWithFrame:CGRectMake(headSize - mouthSize/2, (headSize - blockSize) / 2, mouthSize, mouthSize)];
     mouth.backgroundColor = [UIColor whiteColor];
     mouth.layer.cornerRadius = mouthSize/2;
     mouth.hidden = YES;
     [snakeHead addSubview:mouth];
     
+
+    
+    
     [self addSubview:snakeHead];
     
     xPos = headSize + mouthSize/2 + space;
-    yPos = (frameHeight - blockSize) / 2;
+    yPos = yPos + (headSize - blockSize) / 2;
     
     letterArray = [[NSMutableArray alloc]init];
     
@@ -132,8 +138,7 @@
     blockSize = 24;
     headSize = 40;
     frameWidth = (length*space) + ((length) * blockSize) + headSize + blockSize/2;
-    frameHeight = 40;
-    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 500, frameWidth, frameHeight);
+    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 480, frameWidth, frameHeight);
     self.frame = newFrame;
     
     [letterArray removeAllObjects];
@@ -142,6 +147,7 @@
     }
     
     [self setSnakeButton:title];
+    [self hideLetters];
 }
 
 - (void)changeState:(SnakeButtonState)newState
@@ -164,28 +170,37 @@
 - (void)eatButton
 {
     float duration = 3/(length*2+1);
+    float insetSize = blockSize/10;
     
     [UIView animateWithDuration:duration animations:^{
         
         snakeHead.frame = CGRectOffset(snakeHead.frame, (blockSize + space) , 0);
         
+        // Mouth open
+        mouth.frame = CGRectInset(mouth.frame, -insetSize, -insetSize);
+
+        
     } completion:^(BOOL finished) {
         
-        [self eatNextLetter:[letterArray firstObject]];
+        [self eatNextLetter:[letterArray firstObject] inset:insetSize];
         
     }];
 }
 
-- (void)eatNextLetter:(UIView *)letter
+- (void)eatNextLetter:(UIView *)letter inset:(float)inset
 {
     
     float duration = 3/(length*2+1);
+    float insetSize = blockSize/2+inset;
     
     [UIView animateWithDuration:duration animations:^{
-        // Eating animation
-//        letter.frame = CGRectInset(letter.frame, blockSize/2, blockSize/2);
-        letter.transform = letter.transform = CGAffineTransformScale(letter.transform, 0.1 , 0.1);
-        mouth.frame = CGRectInset(mouth.frame, blockSize/2, blockSize/2);
+        
+        letter.transform = CGAffineTransformScale(letter.transform, 0.1 , 0.1);
+        
+        // Close mouth
+        mouth.frame = CGRectInset(mouth.frame, insetSize, insetSize);
+        
+        snakeHead.backgroundColor = letter.backgroundColor;
         
     } completion:^(BOOL finished) {
         
@@ -196,19 +211,83 @@
             [UIView animateWithDuration:duration animations:^{
                 
                 snakeHead.frame = CGRectOffset(snakeHead.frame, (blockSize + space) , 0);
-                mouth.frame = CGRectInset(mouth.frame, -blockSize/2, -blockSize/2);
+                
+                // Open mouth
+                mouth.frame = CGRectInset(mouth.frame, -insetSize, -insetSize);
                 
             } completion:^(BOOL finished) {
                 
-                [self eatNextLetter:[letterArray firstObject]];
+                [self eatNextLetter:[letterArray firstObject] inset:inset];
 
             }];
         } else {
+
+            UIView *newMouth = [[UIView alloc]initWithFrame:CGRectMake(headSize/2, headSize/2-8, 16, 16)];
+            newMouth.layer.cornerRadius = 8;
+            newMouth.backgroundColor = [UIColor whiteColor];
+            [snakeHead addSubview:newMouth];
+            newMouth.frame = CGRectInset(newMouth.frame, 8, 8);
             
-            [self resetSnakeButton];
+            UILabel *exlamationLabel = [[UILabel alloc]initWithFrame:CGRectMake(frameWidth-labelHeight + 12 , 0, labelHeight, labelHeight)];
+            exlamationLabel.text = @"!";
+            exlamationLabel.textColor = letter.backgroundColor;
+            exlamationLabel.textAlignment = NSTextAlignmentCenter;
+            exlamationLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:30];
+            [self addSubview:exlamationLabel];
+            exlamationLabel.transform = CGAffineTransformRotate(exlamationLabel.transform, M_PI/6);
+            
+            exlamationLabel.alpha = 0;
+
+            
+            [UIView animateWithDuration:0.5 animations:^{
+
+                snakeHead.transform = CGAffineTransformRotate(snakeHead.transform, M_PI/2);
+                newMouth.frame = CGRectInset(newMouth.frame, -8, -11);
+
+
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:0.5 animations:^{
+                    exlamationLabel.alpha = 1;
+
+                } completion:^(BOOL finished) {
+                    [self resetSnakeButton];
+                }];
+
+
+            }];
         }
         
     }];
+}
+
+- (void)hideLetters
+{
+    NSMutableArray *hiddenLetters = [[NSMutableArray alloc]init];
+    for (UILabel *letter in letterArray) {
+        
+        letter.alpha = 0;
+        [hiddenLetters addObject:letter];
+    }
+    
+    [self showLetters:hiddenLetters];
+}
+
+- (void)showLetters:(NSMutableArray *)hiddenLetters
+{
+    UILabel *hiddenLetter = [hiddenLetters firstObject];
+    if (hiddenLetter) {
+        
+        [UIView animateWithDuration:0.2 animations:^{
+            
+            hiddenLetter.alpha = 1;
+            
+        } completion:^(BOOL finished) {
+            [hiddenLetters removeObject:hiddenLetter];
+            
+            [self showLetters:hiddenLetters];
+
+        }];
+    }
 }
 
 - (UIColor *)colorByState
