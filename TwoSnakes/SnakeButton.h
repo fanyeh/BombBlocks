@@ -18,8 +18,10 @@ typedef enum {
 @interface SnakeButton : UIView
 
 @property (nonatomic) SnakeButtonState state;
+@property (strong,nonatomic) UIView *letterButtons;
+@property (strong,nonatomic) UITapGestureRecognizer *tapGesture;
 
-- (id)initWithTitle:(NSString *)title;
+- (id)initWithTitle:(NSString *)title gesture:(UITapGestureRecognizer *)gesture;
 - (void)changeState:(SnakeButtonState)newState;
 
 @end

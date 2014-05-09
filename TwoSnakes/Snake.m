@@ -11,6 +11,9 @@
 @implementation Snake
 {
     NSMutableDictionary *turningNodeTags;
+    UILabel *exclamation;
+    UIView *exclamationView;
+    
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -22,10 +25,11 @@
     return self;
 }
 
-- (id)initWithSnakeHead:(UIView *)headView andDirection:(MoveDirection)direction
+- (id)initWithSnakeHead:(UIView *)headView direction:(MoveDirection)direction gamePad:(UIView *)gamePad
 {
     self = [self initWithFrame:headView.frame];
     if (self) {
+        _gamePad = gamePad;
         _snakeBody = [[NSMutableArray alloc]init];
         _turningNodes = [[NSMutableDictionary alloc]init];
         _bodyDirections = [[NSMutableDictionary alloc]init];
@@ -36,6 +40,11 @@
         _yOffset = headView.frame.size.height+1;
         [_snakeBody addObject:headView];
         [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
+        
+        exclamationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
+
+        [self resetExclamation:headView andDirection:direction];
+        [_gamePad addSubview:exclamationView];
         
         switch (direction ) {
             case kMoveDirectionLeft:
@@ -71,7 +80,44 @@
     [_snakeBody addObject:headView];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
     _isRotate = NO;
+    [exclamation removeFromSuperview];
+    [self resetExclamation:headView andDirection:direction];
 
+}
+
+- (void)resetExclamation:(UIView *)headView andDirection:(MoveDirection)direction
+{
+    exclamationView.hidden = YES;
+    exclamation = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
+    exclamation.text = @"!";
+    exclamation.textColor = [UIColor blackColor];
+    exclamation.textAlignment = NSTextAlignmentRight;
+    exclamation.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
+    
+    [self exclamationPosition:direction];
+    [exclamationView addSubview:exclamation];
+}
+
+- (void)exclamationPosition:(MoveDirection)direction
+{
+    switch (direction) {
+        case kMoveDirectionUp:
+            exclamationView.frame = CGRectOffset([self snakeHead].frame, -15, 20);
+            exclamation.transform = CGAffineTransformRotate(exclamation.transform, -M_PI * 0.75);
+            break;
+        case kMoveDirectionDown:
+            exclamationView.frame = CGRectOffset([self snakeHead].frame, 15, -20);
+            exclamation.transform = CGAffineTransformRotate(exclamation.transform, M_PI * 0.25);
+            break;
+        case kMoveDirectionLeft:
+            exclamationView.frame = CGRectOffset([self snakeHead].frame, 20, 15);
+            exclamation.transform = CGAffineTransformRotate(exclamation.transform, M_PI * 0.75);
+            break;
+        case kMoveDirectionRight:
+            exclamationView.frame = CGRectOffset([self snakeHead].frame, -20, -15);
+            exclamation.transform = CGAffineTransformRotate(exclamation.transform, -M_PI * 0.25);
+            break;
+    }
 }
 
 #pragma mark - Directions
@@ -110,53 +156,65 @@
                 [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:newFrame]];
             }
             
-            
         } else
             direction = [[_bodyDirections objectForKey:[NSNumber numberWithInteger:view.tag]] intValue];
         
-        CGRect newPosition;
+        CGRect newPosition = [self getNewPosition:view direction:direction];
         
-        switch (direction) {
-            case kMoveDirectionUp:
-                newPosition = CGRectOffset(view.frame, 0, -_yOffset);
-                break;
-            case kMoveDirectionDown:
-                newPosition = CGRectOffset(view.frame, 0, _yOffset);
-                break;
-            case kMoveDirectionLeft:
-                newPosition = CGRectOffset(view.frame, -_xOffset, 0);
-                break;
-            case kMoveDirectionRight:
-                newPosition = CGRectOffset(view.frame, _xOffset, 0);
-                break;
-        }
+        // Check if snake head touched body or gampad bounds
         
         if (view.tag == 0 && !_isRotate) {
             
             for (UIView *v in _snakeBody) {
                 // If head touched body , game is over
                 if (CGRectIntersectsRect(newPosition, v.frame) && v.tag != 0) {
-                    NSLog(@"Game over");
                     gameIsOver  = YES;
                     break;
                 }
             }
             
             if ([self touchedScreenBounds:newPosition]) {
-                NSLog(@"Game over : out bound");
                 gameIsOver  = YES;
             }
         }
         
+        // If not game over then update the frame of each snake part view
+        
         if (!gameIsOver) {
             CGRect newFrame = newPosition;
                                         view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
-
+            
+            if (view.tag == 0) {
+                // Update exclamation mark position
+                
+                exclamationView.frame = [self getNewPosition:exclamationView direction:[self headDirection]];
+            }
         }
         else
             return YES;
     }
+    
     return NO;
+}
+
+- (CGRect)getNewPosition:(UIView *)view direction:(MoveDirection)direction
+{
+    CGRect newPos;
+    switch (direction) {
+        case kMoveDirectionUp:
+            newPos = CGRectOffset(view.frame, 0, -_yOffset);
+            break;
+        case kMoveDirectionDown:
+            newPos = CGRectOffset(view.frame, 0, _yOffset);
+            break;
+        case kMoveDirectionLeft:
+            newPos = CGRectOffset(view.frame, -_xOffset, 0);
+            break;
+        case kMoveDirectionRight:
+            newPos = CGRectOffset(view.frame, _xOffset, 0);
+            break;
+    }
+    return newPos;
 }
 
 -(void)setTurningNode:(CGPoint)location
@@ -192,30 +250,58 @@
     
     switch ([self headDirection] ) {
         case kMoveDirectionRight:
-            if (direction == kMoveDirectionDown)
+            if (direction == kMoveDirectionDown) {
                 [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
-            else if (direction == kMoveDirectionUp)
+                exclamationView.frame = CGRectOffset([self snakeHead].frame, 15 ,-20);
+                exclamation.transform = CGAffineTransformMakeRotation(M_PI*0.25);
+            }
+            else if (direction == kMoveDirectionUp) {
                 [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+                exclamationView.frame = CGRectOffset([self snakeHead].frame, -15 , 20);
+                exclamation.transform = CGAffineTransformMakeRotation(-M_PI * .75);
+            }
             break;
         case kMoveDirectionLeft:
-            if (direction == kMoveDirectionDown)
+            if (direction == kMoveDirectionDown) {
                 [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
-            else if (direction == kMoveDirectionUp)
+
+                exclamationView.frame = CGRectOffset([self snakeHead].frame, 15 ,-20);
+                exclamation.transform = CGAffineTransformMakeRotation(M_PI*0.25);
+            }
+            else if (direction == kMoveDirectionUp){
                 [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+
+                exclamationView.frame = CGRectOffset([self snakeHead].frame, -15 , 20);
+                exclamation.transform = CGAffineTransformMakeRotation(-M_PI * .75);
+            }
             break;
         case kMoveDirectionUp:
-            if (direction == kMoveDirectionLeft)
+            if (direction == kMoveDirectionLeft){
                 [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
-            else if (direction == kMoveDirectionRight)
+
+                exclamationView.frame = CGRectOffset([self snakeHead].frame, 20 , 15);
+                exclamation.transform = CGAffineTransformMakeRotation(M_PI * .75);
+            }
+            else if (direction == kMoveDirectionRight){
                 [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+
+                exclamationView.frame = CGRectOffset([self snakeHead].frame, -20 , -15);
+                exclamation.transform = CGAffineTransformMakeRotation(-M_PI * .25);
+            }
             break;
         case kMoveDirectionDown:
-            if (direction == kMoveDirectionLeft)
+            if (direction == kMoveDirectionLeft){
                 [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
-            
-            else if (direction == kMoveDirectionRight)
+                exclamationView.frame = CGRectOffset([self snakeHead].frame, 20 , 15);
+                exclamation.transform = CGAffineTransformMakeRotation(M_PI * .75);
+            }
+
+            else if (direction == kMoveDirectionRight){
                 [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-            
+
+                exclamationView.frame = CGRectOffset([self snakeHead].frame, -20 , -15);
+                exclamation.transform = CGAffineTransformMakeRotation(-M_PI * .25);
+            }
             break;
     }
     
@@ -307,6 +393,7 @@
     
     UIView *snakeBody = [[UIView alloc]initWithFrame:bodyFrame];
     
+    snakeBody.layer.cornerRadius = bodyFrame.size.width/4;
     snakeBody.backgroundColor = color;
     snakeBody.tag = _snakeLength;
     [_snakeBody addObject:snakeBody];
@@ -344,7 +431,8 @@
 - (void)startRotate
 {
     _isRotate = YES;
-    [[self snakeHead].layer addAnimation:[self wibbleAnimation] forKey:nil];
+    [[self snakeHead].layer addAnimation:[self wobbleAnimation] forKey:nil];
+    [self showExclamation:YES];
 //    [self startWobble];
 }
 
@@ -353,6 +441,8 @@
     _isRotate = NO;
 //    [self stopWobble];
     [[self snakeHead].layer removeAllAnimations];
+    [self showExclamation:NO];
+
 }
 
 #define RADIANS(degrees) ((degrees * M_PI) / 180.0)
@@ -381,7 +471,7 @@
      ];
 }
 
--(CABasicAnimation *)wibbleAnimation
+-(CABasicAnimation *)wobbleAnimation
 {
     CGFloat startAngle;
     CGFloat endAngle;
@@ -423,6 +513,50 @@
     return anim;
 }
 
+-(CABasicAnimation *)exclamationAnimation
+{
+
+    CGFloat startAngle = M_PI/36;
+    CGFloat endAngle = -M_PI/36;
+ 
+    CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    [anim setToValue:[NSNumber numberWithFloat:startAngle]]; // satrt angle
+    [anim setFromValue:[NSNumber numberWithDouble:endAngle]]; // rotation angle
+    [anim setDuration:0.25]; // rotate speed
+    [anim setRepeatCount:HUGE_VAL];
+    [anim setAutoreverses:YES];
+    return anim;
+}
 
 
+
+- (void)showExclamation:(BOOL)show
+{
+    if (show) {
+        exclamationView.hidden = NO;
+        [exclamationView.layer addAnimation:[self exclamationAnimation] forKey:nil];
+        [_gamePad bringSubviewToFront:exclamationView];
+    }
+    
+    else {
+        exclamationView.hidden = YES;
+        [exclamationView.layer removeAllAnimations];
+    }
+}
+
+-(CABasicAnimation *)gameOverAnimation
+{
+    CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    [anim setToValue:[NSNumber numberWithFloat:0]]; // satrt angle
+    [anim setFromValue:[NSNumber numberWithDouble:2*M_PI]]; // rotation angle
+    [anim setDuration:1]; // rotate speed
+    [anim setRepeatCount:HUGE_VAL];
+    [anim setAutoreverses:NO];
+    return anim;
+}
+
+- (void)gameOver
+{
+    [[self snakeHead].layer addAnimation:[self gameOverAnimation] forKey:nil];
+}
 @end

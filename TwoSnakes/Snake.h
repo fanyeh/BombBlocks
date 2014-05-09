@@ -23,11 +23,12 @@ typedef enum {
 @property (strong,nonatomic) NSMutableDictionary *turningNodes;
 @property (strong,nonatomic) UIView *gamePad;
 
+
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
 @property (nonatomic) BOOL isRotate;
 
-- (id)initWithSnakeHead:(UIView *)headView andDirection:(MoveDirection)direction;
+- (id)initWithSnakeHead:(UIView *)headView direction:(MoveDirection)direction gamePad:(UIView *)gamePad;
 - (UIView *)addSnakeBodyWithColor:(UIColor *)color;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
@@ -42,5 +43,7 @@ typedef enum {
 - (void)updateTurningNode;
 - (void)startRotate;
 - (void)stopRotate;
+- (void)gameOver;
+
 
 @end

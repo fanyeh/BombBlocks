@@ -34,7 +34,7 @@
     return self;
 }
 
-- (id)initWithTitle:(NSString *)title
+- (id)initWithTitle:(NSString *)title gesture:(UITapGestureRecognizer *)gesture
 {
     length = title.length;
     space = 5;
@@ -42,14 +42,16 @@
     headSize = 40;
     labelHeight = 30;
     frameWidth = (length*space) + ((length) * blockSize) + headSize + blockSize/2;
-    frameHeight = 40 + labelHeight;
-    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 480, frameWidth, frameHeight);
+    frameHeight = 40;
+    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 480, frameWidth, frameHeight+labelHeight);
     
     self = [self initWithFrame:newFrame];
     if (self) {
         _state = kSnakeButtonPlay;
+        _tapGesture = gesture;
         [self setSnakeButton:title];
 //        self.layer.borderWidth = 1;
+//        self.layer.borderColor = [[UIColor redColor]CGColor];
     }
     return self;
 }
@@ -58,11 +60,12 @@
 {
     
     CGFloat xPos = 0;
-    CGFloat yPos = frameHeight - headSize;
+    CGFloat yPos = 0;
 
     snakeHead = [[UIView alloc]initWithFrame:CGRectMake(xPos, yPos, headSize, headSize)];
     snakeHead.backgroundColor = [UIColor colorWithWhite:0.200 alpha:1.000];
     snakeHead.alpha = 0;
+    snakeHead.layer.cornerRadius = headSize/4;
     
     CGFloat eyeSize = headSize/3;
     leftEye = [[UIView alloc]initWithFrame:CGRectMake(eyeSize /3, eyeSize/3, eyeSize, eyeSize)];
@@ -86,10 +89,11 @@
     mouth.hidden = YES;
     [snakeHead addSubview:mouth];
     
-
+    _letterButtons = [[UIView alloc]initWithFrame:CGRectMake(0, labelHeight, frameWidth, headSize)];
+    [_letterButtons addSubview:snakeHead];
+    [self addSubview:_letterButtons];
     
-    
-    [self addSubview:snakeHead];
+    [_letterButtons addGestureRecognizer:_tapGesture];
     
     xPos = headSize + mouthSize/2 + space;
     yPos = yPos + (headSize - blockSize) / 2;
@@ -105,7 +109,7 @@
         letterLabel.layer.cornerRadius = blockSize/2;
         letterLabel.layer.masksToBounds = YES;
         letterLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
-        [self addSubview:letterLabel];
+        [_letterButtons addSubview:letterLabel];
         [letterArray addObject:letterLabel];
         xPos += (blockSize + space);
     }
@@ -138,7 +142,7 @@
     blockSize = 24;
     headSize = 40;
     frameWidth = (length*space) + ((length) * blockSize) + headSize + blockSize/2;
-    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 480, frameWidth, frameHeight);
+    newFrame = CGRectMake((320-frameWidth-headSize - space - blockSize/2)/2, 480, frameWidth, frameHeight+labelHeight);
     self.frame = newFrame;
     
     [letterArray removeAllObjects];
@@ -159,17 +163,25 @@
 
 - (void)showHead
 {
-    [UIView animateWithDuration:1 animations:^{
+    float time;
+    
+    if (_state == kSnakeButtonPlay || _state == kSnakeButtonReplay)
+        time = 2.5;
+    else
+        time = 2.5;
+    
+    float duration = time/(length+4);
+
+    [UIView animateWithDuration:duration animations:^{
         snakeHead.alpha = 1;
     } completion:^(BOOL finished) {
         mouth.hidden = NO;
-        [self eatButton];
+        [self eatButton:duration];
     }];
 }
 
-- (void)eatButton
+- (void)eatButton:(float)duration
 {
-    float duration = 3/(length*2+1);
     float insetSize = blockSize/10;
     
     [UIView animateWithDuration:duration animations:^{
@@ -182,15 +194,14 @@
         
     } completion:^(BOOL finished) {
         
-        [self eatNextLetter:[letterArray firstObject] inset:insetSize];
+        [self eatNextLetter:[letterArray firstObject] inset:insetSize duration:duration];
         
     }];
 }
 
-- (void)eatNextLetter:(UIView *)letter inset:(float)inset
+- (void)eatNextLetter:(UIView *)letter inset:(float)inset duration:(float)duration
 {
     
-    float duration = 3/(length*2+1);
     float insetSize = blockSize/2+inset;
     
     [UIView animateWithDuration:duration animations:^{
@@ -217,7 +228,7 @@
                 
             } completion:^(BOOL finished) {
                 
-                [self eatNextLetter:[letterArray firstObject] inset:inset];
+                [self eatNextLetter:[letterArray firstObject] inset:inset duration:duration];
 
             }];
         } else {
@@ -239,18 +250,27 @@
             exlamationLabel.alpha = 0;
 
             
-            [UIView animateWithDuration:0.5 animations:^{
+            [UIView animateWithDuration:duration animations:^{
 
                 snakeHead.transform = CGAffineTransformRotate(snakeHead.transform, M_PI/2);
                 newMouth.frame = CGRectInset(newMouth.frame, -8, -11);
 
 
             } completion:^(BOOL finished) {
-                [UIView animateWithDuration:0.5 animations:^{
+                [UIView animateWithDuration:duration animations:^{
                     exlamationLabel.alpha = 1;
 
                 } completion:^(BOOL finished) {
-                    [self resetSnakeButton];
+                    
+                    [UIView animateWithDuration:duration animations:^{
+                        exlamationLabel.alpha = 0;
+                        snakeHead.alpha = 0;
+                        
+                    } completion:^(BOOL finished) {
+
+                        [self resetSnakeButton];
+                    }];
+
                 }];
 
 
@@ -277,7 +297,7 @@
     UILabel *hiddenLetter = [hiddenLetters firstObject];
     if (hiddenLetter) {
         
-        [UIView animateWithDuration:0.2 animations:^{
+        [UIView animateWithDuration:0.1 animations:^{
             
             hiddenLetter.alpha = 1;
             

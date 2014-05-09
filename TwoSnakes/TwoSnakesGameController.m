@@ -22,7 +22,6 @@
     NSInteger chain;
     NSInteger level;
     NSInteger combos;
-    UILabel *exclamation;
     NSTimer *countDownTimer;
     NSInteger counter;
     NSInteger maxCombos;
@@ -33,6 +32,7 @@
     UITapGestureRecognizer *snakeButtonTap;
     
     NSNumberFormatter *numFormatter;
+    
 }
 
 @property (weak, nonatomic) IBOutlet UIView *snakeHeadView;
@@ -63,9 +63,12 @@
     [super viewDidLoad];
     
     // View Settings
-    playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView andDirection:kMoveDirectionRight];
-//    _snakeHeadView.frame = CGRectOffset(_snakeHeadView.frame, -11.5, 0);
-    [self createAllDots];
+    _snakeHeadView.layer.cornerRadius = _snakeHeadView.frame.size.width/4;
+    playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView direction:kMoveDirectionRight gamePad:_gamePad];
+    
+//    [self createGamerOverSquares];
+   [self createAllDots];
+    
     _levelLabel.text = [NSString stringWithFormat:@"Level : %ld",level];
     
     _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
@@ -78,31 +81,19 @@
     _rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     
     _snakeMouth.layer.cornerRadius = _snakeMouth.frame.size.width/2;
-//    _snakeMouth.layer.borderWidth = 0.5;
     _snakeMouth.layer.borderColor = [[UIColor whiteColor]CGColor];
-    
-//    _snakeMouth.frame = CGRectInset(_snakeMouth.frame, -(_snakeMouth.frame.size.width/10), -(_snakeMouth.frame.size.width/10));
-
-
-    playerSnake.gamePad = _gamePad;
+  
     
     UITapGestureRecognizer *gamePadTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(directionChange:)];
     [_gamePad addGestureRecognizer:gamePadTap];
     
 //    _gamePad.layer.borderWidth = 1;
-    
-    exclamation = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
-    exclamation.hidden = YES;
-    exclamation.text = @"!";
-    exclamation.textColor = [UIColor blackColor];
-    exclamation.textAlignment = NSTextAlignmentCenter;
-    exclamation.font = [UIFont fontWithName:@"Helvetica-Bold" size:20];
-    [_gamePad addSubview:exclamation];
+
     _gamePad.layer.cornerRadius = 5;
     
-    snakeButton = [[SnakeButton alloc]initWithTitle:@"play"];
+    
     snakeButtonTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(startCoundDown)];
-    [snakeButton addGestureRecognizer:snakeButtonTap];
+    snakeButton = [[SnakeButton alloc]initWithTitle:@"play" gesture:snakeButtonTap];
     
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
@@ -133,7 +124,9 @@
 -(void)changeDirection
 {
     if ([playerSnake changeDirectionWithGameIsOver:NO]) {
+                
         [moveTimer invalidate];
+        [dotTimer invalidate];
 
         NSString *alertTitle = @"Game Over";
 
@@ -153,19 +146,30 @@
             alertTitle = @"New Combo Record";
         }
         
-        [snakeButton changeState:kSnakeButtonReplay];
-        [snakeButtonTap removeTarget:self action:@selector(pauseGame)];
-        [snakeButtonTap addTarget:self action:@selector(replayGame)];
         
-        for (SnakeDot *d in dotArray) {
-            d.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-        }
+        UIColor *gameOverColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
         
-        for (UIView *v in [playerSnake snakeBody]) {
-            if (v.tag > 0) {
-                v.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+        [playerSnake gameOver];
+
+
+        [UIView animateWithDuration:1 animations:^{
+//            _snakeHeadView.alpha = 0;
+            
+            for (SnakeDot *d in dotArray) {
+                d.smallDot.backgroundColor = gameOverColor;
             }
-        }
+            
+            for (UIView *v in [playerSnake snakeBody]) {
+                if (v.tag > 0) {
+                    v.backgroundColor = gameOverColor;
+                }
+            }
+            
+        } completion:^(BOOL finished) {
+            [snakeButton changeState:kSnakeButtonReplay];
+            [snakeButtonTap removeTarget:self action:@selector(pauseGame)];
+            [snakeButtonTap addTarget:self action:@selector(replayGame)];
+        }];
 
     } else {
         
@@ -179,17 +183,33 @@
 {
     if (counter == 0) {
         
-        for (SnakeDot *d in dotArray) {
-            
-            d.smallDot.backgroundColor = [self dotColor];
-        }
-        
-        _snakeHeadView.alpha = 1;
-        dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
         [countDownTimer invalidate];
         counter = 3;
-        moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
-        dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
+
+        
+        for (SnakeDot *d in dotArray) {
+            
+
+            d.alpha = 0;
+ 
+        }
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            _snakeHeadView.alpha = 1;
+            for (SnakeDot *d in dotArray) {
+                
+                d.smallDot.backgroundColor = [self dotColor];
+                d.alpha = 1;
+                if (CGRectIntersectsRect(d.frame, _snakeHeadView.frame))
+                    d.hidden = YES;
+            }
+            
+        } completion:^(BOOL finished) {
+            moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+            dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
+        }];
+        
+
     }
     else {
         [self counterDots:counter];
@@ -213,7 +233,7 @@
     [snakeButtonTap removeTarget:self action:@selector(pauseGame)];
     [snakeButtonTap addTarget:self action:@selector(resumeGame)];
     
-    [self showExlamation:@"?"];
+//    [self showExlamation:@"?"];
 
 }
 
@@ -240,11 +260,7 @@
         [v removeFromSuperview];
     }
     _snakeHeadView.frame = CGRectMake(147, 189, 20, 20);
-    
-    for (SnakeDot *d in dotArray) {
-        d.hidden = NO;
-        d.smallDot.backgroundColor = [self dotColor];
-    }
+    [_snakeHeadView.layer removeAllAnimations];
 
     _scoreLabel.text =  [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
 
@@ -279,9 +295,8 @@
         if (endIndex - startIndex == chain) {
             
             // Shake snake head
-            if (!playerSnake.isRotate) {
+            if (!playerSnake.isRotate)
                 [playerSnake startRotate];
-            }
             
             [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:v.backgroundColor otherCombo:NO];
 
@@ -290,28 +305,6 @@
     }
     completeBlock();
     return NO;
-}
-
-- (void)showExlamation:(NSString *)string
-{
-    exclamation.hidden = NO;
-    exclamation.text = string;
-    
-    switch ([playerSnake headDirection]) {
-        case kMoveDirectionUp:
-            exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, -21, 0);
-            break;
-        case kMoveDirectionDown:
-            exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, -21, 0);
-            break;
-        case kMoveDirectionRight:
-            exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, 0, -21);
-            break;
-        case kMoveDirectionLeft:
-            exclamation.frame = CGRectOffset([playerSnake snakeHead].frame, 0, -21);
-            break;
-    }
-
 }
 
 // Single body color check
@@ -368,8 +361,6 @@
 
 -(BOOL)otherCombo:(void(^)(void))completeBlock
 {
-//    [moveTimer invalidate];
-
     UIColor *mouthColor;
     UIColor *repeatColor;
     NSInteger startIndex = 0;
@@ -449,8 +440,8 @@
 
 - (void)comboAnimationStartIndex:(NSInteger)start endIndex:(NSInteger)end completeBlock:(void(^)(void))completeBlock mouthColor:(UIColor *)color otherCombo:(BOOL)other
 {
-    [self showExlamation:@"!"];
 
+//    [playerSnake showExclamation:YES];
     NSMutableArray *snakeBody = [playerSnake snakeBody];
     _leftEye.alpha = 0;
     _rightEye.alpha = 0;
@@ -522,7 +513,7 @@
     for (SnakeDot *d in dotArray) {
         if (!d.hidden && CGRectIntersectsRect([playerSnake snakeHead].frame, d.frame)) {
 
-            [self mouthAnimation];
+            _snakeMouth.hidden = NO;
             
             d.hidden = YES;
             
@@ -536,11 +527,17 @@
             
             combos = 0;
             [moveTimer invalidate];
+            _gamePad.userInteractionEnabled = NO;
             [self checkCombo:^{
                 
+                _gamePad.userInteractionEnabled = YES;
+
                 if (playerSnake.isRotate)
                     [playerSnake stopRotate];
-                
+
+                [self mouthAnimation];
+
+
                 _snakeMouth.backgroundColor = [UIColor whiteColor];
                 
                 // Increase speed for every 30 dots eaten
@@ -561,22 +558,23 @@
                 numDotAte++;
                 [self setScore];
                 combos = 0;
-                exclamation.hidden = YES;
                 _comboLabel.hidden = YES;
-                
+//                [playerSnake showExclamation:NO];
+//                _snakeMouth.hidden = YES;
+
             }];
             
             break;
         }
     }
     [_gamePad sendSubviewToBack:_snakeHeadView];
-
 }
 
 - (void)mouthAnimation
 {
     float duration = timeInterval;
-    float closeInsetSize =  _snakeMouth.frame.size.width/3;// + _snakeMouth.frame.size.width/10;
+    float closeInsetSize =  _snakeMouth.frame.size.width/3;
+
 
     [UIView animateWithDuration:duration animations:^{
         
@@ -584,6 +582,8 @@
         _snakeMouth.frame = CGRectInset(_snakeMouth.frame, closeInsetSize, closeInsetSize);
 
     } completion:^(BOOL finished) {
+
+        _snakeMouth.hidden = YES;
 
         // Mouth Open
         _snakeMouth.frame = CGRectInset(_snakeMouth.frame, -closeInsetSize, -closeInsetSize);
@@ -642,7 +642,115 @@
     }
     
     [self.view bringSubviewToFront:_snakeHeadView];
+}
 
+- (void)createGamerOverSquares
+{
+    NSMutableArray *gameOverArray = [[NSMutableArray alloc]init];
+
+    
+    for (int i = 0 ; i < 15; i ++ ) {
+        for (int j = 0 ; j < 19 ; j++) {
+//            if (i > 0 && i < 14 && j > 2 && j < 16 && j != 9 && j != 10) {
+            
+            switch (i) {
+                case 0:
+                    if ( (j >2 &&  j < 8) || (j > 10 && j < 16)) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 1:
+                    if ( j == 3 ||  j ==7  || j == 11 || j == 15 || j == 5) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 2:
+                    if ( j == 3 ||  (j > 4 && j < 9) || (j > 10 && j < 16)) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 4:
+                    if ( (j >3 &&  j < 8) || (j > 10 && j < 15)) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 5:
+                    if ( j == 3 ||  j ==5 || j == 15) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 6:
+                    
+                    if ( (j >3 &&  j < 8) || (j > 10 && j < 15)) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 8:
+                    
+                    if (  (j > 2 && j < 8 ) ||  (j > 10 && j < 16 )) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 9:
+                    
+                    if ( j ==4  ||  j ==11 || j == 13 || j == 15) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    
+                    break;
+                case 10:
+                    if ((j > 2 && j < 8 ) ||  j ==11 || j == 15 || j == 13) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 12:
+                    if ( (j >2 &&  j < 8) || (j > 10 && j < 16)) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 13:
+                    if ( j == 3 ||  j ==5 || j == 7 || j == 11 || j == 13 ) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+                case 14:
+                    if ( j == 3 ||  j ==5 || j == 7 || (j > 10 && j < 16 ) ) {
+                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+                    }
+                    break;
+//                case 13:
+//                    if ( j == 3 || j == 7 || j == 11) {
+//                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
+//                    }
+//                    break;
+            }
+            
+
+//            }
+            
+            
+            
+
+        }
+    }
+}
+                        
+- (void)addSquareIndexI:(NSInteger)i indexJ:(NSInteger)j squareArray:(NSMutableArray *)gameOverArray
+{
+    CGFloat dotPosX;
+    CGFloat dotPosY;
+    dotPosX = i * 21;
+    dotPosY = j * 21;
+    
+    
+//    SnakeDot *dot = [[SnakeDot alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20)];
+//    dot.layer.cornerRadius = 8;
+//    dot.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ; //[self dotColor];
+    UIView *square = [[UIView alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20)];
+    
+    square.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ; //[self dotColor];
+    [_gamePad addSubview:square];
+    [gameOverArray addObject:square];
 }
 
 - (void)counterDots:(NSInteger)count
