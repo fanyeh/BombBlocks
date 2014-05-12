@@ -68,14 +68,14 @@
     snakeHead.layer.cornerRadius = headSize/4;
     
     CGFloat eyeSize = headSize/3;
-    leftEye = [[UIView alloc]initWithFrame:CGRectMake(eyeSize /3, eyeSize/3, eyeSize, eyeSize)];
+    leftEye = [[UIView alloc]initWithFrame:CGRectMake(3, 3, eyeSize, eyeSize)];
     leftEye.backgroundColor = [UIColor blackColor];
     leftEye.layer.borderWidth = 4.5;
     leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     leftEye.layer.cornerRadius = eyeSize/2;
     [snakeHead addSubview:leftEye];
     
-    rightEye = [[UIView alloc]initWithFrame:CGRectMake(eyeSize /3 , headSize -  eyeSize/3 - eyeSize, eyeSize, eyeSize)];
+    rightEye = [[UIView alloc]initWithFrame:CGRectMake(3 , headSize - 3 - eyeSize, eyeSize, eyeSize)];
     rightEye.backgroundColor = [UIColor blackColor];
     rightEye.layer.borderWidth = 4.5;
     rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];

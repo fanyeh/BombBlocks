@@ -112,21 +112,26 @@
     counter =  3;
     maxCombos = 0;
     score = 0;
+    
+    _gamePad.userInteractionEnabled = NO;
 }
 
 -(void)directionChange:(UITapGestureRecognizer *)sender
 {
    CGPoint location = [sender locationInView:self.view];
   [playerSnake setTurningNode:location];
+    _gamePad.userInteractionEnabled = NO;
 
 }
 
 -(void)changeDirection
 {
     if ([playerSnake changeDirectionWithGameIsOver:NO]) {
-                
+        
+        
+        _gamePad.userInteractionEnabled = NO;
         [moveTimer invalidate];
-        [dotTimer invalidate];
+        //[dotTimer invalidate];
 
         NSString *alertTitle = @"Game Over";
 
@@ -172,7 +177,6 @@
         }];
 
     } else {
-        
         [self isEatingDot];
     }
 }
@@ -182,22 +186,20 @@
 - (void)countDown
 {
     if (counter == 0) {
-        
+        _gamePad.userInteractionEnabled = YES;
         [countDownTimer invalidate];
         counter = 3;
 
-        
         for (SnakeDot *d in dotArray) {
-            
-
             d.alpha = 0;
- 
         }
         
-        [UIView animateWithDuration:0.5 animations:^{
+        _gamePad.alpha = 0;
+        
+        [UIView animateWithDuration:1 animations:^{
             _snakeHeadView.alpha = 1;
+            _gamePad.alpha = 1;
             for (SnakeDot *d in dotArray) {
-                
                 d.smallDot.backgroundColor = [self dotColor];
                 d.alpha = 1;
                 if (CGRectIntersectsRect(d.frame, _snakeHeadView.frame))
@@ -208,8 +210,6 @@
             moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
             dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
         }];
-        
-
     }
     else {
         [self counterDots:counter];
@@ -256,11 +256,19 @@
     score = 0;
     
     // View settings
+    for (SnakeDot *d in dotArray) {
+        d.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ;
+    }
+    
     for (UIView *v in [playerSnake snakeBody]) {
         [v removeFromSuperview];
     }
+    
+    
     _snakeHeadView.frame = CGRectMake(147, 189, 20, 20);
     [_snakeHeadView.layer removeAllAnimations];
+    
+    _snakeHeadView.alpha = 0;
 
     _scoreLabel.text =  [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
 
@@ -523,7 +531,6 @@
             _scoreLabel.text =  [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
             
             [_gamePad addSubview:[playerSnake addSnakeBodyWithColor:d.smallDot.backgroundColor]];
-            // Check if any snake body can be cancelled
             
             combos = 0;
             [moveTimer invalidate];
@@ -559,8 +566,6 @@
                 [self setScore];
                 combos = 0;
                 _comboLabel.hidden = YES;
-//                [playerSnake showExclamation:NO];
-//                _snakeMouth.hidden = YES;
 
             }];
             
@@ -756,9 +761,8 @@
 - (void)counterDots:(NSInteger)count
 {
     for (SnakeDot *d in dotArray) {
-   
-            d.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-
+        
+        d.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
     }
 
     
@@ -795,6 +799,7 @@
             
     }
     
+    // Animation to show counter
     for (SnakeDot *d in counterDotArray) {
         d.smallDot.backgroundColor = color;
         d.alpha = 0;

@@ -190,10 +190,12 @@
                 exclamationView.frame = [self getNewPosition:exclamationView direction:[self headDirection]];
             }
         }
-        else
+        else {
+            _gamePad.userInteractionEnabled = YES;
             return YES;
+        }
     }
-    
+    _gamePad.userInteractionEnabled = YES;
     return NO;
 }
 
