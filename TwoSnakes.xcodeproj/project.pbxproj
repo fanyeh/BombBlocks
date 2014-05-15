@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C075B97192516D1009928F2 /* SnakeTriangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C075B96192516D1009928F2 /* SnakeTriangle.m */; };
 		4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C67DD3E1919E45E00666A2D /* SnakeButton.m */; };
 		4C7F13571911F36D00565A01 /* Snake.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F13561911F36D00565A01 /* Snake.m */; };
 		4CB108A5190FF6440085C747 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A4190FF6440085C747 /* Foundation.framework */; };
@@ -27,6 +28,8 @@
 		4CB108DF190FF6A10085C747 /* TwoSnakesGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108DD190FF6A10085C747 /* TwoSnakesGameController.m */; };
 		4CB108E0190FF6A10085C747 /* TwoSnakesGameController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CB108DE190FF6A10085C747 /* TwoSnakesGameController.xib */; };
 		4CC0560E1913895600BB70E2 /* SnakeDot.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CC0560D1913895600BB70E2 /* SnakeDot.m */; };
+		4CDBB71D1920A00900D8A9B4 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CDBB71C1920A00900D8A9B4 /* Social.framework */; };
+		4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDBB71F1920A22900D8A9B4 /* GCHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +43,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4C075B95192516D1009928F2 /* SnakeTriangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeTriangle.h; sourceTree = "<group>"; };
+		4C075B96192516D1009928F2 /* SnakeTriangle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeTriangle.m; sourceTree = "<group>"; };
 		4C67DD3D1919E45E00666A2D /* SnakeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeButton.h; sourceTree = "<group>"; };
 		4C67DD3E1919E45E00666A2D /* SnakeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeButton.m; sourceTree = "<group>"; };
 		4C7F13551911F36D00565A01 /* Snake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snake.h; sourceTree = "<group>"; };
@@ -67,6 +72,9 @@
 		4CB108DE190FF6A10085C747 /* TwoSnakesGameController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwoSnakesGameController.xib; sourceTree = "<group>"; };
 		4CC0560C1913895600BB70E2 /* SnakeDot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeDot.h; sourceTree = "<group>"; };
 		4CC0560D1913895600BB70E2 /* SnakeDot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeDot.m; sourceTree = "<group>"; };
+		4CDBB71C1920A00900D8A9B4 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		4CDBB71E1920A22900D8A9B4 /* GCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCHelper.h; sourceTree = "<group>"; };
+		4CDBB71F1920A22900D8A9B4 /* GCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CDBB71D1920A00900D8A9B4 /* Social.framework in Frameworks */,
 				4CB108A7190FF6440085C747 /* CoreGraphics.framework in Frameworks */,
 				4CB108AB190FF6440085C747 /* CoreData.framework in Frameworks */,
 				4CB108A9190FF6440085C747 /* UIKit.framework in Frameworks */,
@@ -117,6 +126,7 @@
 		4CB108A3190FF6440085C747 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4CDBB71C1920A00900D8A9B4 /* Social.framework */,
 				4CB108A4190FF6440085C747 /* Foundation.framework */,
 				4CB108A6190FF6440085C747 /* CoreGraphics.framework */,
 				4CB108A8190FF6440085C747 /* UIKit.framework */,
@@ -136,9 +146,13 @@
 				4CB108AD190FF6440085C747 /* Supporting Files */,
 				4CB108DC190FF6A10085C747 /* TwoSnakesGameController.h */,
 				4CB108DD190FF6A10085C747 /* TwoSnakesGameController.m */,
-				4CC0560C1913895600BB70E2 /* SnakeDot.h */,
 				4CB108DE190FF6A10085C747 /* TwoSnakesGameController.xib */,
+				4CDBB71E1920A22900D8A9B4 /* GCHelper.h */,
+				4CDBB71F1920A22900D8A9B4 /* GCHelper.m */,
+				4CC0560C1913895600BB70E2 /* SnakeDot.h */,
 				4CC0560D1913895600BB70E2 /* SnakeDot.m */,
+				4C075B95192516D1009928F2 /* SnakeTriangle.h */,
+				4C075B96192516D1009928F2 /* SnakeTriangle.m */,
 				4C7F13551911F36D00565A01 /* Snake.h */,
 				4C7F13561911F36D00565A01 /* Snake.m */,
 				4C67DD3D1919E45E00666A2D /* SnakeButton.h */,
@@ -276,10 +290,12 @@
 				4C7F13571911F36D00565A01 /* Snake.m in Sources */,
 				4CB108B7190FF6440085C747 /* MKAppDelegate.m in Sources */,
 				4CB108DF190FF6A10085C747 /* TwoSnakesGameController.m in Sources */,
+				4C075B97192516D1009928F2 /* SnakeTriangle.m in Sources */,
 				4CC0560E1913895600BB70E2 /* SnakeDot.m in Sources */,
 				4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */,
 				4CB108B3190FF6440085C747 /* main.m in Sources */,
 				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,
+				4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

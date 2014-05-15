@@ -10,6 +10,9 @@
 #import "TwoSnakesGameController.h"
 
 @implementation MKAppDelegate
+{
+    TwoSnakesGameController *controller;
+}
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -19,11 +22,13 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    TwoSnakesGameController *controller = [[TwoSnakesGameController alloc]init];
+    controller = [[TwoSnakesGameController alloc]init];
     [self.window setRootViewController:controller];
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+        [[GCHelper sharedInstance] authenticateLocalUser:controller];
     return YES;
 }
 
@@ -31,12 +36,13 @@
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    [controller backgroundPauseGame];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

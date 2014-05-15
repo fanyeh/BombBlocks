@@ -10,6 +10,7 @@
 #import "Snake.h"
 #import "SnakeDot.h"
 #import "SnakeButton.h"
+#import <Social/Social.h>
 
 @interface TwoSnakesGameController ()
 {
@@ -64,12 +65,12 @@
     
     // View Settings
     _snakeHeadView.layer.cornerRadius = _snakeHeadView.frame.size.width/4;
-    playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView direction:kMoveDirectionRight gamePad:_gamePad];
+    playerSnake = [[Snake alloc]initWithSnakeHead:_snakeHeadView direction:kMoveDirectionLeft gamePad:_gamePad];
     
 //    [self createGamerOverSquares];
    [self createAllDots];
     
-    _levelLabel.text = [NSString stringWithFormat:@"Level : %ld",level];
+    _levelLabel.text = [NSString stringWithFormat:@"Level : %ld",(long)level];
     
     _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
     _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
@@ -118,21 +119,46 @@
 
 -(void)directionChange:(UITapGestureRecognizer *)sender
 {
-   CGPoint location = [sender locationInView:self.view];
-  [playerSnake setTurningNode:location];
-    _gamePad.userInteractionEnabled = NO;
+    if (_gamePad.userInteractionEnabled) {
+        CGPoint location = [sender locationInView:_gamePad];
+        [playerSnake setTurningNode:location];
+        _gamePad.userInteractionEnabled = NO;
+    }
+    
+    // Show tap point
+//    UIView *tapDot = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 10, 10)];
+//    tapDot.center = location;
+//    tapDot.layer.cornerRadius = 5;
+//    tapDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+//    tapDot.alpha = 0;
+//    tapDot.layer.borderColor = [[UIColor colorWithWhite:0.400 alpha:1.000]CGColor];
+//    tapDot.layer.borderWidth = 1.5;
+//    [_gamePad addSubview:tapDot];
+//    
+//    [UIView animateWithDuration:0.3 animations:^{
+//        tapDot.alpha = 1;
+//    } completion:^(BOOL finished) {
+//        [UIView animateWithDuration:0.3 animations:^{
+//            tapDot.alpha = 0;
+//            
+//        } completion:^(BOOL finished) {
+//            [tapDot removeFromSuperview];
+//        }];
+//    }];
 
 }
 
 -(void)changeDirection
 {
+    _gamePad.userInteractionEnabled = YES;
+
     if ([playerSnake changeDirectionWithGameIsOver:NO]) {
         
-        
-        _gamePad.userInteractionEnabled = NO;
         [moveTimer invalidate];
-        //[dotTimer invalidate];
-
+        
+        // Submit score to game center
+        [[GCHelper sharedInstance] submitScore:score leaderboardId:kHighScoreLeaderboardId];
+        
         NSString *alertTitle = @"Game Over";
 
         // Set score record
@@ -158,7 +184,6 @@
 
 
         [UIView animateWithDuration:1 animations:^{
-//            _snakeHeadView.alpha = 0;
             
             for (SnakeDot *d in dotArray) {
                 d.smallDot.backgroundColor = gameOverColor;
@@ -177,6 +202,11 @@
         }];
 
     } else {
+        for (SnakeDot *d in dotArray) {
+            if (d.hidden) {
+                d.hidden = NO;
+            }
+        }
         [self isEatingDot];
     }
 }
@@ -208,7 +238,7 @@
             
         } completion:^(BOOL finished) {
             moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
-            dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
+//            dotTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showDots) userInfo:nil repeats:YES];
         }];
     }
     else {
@@ -232,9 +262,14 @@
     [moveTimer invalidate];
     [snakeButtonTap removeTarget:self action:@selector(pauseGame)];
     [snakeButtonTap addTarget:self action:@selector(resumeGame)];
-    
-//    [self showExlamation:@"?"];
+}
 
+- (void)backgroundPauseGame
+{
+    [snakeButton backgroundPause:kSnakeButtonResume];
+    [moveTimer invalidate];
+    [snakeButtonTap removeTarget:self action:@selector(pauseGame)];
+    [snakeButtonTap addTarget:self action:@selector(resumeGame)];
 }
 
 - (void)resumeGame
@@ -272,7 +307,7 @@
 
     _scoreLabel.text =  [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
 
-    _levelLabel.text = [NSString stringWithFormat:@"Levle : %ld",level];
+    _levelLabel.text = [NSString stringWithFormat:@"Levle : %ld",(long)level];
 
     [playerSnake resetSnake:_snakeHeadView andDirection:[playerSnake headDirection]];
     [_gamePad addSubview:_snakeHeadView];
@@ -407,7 +442,6 @@
                 
             }
         }
-        
     }
     // If no other combo call the complete block
     completeBlock();
@@ -446,14 +480,18 @@
     }
 }
 
-- (void)comboAnimationStartIndex:(NSInteger)start endIndex:(NSInteger)end completeBlock:(void(^)(void))completeBlock mouthColor:(UIColor *)color otherCombo:(BOOL)other
+- (void)comboAnimationStartIndex:(NSInteger)start endIndex:(NSInteger)end
+                   completeBlock:(void(^)(void))completeBlock
+                      mouthColor:(UIColor *)color
+                      otherCombo:(BOOL)other
 {
 
-//    [playerSnake showExclamation:YES];
     NSMutableArray *snakeBody = [playerSnake snakeBody];
     _leftEye.alpha = 0;
     _rightEye.alpha = 0;
     _snakeMouth.backgroundColor = color;
+    combos++;
+    [playerSnake updateExclamationText:combos];
     
     for (NSInteger i = start ; i < end +1 ; i ++) {
         UIView *u = snakeBody[i];
@@ -462,17 +500,17 @@
         CGFloat fromAngle;
         
         if (i%2 == 0) {
-            toAngle = -M_PI/12;
-            fromAngle = M_PI/12;
+            toAngle = -M_PI/6;
+            fromAngle = M_PI/6;
         } else {
-            toAngle = M_PI/12;
-            fromAngle = -M_PI/12;
+            toAngle = M_PI/6;
+            fromAngle = -M_PI/6;
         }
         
         CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
         [anim setToValue:[NSNumber numberWithFloat:toAngle]]; // satrt angle
         [anim setFromValue:[NSNumber numberWithDouble:fromAngle]]; // rotation angle
-        [anim setDuration:0.15]; // rotate speed
+        [anim setDuration:0.1]; // rotate speed
         [anim setRepeatCount:HUGE_VAL];
         [anim setAutoreverses:YES];
         
@@ -496,12 +534,11 @@
         _leftEye.layer.borderWidth = 1.5;
         _rightEye.layer.borderWidth = 1.5;
         
-        combos++;
         if (combos > maxCombos) {
             maxCombos = combos;
             if (maxCombos > 1) {
                 _comboLabel.hidden = NO;
-                _comboLabel.text =  [NSString stringWithFormat:@"Max combos %ld !",maxCombos];
+                _comboLabel.text =  [NSString stringWithFormat:@"Max combos %ld !",(long)maxCombos];
             }
         }
 
@@ -512,7 +549,6 @@
     }];
 
 }
-
 
 #pragma mark - Dot
 
@@ -532,9 +568,10 @@
             
             [_gamePad addSubview:[playerSnake addSnakeBodyWithColor:d.smallDot.backgroundColor]];
             
-            combos = 0;
             [moveTimer invalidate];
+            
             _gamePad.userInteractionEnabled = NO;
+            
             [self checkCombo:^{
                 
                 _gamePad.userInteractionEnabled = YES;
@@ -544,13 +581,12 @@
 
                 [self mouthAnimation];
 
-
                 _snakeMouth.backgroundColor = [UIColor whiteColor];
                 
                 // Increase speed for every 30 dots eaten
                 if (numDotAte%30==0 && numDotAte != 0) {
                     level++;
-                    _levelLabel.text = [NSString stringWithFormat:@"Levle : %ld",level];
+                    _levelLabel.text = [NSString stringWithFormat:@"Level : %ld",(long)level];
                     timeInterval -= 0.005;
                     
                     if (moveTimer.isValid)
@@ -562,11 +598,10 @@
                     if (!moveTimer.isValid)
                         moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
                 }
-                numDotAte++;
                 [self setScore];
-                combos = 0;
+                [playerSnake updateExclamationText:combos];
                 _comboLabel.hidden = YES;
-
+                d.smallDot.backgroundColor = [self dotColor];
             }];
             
             break;
@@ -599,28 +634,12 @@
 - (void)setScore
 {
     NSInteger comboAdder = 50;
-    
     for (int i = 0 ; i < combos ; i ++) {
         score += comboAdder;
         comboAdder *= 2;
     }
-}
-
-- (void)showDots
-{
-    for (SnakeDot *d in dotArray) {
-        
-        if (d.hidden) {
-            d.smallDot.backgroundColor = [self dotColor];
-            d.alpha = 0;
-            [UIView animateWithDuration:1 animations:^{
-                d.alpha = 1;
-            }];
-            d.hidden = NO;
-            [_gamePad sendSubviewToBack:d];
-            
-        }
-    }
+    combos = 0;
+    numDotAte++;
 }
 
 - (void)createAllDots
@@ -636,8 +655,7 @@
                 dotPosX = i * 21;
                 dotPosY = j * 21;
                 
-                SnakeDot *dot = [[SnakeDot alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20)];
-                dot.layer.cornerRadius = 8;
+                SnakeDot *dot = [[SnakeDot alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20) dotShape:kDotShapeCircle];
                 dot.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ; //[self dotColor];
                 [_gamePad addSubview:dot];
                 [_gamePad sendSubviewToBack:dot];
@@ -656,7 +674,6 @@
     
     for (int i = 0 ; i < 15; i ++ ) {
         for (int j = 0 ; j < 19 ; j++) {
-//            if (i > 0 && i < 14 && j > 2 && j < 16 && j != 9 && j != 10) {
             
             switch (i) {
                 case 0:
@@ -723,19 +740,7 @@
                         [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
                     }
                     break;
-//                case 13:
-//                    if ( j == 3 || j == 7 || j == 11) {
-//                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-//                    }
-//                    break;
             }
-            
-
-//            }
-            
-            
-            
-
         }
     }
 }
@@ -846,6 +851,34 @@
     return color;
 }
 
+#pragma mark - Trap
+
+- (void)createTraps
+{
+    dotArray = [[NSMutableArray alloc]init];
+    CGFloat dotPosX;
+    CGFloat dotPosY;
+    
+    for (int i = 0 ; i < 14; i ++ ) {
+        for (int j = 0 ; j < 19 ; j++) {
+            if (i%2==0 && j%2==0) {
+                
+                dotPosX = i * 21;
+                dotPosY = j * 21;
+                
+                UIView *trap = [[UIView alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20)];
+                trap.layer.cornerRadius = 8;
+                trap.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ; //[self dotColor];
+                [_gamePad addSubview:trap];
+                [_gamePad sendSubviewToBack:trap];
+                [dotArray addObject:trap];
+            }
+        }
+    }
+    
+    [self.view bringSubviewToFront:_snakeHeadView];
+}
+
 #pragma mark - Hide statu bar
 
 -(BOOL)prefersStatusBarHidden
@@ -857,6 +890,64 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Social
+
+- (void)showShareSheet:(UITapGestureRecognizer *)sender
+{
+//    if ([self checkInternetConnection]) {
+        NSString *serviceType;
+        switch (sender.view.tag) {
+            case 0:
+                serviceType = SLServiceTypeTwitter;
+                break;
+            case 1:
+                serviceType = SLServiceTypeSinaWeibo;
+                break;
+            case 2:
+                serviceType = SLServiceTypeFacebook;
+                break;
+            default:
+                break;
+        }
+        
+
+            //  Create an instance of the share Sheet
+            SLComposeViewController *shareSheet = [SLComposeViewController
+                                                   composeViewControllerForServiceType:
+                                                   serviceType]; // Service Type 有 Facebook/Twitter/微博 可以選
+            
+            shareSheet.completionHandler = ^(SLComposeViewControllerResult result) {
+                switch(result) {
+                        //  This means the user cancelled without sending the Tweet
+                    case SLComposeViewControllerResultCancelled:
+                        break;
+                        //  This means the user hit 'Send'
+                    case SLComposeViewControllerResultDone:
+                        break;
+                }
+            };
+            
+            //  Set the initial body of the share sheet
+            [shareSheet setInitialText:@""];
+            
+            //  分享照片
+//            FileManager *fm = [[FileManager alloc]initWithKey:_diaryData.diaryKey];
+//            if (![shareSheet addImage:[fm loadCollectionImage]]) {
+//                NSLog(@"Unable to add the image!");
+//            }
+    
+            //  Presents the share Sheet to the user
+            [self presentViewController:shareSheet animated:NO completion:nil];
+//        }
+}
+
+#pragma mark - Game center
+
+- (IBAction)showGameCenter:(id)sender
+{
+    [[GCHelper sharedInstance] showGameCenterViewController:self];
 }
 
 @end

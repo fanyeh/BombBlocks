@@ -13,7 +13,8 @@
     NSMutableDictionary *turningNodeTags;
     UILabel *exclamation;
     UIView *exclamationView;
-    
+    CGFloat exalamtionWidth;
+    NSString *exclamationText;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -41,9 +42,11 @@
         [_snakeBody addObject:headView];
         [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
         
-        exclamationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
-
-        [self resetExclamation:headView andDirection:direction];
+        exalamtionWidth = 85;
+        exclamationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, exalamtionWidth, 15)];
+        exclamationText = @"Combo!";
+        
+        [self resetExclamationDirection:direction];
         [_gamePad addSubview:exclamationView];
         
         switch (direction ) {
@@ -80,44 +83,72 @@
     [_snakeBody addObject:headView];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
     _isRotate = NO;
-    [exclamation removeFromSuperview];
-    [self resetExclamation:headView andDirection:direction];
-
-}
-
-- (void)resetExclamation:(UIView *)headView andDirection:(MoveDirection)direction
-{
-    exclamationView.hidden = YES;
-    exclamation = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
-    exclamation.text = @"!";
-    exclamation.textColor = [UIColor blackColor];
-    exclamation.textAlignment = NSTextAlignmentRight;
-    exclamation.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
     
-    [self exclamationPosition:direction];
-    [exclamationView addSubview:exclamation];
-}
-
-- (void)exclamationPosition:(MoveDirection)direction
-{
-    switch (direction) {
+    switch (direction ) {
+        case kMoveDirectionLeft:
+            [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI);
+            break;
         case kMoveDirectionUp:
-            exclamationView.frame = CGRectOffset([self snakeHead].frame, -15, 20);
-            exclamation.transform = CGAffineTransformRotate(exclamation.transform, -M_PI * 0.75);
+            [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2);
             break;
         case kMoveDirectionDown:
-            exclamationView.frame = CGRectOffset([self snakeHead].frame, 15, -20);
-            exclamation.transform = CGAffineTransformRotate(exclamation.transform, M_PI * 0.25);
-            break;
-        case kMoveDirectionLeft:
-            exclamationView.frame = CGRectOffset([self snakeHead].frame, 20, 15);
-            exclamation.transform = CGAffineTransformRotate(exclamation.transform, M_PI * 0.75);
+            [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2);
             break;
         case kMoveDirectionRight:
-            exclamationView.frame = CGRectOffset([self snakeHead].frame, -20, -15);
-            exclamation.transform = CGAffineTransformRotate(exclamation.transform, -M_PI * 0.25);
             break;
     }
+
+    
+    [self resetExclamationDirection:direction];
+
+}
+
+- (void)resetExclamationDirection:(MoveDirection)direction
+{
+    if ([exclamation superview])
+        [exclamation removeFromSuperview];
+    exclamationView.hidden = YES;
+    exclamation = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, exalamtionWidth, 15)];
+    exclamation.text = exclamationText;
+    exclamation.textColor = [UIColor blackColor];
+    exclamation.textAlignment = NSTextAlignmentRight;
+
+    exclamation.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
+    
+    [exclamationView addSubview:exclamation];
+    
+    switch (direction) {
+            
+        case kMoveDirectionUp:
+            
+            exclamationView.frame = CGRectOffset([self snakeHead].frame, -exalamtionWidth/2+10, -25);
+            exclamation.textAlignment = NSTextAlignmentCenter;
+            break;
+            
+        case kMoveDirectionDown:
+            
+            exclamationView.frame = CGRectOffset([self snakeHead].frame, -exalamtionWidth/2+10, 25);
+            exclamation.textAlignment = NSTextAlignmentCenter;
+            break;
+            
+        case kMoveDirectionLeft:
+            
+            exclamationView.frame = CGRectOffset([self snakeHead].frame, 0, -20);
+            exclamation.textAlignment = NSTextAlignmentLeft;
+            break;
+            
+        case kMoveDirectionRight:
+            
+            exclamationView.frame = CGRectOffset([self snakeHead].frame, -exalamtionWidth+20 , -20);
+            exclamation.textAlignment = NSTextAlignmentRight;
+            break;
+    }
+}
+
+-(void)updateExclamationText:(NSInteger)combo
+{
+    exclamationText = [NSString stringWithFormat:@"Combo %ld!",(long)combo];
+    exclamation.text = exclamationText;
 }
 
 #pragma mark - Directions
@@ -182,7 +213,7 @@
         
         if (!gameIsOver) {
             CGRect newFrame = newPosition;
-                                        view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+            view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
             
             if (view.tag == 0) {
                 // Update exclamation mark position
@@ -191,11 +222,9 @@
             }
         }
         else {
-            _gamePad.userInteractionEnabled = YES;
             return YES;
         }
     }
-    _gamePad.userInteractionEnabled = YES;
     return NO;
 }
 
@@ -253,56 +282,43 @@
     switch ([self headDirection] ) {
         case kMoveDirectionRight:
             if (direction == kMoveDirectionDown) {
+                [self resetExclamationDirection:kMoveDirectionDown];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
-                exclamationView.frame = CGRectOffset([self snakeHead].frame, 15 ,-20);
-                exclamation.transform = CGAffineTransformMakeRotation(M_PI*0.25);
             }
             else if (direction == kMoveDirectionUp) {
+                [self resetExclamationDirection:kMoveDirectionUp];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-                exclamationView.frame = CGRectOffset([self snakeHead].frame, -15 , 20);
-                exclamation.transform = CGAffineTransformMakeRotation(-M_PI * .75);
             }
             break;
         case kMoveDirectionLeft:
             if (direction == kMoveDirectionDown) {
+                [self resetExclamationDirection:kMoveDirectionDown];
                 [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
-
-                exclamationView.frame = CGRectOffset([self snakeHead].frame, 15 ,-20);
-                exclamation.transform = CGAffineTransformMakeRotation(M_PI*0.25);
             }
             else if (direction == kMoveDirectionUp){
+                [self resetExclamationDirection:kMoveDirectionUp];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-
-                exclamationView.frame = CGRectOffset([self snakeHead].frame, -15 , 20);
-                exclamation.transform = CGAffineTransformMakeRotation(-M_PI * .75);
             }
             break;
         case kMoveDirectionUp:
             if (direction == kMoveDirectionLeft){
+                [self resetExclamationDirection:kMoveDirectionLeft];
                 [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
-
-                exclamationView.frame = CGRectOffset([self snakeHead].frame, 20 , 15);
-                exclamation.transform = CGAffineTransformMakeRotation(M_PI * .75);
             }
             else if (direction == kMoveDirectionRight){
+                [self resetExclamationDirection:kMoveDirectionRight];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-
-                exclamationView.frame = CGRectOffset([self snakeHead].frame, -20 , -15);
-                exclamation.transform = CGAffineTransformMakeRotation(-M_PI * .25);
             }
             break;
         case kMoveDirectionDown:
             if (direction == kMoveDirectionLeft){
+                [self resetExclamationDirection:kMoveDirectionLeft];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
-                exclamationView.frame = CGRectOffset([self snakeHead].frame, 20 , 15);
-                exclamation.transform = CGAffineTransformMakeRotation(M_PI * .75);
             }
 
             else if (direction == kMoveDirectionRight){
+                [self resetExclamationDirection:kMoveDirectionRight];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-
-                exclamationView.frame = CGRectOffset([self snakeHead].frame, -20 , -15);
-                exclamation.transform = CGAffineTransformMakeRotation(-M_PI * .25);
             }
             break;
     }
@@ -518,13 +534,13 @@
 -(CABasicAnimation *)exclamationAnimation
 {
 
-    CGFloat startAngle = M_PI/36;
-    CGFloat endAngle = -M_PI/36;
+    CGFloat startAngle = - M_PI/60;
+    CGFloat endAngle = M_PI/60;
  
     CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
-    [anim setToValue:[NSNumber numberWithFloat:startAngle]]; // satrt angle
-    [anim setFromValue:[NSNumber numberWithDouble:endAngle]]; // rotation angle
-    [anim setDuration:0.25]; // rotate speed
+    [anim setToValue:[NSNumber numberWithFloat:endAngle]]; // satrt angle
+    [anim setFromValue:[NSNumber numberWithDouble:startAngle]]; // rotation angle
+    [anim setDuration:0.1]; // rotate speed
     [anim setRepeatCount:HUGE_VAL];
     [anim setAutoreverses:YES];
     return anim;
@@ -536,13 +552,12 @@
 {
     if (show) {
         exclamationView.hidden = NO;
-        [exclamationView.layer addAnimation:[self exclamationAnimation] forKey:nil];
+        [exclamation.layer addAnimation:[self exclamationAnimation] forKey:nil];
         [_gamePad bringSubviewToFront:exclamationView];
     }
-    
     else {
         exclamationView.hidden = YES;
-        [exclamationView.layer removeAllAnimations];
+        [exclamation.layer removeAllAnimations];
     }
 }
 

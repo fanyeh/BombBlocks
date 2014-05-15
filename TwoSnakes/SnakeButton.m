@@ -50,8 +50,6 @@
         _state = kSnakeButtonPlay;
         _tapGesture = gesture;
         [self setSnakeButton:title];
-//        self.layer.borderWidth = 1;
-//        self.layer.borderColor = [[UIColor redColor]CGColor];
     }
     return self;
 }
@@ -157,27 +155,28 @@
 - (void)changeState:(SnakeButtonState)newState
 {
     self.userInteractionEnabled = NO;
+    SnakeButtonState previousState = _state;
     _state = newState;
-    [self showHead];
+    [self showHead:previousState];
 }
 
-- (void)showHead
+- (void)showHead:(SnakeButtonState)previousState
 {
     float time;
     
-    if (_state == kSnakeButtonPlay || _state == kSnakeButtonReplay)
+    if (previousState == kSnakeButtonPlay || previousState == kSnakeButtonReplay) {
         time = 2.5;
+        float duration = time/(length+4);
+        
+        [UIView animateWithDuration:duration animations:^{
+            snakeHead.alpha = 1;
+        } completion:^(BOOL finished) {
+            mouth.hidden = NO;
+            [self eatButton:duration];
+        }];
+    }
     else
-        time = 2.5;
-    
-    float duration = time/(length+4);
-
-    [UIView animateWithDuration:duration animations:^{
-        snakeHead.alpha = 1;
-    } completion:^(BOOL finished) {
-        mouth.hidden = NO;
-        [self eatButton:duration];
-    }];
+        [self resetSnakeButton];
 }
 
 - (void)eatButton:(float)duration
@@ -297,7 +296,7 @@
     UILabel *hiddenLetter = [hiddenLetters firstObject];
     if (hiddenLetter) {
         
-        [UIView animateWithDuration:0.1 animations:^{
+        [UIView animateWithDuration:0.05 animations:^{
             
             hiddenLetter.alpha = 1;
             
@@ -308,6 +307,13 @@
 
         }];
     }
+}
+
+- (void)backgroundPause:(SnakeButtonState)newState
+{
+    self.userInteractionEnabled = NO;
+    _state = newState;
+    [self resetSnakeButton];
 }
 
 - (UIColor *)colorByState

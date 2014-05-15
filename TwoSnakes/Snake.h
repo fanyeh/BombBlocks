@@ -44,6 +44,7 @@ typedef enum {
 - (void)startRotate;
 - (void)stopRotate;
 - (void)gameOver;
+-(void)updateExclamationText:(NSInteger)combo;
 
 
 @end

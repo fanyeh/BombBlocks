@@ -10,4 +10,7 @@
 
 @interface TwoSnakesGameController : UIViewController
 
+- (void)backgroundPauseGame;
+
+
 @end

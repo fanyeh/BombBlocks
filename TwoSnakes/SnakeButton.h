@@ -23,5 +23,6 @@ typedef enum {
 
 - (id)initWithTitle:(NSString *)title gesture:(UITapGestureRecognizer *)gesture;
 - (void)changeState:(SnakeButtonState)newState;
+- (void)backgroundPause:(SnakeButtonState)newState;
 
 @end

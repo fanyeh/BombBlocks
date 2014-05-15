@@ -8,7 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum {
+    kDotShapeCircle = 0,
+    kDotShapeSquare
+} DotShape;
+
 @interface SnakeDot : UIView
 @property (strong,nonatomic) UIView *smallDot;
+@property (nonatomic) DotShape shape;
+
+- (id)initWithFrame:(CGRect)frame dotShape:(DotShape)shape;
 
 @end

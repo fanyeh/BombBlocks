@@ -14,4 +14,9 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
+    #import "GCHelper.h"
 #endif
+
+#define kHighScoreLeaderboardId @"mk.twosnakes.highscores"
+#define kMaxChainComboLeaderboardId @"mk.twosnakes.maxchaincombo"
+
