@@ -9,8 +9,9 @@
 #import "TwoSnakesGameController.h"
 #import "Snake.h"
 #import "SnakeDot.h"
-#import "SnakeButton.h"
 #import <Social/Social.h>
+#import "MenuController.h"
+#import "CircleLabel.h"
 
 @interface TwoSnakesGameController ()
 {
@@ -27,23 +28,19 @@
     NSInteger counter;
     NSInteger maxCombos;
     NSInteger score;
-    
-    SnakeButton *snakeButton;
-    
     UITapGestureRecognizer *snakeButtonTap;
-    
     NSNumberFormatter *numFormatter;
-    
 }
 
 @property (weak, nonatomic) IBOutlet UIView *snakeHeadView;
 @property (weak, nonatomic) IBOutlet UIView *gamePad;
-@property (weak, nonatomic) IBOutlet UILabel *levelLabel;
 @property (weak, nonatomic) IBOutlet UIView *leftEye;
 @property (weak, nonatomic) IBOutlet UIView *rightEye;
-@property (weak, nonatomic) IBOutlet UILabel *comboLabel;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UIView *snakeMouth;
+@property (weak, nonatomic) IBOutlet UIView *menuView;
+@property (weak, nonatomic) IBOutlet UIButton *facebookButton;
+@property (weak, nonatomic) IBOutlet UIButton *twitterButton;
 
 
 @end
@@ -70,7 +67,6 @@
 //    [self createGamerOverSquares];
    [self createAllDots];
     
-    _levelLabel.text = [NSString stringWithFormat:@"Level : %ld",(long)level];
     
     _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
     _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
@@ -94,7 +90,7 @@
     
     
     snakeButtonTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(startCoundDown)];
-    snakeButton = [[SnakeButton alloc]initWithTitle:@"play" gesture:snakeButtonTap];
+    _snakeButton = [[SnakeButton alloc]initWithTitle:@"play" gesture:snakeButtonTap];
     
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
@@ -103,7 +99,7 @@
     
     [_gamePad sendSubviewToBack:_snakeHeadView];
     
-    [self.view addSubview:snakeButton];
+    [self.view addSubview:_snakeButton];
 
     // Game Settings
     timeInterval = 0.2;
@@ -115,6 +111,16 @@
     score = 0;
     
     _gamePad.userInteractionEnabled = NO;
+    
+    UITapGestureRecognizer *menuTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backToMenu)];
+    [_menuView addGestureRecognizer:menuTap];
+    
+    _facebookButton.layer.cornerRadius = _facebookButton.frame.size.width/2;
+    _facebookButton.layer.masksToBounds = YES;
+    _twitterButton.layer.cornerRadius = _twitterButton.frame.size.width/2;
+    _twitterButton.layer.masksToBounds = YES;
+
+
 }
 
 -(void)directionChange:(UITapGestureRecognizer *)sender
@@ -167,13 +173,8 @@
             alertTitle = @"New Score Record";
         }
         
-        if (level > [[NSUserDefaults standardUserDefaults]integerForKey:@"highestLevel"]) {
-            [[NSUserDefaults standardUserDefaults]setInteger:score forKey:@"highestLevel"];
-            alertTitle = @"New Level Record";
-        }
-        
         if (maxCombos > [[NSUserDefaults standardUserDefaults]integerForKey:@"maxCombo"]) {
-            [[NSUserDefaults standardUserDefaults]setInteger:score forKey:@"highestScore"];
+            [[NSUserDefaults standardUserDefaults]setInteger:maxCombos forKey:@"maxCombo"];
             alertTitle = @"New Combo Record";
         }
         
@@ -196,9 +197,12 @@
             }
             
         } completion:^(BOOL finished) {
-            [snakeButton changeState:kSnakeButtonReplay];
+            [_snakeButton changeState:kSnakeButtonReplay];
             [snakeButtonTap removeTarget:self action:@selector(pauseGame)];
             [snakeButtonTap addTarget:self action:@selector(replayGame)];
+            
+            _menuView.hidden = NO;
+            
         }];
 
     } else {
@@ -249,7 +253,8 @@
 
 - (void)startCoundDown
 {
-    [snakeButton changeState:kSnakeButtonPause];
+    _menuView.hidden = YES;
+    [_snakeButton changeState:kSnakeButtonPause];
     [snakeButtonTap removeTarget:self action:@selector(startCoundDown)];
     [snakeButtonTap addTarget:self action:@selector(pauseGame)];
     countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
@@ -258,7 +263,7 @@
 
 - (void)pauseGame
 {
-    [snakeButton changeState:kSnakeButtonResume];
+    [_snakeButton changeState:kSnakeButtonResume];
     [moveTimer invalidate];
     [snakeButtonTap removeTarget:self action:@selector(pauseGame)];
     [snakeButtonTap addTarget:self action:@selector(resumeGame)];
@@ -266,7 +271,7 @@
 
 - (void)backgroundPauseGame
 {
-    [snakeButton backgroundPause:kSnakeButtonResume];
+    [_snakeButton backgroundPause:kSnakeButtonResume];
     [moveTimer invalidate];
     [snakeButtonTap removeTarget:self action:@selector(pauseGame)];
     [snakeButtonTap addTarget:self action:@selector(resumeGame)];
@@ -274,7 +279,7 @@
 
 - (void)resumeGame
 {
-    [snakeButton changeState:kSnakeButtonPause];
+    [_snakeButton changeState:kSnakeButtonPause];
     [snakeButtonTap removeTarget:self action:@selector(resumeGame)];
     [snakeButtonTap addTarget:self action:@selector(pauseGame)];
     moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
@@ -283,6 +288,7 @@
 - (void)replayGame
 {
     // Game settings
+    _menuView.hidden = YES;
     timeInterval = 0.2;
     countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
     numDotAte = 0;
@@ -307,12 +313,11 @@
 
     _scoreLabel.text =  [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
 
-    _levelLabel.text = [NSString stringWithFormat:@"Levle : %ld",(long)level];
 
     [playerSnake resetSnake:_snakeHeadView andDirection:[playerSnake headDirection]];
     [_gamePad addSubview:_snakeHeadView];
     
-    [snakeButton changeState:kSnakeButtonPause];
+    [_snakeButton changeState:kSnakeButtonPause];
     [snakeButtonTap removeTarget:self action:@selector(replayGame)];
     [snakeButtonTap addTarget:self action:@selector(pauseGame)];
 }
@@ -533,14 +538,6 @@
         
         _leftEye.layer.borderWidth = 1.5;
         _rightEye.layer.borderWidth = 1.5;
-        
-        if (combos > maxCombos) {
-            maxCombos = combos;
-            if (maxCombos > 1) {
-                _comboLabel.hidden = NO;
-                _comboLabel.text =  [NSString stringWithFormat:@"Max combos %ld !",(long)maxCombos];
-            }
-        }
 
         if (other)
             [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
@@ -586,7 +583,6 @@
                 // Increase speed for every 30 dots eaten
                 if (numDotAte%30==0 && numDotAte != 0) {
                     level++;
-                    _levelLabel.text = [NSString stringWithFormat:@"Level : %ld",(long)level];
                     timeInterval -= 0.005;
                     
                     if (moveTimer.isValid)
@@ -600,7 +596,6 @@
                 }
                 [self setScore];
                 [playerSnake updateExclamationText:combos];
-                _comboLabel.hidden = YES;
                 d.smallDot.backgroundColor = [self dotColor];
             }];
             
@@ -832,7 +827,7 @@
             color = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
             break;
         case 1:
-            color = [UIColor colorWithRed:0.004 green:0.690 blue:0.941 alpha:1.000];
+            color = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
             break;
         case 2:
             color = [UIColor colorWithRed:0.682 green:0.933 blue:0.000 alpha:1.000];
@@ -894,11 +889,11 @@
 
 #pragma mark - Social
 
-- (void)showShareSheet:(UITapGestureRecognizer *)sender
+- (void)showShareSheet:(NSInteger )tag
 {
-//    if ([self checkInternetConnection]) {
+    if ([self checkInternetConnection]) {
         NSString *serviceType;
-        switch (sender.view.tag) {
+        switch (tag) {
             case 0:
                 serviceType = SLServiceTypeTwitter;
                 break;
@@ -911,43 +906,69 @@
             default:
                 break;
         }
-        
 
-            //  Create an instance of the share Sheet
-            SLComposeViewController *shareSheet = [SLComposeViewController
-                                                   composeViewControllerForServiceType:
-                                                   serviceType]; // Service Type 有 Facebook/Twitter/微博 可以選
-            
-            shareSheet.completionHandler = ^(SLComposeViewControllerResult result) {
-                switch(result) {
-                        //  This means the user cancelled without sending the Tweet
-                    case SLComposeViewControllerResultCancelled:
-                        break;
-                        //  This means the user hit 'Send'
-                    case SLComposeViewControllerResultDone:
-                        break;
-                }
-            };
-            
-            //  Set the initial body of the share sheet
-            [shareSheet setInitialText:@""];
-            
-            //  分享照片
-//            FileManager *fm = [[FileManager alloc]initWithKey:_diaryData.diaryKey];
-//            if (![shareSheet addImage:[fm loadCollectionImage]]) {
-//                NSLog(@"Unable to add the image!");
-//            }
-    
-            //  Presents the share Sheet to the user
-            [self presentViewController:shareSheet animated:NO completion:nil];
+        //  Create an instance of the share Sheet , Service Type 有 Facebook/Twitter/微博 可以選
+        SLComposeViewController *shareSheet = [SLComposeViewController composeViewControllerForServiceType: serviceType];
+
+        
+        shareSheet.completionHandler = ^(SLComposeViewControllerResult result) {
+            switch(result) {
+                    //  This means the user cancelled without sending the Tweet
+                case SLComposeViewControllerResultCancelled:
+                    break;
+                    //  This means the user hit 'Send'
+                case SLComposeViewControllerResultDone:
+                    break;
+            }
+        };
+        
+        //  Set the initial body of the share sheet
+        [shareSheet setInitialText:@"I have scored points @ Not A Snake Game!"];
+        
+        //  Share Photo
+//        if (![shareSheet addImage:[fm loadCollectionImage]]) {
+//            NSLog(@"Unable to add the image!");
 //        }
+
+        //  Presents the share Sheet to the user
+        [self presentViewController:shareSheet animated:NO completion:nil];
+    }
 }
 
-#pragma mark - Game center
-
-- (IBAction)showGameCenter:(id)sender
+- (void)backToMenu
 {
-    [[GCHelper sharedInstance] showGameCenterViewController:self];
+    if (_snakeButton.state == kSnakeButtonPause) 
+        [self backgroundPauseGame];
+
+    MenuController *controller = [[MenuController alloc]init];
+    controller.state = kGameStateContinue;
+    [self presentViewController:controller animated:YES completion:nil];
+}
+
+- (IBAction)shareToFB:(UIButton *)sender
+{
+    [self showShareSheet:sender.tag];
+}
+
+- (IBAction)shareToTwitter:(UIButton *)sender
+{
+    [self showShareSheet:sender.tag];
+}
+
+- (BOOL)checkInternetConnection
+{
+    Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
+    if (networkStatus == NotReachable) {
+        UIAlertView *noInternetAlert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"No Internet Connection", nil)
+                                                                 message:NSLocalizedString(@"Check your internet connection and try again",nil)
+                                                                delegate:self cancelButtonTitle:NSLocalizedString(@"Close",nil)
+                                                       otherButtonTitles:nil, nil];
+        [noInternetAlert show];
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 @end

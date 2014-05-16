@@ -7,11 +7,11 @@
 //
 
 #import "MKAppDelegate.h"
-#import "TwoSnakesGameController.h"
+#import "MenuController.h"
 
 @implementation MKAppDelegate
 {
-    TwoSnakesGameController *controller;
+    MenuController *menuController;
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -22,13 +22,14 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    controller = [[TwoSnakesGameController alloc]init];
-    [self.window setRootViewController:controller];
     
+    menuController = [[MenuController alloc]init];
+    
+    [self.window setRootViewController:menuController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-    
-        [[GCHelper sharedInstance] authenticateLocalUser:controller];
+    // Connect to game center
+    [[GCHelper sharedInstance] authenticateLocalUser:menuController];
     return YES;
 }
 
@@ -36,7 +37,7 @@
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    [controller backgroundPauseGame];
+    [menuController pauseGameOnBackground];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -48,6 +49,7 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

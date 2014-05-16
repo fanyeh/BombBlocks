@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SnakeButton.h"
 
 @interface TwoSnakesGameController : UIViewController
 
+@property (strong,nonatomic) SnakeButton *snakeButton;
 - (void)backgroundPauseGame;
 
 

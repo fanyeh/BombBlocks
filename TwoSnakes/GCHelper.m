@@ -41,8 +41,8 @@ static GCHelper *sharedHelper = nil;
     if ((self = [super init])) {
         _gameCenterAvailable = [self isGameCenterAvailable];
         if (_gameCenterAvailable) {
-            NSNotificationCenter *nc =
-            [NSNotificationCenter defaultCenter];
+            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+            
             [nc addObserver:self
                    selector:@selector(authenticationChanged)
                        name:GKPlayerAuthenticationDidChangeNotificationName
@@ -76,10 +76,32 @@ static GCHelper *sharedHelper = nil;
     
     NSLog(@"Authenticating local user...");
     if ([GKLocalPlayer localPlayer].authenticated == NO) {
+        
         __weak GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
 
-        [GKLocalPlayer localPlayer].authenticateHandler = [GKLocalPlayer localPlayer].authenticateHandler = ^(UIViewController *viewController, NSError *error) {
-            [gameViewcontroller.presentedViewController presentViewController:viewController animated:YES completion:nil];
+        [GKLocalPlayer localPlayer].authenticateHandler = ^(UIViewController *viewController, NSError *error) {
+            
+            // If Player has not signed in game center viewController will be game center sign in view controller
+            // Otherwise viewController = nil
+            
+//            NSLog(@"Game center controller %@",viewController);
+            
+            if (viewController != nil) {
+                
+                if (gameViewcontroller.presentedViewController != nil) {
+                
+                    [gameViewcontroller.presentedViewController presentViewController:viewController
+                                                     animated:YES
+                                                   completion:nil];
+                } else {
+                    
+                    [gameViewcontroller presentViewController:viewController
+                                                     animated:YES
+                                                   completion:nil];
+                    
+                }
+            }
+
             [localPlayer registerListener:self];
 
       };
@@ -244,16 +266,19 @@ static GCHelper *sharedHelper = nil;
 }
 
 #pragma mark - Game Center UI method
--(void) showGameCenterViewController:
-(UIViewController*)viewcontroller
+-(void) showGameCenterViewController:(UIViewController *)viewcontroller
 {
 
-    GKGameCenterViewController *gameCenterViewController= [[GKGameCenterViewController alloc] init];
-    gameCenterViewController.gameCenterDelegate = self;
-    gameCenterViewController.viewState = GKGameCenterViewControllerStateDefault;
-    [viewcontroller presentViewController: gameCenterViewController
-                                 animated:YES
-                               completion:nil];
+//    if ([GKLocalPlayer localPlayer].authenticated == NO) {
+//        [self authenticateLocalUser:viewcontroller];
+//    } else {
+        GKGameCenterViewController *gameCenterViewController= [[GKGameCenterViewController alloc] init];
+        gameCenterViewController.gameCenterDelegate = self;
+        gameCenterViewController.viewState = GKGameCenterViewControllerStateDefault;
+        [viewcontroller presentViewController: gameCenterViewController
+                                     animated:YES
+                                   completion:nil];
+//    }
 }
 
 #pragma mark - GKGameCenterControllerDelegate method
@@ -306,8 +331,7 @@ static GCHelper *sharedHelper = nil;
 -(void) setLastError:(NSError*)error {
     _lastError = [error copy];
     if (_lastError) {
-        NSLog(@"GameKitHelper ERROR: %@", [[_lastError userInfo]
-                                           description]);
+        NSLog(@"GameKitHelper ERROR: %@", [[_lastError userInfo] description]);
     }
 }
 

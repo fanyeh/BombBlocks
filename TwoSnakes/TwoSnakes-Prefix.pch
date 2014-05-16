@@ -15,6 +15,7 @@
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
     #import "GCHelper.h"
+    #import "Reachability.h"
 #endif
 
 #define kHighScoreLeaderboardId @"mk.twosnakes.highscores"
