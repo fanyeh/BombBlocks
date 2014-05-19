@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4C075B97192516D1009928F2 /* SnakeTriangle.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C075B96192516D1009928F2 /* SnakeTriangle.m */; };
 		4C1828501929AE2300CB295F /* MenuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C18284F1929AE2300CB295F /* MenuButton.m */; };
+		4C1828531929CBAA00CB295F /* SnakeSkill.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1828521929CBAA00CB295F /* SnakeSkill.m */; };
+		4C1828591929CEF600CB295F /* SnakeSkillType.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1828581929CEF600CB295F /* SnakeSkillType.m */; };
+		4C18285C1929D1A400CB295F /* SnakeSkillTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C18285B1929D1A400CB295F /* SnakeSkillTree.m */; };
+		4C18285F1929E3D000CB295F /* SnakeBody.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C18285E1929E3D000CB295F /* SnakeBody.m */; };
 		4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C67DD3E1919E45E00666A2D /* SnakeButton.m */; };
 		4C7F13571911F36D00565A01 /* Snake.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F13561911F36D00565A01 /* Snake.m */; };
 		4C85859A1925A1990096F75B /* MenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8585981925A1990096F75B /* MenuController.m */; };
@@ -53,10 +56,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4C075B95192516D1009928F2 /* SnakeTriangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeTriangle.h; sourceTree = "<group>"; };
-		4C075B96192516D1009928F2 /* SnakeTriangle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeTriangle.m; sourceTree = "<group>"; };
 		4C18284E1929AE2300CB295F /* MenuButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuButton.h; sourceTree = "<group>"; };
 		4C18284F1929AE2300CB295F /* MenuButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuButton.m; sourceTree = "<group>"; };
+		4C1828511929CBAA00CB295F /* SnakeSkill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeSkill.h; sourceTree = "<group>"; };
+		4C1828521929CBAA00CB295F /* SnakeSkill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeSkill.m; sourceTree = "<group>"; };
+		4C1828571929CEF600CB295F /* SnakeSkillType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeSkillType.h; sourceTree = "<group>"; };
+		4C1828581929CEF600CB295F /* SnakeSkillType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeSkillType.m; sourceTree = "<group>"; };
+		4C18285A1929D1A400CB295F /* SnakeSkillTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeSkillTree.h; sourceTree = "<group>"; };
+		4C18285B1929D1A400CB295F /* SnakeSkillTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeSkillTree.m; sourceTree = "<group>"; };
+		4C18285D1929E3D000CB295F /* SnakeBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeBody.h; sourceTree = "<group>"; };
+		4C18285E1929E3D000CB295F /* SnakeBody.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeBody.m; sourceTree = "<group>"; };
 		4C67DD3D1919E45E00666A2D /* SnakeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeButton.h; sourceTree = "<group>"; };
 		4C67DD3E1919E45E00666A2D /* SnakeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeButton.m; sourceTree = "<group>"; };
 		4C7F13551911F36D00565A01 /* Snake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snake.h; sourceTree = "<group>"; };
@@ -131,23 +140,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4C85859C1925DE2F0096F75B /* Game Object */ = {
+		4C1828601929ED2000CB295F /* Snake */ = {
+			isa = PBXGroup;
+			children = (
+				4C7F13551911F36D00565A01 /* Snake.h */,
+				4C7F13561911F36D00565A01 /* Snake.m */,
+				4C1828511929CBAA00CB295F /* SnakeSkill.h */,
+				4C1828521929CBAA00CB295F /* SnakeSkill.m */,
+				4C18285A1929D1A400CB295F /* SnakeSkillTree.h */,
+				4C18285B1929D1A400CB295F /* SnakeSkillTree.m */,
+				4C1828571929CEF600CB295F /* SnakeSkillType.h */,
+				4C1828581929CEF600CB295F /* SnakeSkillType.m */,
+				4C18285D1929E3D000CB295F /* SnakeBody.h */,
+				4C18285E1929E3D000CB295F /* SnakeBody.m */,
+			);
+			name = Snake;
+			sourceTree = "<group>";
+		};
+		4C1828611929ED3E00CB295F /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				4C18284E1929AE2300CB295F /* MenuButton.h */,
+				4C18284F1929AE2300CB295F /* MenuButton.m */,
+				4C8585A91925EA7B0096F75B /* CircleLabel.h */,
+				4C8585AA1925EA7B0096F75B /* CircleLabel.m */,
+				4C67DD3D1919E45E00666A2D /* SnakeButton.h */,
+				4C67DD3E1919E45E00666A2D /* SnakeButton.m */,
+			);
+			name = Control;
+			sourceTree = "<group>";
+		};
+		4C1828621929ED6000CB295F /* GamePad */ = {
 			isa = PBXGroup;
 			children = (
 				4CC0560C1913895600BB70E2 /* SnakeDot.h */,
 				4CC0560D1913895600BB70E2 /* SnakeDot.m */,
-				4C075B95192516D1009928F2 /* SnakeTriangle.h */,
-				4C075B96192516D1009928F2 /* SnakeTriangle.m */,
-				4C7F13551911F36D00565A01 /* Snake.h */,
-				4C7F13561911F36D00565A01 /* Snake.m */,
-				4C67DD3D1919E45E00666A2D /* SnakeButton.h */,
-				4C67DD3E1919E45E00666A2D /* SnakeButton.m */,
-				4C8585A91925EA7B0096F75B /* CircleLabel.h */,
-				4C8585AA1925EA7B0096F75B /* CircleLabel.m */,
 				4CAA5DE81929998000049F52 /* GamePad.h */,
 				4CAA5DE91929998000049F52 /* GamePad.m */,
-				4C18284E1929AE2300CB295F /* MenuButton.h */,
-				4C18284F1929AE2300CB295F /* MenuButton.m */,
+			);
+			name = GamePad;
+			sourceTree = "<group>";
+		};
+		4C85859C1925DE2F0096F75B /* Game Object */ = {
+			isa = PBXGroup;
+			children = (
+				4C1828621929ED6000CB295F /* GamePad */,
+				4C1828611929ED3E00CB295F /* Control */,
+				4C1828601929ED2000CB295F /* Snake */,
 			);
 			name = "Game Object";
 			sourceTree = "<group>";
@@ -386,17 +425,20 @@
 				4C7F13571911F36D00565A01 /* Snake.m in Sources */,
 				4CB108B7190FF6440085C747 /* MKAppDelegate.m in Sources */,
 				4C85859A1925A1990096F75B /* MenuController.m in Sources */,
-				4C075B97192516D1009928F2 /* SnakeTriangle.m in Sources */,
 				4CAA5DF21929AB9100049F52 /* SocialShare.m in Sources */,
 				4C8585A41925DEAA0096F75B /* GameRecordController.m in Sources */,
 				4C8585AB1925EA7B0096F75B /* CircleLabel.m in Sources */,
+				4C18285C1929D1A400CB295F /* SnakeSkillTree.m in Sources */,
 				4C1828501929AE2300CB295F /* MenuButton.m in Sources */,
 				4CC0560E1913895600BB70E2 /* SnakeDot.m in Sources */,
 				4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */,
 				4CB108B3190FF6440085C747 /* main.m in Sources */,
 				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,
 				4CAA5DEE1929A0F900049F52 /* GameSceneController.m in Sources */,
+				4C1828531929CBAA00CB295F /* SnakeSkill.m in Sources */,
 				4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */,
+				4C1828591929CEF600CB295F /* SnakeSkillType.m in Sources */,
+				4C18285F1929E3D000CB295F /* SnakeBody.m in Sources */,
 				4CAA5DEA1929998000049F52 /* GamePad.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

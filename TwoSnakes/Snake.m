@@ -7,6 +7,8 @@
 //
 
 #import "Snake.h"
+#import "SnakeSkill.h"
+#import "SnakeDot.h"
 
 @implementation Snake
 {
@@ -89,6 +91,7 @@
         _isRotate = NO;
         
         chain = 2;
+        _skill = [[SnakeSkill alloc]init];
     }
     return self;
 }
@@ -392,7 +395,7 @@
 
 #pragma mark - Snake Body
 
-- (UIView *)addSnakeBodyWithColor:(UIColor *)color
+- (SnakeBody *)addSnakeBodyWithDot:(SnakeDot *)dot
 {
     CGRect bodyFrame;
     CGRect snakeTailFrame =  [self snakeTail].frame;
@@ -413,11 +416,11 @@
             break;
     }
     
-    UIView *snakeBody = [[UIView alloc]initWithFrame:bodyFrame];
-    
+    SnakeBody *snakeBody = [[SnakeBody alloc]initWithFrame:bodyFrame];
     snakeBody.layer.cornerRadius = bodyFrame.size.width/4;
-    snakeBody.backgroundColor = color;
+    snakeBody.backgroundColor = dot.smallDot.backgroundColor;
     snakeBody.tag = _snakeLength;
+    snakeBody.skillType.type = dot.skillType.type;
     [_snakeBody addObject:snakeBody];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];
     _snakeLength ++;
@@ -489,6 +492,8 @@
             
             [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:v.backgroundColor otherCombo:NO];
             
+            [self updateInitSkillView:[_snakeBody objectAtIndex:startIndex]];
+            
             return YES;
         }
     }
@@ -553,7 +558,7 @@
     NSInteger endIndex = 0;
     BOOL hasCombo = NO;
     
-    for (UIView *v in _snakeBody) {
+    for (SnakeBody *v in _snakeBody) {
         
         if (![repeatColor isEqual:v.backgroundColor]) {
             
@@ -561,6 +566,8 @@
                 // Invalidate timer if there combo
                 
                 [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
+                
+                [self updateSupplementSkill:[_snakeBody objectAtIndex:startIndex]];
                 
                 return YES;
             } else {
@@ -580,6 +587,8 @@
                 
                 [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
                 
+                [self updateSupplementSkill:[_snakeBody objectAtIndex:startIndex]];
+
                 return YES;
                 
             }
@@ -666,6 +675,26 @@
             [self cancelSnakeBodyByColor:color complete:completeBlock];
     }];
     
+}
+
+#pragma mark - Skill View
+
+- (void)updateInitSkillView:(SnakeBody *)body
+{
+    _initSkillView.backgroundColor = body.backgroundColor;
+    [_skill setInitialSkill:body.skillType.type];
+}
+
+- (void)updateSupplementSkill:(SnakeBody *)body
+{
+    if ([_supplementSkillView1.backgroundColor isEqual:[UIColor whiteColor]]) {
+        _supplementSkillView1.backgroundColor = body.backgroundColor;
+        [_skill setSupplementSkill:body.skillType.type];
+
+    } else if ([_supplementSkillView2.backgroundColor isEqual:[UIColor whiteColor]]) {
+        _supplementSkillView2.backgroundColor = body.backgroundColor;
+        [_skill setSupplementSkill:body.skillType.type];
+    }
 }
 
 #pragma mark - Body Animations

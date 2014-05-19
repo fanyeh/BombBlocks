@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SnakeBody.h"
+#import "SnakeDot.h"
+@class SnakeSkill;
 
 typedef enum {
     kMoveDirectionUp = 0,
@@ -15,7 +18,9 @@ typedef enum {
     kMoveDirectionRight
 } MoveDirection;
 
+
 @interface Snake : UIView
+
 @property (nonatomic) int snakeLength;
 @property (nonatomic) MoveDirection snakeDirection;
 @property (strong,nonatomic) NSMutableArray *snakeBody;
@@ -25,7 +30,10 @@ typedef enum {
 @property (strong,nonatomic) UIView *leftEye;
 @property (strong,nonatomic) UIView *rightEye;
 @property (strong,nonatomic) UIView *snakeMouth;
-
+@property (strong,nonatomic) UIView *initSkillView;
+@property (strong,nonatomic) UIView *supplementSkillView1;
+@property (strong,nonatomic) UIView *supplementSkillView2;
+@property (strong,nonatomic) SnakeSkill *skill;
 
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
@@ -34,7 +42,7 @@ typedef enum {
 
 
 - (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad;
-- (UIView *)addSnakeBodyWithColor:(UIColor *)color;
+- (SnakeBody *)addSnakeBodyWithDot:(SnakeDot *)dot;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
 - (UIView *)snakeTail;

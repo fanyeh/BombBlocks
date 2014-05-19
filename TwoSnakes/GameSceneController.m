@@ -13,6 +13,7 @@
 #import "MenuController.h"
 #import "MenuButton.h"
 #import "SnakeDot.h"
+#import "SnakeSkill.h"
 
 @interface GameSceneController ()
 {
@@ -29,6 +30,10 @@
     Snake *newSnake;
     MenuButton *menuButton;
     //    NSNumberFormatter *numFormatter; Formatter for score
+    
+    UIView *initSkillView;
+    UIView *supplementSkillView1;
+    UIView *supplementSkillView2;
 }
 
 
@@ -55,6 +60,29 @@
     //    [numFormatter setUsesGroupingSeparator:YES];
     
     
+    // Setup menu button
+    menuButton = [[MenuButton alloc]initWithFrame:CGRectMake(10, 10, 106, 25)];
+    [self.view addSubview:menuButton];
+    UITapGestureRecognizer *menuTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backToMenu)];
+    [menuButton addGestureRecognizer:menuTap];
+    
+    // Skill View
+    initSkillView = [[UIView alloc]initWithFrame:CGRectMake(10, 45 , 50, 50)];
+    initSkillView.layer.borderWidth = 1;
+    [self.view addSubview:initSkillView];
+    
+    supplementSkillView1 = [[UIView alloc]initWithFrame:CGRectMake(100, 45, 50, 50)];
+    supplementSkillView1.layer.borderWidth = 1;
+    [self.view addSubview:supplementSkillView1];
+    
+    supplementSkillView2 = [[UIView alloc]initWithFrame:CGRectMake(160, 45, 50, 50)];
+    supplementSkillView2.layer.borderWidth = 1;
+    [self.view addSubview:supplementSkillView2];
+    
+    initSkillView.backgroundColor = [UIColor whiteColor];
+    supplementSkillView1.backgroundColor = [UIColor whiteColor];
+    supplementSkillView2.backgroundColor = [UIColor whiteColor];
+    
     // Setup game pad
     newGamePad = [[GamePad alloc]initGamePad];
     newGamePad.center = self.view.center;
@@ -64,19 +92,16 @@
     
     // Setup snake head
     newSnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:newGamePad];
+    newSnake.initSkillView = initSkillView;
+    newSnake.supplementSkillView1 = supplementSkillView1;
+    newSnake.supplementSkillView2 = supplementSkillView2;
     [newGamePad addSubview:newSnake];
-    
-    // Setup menu button
-    menuButton = [[MenuButton alloc]initWithFrame:CGRectMake(10, 10, 106, 25)];
-    [self.view addSubview:menuButton];
-    UITapGestureRecognizer *menuTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backToMenu)];
-    [menuButton addGestureRecognizer:menuTap];
-    
+
     // Setup snake button
     snakeButtonTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(startCoundDown)];
     _snakeButton = [[SnakeButton alloc]initWithTitle:@"play" gesture:snakeButtonTap];
     [self.view addSubview:_snakeButton];
-    
+
     // Game Settings
     timeInterval = 0.2;
     numDotAte = 0;
@@ -305,7 +330,7 @@
             
 //            _scoreLabel.text =  [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
             
-            [newGamePad addSubview:[newSnake addSnakeBodyWithColor:d.smallDot.backgroundColor]];
+            [newGamePad addSubview:[newSnake addSnakeBodyWithDot:d]];
             
             [moveTimer invalidate];
             
@@ -314,6 +339,8 @@
             isCheckingCombo = YES;
             
             [newSnake checkCombo:^{
+                
+                [newSnake.skill executeSkillCombo];
                 
                 newGamePad.userInteractionEnabled = YES;
                 
@@ -332,7 +359,7 @@
                 
                 [self setScore];
                 [newSnake updateExclamationText];
-                d.smallDot.backgroundColor = [newGamePad dotColor:numDotAte];
+                [d changeType];
                 
                 if (moveTimer.isValid)
                     [moveTimer invalidate];
@@ -340,6 +367,10 @@
                 // If game paused during combo animation , timer will not activate after combo animation is completed. Need to presse resume button to continue the game
                 if (_snakeButton.state != kSnakeButtonResume)
                     moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(changeDirection) userInfo:nil repeats:YES];
+                
+                initSkillView.backgroundColor = [UIColor whiteColor];
+                supplementSkillView1.backgroundColor = [UIColor whiteColor];
+                supplementSkillView2.backgroundColor = [UIColor whiteColor];
             }];
             
             break;

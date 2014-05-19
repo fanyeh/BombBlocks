@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SnakeSkillType.h"
 
 typedef enum {
     kDotShapeCircle = 0,
@@ -16,7 +17,9 @@ typedef enum {
 @interface SnakeDot : UIView
 @property (strong,nonatomic) UIView *smallDot;
 @property (nonatomic) DotShape shape;
+@property (strong ,nonatomic) SnakeSkillType *skillType;
 
 - (id)initWithFrame:(CGRect)frame dotShape:(DotShape)shape;
+- (void)changeType;
 
 @end

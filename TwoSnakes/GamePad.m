@@ -32,49 +32,6 @@
     return self;
 }
 
-// Generate dot colors
--(UIColor *)dotColor:(NSInteger)numDotAte
-{
-    int index;
-    
-    if (numDotAte/30 < 10) {
-        
-        index = arc4random()%4;
-    }
-    else if (numDotAte/30 > 10) {
-        
-        if (numDotAte/30 > 20)
-            index = arc4random()%5;
-        else
-            index = arc4random()%6;
-    }
-    
-    
-    UIColor *color;
-    switch (index) {
-        case 0:
-            color = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
-            break;
-        case 1:
-            color = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
-            break;
-        case 2:
-            color = [UIColor colorWithRed:0.682 green:0.933 blue:0.000 alpha:1.000];
-            break;
-        case 3:
-            color = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
-            break;
-        case 4:
-            color = [UIColor colorWithRed:0.592 green:0.408 blue:0.820 alpha:1.000];
-            break;
-        case 5:
-            color = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-            break;
-    }
-    
-    return color;
-}
-
 // Chnage dot color during count down
 - (void)counterDots:(NSInteger)count
 {
@@ -281,7 +238,7 @@
 {
     self.alpha = 1;
     for (SnakeDot *d in _dotArray) {
-        d.smallDot.backgroundColor = [self dotColor:0];
+        [d changeType];
         d.alpha = 1;
         if (CGRectIntersectsRect(d.frame, headFrame))
             d.hidden = YES;

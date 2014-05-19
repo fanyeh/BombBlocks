@@ -8,6 +8,7 @@
 
 #import "SnakeDot.h"
 
+
 @implementation SnakeDot
 
 - (id)initWithFrame:(CGRect)frame
@@ -25,6 +26,7 @@
     if (self) {
         [self setShape:shape];
         _shape = shape;
+        _skillType = [[SnakeSkillType alloc]init];
     }
     return self;
 }
@@ -43,6 +45,23 @@
             [self addSubview:_smallDot];
             break;
 
+    }
+}
+
+- (void)changeType
+{
+    _skillType.type = arc4random()%3;
+
+    switch (_skillType.type) {
+        case kSkillTypeSword:
+            _smallDot.backgroundColor = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
+            break;
+        case kSkillTypeHeart:
+            _smallDot.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
+            break;
+        case kSkillTypeMagic:
+            _smallDot.backgroundColor = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
+            break;
     }
 }
 

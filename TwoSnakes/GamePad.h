@@ -14,7 +14,7 @@
 
 - (id)initGamePad;
 - (void)counterDots:(NSInteger)count;
--(UIColor *)dotColor:(NSInteger)numDotAte;
+//-(UIColor *)dotColor:(NSInteger)numDotAte;
 - (void)setupDotForGameStart:(CGRect)headFrame;
 - (void)hideAllDots;
 
