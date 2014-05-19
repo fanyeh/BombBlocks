@@ -12,6 +12,7 @@
                 <outlet property="newgameLabel" destination="wYo-2x-YxF" id="MdU-Ta-yOB"/>
                 <outlet property="recordsLabel" destination="dYx-bX-a01" id="Myh-N7-cyt"/>
                 <outlet property="rightEye" destination="SLm-uh-VZ5" id="5V4-8Y-3la"/>
+                <outlet property="snakeHead" destination="Wcx-31-lWf" id="HxN-oa-7XE"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

@@ -7,13 +7,13 @@
 //
 
 #import "MenuController.h"
-#import "TwoSnakesGameController.h"
+#import "GameSceneController.h"
 #import "SnakeButton.h"
 #import "GameRecordController.h"
 
 @interface MenuController ()
 {
-    TwoSnakesGameController *snakeGameController;
+    GameSceneController *snakeGameController;
 }
 @property (weak, nonatomic) IBOutlet UIView *leftEye;
 @property (weak, nonatomic) IBOutlet UIView *rightEye;
@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *gamecenterLabel;
 @property (weak, nonatomic) IBOutlet UILabel *newgameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *recordsLabel;
+@property (weak, nonatomic) IBOutlet UIView *snakeHead;
 
 @end
 
@@ -39,6 +40,9 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    _snakeHead.layer.cornerRadius = _snakeHead.frame.size.width/4;
+    
     _leftEye.backgroundColor = [UIColor colorWithWhite:0.200 alpha:1.000];
     _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
     _leftEye.layer.borderWidth = 30;
@@ -99,7 +103,7 @@
         
     } else {
         
-        snakeGameController =  [[TwoSnakesGameController alloc]init];
+        snakeGameController =  [[GameSceneController alloc]init];
         [self presentViewController:snakeGameController animated:YES completion:nil];
         
     }

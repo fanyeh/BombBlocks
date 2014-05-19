@@ -22,21 +22,24 @@ typedef enum {
 @property (strong,nonatomic) NSMutableDictionary *bodyDirections;
 @property (strong,nonatomic) NSMutableDictionary *turningNodes;
 @property (strong,nonatomic) UIView *gamePad;
+@property (strong,nonatomic) UIView *leftEye;
+@property (strong,nonatomic) UIView *rightEye;
+@property (strong,nonatomic) UIView *snakeMouth;
 
 
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
 @property (nonatomic) BOOL isRotate;
+@property (nonatomic) NSInteger combos;
 
-- (id)initWithSnakeHead:(UIView *)headView direction:(MoveDirection)direction gamePad:(UIView *)gamePad;
+
+- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad;
 - (UIView *)addSnakeBodyWithColor:(UIColor *)color;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
 - (UIView *)snakeTail;
--(void)setTurningNode:(CGPoint)location;
-- (BOOL)isEatingDot:(UIView*)dot;
+- (void)setTurningNode:(CGPoint)location;
 - (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver;
-- (BOOL)isOverlayWithDotFrame:(CGRect)dotFrame;
 - (void)resetSnake:(UIView *)headView andDirection:(MoveDirection)direction;
 - (void)removeSnakeBody:(UIView *)body;
 - (void)removeSnakeBodyFromArray:(NSMutableArray *)removeArray;
@@ -44,7 +47,9 @@ typedef enum {
 - (void)startRotate;
 - (void)stopRotate;
 - (void)gameOver;
--(void)updateExclamationText:(NSInteger)combo;
+- (void)updateExclamationText;
+- (void)mouthAnimation:(float)timeInterval;
+- (BOOL)checkCombo:(void(^)(void))completeBlock;
 
 
 @end

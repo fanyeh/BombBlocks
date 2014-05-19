@@ -15,6 +15,7 @@
     UIView *exclamationView;
     CGFloat exalamtionWidth;
     NSString *exclamationText;
+    NSInteger chain;     // Same color required to form a combo
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -26,20 +27,42 @@
     return self;
 }
 
-- (id)initWithSnakeHead:(UIView *)headView direction:(MoveDirection)direction gamePad:(UIView *)gamePad
+- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad
 {
-    self = [self initWithFrame:headView.frame];
+    CGRect headFrame = CGRectMake(147, 189, 20, 20);
+    self = [self initWithFrame:headFrame];
     if (self) {
+        
+        self.backgroundColor = [UIColor colorWithWhite:0.200 alpha:1.000];
+        self.layer.cornerRadius = headFrame.size.width/4;
+        
+        _leftEye = [[UIView alloc]initWithFrame:CGRectMake(2, 2, 5, 5)];
+        _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
+        _leftEye.layer.borderWidth = 1.5;
+        _leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
+        [self addSubview:_leftEye];
+        
+        _rightEye = [[UIView alloc]initWithFrame:CGRectMake(2, 13, 5, 5)];
+        _rightEye.layer.borderWidth = 1.5;
+        _rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
+        _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
+        [self addSubview:_rightEye];
+
+        _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake(15, 4, 12, 12)];
+        _snakeMouth.layer.cornerRadius = _snakeMouth.frame.size.width/2;
+        _snakeMouth.layer.borderColor = [[UIColor whiteColor]CGColor];
+        [self addSubview:_snakeMouth];
+        
         _gamePad = gamePad;
         _snakeBody = [[NSMutableArray alloc]init];
         _turningNodes = [[NSMutableDictionary alloc]init];
         _bodyDirections = [[NSMutableDictionary alloc]init];
         turningNodeTags = [[NSMutableDictionary alloc]init];
         _snakeLength = 1;
-        headView.tag = 0;
-        _xOffset = headView.frame.size.width+1;
-        _yOffset = headView.frame.size.height+1;
-        [_snakeBody addObject:headView];
+        self.tag = 0;
+        _xOffset = headFrame.size.width+1;
+        _yOffset = headFrame.size.height+1;
+        [_snakeBody addObject:self];
         [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
         
         exalamtionWidth = 85;
@@ -64,6 +87,8 @@
         }
         
         _isRotate = NO;
+        
+        chain = 2;
     }
     return self;
 }
@@ -98,7 +123,6 @@
             break;
     }
 
-    
     [self resetExclamationDirection:direction];
 
 }
@@ -145,9 +169,9 @@
     }
 }
 
--(void)updateExclamationText:(NSInteger)combo
+-(void)updateExclamationText
 {
-    exclamationText = [NSString stringWithFormat:@"Combo %ld!",(long)combo];
+    exclamationText = [NSString stringWithFormat:@"Combo %ld!",_combos];
     exclamation.text = exclamationText;
 }
 
@@ -340,26 +364,6 @@
         [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:tail.frame]];
 }
 
-#pragma mark - Dots
-
-- (BOOL)isEatingDot:(UIView *)dot
-{
-    if ([[NSValue valueWithCGRect:[self snakeHead].frame] isEqualToValue:[NSValue valueWithCGRect:dot.frame]])
-        return YES;
-    else
-        return NO;
-}
-
-- (BOOL)isOverlayWithDotFrame:(CGRect)dotFrame
-{
-    for (UIView *view in _snakeBody) {
-        if ([[NSValue valueWithCGRect:view.frame] isEqualToValue:[NSValue valueWithCGRect:dotFrame]]) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
 #pragma mark - Out of bound
 
 - (BOOL)touchedScreenBounds:(CGRect)newPostion
@@ -451,49 +455,248 @@
     _isRotate = YES;
     [[self snakeHead].layer addAnimation:[self wobbleAnimation] forKey:nil];
     [self showExclamation:YES];
-//    [self startWobble];
 }
 
 - (void)stopRotate
 {
     _isRotate = NO;
-//    [self stopWobble];
     [[self snakeHead].layer removeAllAnimations];
     [self showExclamation:NO];
 
 }
 
-#define RADIANS(degrees) ((degrees * M_PI) / 180.0)
+#pragma mark - Combo
 
-- (void)startWobble {
-    [self snakeHead].transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(-5));
-    
-    [UIView animateWithDuration:0.25
-                          delay:0.0
-                        options:(UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse)
-                     animations:^ {
-                         [self snakeHead].transform = CGAffineTransformRotate(CGAffineTransformIdentity, RADIANS(5));
-                     }
-                     completion:NULL
-     ];
+- (BOOL)checkCombo:(void(^)(void))completeBlock
+{
+    UIColor *repeatColor;
+    NSInteger startIndex = 0;
+    NSInteger endIndex = 0;
+    for (UIView *v in _snakeBody) {
+        if (![repeatColor isEqual:v.backgroundColor]) {
+            repeatColor = v.backgroundColor;
+            startIndex = [_snakeBody indexOfObject:v];
+            endIndex = startIndex;
+        } else {
+            endIndex = [_snakeBody indexOfObject:v];
+        }
+        
+        if (endIndex - startIndex == chain) {
+            
+            // Shake snake head
+            if (!_isRotate)
+                [self startRotate];
+            
+            [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:v.backgroundColor otherCombo:NO];
+            
+            return YES;
+        }
+    }
+    completeBlock();
+    return NO;
 }
 
-- (void)stopWobble {
-    [UIView animateWithDuration:0.25
-                          delay:0.0
-                        options:(UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveLinear)
-                     animations:^ {
-                         [self snakeHead].transform = CGAffineTransformIdentity;
-                     }
-                     completion:NULL
-     ];
+// Single body color check
+- (void)cancelSnakeBodyByColor:(UIColor *)color complete:(void(^)(void))completeBlock
+{
+    BOOL completeCheck = YES;
+    // Remove each body with same color
+    for (UIView *v in _snakeBody) {
+        if ([v.backgroundColor isEqual:color]) {
+            NSInteger index = [_snakeBody indexOfObject:v];
+            [self removeSnakeBodyByIndex:index andColor:v.backgroundColor complete:completeBlock];
+            completeCheck = NO;
+            break;
+        }
+    }
+    
+    // Check if there is other combos
+    if (completeCheck)
+        [self otherCombo:completeBlock];
+}
+
+// Single body removal
+-(void)removeSnakeBodyByIndex:(NSInteger)index andColor:(UIColor *)color complete:(void(^)(void))completeBlock
+{
+    for (NSInteger i=index; i < [_snakeBody count];i++) {
+        if (i < [_snakeBody count] -1) {
+            // Next body
+            UIView *currentBody = [_snakeBody objectAtIndex:i];
+            UIView *nextBody = [_snakeBody objectAtIndex:i+1];
+            
+            [UIView animateWithDuration:0.0 animations:^{
+                
+                currentBody.backgroundColor = nextBody.backgroundColor;
+                
+            }];
+        }
+    }
+    
+    [UIView animateWithDuration:0.1 animations:^{
+        
+        self.snakeTail.alpha = 0;
+        
+    } completion:^(BOOL finished) {
+        
+        [self.snakeTail removeFromSuperview];
+        [self updateTurningNode];
+        [self.snakeBody removeLastObject];
+        [self cancelSnakeBodyByColor:color complete:completeBlock];
+    }];
+}
+
+-(BOOL)otherCombo:(void(^)(void))completeBlock
+{
+    UIColor *mouthColor;
+    UIColor *repeatColor;
+    NSInteger startIndex = 0;
+    NSInteger endIndex = 0;
+    BOOL hasCombo = NO;
+    
+    for (UIView *v in _snakeBody) {
+        
+        if (![repeatColor isEqual:v.backgroundColor]) {
+            
+            if (hasCombo) {
+                // Invalidate timer if there combo
+                
+                [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
+                
+                return YES;
+            } else {
+                repeatColor = v.backgroundColor;
+                startIndex = [_snakeBody indexOfObject:v];
+                endIndex = startIndex;
+            }
+        } else {
+            endIndex = [_snakeBody indexOfObject:v];
+            
+            if (endIndex - startIndex == chain) {
+                mouthColor = repeatColor;
+                hasCombo = YES;
+            }
+            
+            if ([v isEqual:[_snakeBody lastObject]] && hasCombo) {
+                
+                [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
+                
+                return YES;
+                
+            }
+        }
+    }
+    // If no other combo call the complete block
+    completeBlock();
+    return NO;
+}
+
+-(void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(void(^)(void))completeBlock
+{
+    if (range == 0) {
+        
+        [self otherCombo:completeBlock];
+        
+    } else {
+
+        for (NSInteger i=start; i < [_snakeBody count] -1 ;i++) {
+            
+            if (i < [_snakeBody count] -1) {
+                
+                // Next body
+                UIView *currentBody = [_snakeBody objectAtIndex:i];
+                UIView *nextBody = [_snakeBody objectAtIndex:i+1];
+                currentBody.backgroundColor = nextBody.backgroundColor;
+            }
+        }
+        
+        [UIView animateWithDuration:0.1 animations:^{
+            
+            self.snakeTail.alpha = 0;
+            
+        } completion:^(BOOL finished) {
+            
+            [self.snakeTail removeFromSuperview];
+            [self updateTurningNode];
+            [self.snakeBody removeLastObject];
+            [self removeSnakeBodyByRangeStart:start andRange:range-1 complete:completeBlock];
+        }];
+        
+    }
+}
+
+- (void)comboAnimationStartIndex:(NSInteger)start endIndex:(NSInteger)end
+                   completeBlock:(void(^)(void))completeBlock
+                      mouthColor:(UIColor *)color
+                      otherCombo:(BOOL)other
+{
+    
+    _leftEye.alpha = 0;
+    _rightEye.alpha = 0;
+    _snakeMouth.backgroundColor = color;
+    _combos++;
+    [self updateExclamationText];
+    
+    for (NSInteger i = start ; i < end +1 ; i ++) {
+        
+        UIView *u = _snakeBody[i];
+        [u.layer addAnimation:[self bodyAnimation:i] forKey:nil];
+        
+    }
+    
+    [UIView animateWithDuration:1 animations:^{
+        
+        _leftEye.alpha = 1;
+        _rightEye.alpha = 1;
+        _leftEye.layer.borderWidth = 0.5;
+        _rightEye.layer.borderWidth = 0.5;
+        
+    } completion:^(BOOL finished) {
+        
+        for (NSInteger i = start ; i < end +1 ; i ++) {
+            UIView *u = _snakeBody[i];
+            [u.layer removeAllAnimations];
+        }
+        
+        _leftEye.layer.borderWidth = 1.5;
+        _rightEye.layer.borderWidth = 1.5;
+        
+        if (other)
+            [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
+        else
+            [self cancelSnakeBodyByColor:color complete:completeBlock];
+    }];
+    
+}
+
+#pragma mark - Body Animations
+
+-(CABasicAnimation *)bodyAnimation:(NSInteger)i
+{
+    CGFloat toAngle;
+    CGFloat fromAngle;
+    
+    if (i%2 == 0) {
+        toAngle = -M_PI/6;
+        fromAngle = M_PI/6;
+    } else {
+        toAngle = M_PI/6;
+        fromAngle = -M_PI/6;
+    }
+    
+    CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    [anim setToValue:[NSNumber numberWithFloat:toAngle]]; // satrt angle
+    [anim setFromValue:[NSNumber numberWithDouble:fromAngle]]; // rotation angle
+    [anim setDuration:0.1]; // rotate speed
+    [anim setRepeatCount:HUGE_VAL];
+    [anim setAutoreverses:YES];
+    
+    return anim;
 }
 
 -(CABasicAnimation *)wobbleAnimation
 {
     CGFloat startAngle;
     CGFloat endAngle;
-    
     
     switch ([self headDirection] ) {
         case kMoveDirectionRight:
@@ -531,9 +734,30 @@
     return anim;
 }
 
+- (void)mouthAnimation:(float)timeInterval
+{
+    float duration = timeInterval;
+    float closeInsetSize =  _snakeMouth.frame.size.width/3;
+    
+    [UIView animateWithDuration:duration animations:^{
+        
+        // Mouth Close
+        _snakeMouth.frame = CGRectInset(_snakeMouth.frame, closeInsetSize, closeInsetSize);
+        
+    } completion:^(BOOL finished) {
+        
+        _snakeMouth.hidden = YES;
+        
+        // Mouth Open
+        _snakeMouth.frame = CGRectInset(_snakeMouth.frame, -closeInsetSize, -closeInsetSize);
+        
+    }];
+}
+
+#pragma mark - Exclamation Animation
+
 -(CABasicAnimation *)exclamationAnimation
 {
-
     CGFloat startAngle = - M_PI/60;
     CGFloat endAngle = M_PI/60;
  
@@ -545,8 +769,6 @@
     [anim setAutoreverses:YES];
     return anim;
 }
-
-
 
 - (void)showExclamation:(BOOL)show
 {
@@ -560,6 +782,8 @@
         [exclamation.layer removeAllAnimations];
     }
 }
+
+#pragma mark - Game Over Animation
 
 -(CABasicAnimation *)gameOverAnimation
 {
@@ -576,4 +800,5 @@
 {
     [[self snakeHead].layer addAnimation:[self gameOverAnimation] forKey:nil];
 }
+
 @end

@@ -15,6 +15,12 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        self.layer.cornerRadius = self.frame.size.width/2;
+        self.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
+        self.textColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
+        self.textAlignment = NSTextAlignmentCenter;
+        self.layer.masksToBounds = YES;
     }
     return self;
 }
@@ -26,6 +32,11 @@
         // Initialization code
         self.layer.cornerRadius = self.frame.size.width/2;
         self.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
+        self.textColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
+        self.textAlignment = NSTextAlignmentCenter;
+        self.layer.masksToBounds = YES;
+
     }
     return self;
 }

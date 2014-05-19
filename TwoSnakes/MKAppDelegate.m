@@ -8,10 +8,12 @@
 
 #import "MKAppDelegate.h"
 #import "MenuController.h"
+#import "GameSceneController.h"
 
 @implementation MKAppDelegate
 {
     MenuController *menuController;
+    GameSceneController *sceneController;
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -24,12 +26,13 @@
     // Override point for customization after application launch.
     
     menuController = [[MenuController alloc]init];
+    sceneController = [[GameSceneController alloc]init];
     
-    [self.window setRootViewController:menuController];
+    [self.window setRootViewController:sceneController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center
-    [[GCHelper sharedInstance] authenticateLocalUser:menuController];
+//    [[GCHelper sharedInstance] authenticateLocalUser:menuController];
     return YES;
 }
 
