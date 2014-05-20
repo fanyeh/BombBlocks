@@ -21,6 +21,7 @@
     float dotHitPoint;
     float leechTimeCount;
     float leechHitPoint;
+
 }
 
 -(void)startAttack
@@ -47,6 +48,34 @@
 - (void)reduceHitPoint:(float)damage
 {
     self.hitPoint -= damage;
+}
+
+- (void)reduceHitPointByMelee:(float)damage
+{
+    [self reduceHitPoint:damage];
+    
+    _meleeDamageLabel.alpha = 0;
+    _meleeDamageLabel.text = [NSString stringWithFormat:@"- %.1f",damage];
+    
+    [UIView animateWithDuration:0.8 animations:^{
+        _meleeDamageLabel.alpha = 1;
+    } completion:^(BOOL finished) {
+        _meleeDamageLabel.alpha = 0;
+    }];
+}
+
+- (void)reduceHitPointByMagic:(float)damage
+{
+    [self reduceHitPoint:damage];
+    
+    _magicDamageLabel.alpha = 0;
+    _magicDamageLabel.text = [NSString stringWithFormat:@"- %.1f",damage];
+    
+    [UIView animateWithDuration:0.8 animations:^{
+        _magicDamageLabel.alpha = 1;
+    } completion:^(BOOL finished) {
+        _magicDamageLabel.alpha = 0;
+    }];
 }
 
 - (void)getDamageShieldBuff:(float)timer hitpoint:(float)hitpoint
@@ -127,6 +156,16 @@
 - (void)reduceHitPointByDot
 {
     [self reduceHitPoint:dotHitPoint];
+    _dotDamageLabel.alpha = 0;
+    _dotDamageLabel.text = [NSString stringWithFormat:@"- %.1f",dotHitPoint];
+
+    [UIView animateWithDuration:0.8 animations:^{
+        _dotDamageLabel.alpha = 1;
+    }completion:^(BOOL finished) {
+        _dotDamageLabel.alpha = 0;
+
+    }];
+    
     dotTimeCount -= 1;
     
     if (dotTimeCount == 0)
@@ -143,7 +182,6 @@
 
 - (void)leech
 {
-    [self reduceHitPoint:leechHitPoint];
     [self getHeal:leechHitPoint];
     
     leechTimeCount -= 1;
@@ -151,6 +189,27 @@
     if (leechTimeCount == 0)
         [self.leechTimer invalidate];
 }
+
+- (void)getLeeched:(float)timer hitpoint:(float)hitpoint
+{
+    leechTimeCount = timer;
+    leechHitPoint = hitpoint;
+    self.leechTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(leeched) userInfo:nil repeats:YES];
+    
+}
+
+- (void)leeched
+{
+    [self reduceHitPoint:leechHitPoint];
+    
+    leechTimeCount -= 1;
+    
+    if (leechTimeCount == 0)
+        [self.leechTimer invalidate];
+}
+
+
+
 
 - (float)currentHitPoint
 {

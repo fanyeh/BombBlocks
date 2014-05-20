@@ -26,6 +26,9 @@
 @property (strong,nonatomic) NSTimer *damageShieldTimer;
 @property (strong,nonatomic) NSTimer *regnerationTimer;
 @property (strong,nonatomic) NSTimer *leechTimer;
+@property (strong,nonatomic) UILabel *dotDamageLabel;
+@property (strong,nonatomic) UILabel *meleeDamageLabel;
+@property (strong,nonatomic) UILabel *magicDamageLabel;
 
 - (void)reduceHitPoint:(float)damage;
 - (void)getHeal:(float)hitpoint;
@@ -38,6 +41,9 @@
 - (void)getLeech:(float)timer hitpoint:(float)hitpoint;
 - (void)getStunned:(float)timer;
 - (float)currentHitPoint;
+- (void)getLeeched:(float)timer hitpoint:(float)hitpoint;
+- (void)reduceHitPointByMagic:(float)damage;
+- (void)reduceHitPointByMelee:(float)damage;
 
 
 @end

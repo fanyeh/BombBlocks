@@ -23,7 +23,7 @@
 
 - (void)statsSetup
 {
-    self.hitPoint = 100;
+    self.hitPoint = 1000;
     self.meleeAttackPoint = 5;
     self.magicAttackPoint = 0;
     self.meleeDefensePoint = 10;

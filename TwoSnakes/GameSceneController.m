@@ -40,6 +40,15 @@
     TestBoss *Enemy;
     UIProgressView *snakeHP;
     UIProgressView *bossHP;
+    
+    UILabel *stunLabel;
+    UILabel *dotLabel;
+    UILabel *leechLabel;
+    
+    UILabel *dotDamageLabel;
+    UILabel *meleeDamageLabel;
+    UILabel *magicDamageLabel;
+
 }
 
 
@@ -74,15 +83,15 @@
     menuButton.hidden = YES;
     
     // Skill View
-    initSkillView = [[UIView alloc]initWithFrame:CGRectMake(10, 45 , 50, 50)];
+    initSkillView = [[UIView alloc]initWithFrame:CGRectMake(10, 45 , 25, 25)];
     initSkillView.layer.borderWidth = 1;
     [self.view addSubview:initSkillView];
     
-    supplementSkillView1 = [[UIView alloc]initWithFrame:CGRectMake(100, 45, 50, 50)];
+    supplementSkillView1 = [[UIView alloc]initWithFrame:CGRectMake(55, 45, 25, 25)];
     supplementSkillView1.layer.borderWidth = 1;
     [self.view addSubview:supplementSkillView1];
     
-    supplementSkillView2 = [[UIView alloc]initWithFrame:CGRectMake(160, 45, 50, 50)];
+    supplementSkillView2 = [[UIView alloc]initWithFrame:CGRectMake(90, 45, 25, 25)];
     supplementSkillView2.layer.borderWidth = 1;
     [self.view addSubview:supplementSkillView2];
     
@@ -110,8 +119,52 @@
     [self.view addSubview:_snakeButton];
     
     // Test Boss
-    Enemy = [[TestBoss alloc]initWithFrame:CGRectMake(250, 45, 50, 50)];
+    Enemy = [[TestBoss alloc]initWithFrame:CGRectMake(135, 45, 50, 50)];
     [self.view addSubview:Enemy];
+    
+    // Damage Label
+    dotDamageLabel = [[UILabel alloc]initWithFrame:CGRectMake(130, 15, 20, 20)];
+    dotDamageLabel.textColor = [UIColor redColor];
+    dotDamageLabel.adjustsFontSizeToFitWidth = YES;
+    [self.view addSubview:dotDamageLabel];
+    Enemy.boss.dotDamageLabel = dotDamageLabel;
+    
+    meleeDamageLabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 15, 20, 20)];
+    meleeDamageLabel.textColor = [UIColor redColor];
+    meleeDamageLabel.adjustsFontSizeToFitWidth = YES;
+    [self.view addSubview:meleeDamageLabel];
+    Enemy.boss.meleeDamageLabel = meleeDamageLabel;
+    
+    magicDamageLabel = [[UILabel alloc]initWithFrame:CGRectMake(170, 15, 20, 20)];
+    magicDamageLabel.textColor = [UIColor redColor];
+    magicDamageLabel.adjustsFontSizeToFitWidth = YES;
+    [self.view addSubview:magicDamageLabel];
+    Enemy.boss.magicDamageLabel = magicDamageLabel;
+    
+    // Enemy State
+    stunLabel = [[UILabel alloc]initWithFrame:CGRectMake(205, 45, 25, 25)];
+    stunLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:10];
+    stunLabel.textColor = [UIColor redColor];
+    stunLabel.textAlignment = NSTextAlignmentCenter;
+    stunLabel.text = @"Stun";
+    [self.view addSubview:stunLabel];
+    stunLabel.hidden = YES;
+    
+    dotLabel = [[UILabel alloc]initWithFrame:CGRectMake(235, 45, 25, 25)];
+    dotLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:10];
+    dotLabel.textColor = [UIColor redColor];
+    dotLabel.textAlignment = NSTextAlignmentCenter;
+    dotLabel.text = @"Dot";
+    [self.view addSubview:dotLabel];
+    dotLabel.hidden = YES;
+    
+    leechLabel = [[UILabel alloc]initWithFrame:CGRectMake(275, 45, 25, 25)];
+    leechLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:10];
+    leechLabel.textColor = [UIColor redColor];
+    leechLabel.textAlignment = NSTextAlignmentCenter;
+    leechLabel.text = @"Leech";
+    [self.view addSubview:leechLabel];
+    leechLabel.hidden = YES;
     
     // HP progress
     snakeHP = [[UIProgressView alloc]initWithFrame:CGRectMake(10, 20, 100, 30)];
@@ -152,17 +205,19 @@
         switch (s.skillName) {
             case kSkillNameMeleeAttack:
                 
-                [Enemy.boss reduceHitPoint:s.damage];
+                [Enemy.boss reduceHitPointByMelee:s.damage];
                 
                 break;
             case kSkillNameMagicAttack:
                 
-                [Enemy.boss reduceHitPoint:s.damage];
-                
+                [Enemy.boss reduceHitPointByMagic:s.damage];
+
                 break;
             case kSkillNameStun:
                 
                 [Enemy.boss getStunned:s.timer];
+                stunLabel.hidden = NO;
+                [NSTimer scheduledTimerWithTimeInterval:s.timer target:self selector:@selector(hideStunLabel) userInfo:nil repeats:NO];
                 
                 break;
             case kSkillNameHeal:
@@ -173,6 +228,8 @@
             case kSkillNameDamageOverTime:
 
                 [Enemy.boss getDotted:s.timer hitpoint:s.damage];
+                dotLabel.hidden = NO;
+                [NSTimer scheduledTimerWithTimeInterval:s.timer target:self selector:@selector(hideDotLabel) userInfo:nil repeats:NO];
                 
                 break;
             case kSkillNameDamageShield:
@@ -193,6 +250,10 @@
             case kSkillNameLeech:
                 
                 [newSnake.snakeType getLeech:s.timer hitpoint:s.damage];
+                [Enemy.boss getLeeched:s.timer hitpoint:s.damage];
+                
+                leechLabel.hidden = NO;
+                [NSTimer scheduledTimerWithTimeInterval:s.timer target:self selector:@selector(hideLeechLabel) userInfo:nil repeats:NO];
                 
                 break;
             case kSkillNameDamageAbsorb:
@@ -209,7 +270,7 @@
                 
                 break;
         }
-        [bossHP setProgress:[Enemy.boss currentHitPoint]/100];
+        [bossHP setProgress:[Enemy.boss currentHitPoint]/1000];
     }
 }
 
@@ -475,6 +536,22 @@
         }
     }
     [newGamePad sendSubviewToBack:[newSnake snakeHead]];
+}
+
+- (void)hideStunLabel
+{
+    stunLabel.hidden = YES;
+}
+
+- (void)hideDotLabel
+{
+    dotLabel.hidden = YES;
+    
+}
+
+- (void)hideLeechLabel
+{
+    leechLabel.hidden = YES;
 }
 
 #pragma mark - Memory Management
