@@ -14,6 +14,8 @@
 #import "MenuButton.h"
 #import "SnakeDot.h"
 #import "SnakeSkill.h"
+#import "TestBoss.h"
+#import "SnakeSkillName.h"
 
 @interface GameSceneController ()
 {
@@ -34,6 +36,8 @@
     UIView *initSkillView;
     UIView *supplementSkillView1;
     UIView *supplementSkillView2;
+    
+    TestBoss *boss;
 }
 
 
@@ -101,6 +105,10 @@
     snakeButtonTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(startCoundDown)];
     _snakeButton = [[SnakeButton alloc]initWithTitle:@"play" gesture:snakeButtonTap];
     [self.view addSubview:_snakeButton];
+    
+    // Test Boss
+    boss = [[TestBoss alloc]initWithFrame:CGRectMake(250, 45, 50, 50)];
+    [self.view addSubview:boss];
 
     // Game Settings
     timeInterval = 0.2;
@@ -109,6 +117,90 @@
     maxCombos = 0;
     score = 0;
     newGamePad.userInteractionEnabled = NO;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(snakeAttack:) name:@"snakeAttack" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enemyAttack:) name:@"enemyAttack" object:nil];
+
+}
+
+// Received Snake Attack
+- (void)snakeAttack:(NSNotification *)notification
+{
+    NSLog(@"Snake Attack!");
+    NSLog(@"%@",[notification userInfo]);
+    
+    NSArray *skillSet = [notification userInfo].allValues;
+    
+    for (SnakeSkillName *s in skillSet) {
+        
+        switch (s.skillName) {
+            case kSkillNameMeleeAttack:
+                
+                [boss reduceHitPoint:s.damage];
+                
+                break;
+            case kSkillNameMagicAttack:
+                
+                [boss reduceHitPoint:s.damage];
+                
+                break;
+            case kSkillNameStun:
+                
+                [boss getStunned:s.timer];
+                
+                break;
+            case kSkillNameHeal:
+                
+                [newSnake.snakeType heal:s.heal];
+                
+                break;
+            case kSkillNameDamageOverTime:
+
+                [boss getDotted:s.timer hitpoint:s.damage];
+                
+                break;
+            case kSkillNameDamageShield:
+                
+                [newSnake.snakeType damageShieldBuff:s.timer hitpoint:s.damage];
+                
+                break;
+            case kSkillNameDefenseBuff:
+                
+                [newSnake.snakeType attackBuff:s.timer adder:s.buff];
+                
+                break;
+            case kSkillNameAttackBuff:
+                
+                [newSnake.snakeType attackBuff:s.timer adder:s.buff];
+                
+                break;
+            case kSkillNameLeech:
+                
+                [newSnake.snakeType getLeech:s.timer hitpoint:s.damage];
+                
+                break;
+            case kSkillNameDamageAbsorb:
+                
+                [newSnake.snakeType getDamageAbsorb:s.heal];
+                
+                break;
+            case kSkillNameRegeneration:
+                
+                [newSnake.snakeType getRegeneration:s.timer hitpoint:s.heal];
+                
+                break;
+            case kSkillNameCounterAttack:
+                
+                break;
+        }
+    }
+}
+
+// Received Enemy Attack
+- (void)enemyAttack:(NSNotification *)notification
+{
+    NSLog(@"Enemy Attack!");
+
 }
 
 -(void)directionChange:(UITapGestureRecognizer *)sender
@@ -279,7 +371,6 @@
 - (void)replayGame
 {
     // Game settings
-    newGamePad.hidden = YES;
     timeInterval = 0.2;
     countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1
                                                       target:self
@@ -288,16 +379,7 @@
                                                      repeats:YES];
     numDotAte = 0;
     score = 0;
-    
-//    // View settings
-//    for (SnakeDot *d in [newGamePad dotArray]) {
-//        d.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ;
-//    }
-//    
-//    // Remove All snake bodies from view
-//    for (UIView *v in [newSnake snakeBody]) {
-//        [v removeFromSuperview];
-//    }
+
     
     [newSnake snakeHead].frame = CGRectMake(147, 189, 20, 20);
     [[newSnake snakeHead].layer removeAllAnimations];
@@ -306,7 +388,6 @@
 //    _scoreLabel.text =  [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
     
     [newSnake resetSnake:[newSnake snakeHead] andDirection:[newSnake headDirection]];
-//    [newGamePad addSubview:[newSnake snakeHead]];
     
     [_snakeButton changeState:kSnakeButtonPause];
     [snakeButtonTap removeTarget:self action:@selector(replayGame)];

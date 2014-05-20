@@ -12,9 +12,12 @@
 		4C1828591929CEF600CB295F /* SnakeSkillType.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1828581929CEF600CB295F /* SnakeSkillType.m */; };
 		4C18285C1929D1A400CB295F /* SnakeSkillTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C18285B1929D1A400CB295F /* SnakeSkillTree.m */; };
 		4C18285F1929E3D000CB295F /* SnakeBody.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C18285E1929E3D000CB295F /* SnakeBody.m */; };
-		4C1828661929EF2100CB295F /* Enemy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1828651929EF2100CB295F /* Enemy.m */; };
 		4C1828691929F4F700CB295F /* TestBoss.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1828681929F4F700CB295F /* TestBoss.m */; };
 		4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C67DD3E1919E45E00666A2D /* SnakeButton.m */; };
+		4C7D4D2B192AF587005486A6 /* SnakeSkillName.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7D4D2A192AF587005486A6 /* SnakeSkillName.m */; };
+		4C7D4D2E192B153A005486A6 /* BaseStats.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7D4D2D192B153A005486A6 /* BaseStats.m */; };
+		4C7D4D31192B159A005486A6 /* EnemyType.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7D4D30192B159A005486A6 /* EnemyType.m */; };
+		4C7D4D34192B15E6005486A6 /* SnakeType.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7D4D33192B15E6005486A6 /* SnakeType.m */; };
 		4C7F13571911F36D00565A01 /* Snake.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F13561911F36D00565A01 /* Snake.m */; };
 		4C85859A1925A1990096F75B /* MenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8585981925A1990096F75B /* MenuController.m */; };
 		4C85859B1925A1990096F75B /* MenuController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C8585991925A1990096F75B /* MenuController.xib */; };
@@ -68,12 +71,18 @@
 		4C18285B1929D1A400CB295F /* SnakeSkillTree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeSkillTree.m; sourceTree = "<group>"; };
 		4C18285D1929E3D000CB295F /* SnakeBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeBody.h; sourceTree = "<group>"; };
 		4C18285E1929E3D000CB295F /* SnakeBody.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeBody.m; sourceTree = "<group>"; };
-		4C1828641929EF2100CB295F /* Enemy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Enemy.h; sourceTree = "<group>"; };
-		4C1828651929EF2100CB295F /* Enemy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Enemy.m; sourceTree = "<group>"; };
 		4C1828671929F4F700CB295F /* TestBoss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestBoss.h; sourceTree = "<group>"; };
 		4C1828681929F4F700CB295F /* TestBoss.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBoss.m; sourceTree = "<group>"; };
 		4C67DD3D1919E45E00666A2D /* SnakeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeButton.h; sourceTree = "<group>"; };
 		4C67DD3E1919E45E00666A2D /* SnakeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeButton.m; sourceTree = "<group>"; };
+		4C7D4D29192AF587005486A6 /* SnakeSkillName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeSkillName.h; sourceTree = "<group>"; };
+		4C7D4D2A192AF587005486A6 /* SnakeSkillName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeSkillName.m; sourceTree = "<group>"; };
+		4C7D4D2C192B153A005486A6 /* BaseStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseStats.h; sourceTree = "<group>"; };
+		4C7D4D2D192B153A005486A6 /* BaseStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseStats.m; sourceTree = "<group>"; };
+		4C7D4D2F192B159A005486A6 /* EnemyType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnemyType.h; sourceTree = "<group>"; };
+		4C7D4D30192B159A005486A6 /* EnemyType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnemyType.m; sourceTree = "<group>"; };
+		4C7D4D32192B15E6005486A6 /* SnakeType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeType.h; sourceTree = "<group>"; };
+		4C7D4D33192B15E6005486A6 /* SnakeType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeType.m; sourceTree = "<group>"; };
 		4C7F13551911F36D00565A01 /* Snake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snake.h; sourceTree = "<group>"; };
 		4C7F13561911F36D00565A01 /* Snake.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Snake.m; sourceTree = "<group>"; };
 		4C8585971925A1990096F75B /* MenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuController.h; sourceTree = "<group>"; };
@@ -149,6 +158,8 @@
 		4C1828601929ED2000CB295F /* Snake */ = {
 			isa = PBXGroup;
 			children = (
+				4C7D4D32192B15E6005486A6 /* SnakeType.h */,
+				4C7D4D33192B15E6005486A6 /* SnakeType.m */,
 				4C7F13551911F36D00565A01 /* Snake.h */,
 				4C7F13561911F36D00565A01 /* Snake.m */,
 				4C1828511929CBAA00CB295F /* SnakeSkill.h */,
@@ -157,6 +168,8 @@
 				4C18285B1929D1A400CB295F /* SnakeSkillTree.m */,
 				4C1828571929CEF600CB295F /* SnakeSkillType.h */,
 				4C1828581929CEF600CB295F /* SnakeSkillType.m */,
+				4C7D4D29192AF587005486A6 /* SnakeSkillName.h */,
+				4C7D4D2A192AF587005486A6 /* SnakeSkillName.m */,
 				4C18285D1929E3D000CB295F /* SnakeBody.h */,
 				4C18285E1929E3D000CB295F /* SnakeBody.m */,
 			);
@@ -190,8 +203,8 @@
 		4C1828631929EF0100CB295F /* Enemy */ = {
 			isa = PBXGroup;
 			children = (
-				4C1828641929EF2100CB295F /* Enemy.h */,
-				4C1828651929EF2100CB295F /* Enemy.m */,
+				4C7D4D2F192B159A005486A6 /* EnemyType.h */,
+				4C7D4D30192B159A005486A6 /* EnemyType.m */,
 				4C1828671929F4F700CB295F /* TestBoss.h */,
 				4C1828681929F4F700CB295F /* TestBoss.m */,
 			);
@@ -201,6 +214,8 @@
 		4C85859C1925DE2F0096F75B /* Game Object */ = {
 			isa = PBXGroup;
 			children = (
+				4C7D4D2C192B153A005486A6 /* BaseStats.h */,
+				4C7D4D2D192B153A005486A6 /* BaseStats.m */,
 				4C1828631929EF0100CB295F /* Enemy */,
 				4C1828621929ED6000CB295F /* GamePad */,
 				4C1828611929ED3E00CB295F /* Control */,
@@ -440,8 +455,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C8585B31925FF200096F75B /* Reachability.m in Sources */,
+				4C7D4D31192B159A005486A6 /* EnemyType.m in Sources */,
+				4C7D4D34192B15E6005486A6 /* SnakeType.m in Sources */,
 				4C7F13571911F36D00565A01 /* Snake.m in Sources */,
 				4CB108B7190FF6440085C747 /* MKAppDelegate.m in Sources */,
+				4C7D4D2B192AF587005486A6 /* SnakeSkillName.m in Sources */,
 				4C85859A1925A1990096F75B /* MenuController.m in Sources */,
 				4CAA5DF21929AB9100049F52 /* SocialShare.m in Sources */,
 				4C8585A41925DEAA0096F75B /* GameRecordController.m in Sources */,
@@ -452,11 +470,11 @@
 				4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */,
 				4C1828691929F4F700CB295F /* TestBoss.m in Sources */,
 				4CB108B3190FF6440085C747 /* main.m in Sources */,
+				4C7D4D2E192B153A005486A6 /* BaseStats.m in Sources */,
 				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,
 				4CAA5DEE1929A0F900049F52 /* GameSceneController.m in Sources */,
 				4C1828531929CBAA00CB295F /* SnakeSkill.m in Sources */,
 				4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */,
-				4C1828661929EF2100CB295F /* Enemy.m in Sources */,
 				4C1828591929CEF600CB295F /* SnakeSkillType.m in Sources */,
 				4C18285F1929E3D000CB295F /* SnakeBody.m in Sources */,
 				4CAA5DEA1929998000049F52 /* GamePad.m in Sources */,

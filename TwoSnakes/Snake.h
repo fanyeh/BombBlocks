@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SnakeBody.h"
 #import "SnakeDot.h"
+#import "SnakeType.h"
 @class SnakeSkill;
 
 typedef enum {
@@ -17,7 +18,6 @@ typedef enum {
     kMoveDirectionLeft,
     kMoveDirectionRight
 } MoveDirection;
-
 
 @interface Snake : UIView
 
@@ -39,6 +39,7 @@ typedef enum {
 @property (nonatomic) CGFloat yOffset;
 @property (nonatomic) BOOL isRotate;
 @property (nonatomic) NSInteger combos;
+@property (nonatomic) SnakeType *snakeType;
 
 
 - (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad;

@@ -43,6 +43,7 @@
 - (void)setSupplementSkill:(SkillType)type
 {
     [self addSkillToContainer:type];
+
 }
 
 - (void)addSkillToContainer:(SkillType)type
@@ -57,6 +58,15 @@
         case kSkillTypeMagic:
             [skillComboContainer addObject:magic];
             break;
+    }
+}
+
+- (void)updateSkillAdder:(SkillType)type adder:(NSInteger)adder
+{
+    for (SnakeSkillType *t in skillComboContainer) {
+        if (t.type == type) {
+            t.adder += adder;
+        }
     }
 }
 

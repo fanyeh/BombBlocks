@@ -16,6 +16,7 @@
     if (self) {
         
         _type = type;
+        _adder = 0;
         
     }
     return self;

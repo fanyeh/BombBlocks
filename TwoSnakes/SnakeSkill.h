@@ -15,6 +15,6 @@
 - (void)setInitialSkill:(SkillType)type;
 - (void)setSupplementSkill:(SkillType)type;
 - (void)executeSkillCombo;
-
+- (void)updateSkillAdder:(SkillType)type adder:(NSInteger)adder;
 
 @end

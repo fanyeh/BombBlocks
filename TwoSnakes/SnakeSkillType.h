@@ -19,5 +19,6 @@ typedef enum {
 -(id)init;
 -(id)initWithSkillType:(SkillType)type;
 @property (nonatomic) SkillType type;
+@property (nonatomic) NSInteger adder;
 
 @end

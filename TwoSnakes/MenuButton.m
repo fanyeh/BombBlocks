@@ -17,19 +17,19 @@
     if (self) {
         // Initialization code
         CircleLabel *labelM = [[CircleLabel alloc]initWithFrame:CGRectMake(0, 0, 25, 25)];
-        labelM.text = @"M";
+        labelM.text = @"m";
         [self addSubview:labelM];
         
         CircleLabel *labelE = [[CircleLabel alloc]initWithFrame:CGRectMake(27, 0, 25, 25)];
-        labelE.text = @"E";
+        labelE.text = @"e";
         [self addSubview:labelE];
         
         CircleLabel *labelN = [[CircleLabel alloc]initWithFrame:CGRectMake(54, 0, 25, 25)];
-        labelN.text = @"N";
+        labelN.text = @"n";
         [self addSubview:labelN];
         
         CircleLabel *labelU = [[CircleLabel alloc]initWithFrame:CGRectMake(81, 0, 25, 25)];
-        labelU.text = @"U";
+        labelU.text = @"u";
         [self addSubview:labelU];
     }
     return self;
