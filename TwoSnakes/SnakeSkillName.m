@@ -38,6 +38,9 @@
             
             _damage = 10 + 2*([self adderModifier]);
             
+            NSLog(@"Snake Magic Attack %f damage!",_damage);
+
+            
             break;
         case kSkillNameStun:
             

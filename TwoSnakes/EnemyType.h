@@ -10,4 +10,6 @@
 
 @interface EnemyType : BaseStats
 
+-(id)initWithType;
+
 @end

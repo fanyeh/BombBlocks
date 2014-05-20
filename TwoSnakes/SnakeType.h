@@ -20,14 +20,5 @@ typedef enum {
 @property (nonatomic) Type type;
 
 - (id)initWithSnakeType:(Type)type;
-- (void)heal:(float)hitpoint;
-- (void)damageShieldBuff:(float)timer hitpoint:(float)hitpoint;
-- (void)attackBuff:(float)timer adder:(float)percentage;
-- (void)defenseBuff:(float)timer adder:(float)percentage;
-- (void)getDamageAbsorb:(float)hitpoint;
-- (void)getRegeneration:(float)timer hitpoint:(float)hitpoint;
-- (void)getDotted:(float)timer hitpoint:(float)hitpoint;
-- (void)getLeech:(float)timer hitpoint:(float)hitpoint;
-
 
 @end

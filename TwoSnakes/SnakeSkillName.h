@@ -27,6 +27,7 @@ typedef enum {
 
 
 - (id)initWithSkillType:(SkillType)type skillName:(SkillName)name;
+- (void)calculateSkillEffect;
 
 @property (nonatomic) SkillName skillName;
 @property (nonatomic)float damage;

@@ -7,13 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EnemyType.h"
+
 
 @interface TestBoss : UIView
 
-- (void)reduceHitPoint:(float)damage;
-- (void)getStunned:(float)timer;
-- (void)startAttack;
-- (void)getDotted:(float)timer hitpoint:(float)hitpoint;
-
+@property (strong,nonatomic) EnemyType *boss;
 
 @end

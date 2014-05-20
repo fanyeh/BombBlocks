@@ -10,7 +10,7 @@
 
 @interface BaseStats : NSObject
 
-@property (nonatomic) NSInteger hitPoint;
+@property (nonatomic) float hitPoint;
 @property (nonatomic) NSInteger meleeAttackPoint;
 @property (nonatomic) NSInteger magicAttackPoint;
 @property (nonatomic) NSInteger meleeDefensePoint;
@@ -27,6 +27,17 @@
 @property (strong,nonatomic) NSTimer *regnerationTimer;
 @property (strong,nonatomic) NSTimer *leechTimer;
 
+- (void)reduceHitPoint:(float)damage;
+- (void)getHeal:(float)hitpoint;
+- (void)getDamageShieldBuff:(float)timer hitpoint:(float)hitpoint;
+- (void)getAttackBuff:(float)timer adder:(float)percentage;
+- (void)getDefenseBuff:(float)timer adder:(float)percentage;
+- (void)getDamageAbsorb:(float)hitpoint;
+- (void)getRegeneration:(float)timer hitpoint:(float)hitpoint;
+- (void)getDotted:(float)timer hitpoint:(float)hitpoint;
+- (void)getLeech:(float)timer hitpoint:(float)hitpoint;
+- (void)getStunned:(float)timer;
+- (float)currentHitPoint;
 
 
 @end

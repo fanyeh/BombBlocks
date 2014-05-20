@@ -37,7 +37,9 @@
     UIView *supplementSkillView1;
     UIView *supplementSkillView2;
     
-    TestBoss *boss;
+    TestBoss *Enemy;
+    UIProgressView *snakeHP;
+    UIProgressView *bossHP;
 }
 
 
@@ -69,6 +71,7 @@
     [self.view addSubview:menuButton];
     UITapGestureRecognizer *menuTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backToMenu)];
     [menuButton addGestureRecognizer:menuTap];
+    menuButton.hidden = YES;
     
     // Skill View
     initSkillView = [[UIView alloc]initWithFrame:CGRectMake(10, 45 , 50, 50)];
@@ -107,8 +110,20 @@
     [self.view addSubview:_snakeButton];
     
     // Test Boss
-    boss = [[TestBoss alloc]initWithFrame:CGRectMake(250, 45, 50, 50)];
-    [self.view addSubview:boss];
+    Enemy = [[TestBoss alloc]initWithFrame:CGRectMake(250, 45, 50, 50)];
+    [self.view addSubview:Enemy];
+    
+    // HP progress
+    snakeHP = [[UIProgressView alloc]initWithFrame:CGRectMake(10, 20, 100, 30)];
+    snakeHP.progressViewStyle = UIProgressViewStyleDefault;
+    snakeHP.progress = 1;
+    [self.view addSubview:snakeHP];
+    
+    bossHP = [[UIProgressView alloc]initWithFrame:CGRectMake(200, 20, 100, 30)];
+    bossHP.progressViewStyle = UIProgressViewStyleDefault;
+    bossHP.progress = 1;
+    bossHP.tintColor = [UIColor redColor];
+    [self.view addSubview:bossHP];
 
     // Game Settings
     timeInterval = 0.2;
@@ -127,51 +142,52 @@
 - (void)snakeAttack:(NSNotification *)notification
 {
     NSLog(@"Snake Attack!");
-    NSLog(@"%@",[notification userInfo]);
+//    NSLog(@"%@",[notification userInfo]);
     
     NSArray *skillSet = [notification userInfo].allValues;
     
     for (SnakeSkillName *s in skillSet) {
+        [s calculateSkillEffect];
         
         switch (s.skillName) {
             case kSkillNameMeleeAttack:
                 
-                [boss reduceHitPoint:s.damage];
+                [Enemy.boss reduceHitPoint:s.damage];
                 
                 break;
             case kSkillNameMagicAttack:
                 
-                [boss reduceHitPoint:s.damage];
+                [Enemy.boss reduceHitPoint:s.damage];
                 
                 break;
             case kSkillNameStun:
                 
-                [boss getStunned:s.timer];
+                [Enemy.boss getStunned:s.timer];
                 
                 break;
             case kSkillNameHeal:
                 
-                [newSnake.snakeType heal:s.heal];
+                [newSnake.snakeType getHeal:s.heal];
                 
                 break;
             case kSkillNameDamageOverTime:
 
-                [boss getDotted:s.timer hitpoint:s.damage];
+                [Enemy.boss getDotted:s.timer hitpoint:s.damage];
                 
                 break;
             case kSkillNameDamageShield:
                 
-                [newSnake.snakeType damageShieldBuff:s.timer hitpoint:s.damage];
+                [newSnake.snakeType getDamageShieldBuff:s.timer hitpoint:s.damage];
                 
                 break;
             case kSkillNameDefenseBuff:
                 
-                [newSnake.snakeType attackBuff:s.timer adder:s.buff];
+                [newSnake.snakeType getDefenseBuff:s.timer adder:s.buff];
                 
                 break;
             case kSkillNameAttackBuff:
                 
-                [newSnake.snakeType attackBuff:s.timer adder:s.buff];
+                [newSnake.snakeType getAttackBuff:s.timer adder:s.buff];
                 
                 break;
             case kSkillNameLeech:
@@ -193,6 +209,7 @@
                 
                 break;
         }
+        [bossHP setProgress:[Enemy.boss currentHitPoint]/100];
     }
 }
 
