@@ -207,9 +207,6 @@
                 }
             }
             
-        } completion:^(BOOL finished) {
-            
-            
         }];
         
     } else {

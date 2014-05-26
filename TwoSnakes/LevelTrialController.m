@@ -39,7 +39,18 @@
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionUp gamePad:self.gamePad headFrame:CGRectMake(147, 441, 20, 20)];
     [self.snake setWallBounds:[self walls]];
     [self.gamePad addSubview:self.snake];
+
+    UIButton *exitButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, 50, 50)];
+    [exitButton setTitle:@"Exit" forState:UIControlStateNormal];
+    exitButton.titleLabel.textColor = [UIColor blackColor];
+    [exitButton addTarget:self action:@selector(exitTrial) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:exitButton];
     
+}
+
+- (void)exitTrial
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning

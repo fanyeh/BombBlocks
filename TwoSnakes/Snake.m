@@ -248,7 +248,7 @@
                 gameIsOver  = YES;
             }
             
-            if ([self touchWall])
+            if ([self touchWall:newPosition])
                 gameIsOver = YES;
         }
         
@@ -414,11 +414,11 @@
 }
 
 
-- (BOOL)touchWall
+- (BOOL)touchWall:(CGRect)newPosition
 {
     for (GameAsset *asset in walls) {
         if (asset.gameAssetType == kAssetTypeWall)
-            if (CGRectIntersectsRect([self snakeHead].frame, asset.frame))
+            if (CGRectIntersectsRect(newPosition, asset.frame))
                 return YES;
     }
     return NO;

@@ -52,6 +52,7 @@
 - (void)setAssetType:(AssetType)type;
 {
     _gameAssetType = type;
+    self.layer.cornerRadius = 0;
     
     switch (type) {
         case kAssetTypeWall:
@@ -65,18 +66,21 @@
         case kAssetTypeSword:
             self.backgroundColor = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
             self.assetNameLabel.text = @"Sw";
+            self.layer.cornerRadius = self.frame.size.width/2;
             break;
         case kAssetTypeShield:
             self.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
             self.assetNameLabel.text = @"Sh";
+            self.layer.cornerRadius = self.frame.size.width/2;
             break;
         case kAssetTypeMagic:
             self.backgroundColor = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
             self.assetNameLabel.text = @"Ma";
+            self.layer.cornerRadius = self.frame.size.width/2;
             break;
         case kAssetTypeEmpty:
             self.backgroundColor = [UIColor whiteColor];
-            self.assetNameLabel.text = @"Em";
+            self.assetNameLabel.text = @"";
             break;
     }
     

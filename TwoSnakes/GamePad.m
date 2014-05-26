@@ -10,6 +10,9 @@
 #import "GameAsset.h"
 
 @implementation GamePad
+{
+    NSMutableArray *gameAssets;
+}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -42,13 +45,15 @@
     return self;
 }
 
-- (id)initGamePadWithAsset:(NSMutableArray *)gameAssets
+- (id)initGamePadWithAsset:(NSMutableArray *)assets
 {
     CGRect frame = CGRectMake(2.5, 80, 315, 483);
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-        _assetArray = gameAssets;
+        gameAssets = assets;
+        _assetArray = [[NSMutableArray alloc]init];
+
         [self createPadWithAssets];
 
     }
@@ -117,7 +122,7 @@
 
 - (void)createPadWithAssets
 {
-    for (GameAsset *a in _assetArray) {
+    for (GameAsset *a in gameAssets) {
     
         GameAsset *newAsset = [[GameAsset alloc]init];
         [newAsset setAssetType:a.gameAssetType];
@@ -126,9 +131,11 @@
         
         [newAsset setPosition:CGPointMake(assetPosX, assetPosY)];
         
-        newAsset.layer.borderWidth = 1;
+//        newAsset.layer.borderWidth = 1;
         [self addSubview:newAsset];
         [self sendSubviewToBack:newAsset];
+        
+        [_assetArray addObject:newAsset];
     }
 }
 

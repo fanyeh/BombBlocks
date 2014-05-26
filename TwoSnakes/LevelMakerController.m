@@ -13,12 +13,13 @@
 #import "GameAsset.h"
 #import "Snake.h"
 
-@interface LevelMakerController () <UITableViewDataSource,UITableViewDelegate>
+@interface LevelMakerController () <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
 {
     UITableView *gameAssetTable;
     NSMutableArray *assetLibrary;
     BOOL assetTableIsShow;
     GameAsset *currentAsset;
+    UITextField *levelNameField;
 }
 @end
 
@@ -88,11 +89,50 @@
         [v addGestureRecognizer:colorChangeTap];
     }
     
-    UIButton *trialButton = [[UIButton alloc]initWithFrame:CGRectMake(110, 10, 100, 50)];
+    UIButton *trialButton = [[UIButton alloc]initWithFrame:CGRectMake(70, 10, 50, 20)];
+    trialButton.layer.borderWidth = 1;
     [trialButton setTitle:@"Trial" forState:UIControlStateNormal];
     trialButton.titleLabel.textColor = [UIColor blackColor];
     [trialButton addTarget:self action:@selector(tryGame:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:trialButton];
+    
+    UIButton *clearButton = [[UIButton alloc]initWithFrame:CGRectMake(70, 50, 50, 20)];
+    clearButton.layer.borderWidth = 1;
+
+    [clearButton setTitle:@"Clear" forState:UIControlStateNormal];
+    clearButton.titleLabel.textColor = [UIColor blackColor];
+    [clearButton addTarget:self action:@selector(clearGame) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:clearButton];
+    
+    UIButton *outputButton = [[UIButton alloc]initWithFrame:CGRectMake(130, 10, 70, 20)];
+    outputButton.layer.borderWidth = 1;
+
+    [outputButton setTitle:@"Output" forState:UIControlStateNormal];
+    outputButton.titleLabel.textColor = [UIColor blackColor];
+    [outputButton addTarget:self action:@selector(outputGame) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:outputButton];
+    
+    
+    UIButton *listButton = [[UIButton alloc]initWithFrame:CGRectMake(210, 10, 50, 20)];
+    listButton.layer.borderWidth = 1;
+
+    [listButton setTitle:@"List" forState:UIControlStateNormal];
+    listButton.titleLabel.textColor = [UIColor blackColor];
+    [listButton addTarget:self action:@selector(listAllLevels) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:listButton];
+    
+    levelNameField = [[UITextField alloc]initWithFrame:CGRectMake(180, 50, 130, 25)];
+    levelNameField.borderStyle = UITextBorderStyleLine;
+    levelNameField.placeholder = @"Enter Level Name";
+    levelNameField.delegate = self;
+    [self.view addSubview:levelNameField];
+}
+
+- (void)clearGame
+{
+    for (GameAsset *v in [self.gamePad assetArray]) {
+        [v setAssetType:kAssetTypeEmpty];
+    }
 }
 
 - (void)tryGame:(UIButton *)sender
@@ -100,6 +140,75 @@
     LevelTrialController *controller = [[LevelTrialController alloc]init];
     controller.assetArray = [self.gamePad assetArray];
     [self presentViewController:controller animated:YES completion:nil];
+}
+
+- (void)outputGame
+{
+    if (levelNameField.text.length > 0) {
+        
+        NSMutableDictionary *jsonDictionary = [[NSMutableDictionary alloc]init];
+        for (GameAsset *v in [self.gamePad assetArray]) {
+            NSDictionary *assetDict = @{
+                                            @"Row" : [NSNumber numberWithInteger:v.indexPath.row] ,
+                                            @"Column" : [NSNumber numberWithInteger:v.indexPath.section],
+                                            @"AssetType" : [NSNumber numberWithInt:v.gameAssetType]
+                                            
+                                            };
+            
+            [jsonDictionary setObject:assetDict forKey:[NSString stringWithFormat:@"%ld%ld",v.indexPath.row,v.indexPath.section]];
+        }
+        
+        NSData * jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:nil];
+
+        [self checkFolder];
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString * fileDirectory = [documentsDirectory stringByAppendingPathComponent:@"GameLevels"];
+        
+        NSString *fileName = [NSString stringWithFormat:@"%@.json",levelNameField.text];
+        NSString *savedImagePath = [fileDirectory stringByAppendingPathComponent:fileName];
+        [jsonData writeToFile:savedImagePath atomically:NO];
+        
+    } else {
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Enter level name first" message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+        
+    }
+}
+
+- (NSArray *)listAllLevels
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *dataPath = [documentsDirectory stringByAppendingPathComponent:@"GameLevels"];
+    NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dataPath error:nil];
+    
+    NSLog(@"%@", directoryContent);
+    return directoryContent;
+}
+
+- (void)loadLevel
+{
+    
+}
+
+- (void)checkFolder
+{
+    // Create sub directory name using key for diary under document directory
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    
+    // Get documents folder
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    //Create folder
+    NSString *dataPath = [documentsDirectory stringByAppendingPathComponent:@"GameLevels"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:dataPath])
+        [[NSFileManager defaultManager] createDirectoryAtPath:dataPath
+                                  withIntermediateDirectories:NO
+                                                   attributes:nil
+                                                        error:nil];
 }
 
 - (void)showAssetTable
