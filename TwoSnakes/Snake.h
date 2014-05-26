@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "SnakeBody.h"
-#import "SnakeDot.h"
 #import "SnakeType.h"
 @class SnakeSkill;
+@class GameAsset;
 
 typedef enum {
     kMoveDirectionUp = 0,
@@ -42,14 +42,14 @@ typedef enum {
 @property (nonatomic) SnakeType *snakeType;
 
 
-- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad;
-- (SnakeBody *)addSnakeBodyWithDot:(SnakeDot *)dot;
+- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad headFrame:(CGRect)frame;
+- (SnakeBody *)addSnakeBodyWithAsset:(GameAsset *)assetView;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
 - (UIView *)snakeTail;
 - (void)setTurningNode:(CGPoint)location;
 - (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver;
-- (void)resetSnake:(UIView *)headView andDirection:(MoveDirection)direction;
+- (void)resetSnake;
 - (void)removeSnakeBody:(UIView *)body;
 - (void)removeSnakeBodyFromArray:(NSMutableArray *)removeArray;
 - (void)updateTurningNode;
@@ -59,6 +59,7 @@ typedef enum {
 - (void)updateExclamationText;
 - (void)mouthAnimation:(float)timeInterval;
 - (BOOL)checkCombo:(void(^)(void))completeBlock;
+- (void)setWallBounds:(NSMutableArray *)wallbounds;
 
 
 @end

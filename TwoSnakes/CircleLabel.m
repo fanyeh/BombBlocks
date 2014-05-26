@@ -21,6 +21,8 @@
         self.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
         self.textAlignment = NSTextAlignmentCenter;
         self.layer.masksToBounds = YES;
+        self.userInteractionEnabled = YES;
+
     }
     return self;
 }
@@ -36,6 +38,7 @@
         self.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
         self.textAlignment = NSTextAlignmentCenter;
         self.layer.masksToBounds = YES;
+        self.userInteractionEnabled = YES;
 
     }
     return self;

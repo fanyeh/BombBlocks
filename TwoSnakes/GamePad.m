@@ -7,7 +7,7 @@
 //
 
 #import "GamePad.h"
-#import "SnakeDot.h"
+#import "GameAsset.h"
 
 @implementation GamePad
 
@@ -22,235 +22,160 @@
 
 - (id)initGamePad
 {
-    CGRect frame = CGRectMake(0, 0, 315, 399);
+    CGRect frame = CGRectMake(0, 0, 315, 483);
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-        [self createAllDots];
-        
+        [self createClassicGameAsset];
     }
     return self;
 }
 
-// Chnage dot color during count down
-- (void)counterDots:(NSInteger)count
+- (id)initEmptyGamePad
 {
-    for (SnakeDot *d in _dotArray) {
-        
-        d.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    CGRect frame = CGRectMake(2.5, 80, 315, 483);
+    self = [self initWithFrame:frame];
+    if (self) {
+        // Initialization code
+        [self createEmptyPad];        
     }
-    
-    
-    UIColor *color = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
-    
-    NSMutableArray *counterDotArray = [[NSMutableArray alloc]init];
-    
-    [counterDotArray addObject:[_dotArray objectAtIndex:20]];
-    [counterDotArray addObject:[_dotArray objectAtIndex:29]];
-    [counterDotArray addObject:[_dotArray objectAtIndex:38]];
-    [counterDotArray addObject:[_dotArray objectAtIndex:24]];
-    [counterDotArray addObject:[_dotArray objectAtIndex:33]];
-    [counterDotArray addObject:[_dotArray objectAtIndex:42]];
-    [counterDotArray addObject:[_dotArray objectAtIndex:31]];
-    
-    
-    if (count == 1) {
-        
-        [counterDotArray addObject:[_dotArray objectAtIndex:30]];
-        [counterDotArray addObject:[_dotArray objectAtIndex:32]];
-        
-    } else  {
-        [counterDotArray addObject:[_dotArray objectAtIndex:39]];
-        [counterDotArray addObject:[_dotArray objectAtIndex:40]];
-        [counterDotArray addObject:[_dotArray objectAtIndex:22]];
-        
-        if (count == 2) {
-            [counterDotArray addObject:[_dotArray objectAtIndex:23]];
-            
-        } else if (count == 3) {
-            [counterDotArray addObject:[_dotArray objectAtIndex:41]];
-            
-        }
-        
-    }
-    
-    // Animation to show counter
-    for (SnakeDot *d in counterDotArray) {
-        d.smallDot.backgroundColor = color;
-        d.alpha = 0;
-        [UIView animateWithDuration:1 animations:^{
-            d.alpha = 1;
-        }];
-    }
+    return self;
 }
 
-// Create and add all dots to game pad
-- (void)createAllDots
+- (id)initGamePadWithAsset:(NSMutableArray *)gameAssets
 {
-    _dotArray = [[NSMutableArray alloc]init];
-    CGFloat dotPosX;
-    CGFloat dotPosY;
+    CGRect frame = CGRectMake(2.5, 80, 315, 483);
+    self = [self initWithFrame:frame];
+    if (self) {
+        // Initialization code
+        _assetArray = gameAssets;
+        [self createPadWithAssets];
+
+    }
+    return self;
+}
+
+- (void)createClassicGameAsset
+{
+    _assetArray = [[NSMutableArray alloc]init];
+    CGFloat assetPosX;
+    CGFloat assetPosY;
     
     for (int i = 0 ; i < 14; i ++ ) {
-        for (int j = 0 ; j < 19 ; j++) {
+        for (int j = 0 ; j < 23 ; j++) {
             if (i%2==1 && j%2==1) {
                 
-                dotPosX = i * 21;
-                dotPosY = j * 21;
+                assetPosX = i * 21;
+                assetPosY = j * 21;
                 
-                SnakeDot *dot = [[SnakeDot alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20) dotShape:kDotShapeCircle];
-                dot.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ; //[self dotColor];
-                [self addSubview:dot];
-                [self sendSubviewToBack:dot];
-                [_dotArray addObject:dot];
+                GameAsset *asset = [[GameAsset alloc]init];
+                
+                int randomAsset = arc4random()%3;
+                
+                switch (randomAsset) {
+                    case 0:
+                        [asset setAssetType:kAssetTypeMagic];
+                        break;
+                    case 1:
+                        [asset setAssetType:kAssetTypeSword];
+                        break;
+                    case 2:
+                        [asset setAssetType:kAssetTypeShield];
+                        break;
+                }
+                
+                [asset setPosition:CGPointMake(assetPosX, assetPosY)];
+                [self addSubview:asset];
+                [self sendSubviewToBack:asset];
+                [_assetArray addObject:asset];
             }
         }
     }
-    
-//    [self.view bringSubviewToFront:_snakeHeadView];
 }
 
-- (void)createGamerOverSquares
+- (void)createEmptyPad
 {
-    NSMutableArray *gameOverArray = [[NSMutableArray alloc]init];
-    
+    _assetArray = [[NSMutableArray alloc]init];
+    CGFloat assetPosX;
+    CGFloat assetPosY;
     
     for (int i = 0 ; i < 15; i ++ ) {
-        for (int j = 0 ; j < 19 ; j++) {
+        for (int j = 0 ; j < 23 ; j++) {
             
-            switch (i) {
-                case 0:
-                    if ( (j >2 &&  j < 8) || (j > 10 && j < 16)) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 1:
-                    if ( j == 3 ||  j ==7  || j == 11 || j == 15 || j == 5) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 2:
-                    if ( j == 3 ||  (j > 4 && j < 9) || (j > 10 && j < 16)) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 4:
-                    if ( (j >3 &&  j < 8) || (j > 10 && j < 15)) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 5:
-                    if ( j == 3 ||  j ==5 || j == 15) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 6:
-                    
-                    if ( (j >3 &&  j < 8) || (j > 10 && j < 15)) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 8:
-                    
-                    if (  (j > 2 && j < 8 ) ||  (j > 10 && j < 16 )) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 9:
-                    
-                    if ( j ==4  ||  j ==11 || j == 13 || j == 15) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    
-                    break;
-                case 10:
-                    if ((j > 2 && j < 8 ) ||  j ==11 || j == 15 || j == 13) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 12:
-                    if ( (j >2 &&  j < 8) || (j > 10 && j < 16)) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 13:
-                    if ( j == 3 ||  j ==5 || j == 7 || j == 11 || j == 13 ) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-                case 14:
-                    if ( j == 3 ||  j ==5 || j == 7 || (j > 10 && j < 16 ) ) {
-                        [self addSquareIndexI:i indexJ:j squareArray:gameOverArray];
-                    }
-                    break;
-            }
+            assetPosX = i * 21;
+            assetPosY = j * 21;
+        
+            GameAsset *emptyAsset = [[GameAsset alloc]initWithFrame:CGRectMake(assetPosX, assetPosY, 20, 20)];
+            emptyAsset.indexPath = [NSIndexPath indexPathForRow:i inSection:j];
+            emptyAsset.layer.borderWidth = 1;
+            [self addSubview:emptyAsset];
+            [self sendSubviewToBack:emptyAsset];
+            [_assetArray addObject:emptyAsset];
         }
     }
 }
 
-- (void)addSquareIndexI:(NSInteger)i indexJ:(NSInteger)j squareArray:(NSMutableArray *)gameOverArray
+- (void)createPadWithAssets
 {
-    CGFloat dotPosX;
-    CGFloat dotPosY;
-    dotPosX = i * 21;
-    dotPosY = j * 21;
+    for (GameAsset *a in _assetArray) {
     
-    
-    //    SnakeDot *dot = [[SnakeDot alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20)];
-    //    dot.layer.cornerRadius = 8;
-    //    dot.smallDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ; //[self dotColor];
-    UIView *square = [[UIView alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20)];
-    
-    square.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ; //[self dotColor];
-    [self addSubview:square];
-    [gameOverArray addObject:square];
-}
-
-#pragma mark - Trap
-
-- (void)createTraps
-{
-    _dotArray = [[NSMutableArray alloc]init];
-    CGFloat dotPosX;
-    CGFloat dotPosY;
-    
-    for (int i = 0 ; i < 14; i ++ ) {
-        for (int j = 0 ; j < 19 ; j++) {
-            if (i%2==0 && j%2==0) {
-                
-                dotPosX = i * 21;
-                dotPosY = j * 21;
-                
-                UIView *trap = [[UIView alloc]initWithFrame:CGRectMake(dotPosX, dotPosY, 20, 20)];
-                trap.layer.cornerRadius = 8;
-                trap.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000] ; //[self dotColor];
-                [self addSubview:trap];
-                [self sendSubviewToBack:trap];
-                [_dotArray addObject:trap];
-            }
-        }
+        GameAsset *newAsset = [[GameAsset alloc]init];
+        [newAsset setAssetType:a.gameAssetType];
+        CGFloat assetPosX = a.indexPath.row * 21;
+        CGFloat assetPosY = a.indexPath.section * 21;
+        
+        [newAsset setPosition:CGPointMake(assetPosX, assetPosY)];
+        
+        newAsset.layer.borderWidth = 1;
+        [self addSubview:newAsset];
+        [self sendSubviewToBack:newAsset];
     }
-    
-//    [self.view bringSubviewToFront:_snakeHeadView];
 }
+
+- (void)changeAssetType:(GameAsset *)asset
+{
+    if ([_assetArray indexOfObject:asset]) {
+        GameAsset *changeAsset = [_assetArray objectAtIndex:[_assetArray indexOfObject:asset]];
+        CGPoint pos = changeAsset.frame.origin;
+        
+        int randomAsset = arc4random()%3;
+        
+        switch (randomAsset) {
+            case 0:
+                [changeAsset setAssetType:kAssetTypeMagic];
+                break;
+            case 1:
+                [changeAsset setAssetType:kAssetTypeSword];
+                break;
+            case 2:
+                [changeAsset setAssetType:kAssetTypeShield];
+                break;
+        }
+
+        [changeAsset setPosition:pos];
+    }
+}
+
 
 - (void)setupDotForGameStart:(CGRect)headFrame
 {
-    self.alpha = 1;
-    for (SnakeDot *d in _dotArray) {
-        [d changeType];
-        d.alpha = 1;
-        if (CGRectIntersectsRect(d.frame, headFrame))
-            d.hidden = YES;
+//    self.alpha = 1;
+//    for (SnakeDot *d in _dotArray) {
+//        [d changeType];
+//        d.alpha = 1;
+//        if (CGRectIntersectsRect(d.frame, headFrame))
+//            d.hidden = YES;
+//    }
+}
+
+- (void)hideAllAssets
+{
+    for (GameAsset *v in _assetArray) {
+        v.alpha = 0;
     }
 }
 
-- (void)hideAllDots
-{
-    for (SnakeDot *d in _dotArray) {
-        d.alpha = 0;
-    }
-}
+
 
 
 @end

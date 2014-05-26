@@ -112,12 +112,14 @@
 #pragma mark - Background pause game
 - (void)pauseGameOnBackground
 {
-    if (snakeGameController && snakeGameController.snakeButton.state == kSnakeButtonPause) {
-        [snakeGameController backgroundPauseGame];
-        NSLog(@"pause");
-    } else {
-        NSLog(@"Not pause");
-    }
+//    [snakeGameController backgroundPauseGame];
+
+//    if (snakeGameController && snakeGameController.snakeButton.state == kSnakeButtonPause) {
+//        [snakeGameController backgroundPauseGame];
+//        NSLog(@"pause");
+//    } else {
+//        NSLog(@"Not pause");
+//    }
 }
 
 #pragma mark - Show game record

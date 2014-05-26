@@ -8,7 +8,7 @@
 
 #import "Snake.h"
 #import "SnakeSkill.h"
-#import "SnakeDot.h"
+#import "GameAsset.h"
 
 @implementation Snake
 {
@@ -18,6 +18,8 @@
     CGFloat exalamtionWidth;
     NSString *exclamationText;
     NSInteger chain;     // Same color required to form a combo
+    CGRect headFrame;
+    NSMutableArray *walls;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -29,9 +31,9 @@
     return self;
 }
 
-- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad
+- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad headFrame:(CGRect)frame
 {
-    CGRect headFrame = CGRectMake(147, 189, 20, 20);
+    headFrame = frame; //CGRectMake(147, 189, 20, 20);
     self = [self initWithFrame:headFrame];
     if (self) {
         
@@ -99,21 +101,31 @@
 
 #pragma mark - Reset Snake
 
-- (void)resetSnake:(UIView *)headView andDirection:(MoveDirection)direction
+- (void)resetSnake
 {
+    for (UIView *v in _snakeBody) {
+        if (v.tag > 0)
+            [v removeFromSuperview];
+    }
+    
+    MoveDirection direction = [self headDirection];
+    UIView *snakeHead = [self snakeHead];
+    snakeHead.frame = headFrame;
+
     [_snakeBody removeAllObjects];
     [_turningNodes removeAllObjects];
     [_bodyDirections removeAllObjects];
     [turningNodeTags removeAllObjects];
     _snakeLength = 1;
-    headView.tag = 0;
-    _xOffset = headView.frame.size.width+1;
-    _yOffset = headView.frame.size.height+1;
-    [_snakeBody addObject:headView];
+    
+    _xOffset = headFrame.size.width+1;
+    _yOffset = headFrame.size.height+1;
+    [_snakeBody addObject:snakeHead];
+    
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
     _isRotate = NO;
     
-    switch (direction ) {
+    switch (direction) {
         case kMoveDirectionLeft:
             [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI);
             break;
@@ -235,6 +247,9 @@
             if ([self touchedScreenBounds:newPosition]) {
                 gameIsOver  = YES;
             }
+            
+            if ([self touchWall])
+                gameIsOver = YES;
         }
         
         // If not game over then update the frame of each snake part view
@@ -393,10 +408,25 @@
         return NO;
 }
 
+- (void)setWallBounds:(NSMutableArray *)wallbounds
+{
+    walls = wallbounds;
+}
+
+
+- (BOOL)touchWall
+{
+    for (GameAsset *asset in walls) {
+        if (asset.gameAssetType == kAssetTypeWall)
+            if (CGRectIntersectsRect([self snakeHead].frame, asset.frame))
+                return YES;
+    }
+    return NO;
+}
 
 #pragma mark - Snake Body
 
-- (SnakeBody *)addSnakeBodyWithDot:(SnakeDot *)dot
+- (SnakeBody *)addSnakeBodyWithAsset:(GameAsset *)assetView
 {
     CGRect bodyFrame;
     CGRect snakeTailFrame =  [self snakeTail].frame;
@@ -419,9 +449,9 @@
     
     SnakeBody *snakeBody = [[SnakeBody alloc]initWithFrame:bodyFrame];
     snakeBody.layer.cornerRadius = bodyFrame.size.width/4;
-    snakeBody.backgroundColor = dot.smallDot.backgroundColor;
+    snakeBody.backgroundColor = assetView.backgroundColor;
     snakeBody.tag = _snakeLength;
-    snakeBody.skillType.type = dot.skillType.type;
+//    snakeBody.skillType.type = dot.skillType.type;
     [_snakeBody addObject:snakeBody];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];
     _snakeLength ++;

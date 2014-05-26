@@ -50,6 +50,7 @@
         _state = kSnakeButtonPlay;
         _tapGesture = gesture;
         [self setSnakeButton:title];
+//        self.layer.borderWidth = 1;
     }
     return self;
 }

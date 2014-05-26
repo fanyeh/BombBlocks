@@ -9,11 +9,15 @@
 #import "MKAppDelegate.h"
 #import "MenuController.h"
 #import "GameSceneController.h"
+#import "ClassicGameController.h"
+#import "LevelMakerController.h"
 
 @implementation MKAppDelegate
 {
     MenuController *menuController;
     GameSceneController *sceneController;
+    ClassicGameController *classicController;
+    LevelMakerController *levelMaker;
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -27,8 +31,10 @@
     
     menuController = [[MenuController alloc]init];
     sceneController = [[GameSceneController alloc]init];
+    classicController = [[ClassicGameController alloc]init];
+    levelMaker = [[LevelMakerController alloc]init];
     
-    [self.window setRootViewController:sceneController];
+    [self.window setRootViewController:levelMaker];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center
