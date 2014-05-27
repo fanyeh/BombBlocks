@@ -50,7 +50,7 @@
     UITapGestureRecognizer *currentAssetTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showAssetTable)];
     [currentAsset addGestureRecognizer:currentAssetTap];
     
-    gameAssetTable = [[UITableView alloc]initWithFrame:CGRectMake(320, 0, 120, self.view.frame.size.height)];
+    gameAssetTable = [[UITableView alloc]initWithFrame:CGRectMake(320, self.gamePad.frame.origin.y, 120, self.gamePad.frame.size.height)];
     gameAssetTable.backgroundColor = [UIColor whiteColor];
     gameAssetTable.delegate = self;
     gameAssetTable.dataSource = self;
@@ -73,13 +73,16 @@
 
     GameAsset *magicAsset = [[GameAsset alloc]init];
     [magicAsset setAssetType:kAssetTypeMagic];
-
     
+    GameAsset *goalAsset = [[GameAsset alloc]init];
+    [goalAsset setAssetType:kAssetTypeGoal];
+
     [assetLibrary addObject:wallAsset];
     [assetLibrary addObject:monsterAsset];
     [assetLibrary addObject:shieldAsset];
     [assetLibrary addObject:swordAsset];
     [assetLibrary addObject:magicAsset];
+    [assetLibrary addObject:goalAsset];
     
     assetTableIsShow = NO;
     
@@ -91,40 +94,38 @@
     UIButton *trialButton = [[UIButton alloc]initWithFrame:CGRectMake(70, 10, 50, 20)];
     trialButton.layer.borderWidth = 1;
     [trialButton setTitle:@"Trial" forState:UIControlStateNormal];
-    trialButton.titleLabel.textColor = [UIColor blackColor];
+    trialButton.backgroundColor = [UIColor blackColor];
     [trialButton addTarget:self action:@selector(tryGame:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:trialButton];
     
     UIButton *clearButton = [[UIButton alloc]initWithFrame:CGRectMake(70, 50, 50, 20)];
     clearButton.layer.borderWidth = 1;
-
     [clearButton setTitle:@"Clear" forState:UIControlStateNormal];
-    clearButton.titleLabel.textColor = [UIColor blackColor];
+    clearButton.backgroundColor = [UIColor blackColor];
     [clearButton addTarget:self action:@selector(clearGame) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:clearButton];
     
     UIButton *outputButton = [[UIButton alloc]initWithFrame:CGRectMake(130, 10, 70, 20)];
     outputButton.layer.borderWidth = 1;
-
     [outputButton setTitle:@"Output" forState:UIControlStateNormal];
-    outputButton.titleLabel.textColor = [UIColor blackColor];
+    outputButton.backgroundColor = [UIColor blackColor];
     [outputButton addTarget:self action:@selector(outputGame) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:outputButton];
     
-    
     UIButton *listButton = [[UIButton alloc]initWithFrame:CGRectMake(210, 10, 50, 20)];
     listButton.layer.borderWidth = 1;
-
     [listButton setTitle:@"List" forState:UIControlStateNormal];
-    listButton.titleLabel.textColor = [UIColor blackColor];
+    listButton.backgroundColor = [UIColor blackColor];
     [listButton addTarget:self action:@selector(listAllLevels) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:listButton];
     
-    levelNameField = [[UITextField alloc]initWithFrame:CGRectMake(180, 50, 130, 25)];
+    levelNameField = [[UITextField alloc]initWithFrame:CGRectMake(130, 50, 180, 25)];
     levelNameField.borderStyle = UITextBorderStyleLine;
     levelNameField.placeholder = @"Enter Level Name";
     levelNameField.delegate = self;
     [self.view addSubview:levelNameField];
+    
+    
 }
 
 - (void)clearGame
@@ -213,6 +214,7 @@
 - (void)showAssetTable
 {
     if (!assetTableIsShow) {
+        currentAsset.userInteractionEnabled = NO;
         [UIView animateWithDuration:0.5 animations:^{
             
             gameAssetTable.frame = CGRectOffset(gameAssetTable.frame, -120, 0);
@@ -220,10 +222,12 @@
         } completion:^(BOOL finished) {
             
             assetTableIsShow = YES;
+            currentAsset.userInteractionEnabled = YES;
 
         }];
     }
     else {
+        currentAsset.userInteractionEnabled = NO;
         [UIView animateWithDuration:0.5 animations:^{
             
             gameAssetTable.frame = CGRectOffset(gameAssetTable.frame, 120, 0);
@@ -231,9 +235,16 @@
         } completion:^(BOOL finished) {
             
             assetTableIsShow = NO;
+            currentAsset.userInteractionEnabled = YES;
 
         }];
     }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [levelNameField resignFirstResponder];
+    return YES;
 }
 
 #pragma mark - Game Asset Table
@@ -270,10 +281,10 @@
     CGPoint location = [sender locationInView:self.gamePad];
     for (GameAsset *v in [self.gamePad assetArray]) {
         
-        if (CGRectContainsPoint(v.frame, location)) {
+        if (CGRectContainsPoint(v.frame, location)) 
             
-            [v setAssetType:currentAsset.gameAssetType];
-        }
+                [v setAssetType:currentAsset.gameAssetType];
+
     }
 }
 
@@ -289,6 +300,22 @@
         [asset setAssetType:kAssetTypeEmpty];
     }
 }
+
+#pragma mark - menu controls
+
+- (void)pauseGame
+{
+    [super pauseGame];
+    if (self.gamePause) {
+        [self menuFade:NO];
+        self.gamePause = NO;
+    }
+    else {
+        [self menuFade:YES];
+        self.gamePause = YES;
+    }
+}
+
 
 #pragma mark - Hide statu bar
 

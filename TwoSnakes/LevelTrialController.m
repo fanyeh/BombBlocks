@@ -52,6 +52,7 @@
     exitButton.titleLabel.textColor = [UIColor blackColor];
     [exitButton addTarget:self action:@selector(exitTrial) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:exitButton];
+    timeInterval = 0.2;
     
 }
 
@@ -69,10 +70,12 @@
 - (NSMutableArray *)walls
 {
     NSMutableArray *wallBounds = [[NSMutableArray alloc]init];
-    for (GameAsset *asset in _assetArray) {
+    
+    for (GameAsset *asset in [self.gamePad assetArray]) {
         if (asset.gameAssetType == kAssetTypeWall)
-           [wallBounds addObject:asset];
+            [wallBounds addObject:asset];
     }
+
     return wallBounds;
 }
 
@@ -108,11 +111,12 @@
                 v.hidden = NO;
             }
         }
-        [self isEatingDot];
+        //[self isEatingDot];
+        [self isHittingGoal];
     }
 }
 
-#pragma mark - Dot
+#pragma mark - Events
 
 - (void)isEatingDot
 {
@@ -139,7 +143,6 @@
                 
                 isCheckingCombo = NO;
                 
-                
                 if (self.snake.isRotate)
                     [self.snake stopRotate];
                 
@@ -162,6 +165,18 @@
                 
             }];
             
+            break;
+        }
+    }
+}
+
+-(void)isHittingGoal
+{
+    for (GameAsset *v in [self.gamePad assetArray]) {
+        if (!v.hidden && CGRectIntersectsRect([self.snake snakeHead].frame, v.frame) && v.gameAssetType == kAssetTypeGoal) {
+            
+            [self.moveTimer invalidate];
+            NSLog(@"level pass");
             break;
         }
     }

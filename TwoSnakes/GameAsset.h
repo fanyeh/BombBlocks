@@ -17,7 +17,8 @@ typedef enum {
     kAssetTypeEmpty,
     kAssetTypeYellow,
     kAssetTypeRed,
-    kAssetTypeBlue
+    kAssetTypeBlue,
+    kAssetTypeGoal
 } AssetType;
 
 @interface GameAsset : UIView
