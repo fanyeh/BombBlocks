@@ -34,7 +34,7 @@
     classicController = [[ClassicGameController alloc]init];
     levelMaker = [[LevelMakerController alloc]init];
     
-    [self.window setRootViewController:levelMaker];
+    [self.window setRootViewController:menuController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center

@@ -7,13 +7,15 @@
 //
 
 #import "MenuController.h"
-#import "GameSceneController.h"
+#import "ClassicGameController.h"
 #import "SnakeButton.h"
 #import "GameRecordController.h"
+#import "LevelListController.h"
+#import "LevelMakerController.h"
 
 @interface MenuController ()
 {
-    GameSceneController *snakeGameController;
+    ClassicGameController *classicGameController;
 }
 @property (weak, nonatomic) IBOutlet UIView *leftEye;
 @property (weak, nonatomic) IBOutlet UIView *rightEye;
@@ -22,6 +24,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *newgameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *recordsLabel;
 @property (weak, nonatomic) IBOutlet UIView *snakeHead;
+@property (weak, nonatomic) IBOutlet UILabel *puzzleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *levelmakerLabel;
 
 @end
 
@@ -66,11 +70,32 @@
     _recordsLabel.layer.cornerRadius = _recordsLabel.frame.size.width/2;
     UITapGestureRecognizer *gamerecordTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showGameRecord)];
     [_recordsLabel addGestureRecognizer:gamerecordTap];
+    
+    _puzzleLabel.layer.cornerRadius = _puzzleLabel.frame.size.width/2;
+    UITapGestureRecognizer *levelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(listLevels)];
+    [_puzzleLabel addGestureRecognizer:levelTap];
+    
+    _levelmakerLabel.layer.cornerRadius = _levelmakerLabel.frame.size.width/2;
+    UITapGestureRecognizer *levemakerlTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showLevelMaker)];
+    [_levelmakerLabel addGestureRecognizer:levemakerlTap];
+
 
     if (_state == kGameStateContinue)
         _newgameLabel.text = @"Continue";
     else
         _newgameLabel.text = @"New Game";
+}
+
+- (void)listLevels
+{
+    LevelListController *controller = [[LevelListController alloc]init];
+    [self presentViewController:controller animated:YES completion:nil];
+}
+
+- (void)showLevelMaker
+{
+    LevelMakerController *controller = [[LevelMakerController alloc]init];
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -103,8 +128,8 @@
         
     } else {
         
-        snakeGameController =  [[GameSceneController alloc]init];
-        [self presentViewController:snakeGameController animated:YES completion:nil];
+        classicGameController =  [[ClassicGameController alloc]init];
+        [self presentViewController:classicGameController animated:YES completion:nil];
         
     }
 }

@@ -14,6 +14,8 @@
 
 @property(strong,nonatomic) GamePad *gamePad;
 @property(strong,nonatomic) Snake *snake;
+@property(strong,nonatomic) NSTimer *moveTimer;
+
 @property(nonatomic) BOOL gamePause;
 
 - (void)directionChange:(UITapGestureRecognizer *)sender;
@@ -23,5 +25,7 @@
 - (void)retryGame;
 - (void)backToMenu;
 - (void)startMoveTimer;
+- (void)menuFade:(BOOL)fade;
+-(void)changeDirection;
 
 @end

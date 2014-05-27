@@ -16,10 +16,10 @@
     if (self) {
         // Initialization code
         
-        _assetNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, frame.size.width  , frame.size.height)];
-        _assetNameLabel.textColor = [UIColor whiteColor];
-        _assetNameLabel.textAlignment = NSTextAlignmentCenter;
-        [self addSubview:_assetNameLabel];
+        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, frame.size.width  , frame.size.height)];
+        _classicAssetLabel.layer.cornerRadius = _classicAssetLabel.frame.size.width/2;
+        _classicAssetLabel.layer.masksToBounds = YES;
+        [self addSubview:_classicAssetLabel];
         _gameAssetType = kAssetTypeEmpty;
 
     }
@@ -32,12 +32,11 @@
     if (self) {
         // Initialization code
         self.frame = CGRectMake(0, 0, 20, 20);
-        _assetNameLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width  , self.frame.size.height)];
-        _assetNameLabel.textAlignment = NSTextAlignmentCenter;
-        [self addSubview:_assetNameLabel];
+        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, self.frame.size.width/2  , self.frame.size.height/2)];
+        _classicAssetLabel.layer.cornerRadius = _classicAssetLabel.frame.size.width/2;
+        _classicAssetLabel.layer.masksToBounds = YES;
+        [self addSubview:_classicAssetLabel];
         _gameAssetType = kAssetTypeEmpty;
-        _assetNameLabel.textColor = [UIColor whiteColor];
-        
     }
     return self;
 }
@@ -57,30 +56,39 @@
     switch (type) {
         case kAssetTypeWall:
             self.backgroundColor = [UIColor blackColor];
-            self.assetNameLabel.text = @"Wa";
+            self.assetName = @"Wall";
             break;
         case kAssetTypeMonster:
             self.backgroundColor = [UIColor redColor];
-            self.assetNameLabel.text = @"Mo";
+            self.assetName = @"Monster";
             break;
         case kAssetTypeSword:
             self.backgroundColor = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
-            self.assetNameLabel.text = @"Sw";
-            self.layer.cornerRadius = self.frame.size.width/2;
+            self.assetName = @"Sword";
             break;
         case kAssetTypeShield:
             self.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
-            self.assetNameLabel.text = @"Sh";
-            self.layer.cornerRadius = self.frame.size.width/2;
+            self.assetName = @"Shield";
             break;
         case kAssetTypeMagic:
             self.backgroundColor = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
-            self.assetNameLabel.text = @"Ma";
-            self.layer.cornerRadius = self.frame.size.width/2;
+            self.assetName = @"Magic";
             break;
         case kAssetTypeEmpty:
             self.backgroundColor = [UIColor whiteColor];
-            self.assetNameLabel.text = @"";
+            self.assetName = @"Empty";
+            break;
+        case kAssetTypeBlue:
+            _classicAssetLabel.backgroundColor = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
+            self.assetName = @"Blue";
+            break;
+        case kAssetTypeRed:
+            _classicAssetLabel.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
+            self.assetName = @"Red";
+            break;
+        case kAssetTypeYellow:
+            _classicAssetLabel.backgroundColor = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
+            self.assetName = @"Yellow";
             break;
     }
     

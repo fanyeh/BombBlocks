@@ -10,19 +10,14 @@
 #import "MenuController.h"
 #import "GameMenu.h"
 #import "GameAsset.h"
+#import "LevelListController.h"
+
 
 
 @interface GameSceneTemplateController ()
 {
     CircleLabel *pauseLabel;
     GameMenu *menu;
-    NSTimer *moveTimer;
-    float timeInterval; // Movement speed of snake
-    NSInteger numDotAte;
-    NSTimer *countDownTimer;
-    NSInteger counter;
-    NSInteger maxCombos;
-    BOOL isCheckingCombo;
 }
 
 @end
@@ -55,6 +50,9 @@
     UITapGestureRecognizer *retryTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(retryGame)];
     [menu.retryLabel addGestureRecognizer:retryTap];
     
+    UITapGestureRecognizer *levelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(listLevels)];
+    [menu.levelLabel addGestureRecognizer:levelTap];
+    
     pauseLabel = [[CircleLabel alloc]initWithFrame:CGRectMake(280, 10, 30, 30)];
     pauseLabel.text = @"P";
     pauseLabel.backgroundColor = [UIColor blackColor];
@@ -64,12 +62,14 @@
     [pauseLabel addGestureRecognizer:pauseTap];
     
     // Game Settings
-    timeInterval = 0.2;
-    numDotAte = 0;
-    counter =  3;
-    maxCombos = 0;
     self.gamePad.userInteractionEnabled = NO;
     _gamePause = YES;
+}
+
+- (void)listLevels
+{
+    LevelListController *controller = [[LevelListController alloc]init];
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 -(void)directionChange:(UITapGestureRecognizer *)sender
@@ -110,50 +110,25 @@
 
 - (void)pauseGame
 {
-    if (!_gamePause) {
-        [self menuFade:NO];
-        _gamePause = YES;
-        [moveTimer invalidate];
-    } else {
-        [self startMoveTimer];
-    }
+
 }
 
 - (void)backgroundPauseGame
 {
     [self menuFade:NO];
     _gamePause = YES;
-    [moveTimer invalidate];
-
 }
 
 - (void)resumeGame
 {
     [self menuFade:YES];
     _gamePause = NO;
-    if (!isCheckingCombo)
-        moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
-                                                     target:self
-                                                   selector:@selector(changeDirection)
-                                                   userInfo:nil
-                                                    repeats:YES];
 }
 
 - (void)retryGame
 {
     [self menuFade:YES];
     _gamePause = NO;
-    
-    timeInterval = 0.2;
-    numDotAte = 0;
-    
-    //    [self.snake snakeHead].frame = CGRectMake(147, 189, 20, 20);
-    [[self.snake snakeHead].layer removeAllAnimations];
-    [self.snake snakeHead].alpha = 0;
-    
-    [self.snake resetSnake];
-    
-//    [self startCoundDown];
 }
 
 - (void)backToMenu
@@ -186,145 +161,13 @@
 -(void)changeDirection
 {
     self.gamePad.userInteractionEnabled = YES;
-    
-    if ([self.snake changeDirectionWithGameIsOver:NO]) {
-        
-        [moveTimer invalidate];
-        
-        UIColor *gameOverColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-        
-        [self.snake gameOver];
-        
-        [UIView animateWithDuration:1 animations:^{
-            
-            for (GameAsset *v in [self.gamePad assetArray]) {
-                v.backgroundColor = gameOverColor;
-            }
-            
-            for (UIView *v in [self.snake snakeBody]) {
-                if (v.tag > 0) {
-                    v.backgroundColor = gameOverColor;
-                }
-            }
-            
-        }];
-        
-    } else {
-        for (GameAsset *v in [self.gamePad assetArray]) {
-            if (v.hidden) {
-                v.hidden = NO;
-            }
-        }
-        [self isEatingDot];
-    }
 }
 
-#pragma mark - Dot
-
-- (void)isEatingDot
-{
-    for (GameAsset *v in [self.gamePad assetArray]) {
-        if (!v.hidden && CGRectIntersectsRect([self.snake snakeHead].frame, v.frame) && v.gameAssetType != kAssetTypeEmpty) {
-            
-            self.snake.snakeMouth.hidden = NO;
-            
-            v.hidden = YES;
-            
-            [self.gamePad bringSubviewToFront:[self.snake snakeHead]];
-            
-            [self.gamePad addSubview:[self.snake addSnakeBodyWithAsset:v]];
-            
-            [moveTimer invalidate];
-            
-            self.gamePad.userInteractionEnabled = NO;
-            
-            isCheckingCombo = YES;
-            
-            [self.snake checkCombo:^{
-                
-                self.gamePad.userInteractionEnabled = YES;
-                
-                isCheckingCombo = NO;
-                
-                if (self.snake.isRotate)
-                    [self.snake stopRotate];
-                
-                [self.snake mouthAnimation:timeInterval];
-                
-                self.snake.snakeMouth.backgroundColor = [UIColor whiteColor];
-                
-                // Increase speed for every 30 dots eaten
-                if (numDotAte%30==0 && numDotAte != 0)
-                    timeInterval -= 0.005;
-                
-                [self.snake updateExclamationText];
-                
-                [self.gamePad changeAssetType:v];
-                
-                if (moveTimer.isValid)
-                    [moveTimer invalidate];
-                
-                if (!self.gamePause)
-                    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
-                                                               selector:@selector(changeDirection)
-                                                               userInfo:nil
-                                                                repeats:YES];
-                
-            }];
-            
-            break;
-        }
-    }
-//    [self.gamePad sendSubviewToBack:[self.snake snakeHead]];
-}
-
-//#pragma mark - Game state
-//
-//- (void)countDown
-//{
-//    if (counter == 0) {
-//        self.gamePad.userInteractionEnabled = YES;
-//        [countDownTimer invalidate];
-//        counter = 3;
-//        
-//        [self.gamePad hideAllAssets];
-//        
-//        self.gamePad.alpha = 0;
-//        [UIView animateWithDuration:1 animations:^{
-//            [self.snake snakeHead].alpha = 1;
-//            [self.gamePad setupDotForGameStart:[self.snake snakeHead].frame];
-//            
-//        } completion:^(BOOL finished) {
-//            
-//            moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
-//                                                       selector:@selector(changeDirection)
-//                                                       userInfo:nil
-//                                                        repeats:YES];
-//        }];
-//    }
-//    else {
-////        [self.gamePad counterDots:counter];
-//        counter--;
-//    }
-//}
-//
-//- (void)startCoundDown
-//{
-//    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self
-//                                                    selector:@selector(countDown)
-//                                                    userInfo:nil
-//                                                     repeats:YES];
-//}
 
 - (void)startMoveTimer
 {
     self.gamePad.userInteractionEnabled = YES;
     _gamePause = NO;
-
-    moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
-                                               selector:@selector(changeDirection)
-                                               userInfo:nil
-                                                repeats:YES];
 }
 
 #pragma mark - Memory Management
@@ -332,7 +175,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Hide statu bar

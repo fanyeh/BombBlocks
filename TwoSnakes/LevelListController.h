@@ -1,13 +1,13 @@
 //
-//  MenuButton.h
+//  LevelListController.h
 //  TwoSnakes
 //
-//  Created by Jack Yeh on 2014/5/19.
+//  Created by Jack Yeh on 2014/5/27.
 //  Copyright (c) 2014年 MarriageKiller. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface MenuButton : UIView
+@interface LevelListController : UIViewController
 
 @end

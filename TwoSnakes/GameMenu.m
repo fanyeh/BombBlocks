@@ -58,6 +58,11 @@
         _resumeLabel.backgroundColor = [UIColor redColor];
         [self addSubview:_resumeLabel];
         
+        _levelLabel = [[CircleLabel alloc]initWithFrame:CGRectMake((frame.size.width-mountSize)/2, mouth.frame.origin.y + mountSize*2 + mountSize*1.5, mountSize, mountSize)];
+        _levelLabel.text = @"Level";
+        _levelLabel.backgroundColor = [UIColor yellowColor];
+        [self addSubview:_levelLabel];
+        
         _retryLabel = [[CircleLabel alloc]initWithFrame:CGRectMake(_resumeLabel.frame.origin.x - mountSize*1.5, _resumeLabel.frame.origin.y, mountSize, mountSize)];
         _retryLabel.text = @"Retry";
         _retryLabel.backgroundColor = [UIColor blueColor];

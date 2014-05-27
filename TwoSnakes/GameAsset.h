@@ -14,13 +14,17 @@ typedef enum {
     kAssetTypeSword,
     kAssetTypeShield,
     kAssetTypeMagic,
-    kAssetTypeEmpty
+    kAssetTypeEmpty,
+    kAssetTypeYellow,
+    kAssetTypeRed,
+    kAssetTypeBlue
 } AssetType;
 
 @interface GameAsset : UIView
 
 @property (nonatomic) AssetType gameAssetType;
-@property (strong,nonatomic) UILabel *assetNameLabel;
+@property (strong,nonatomic) UILabel *classicAssetLabel;
+@property (strong,nonatomic) NSString *assetName;
 @property (strong,nonatomic) NSIndexPath *indexPath;
 
 - (void)setPosition:(CGPoint)position;

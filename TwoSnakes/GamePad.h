@@ -20,6 +20,7 @@
 - (void)hideAllAssets;
 - (void)changeAssetType:(GameAsset *)asset;
 - (id)initGamePadWithAsset:(NSMutableArray *)gameAssets;
-
+- (id)initGamePadWithAssetDict:(NSDictionary *)assets;
+- (void)resetClassicGamePad;
 
 @end

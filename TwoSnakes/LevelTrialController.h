@@ -11,5 +11,6 @@
 @interface LevelTrialController : GameSceneTemplateController
 
 @property (strong,nonatomic) NSMutableArray *assetArray;
+@property (strong,nonatomic) NSDictionary *assetDict;
 
 @end

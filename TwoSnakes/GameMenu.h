@@ -13,5 +13,6 @@
 @property (strong , nonatomic) CircleLabel *resumeLabel;
 @property (strong , nonatomic) CircleLabel *retryLabel;
 @property (strong , nonatomic) CircleLabel *homeLabel;
+@property (strong , nonatomic) CircleLabel *levelLabel;
 
 @end

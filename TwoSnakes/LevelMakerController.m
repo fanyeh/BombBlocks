@@ -44,8 +44,6 @@
     UIPanGestureRecognizer *panBlock = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(blockPan:)];
     [self.gamePad addGestureRecognizer:panBlock];
     
-
-    
     currentAsset = [[GameAsset alloc]initWithFrame:CGRectMake(10, 10, 50, 50)];
     currentAsset.layer.borderWidth = 1;
     [self.view addSubview:currentAsset];
@@ -53,6 +51,7 @@
     [currentAsset addGestureRecognizer:currentAssetTap];
     
     gameAssetTable = [[UITableView alloc]initWithFrame:CGRectMake(320, 0, 120, self.view.frame.size.height)];
+    gameAssetTable.backgroundColor = [UIColor whiteColor];
     gameAssetTable.delegate = self;
     gameAssetTable.dataSource = self;
     [gameAssetTable registerNib:[UINib nibWithNibName:@"GameAssetCell" bundle:nil] forCellReuseIdentifier:@"GameAssetCell"];
@@ -247,7 +246,7 @@
     
     GameAsset *asset = [assetLibrary objectAtIndex:indexPath.row];
     cell.assetImageView.backgroundColor = asset.backgroundColor;
-    cell.assetNameLabel.text = asset.assetNameLabel.text;
+    cell.assetNameLabel.text = asset.assetName;
     
     return cell;
 }

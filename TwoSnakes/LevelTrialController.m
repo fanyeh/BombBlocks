@@ -10,7 +10,10 @@
 #import "GameAsset.h"
 
 @interface LevelTrialController ()
-
+{
+    float timeInterval; // Movement speed of snake
+    BOOL isCheckingCombo;
+}
 @end
 
 @implementation LevelTrialController
@@ -29,7 +32,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.gamePad = [[GamePad alloc]initGamePadWithAsset:_assetArray];
+    if (_assetArray)
+        self.gamePad = [[GamePad alloc]initGamePadWithAsset:_assetArray];
+    else if (_assetDict)
+        self.gamePad = [[GamePad alloc]initGamePadWithAssetDict:_assetDict];
+
     self.gamePad.center = self.view.center;
     UITapGestureRecognizer *gamePadTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(directionChange:)];
     [self.gamePad addGestureRecognizer:gamePadTap];
@@ -69,15 +76,151 @@
     return wallBounds;
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+-(void)changeDirection
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    [super changeDirection];
+    
+    if ([self.snake changeDirectionWithGameIsOver:NO]) {
+        
+        [self.moveTimer invalidate];
+        
+        UIColor *gameOverColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+        
+        [self.snake gameOver];
+        
+        [UIView animateWithDuration:1 animations:^{
+            
+            for (GameAsset *v in [self.gamePad assetArray]) {
+                v.classicAssetLabel.backgroundColor = gameOverColor;
+            }
+            
+            for (UIView *v in [self.snake snakeBody]) {
+                if (v.tag > 0) {
+                    v.backgroundColor = gameOverColor;
+                }
+            }
+            
+        }];
+        
+    } else {
+        for (GameAsset *v in [self.gamePad assetArray]) {
+            if (v.hidden) {
+                v.hidden = NO;
+            }
+        }
+        [self isEatingDot];
+    }
 }
-*/
+
+#pragma mark - Dot
+
+- (void)isEatingDot
+{
+    for (GameAsset *v in [self.gamePad assetArray]) {
+        if (!v.hidden && CGRectIntersectsRect([self.snake snakeHead].frame, v.frame) && v.gameAssetType != kAssetTypeEmpty) {
+            
+            self.snake.snakeMouth.hidden = NO;
+            
+            v.hidden = YES;
+            
+            [self.gamePad bringSubviewToFront:[self.snake snakeHead]];
+            
+            [self.gamePad addSubview:[self.snake addSnakeBodyWithAsset:v]];
+            
+            [self.moveTimer invalidate];
+            
+            self.gamePad.userInteractionEnabled = NO;
+            
+            isCheckingCombo = YES;
+            
+            [self.snake checkCombo:^{
+                
+                self.gamePad.userInteractionEnabled = YES;
+                
+                isCheckingCombo = NO;
+                
+                
+                if (self.snake.isRotate)
+                    [self.snake stopRotate];
+                
+                [self.snake mouthAnimation:timeInterval];
+                
+                self.snake.snakeMouth.backgroundColor = [UIColor whiteColor];
+                
+                [self.snake updateExclamationText];
+                
+                [self.gamePad changeAssetType:v];
+                
+                if (self.moveTimer.isValid)
+                    [self.moveTimer invalidate];
+                
+                if (!self.gamePause)
+                    self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
+                                                                    selector:@selector(changeDirection)
+                                                                    userInfo:nil
+                                                                     repeats:YES];
+                
+            }];
+            
+            break;
+        }
+    }
+}
+
+
+#pragma mark - menu controls
+
+- (void)pauseGame
+{
+    [super pauseGame];
+    if (!self.gamePause) {
+        [super menuFade:NO];
+        self.gamePause = YES;
+        [self.moveTimer invalidate];
+    } else {
+        [self startMoveTimer];
+    }
+}
+
+- (void)backgroundPauseGame
+{
+    [super backgroundPauseGame];
+    [self.moveTimer invalidate];
+}
+
+- (void)resumeGame
+{
+    [super resumeGame];
+    if (!isCheckingCombo)
+        self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
+                                                          target:self
+                                                        selector:@selector(changeDirection)
+                                                        userInfo:nil
+                                                         repeats:YES];
+}
+
+- (void)retryGame
+{
+    [super retryGame];
+    timeInterval = 0.2;
+    [self.snake resetSnake];
+    [self.gamePad resetClassicGamePad];
+    [self startMoveTimer];
+}
+
+- (void)backToMenu
+{
+    [self.moveTimer invalidate];
+    [super backToMenu];
+}
+
+- (void)startMoveTimer
+{
+    [super startMoveTimer];
+    self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
+                                                    selector:@selector(changeDirection)
+                                                    userInfo:nil
+                                                     repeats:YES];
+}
 
 @end

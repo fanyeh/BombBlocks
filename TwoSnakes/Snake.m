@@ -103,6 +103,8 @@
 
 - (void)resetSnake
 {
+    [[self snakeHead].layer removeAllAnimations];
+
     for (UIView *v in _snakeBody) {
         if (v.tag > 0)
             [v removeFromSuperview];
@@ -449,7 +451,7 @@
     
     SnakeBody *snakeBody = [[SnakeBody alloc]initWithFrame:bodyFrame];
     snakeBody.layer.cornerRadius = bodyFrame.size.width/4;
-    snakeBody.backgroundColor = assetView.backgroundColor;
+    snakeBody.backgroundColor = assetView.classicAssetLabel.backgroundColor;
     snakeBody.tag = _snakeLength;
 //    snakeBody.skillType.type = dot.skillType.type;
     [_snakeBody addObject:snakeBody];
