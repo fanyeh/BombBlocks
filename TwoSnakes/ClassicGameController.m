@@ -20,6 +20,9 @@
     NSInteger maxCombos;
     float timeInterval; // Movement speed of snake
     BOOL isCheckingCombo;
+    NSTimer *enemyTimer;
+    Snake *enemySnake;
+    NSMutableArray *enemyPath;
     
     //    NSTimer *countDownTimer;
     //    NSInteger counter;
@@ -46,6 +49,7 @@
     // Setup game pad
     self.gamePad = [[GamePad alloc]initGamePad];
     self.gamePad.center = self.view.center;
+    self.gamePad.frame = CGRectOffset(self.gamePad.frame, 0, 25);
     UITapGestureRecognizer *gamePadTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(directionChange:)];
     [self.gamePad addGestureRecognizer:gamePadTap];
     [self.view addSubview:self.gamePad];
@@ -54,9 +58,14 @@
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(147, 189, 20, 20)];
     [self.gamePad addSubview:self.snake];
     
+    enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(210, 126, 20, 20)];
+    enemySnake.backgroundColor = [UIColor redColor];
+    [self.gamePad addSubview:enemySnake];
+    
+    
     // Setup score label
     CGFloat labelWidth = 100;
-    scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 10, labelWidth, 50)];
+    scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 20, labelWidth, 50)];
     scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
     scoreLabel.text = @"Score";
     scoreLabel.textColor = [UIColor blackColor];
@@ -74,11 +83,49 @@
     score = 0;
     timeInterval = 0.2;
     maxCombos = 0;
+    
+    enemyPath = [self.gamePad searchPathPlayer:self.snake.frame enemy:enemySnake.frame];
+
+}
+
+- (void)changeEnemyDirection
+{
+    int i = arc4random()%3;
+    if (i == 2 || [enemyPath count]==1) {
+        enemyPath =  [self.gamePad searchPathPlayer:self.snake.frame enemy:enemySnake.frame];
+    }
+    
+    enemySnake.frame = [[enemyPath firstObject]frame];
+    [enemyPath removeObjectAtIndex:0];
+    
+    SnakeBody *breakBody = nil;
+    
+    for (SnakeBody *s in [self.snake snakeBody]) {
+        if ([[NSValue valueWithCGRect:enemySnake.frame] isEqualToValue:[NSValue valueWithCGRect:s.frame]]) {
+            breakBody = s;
+            break;
+        }
+    }
+    
+    if (breakBody) {
+        NSInteger i = [self.snake.snakeBody indexOfObject:breakBody];
+        while ([self.snake.snakeBody count] > i) {
+            [[self.snake.snakeBody objectAtIndex:i] removeFromSuperview];
+            [self.snake.snakeBody removeObjectAtIndex:i];
+
+        }
+    }
+}
+
+- (void)enemyHitBody
+{
+    
 }
 
 -(void)changeDirection
 {
     [super changeDirection];
+    
     
     if ([self.snake changeDirectionWithGameIsOver:NO]) {
         
@@ -233,6 +280,11 @@
                                                selector:@selector(changeDirection)
                                                userInfo:nil
                                                 repeats:YES];
+    
+    enemyTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval*2 target:self
+                                                selector:@selector(changeEnemyDirection)
+                                                userInfo:nil
+                                                 repeats:YES];
 }
 
 #pragma mark - Setscore

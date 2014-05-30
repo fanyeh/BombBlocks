@@ -53,6 +53,13 @@
 		4CB108C6190FF6440085C747 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108AA190FF6440085C747 /* CoreData.framework */; };
 		4CB108CE190FF6440085C747 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CB108CC190FF6440085C747 /* InfoPlist.strings */; };
 		4CB108D0190FF6440085C747 /* TwoSnakesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108CF190FF6440085C747 /* TwoSnakesTests.m */; };
+		4CB24B9D1935B267001B400E /* Key.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CB24B9C1935B267001B400E /* Key.png */; };
+		4CB24B9F1935B50A001B400E /* teleport.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4CB24B9E1935B50A001B400E /* teleport.jpg */; };
+		4CB24BA11935B727001B400E /* door.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CB24BA01935B727001B400E /* door.png */; };
+		4CB24BA51935B9B2001B400E /* sword.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CB24BA21935B9B2001B400E /* sword.png */; };
+		4CB24BA61935B9B2001B400E /* shield.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4CB24BA31935B9B2001B400E /* shield.jpg */; };
+		4CB24BA71935B9B2001B400E /* magic.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CB24BA41935B9B2001B400E /* magic.png */; };
+		4CB24BA91935BAB6001B400E /* wall.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CB24BA81935BAB6001B400E /* wall.png */; };
 		4CDBB71D1920A00900D8A9B4 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CDBB71C1920A00900D8A9B4 /* Social.framework */; };
 		4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDBB71F1920A22900D8A9B4 /* GCHelper.m */; };
 /* End PBXBuildFile section */
@@ -143,6 +150,13 @@
 		4CB108CB190FF6440085C747 /* TwoSnakesTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwoSnakesTests-Info.plist"; sourceTree = "<group>"; };
 		4CB108CD190FF6440085C747 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4CB108CF190FF6440085C747 /* TwoSnakesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwoSnakesTests.m; sourceTree = "<group>"; };
+		4CB24B9C1935B267001B400E /* Key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Key.png; sourceTree = "<group>"; };
+		4CB24B9E1935B50A001B400E /* teleport.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = teleport.jpg; sourceTree = "<group>"; };
+		4CB24BA01935B727001B400E /* door.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = door.png; sourceTree = "<group>"; };
+		4CB24BA21935B9B2001B400E /* sword.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sword.png; sourceTree = "<group>"; };
+		4CB24BA31935B9B2001B400E /* shield.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = shield.jpg; sourceTree = "<group>"; };
+		4CB24BA41935B9B2001B400E /* magic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = magic.png; sourceTree = "<group>"; };
+		4CB24BA81935BAB6001B400E /* wall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wall.png; sourceTree = "<group>"; };
 		4CDBB71C1920A00900D8A9B4 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		4CDBB71E1920A22900D8A9B4 /* GCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCHelper.h; sourceTree = "<group>"; };
 		4CDBB71F1920A22900D8A9B4 /* GCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCHelper.m; sourceTree = "<group>"; };
@@ -346,6 +360,7 @@
 		4CB108AC190FF6440085C747 /* TwoSnakes */ = {
 			isa = PBXGroup;
 			children = (
+				4CB24B9B1935B252001B400E /* Images */,
 				4CB108B5190FF6440085C747 /* MKAppDelegate.h */,
 				4CB108B6190FF6440085C747 /* MKAppDelegate.m */,
 				4C78A07B192DB928003F9ABE /* GameLevel */,
@@ -393,6 +408,20 @@
 				4CB108CC190FF6440085C747 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4CB24B9B1935B252001B400E /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				4CB24BA81935BAB6001B400E /* wall.png */,
+				4CB24BA21935B9B2001B400E /* sword.png */,
+				4CB24BA31935B9B2001B400E /* shield.jpg */,
+				4CB24BA41935B9B2001B400E /* magic.png */,
+				4CB24BA01935B727001B400E /* door.png */,
+				4CB24B9E1935B50A001B400E /* teleport.jpg */,
+				4CB24B9C1935B267001B400E /* Key.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -471,13 +500,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CB24BA51935B9B2001B400E /* sword.png in Resources */,
 				4C78A089192DDCEC003F9ABE /* GameAssetCell.xib in Resources */,
+				4CB24BA61935B9B2001B400E /* shield.jpg in Resources */,
+				4CB24BA11935B727001B400E /* door.png in Resources */,
 				4C85859B1925A1990096F75B /* MenuController.xib in Resources */,
 				4CB108B1190FF6440085C747 /* InfoPlist.strings in Resources */,
+				4CB24B9D1935B267001B400E /* Key.png in Resources */,
 				4C8585AD1925FB150096F75B /* twitter40@2x.png in Resources */,
 				4C8585AF1925FB270096F75B /* faceboo40@2x.png in Resources */,
 				4CB108BC190FF6440085C747 /* Images.xcassets in Resources */,
+				4CB24B9F1935B50A001B400E /* teleport.jpg in Resources */,
+				4CB24BA71935B9B2001B400E /* magic.png in Resources */,
 				4C8585A51925DEAA0096F75B /* GameRecordController.xib in Resources */,
+				4CB24BA91935BAB6001B400E /* wall.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

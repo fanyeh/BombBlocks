@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum {
+    kLoadLevelTypePlay = 0,
+    kLoadLevelTypeEdit,
+    kLoadLevelTypeCanel
+} LoadLevelType;
+
 @interface LevelListController : UIViewController
 
 @end

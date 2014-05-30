@@ -38,7 +38,13 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.gamePad = [[GamePad alloc]initEmptyGamePad];
+    
+    
+    if (_assetDict)
+        self.gamePad = [[GamePad alloc]initGamePadWithAssetDict:_assetDict];
+    else
+        self.gamePad = [[GamePad alloc]initEmptyGamePad];
+    
     [self.view addSubview:self.gamePad];
     
     UIPanGestureRecognizer *panBlock = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(blockPan:)];
@@ -76,6 +82,15 @@
     
     GameAsset *goalAsset = [[GameAsset alloc]init];
     [goalAsset setAssetType:kAssetTypeGoal];
+    
+    GameAsset *keyAsset = [[GameAsset alloc]init];
+    [keyAsset setAssetType:kAssetTypeKey];
+    
+    GameAsset *magicWallAsset = [[GameAsset alloc]init];
+    [magicWallAsset setAssetType:kAssetTypeMagicWall];
+    
+    GameAsset *doorAsset = [[GameAsset alloc]init];
+    [doorAsset setAssetType:kAssetTypeDoor];
 
     [assetLibrary addObject:wallAsset];
     [assetLibrary addObject:monsterAsset];
@@ -83,6 +98,9 @@
     [assetLibrary addObject:swordAsset];
     [assetLibrary addObject:magicAsset];
     [assetLibrary addObject:goalAsset];
+    [assetLibrary addObject:keyAsset];
+    [assetLibrary addObject:magicWallAsset];
+    [assetLibrary addObject:doorAsset];
     
     assetTableIsShow = NO;
     
@@ -112,12 +130,12 @@
     [outputButton addTarget:self action:@selector(outputGame) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:outputButton];
     
-    UIButton *listButton = [[UIButton alloc]initWithFrame:CGRectMake(210, 10, 50, 20)];
-    listButton.layer.borderWidth = 1;
-    [listButton setTitle:@"List" forState:UIControlStateNormal];
-    listButton.backgroundColor = [UIColor blackColor];
-    [listButton addTarget:self action:@selector(listAllLevels) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:listButton];
+    UIButton *loadButton = [[UIButton alloc]initWithFrame:CGRectMake(210, 10, 50, 20)];
+    loadButton.layer.borderWidth = 1;
+    [loadButton setTitle:@"List" forState:UIControlStateNormal];
+    loadButton.backgroundColor = [UIColor blackColor];
+    [loadButton addTarget:self action:@selector(listAllLevels) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:loadButton];
     
     levelNameField = [[UITextField alloc]initWithFrame:CGRectMake(130, 50, 180, 25)];
     levelNameField.borderStyle = UITextBorderStyleLine;
@@ -147,7 +165,9 @@
     if (levelNameField.text.length > 0) {
         
         NSMutableDictionary *jsonDictionary = [[NSMutableDictionary alloc]init];
+//        int i = 0;
         for (GameAsset *v in [self.gamePad assetArray]) {
+            
             NSDictionary *assetDict = @{
                                             @"Row" : [NSNumber numberWithInteger:v.indexPath.row] ,
                                             @"Column" : [NSNumber numberWithInteger:v.indexPath.section],
@@ -155,8 +175,13 @@
                                             
                                             };
             
-            [jsonDictionary setObject:assetDict forKey:[NSString stringWithFormat:@"%ld%ld",v.indexPath.row,v.indexPath.section]];
+            NSString *key  = [NSString stringWithFormat:@"Row%ldColumn%ld",v.indexPath.row,v.indexPath.section];
+            
+            [jsonDictionary setObject:assetDict forKey:key];
+//            i++;
+//            NSLog(@"%d : %@ : %ld",i,key , [jsonDictionary count]);
         }
+
         
         NSData * jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:nil];
 
@@ -167,8 +192,11 @@
         NSString * fileDirectory = [documentsDirectory stringByAppendingPathComponent:@"GameLevels"];
         
         NSString *fileName = [NSString stringWithFormat:@"%@.json",levelNameField.text];
-        NSString *savedImagePath = [fileDirectory stringByAppendingPathComponent:fileName];
-        [jsonData writeToFile:savedImagePath atomically:NO];
+        NSString *savedFilePath = [fileDirectory stringByAppendingPathComponent:fileName];
+        [jsonData writeToFile:savedFilePath atomically:NO];
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Level Saved!" message:nil delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
         
     } else {
         
@@ -258,6 +286,7 @@
     GameAsset *asset = [assetLibrary objectAtIndex:indexPath.row];
     cell.assetImageView.backgroundColor = asset.backgroundColor;
     cell.assetNameLabel.text = asset.assetName;
+    cell.assetImageView.image = asset.assetImageView.image;
     
     return cell;
 }
@@ -281,10 +310,9 @@
     CGPoint location = [sender locationInView:self.gamePad];
     for (GameAsset *v in [self.gamePad assetArray]) {
         
-        if (CGRectContainsPoint(v.frame, location)) 
+        if (CGRectContainsPoint(v.frame, location))
             
-                [v setAssetType:currentAsset.gameAssetType];
-
+            [v setAssetType:currentAsset.gameAssetType];
     }
 }
 

@@ -83,7 +83,7 @@
     if (_state == kGameStateContinue)
         _newgameLabel.text = @"Continue";
     else
-        _newgameLabel.text = @"New Game";
+        _newgameLabel.text = @"Classic";
 }
 
 - (void)listLevels

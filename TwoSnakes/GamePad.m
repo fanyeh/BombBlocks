@@ -44,56 +44,138 @@
     
     for (int i = 0 ; i < 14; i ++ ) {
         for (int j = 0 ; j < 23 ; j++) {
-            if (i%2==1 && j%2==1) {
-                
-                assetPosX = i * 21;
-                assetPosY = j * 21;
-                
-                GameAsset *asset = [[GameAsset alloc]init];
-                
-                int randomAsset = arc4random()%3;
-                
-                switch (randomAsset) {
-                    case 0:
-                        [asset setAssetType:kAssetTypeBlue];
-                        break;
-                    case 1:
-                        [asset setAssetType:kAssetTypeRed];
-                        break;
-                    case 2:
-                        [asset setAssetType:kAssetTypeYellow];
-                        break;
-                }
-                
-                [asset setPosition:CGPointMake(assetPosX, assetPosY)];
-                [self addSubview:asset];
-                [self sendSubviewToBack:asset];
-                [_assetArray addObject:asset];
-            }
+            GameAsset *asset = [[GameAsset alloc]init];
+
+            assetPosX = i * 21;
+            assetPosY = j * 21;
+            
+            if (i%2==1 && j%2==1)
+                [self randomColor:asset];
+            else
+                [asset setAssetType:kAssetTypeEmpty];
+            
+            [asset setPosition:CGPointMake(assetPosX, assetPosY)];
+
+            [self addSubview:asset];
+            [self sendSubviewToBack:asset];
+            [_assetArray addObject:asset];
+            
         }
     }
+    
+    // Create Asset neighbors
+    for (GameAsset *a in _assetArray) {
+        
+        for (GameAsset *b in _assetArray) {
+
+                CGRect upper = CGRectOffset(a.frame, 0, -21);
+                CGRect down = CGRectOffset(a.frame, 0, 21);
+                CGRect left = CGRectOffset(a.frame, -21, 0);
+                CGRect right = CGRectOffset(a.frame, 21, 0);
+
+                
+                if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:upper]]) {
+                    [a.neighbors addObject:b];
+                }
+                
+                else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:down]]) {
+                    [a.neighbors addObject:b];
+                }
+                
+                else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:left]]) {
+                    [a.neighbors addObject:b];
+                }
+                
+                else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:right]]) {
+                    [a.neighbors addObject:b];
+                }
+                
+            }
+
+    }
+//    
+//    for (GameAsset *a in _assetArray) {
+//    
+//        NSLog(@"A neighbor %@",a.neighbors);
+//    }
+}
+
+- (NSMutableArray *)constructPath:(GameAsset *)asset
+{
+    NSMutableArray *path = [[NSMutableArray alloc]init];
+    NSLog(@"construct path");
+
+    while (asset.pathParent != nil) {
+        [path insertObject:asset atIndex:0];
+        asset = asset.pathParent;
+    }
+    return path;
+}
+
+- (NSMutableArray *)searchPathPlayer:(CGRect)playerFrame enemy:(CGRect)enemyFrame
+{
+    GameAsset *startAsset;
+    GameAsset *goalAsset;
+    
+    for (GameAsset *a in _assetArray) {
+        
+        if ([[NSValue valueWithCGRect:a.frame] isEqualToValue:[NSValue valueWithCGRect:playerFrame]]) {
+            goalAsset = a;
+        }
+        
+        if ([[NSValue valueWithCGRect:a.frame] isEqualToValue:[NSValue valueWithCGRect:enemyFrame]]) {
+            startAsset = a;
+        }
+    }
+    
+    NSMutableArray *closedArray  = [[NSMutableArray alloc]init];
+    
+    NSMutableArray *openArray  = [[NSMutableArray alloc]init];
+    [openArray addObject:startAsset];
+    startAsset.pathParent = nil;
+    
+    while ([openArray count] > 0) {
+        GameAsset *asset = [openArray firstObject];
+        
+        
+        NSLog(@"Asset Frame %@ : Goal Frame %@", NSStringFromCGRect(asset.frame),NSStringFromCGRect(goalAsset.frame));
+
+        
+        if ([[NSValue valueWithCGRect:asset.frame] isEqualToValue:[NSValue valueWithCGRect:goalAsset.frame]]) {
+            
+            return [self constructPath:goalAsset];
+            
+        } else {
+            
+            [closedArray addObject:asset];
+            
+            
+            for (GameAsset *neighbor in asset.neighbors) {
+                
+                if (![closedArray containsObject:neighbor] && ![openArray containsObject:neighbor]) {
+                    
+                    neighbor.pathParent = asset;
+                    [openArray addObject:neighbor];
+
+                }
+                
+            }
+            
+        }
+        
+        [openArray removeObjectAtIndex:0];
+    }
+    
+    return nil;
 }
 
 - (void)changeAssetType:(GameAsset *)asset
 {
     if ([_assetArray indexOfObject:asset]) {
+        
         GameAsset *changeAsset = [_assetArray objectAtIndex:[_assetArray indexOfObject:asset]];
         CGPoint pos = changeAsset.frame.origin;
-        
-        int randomAsset = arc4random()%3;
-        
-        switch (randomAsset) {
-            case 0:
-                [changeAsset setAssetType:kAssetTypeBlue];
-                break;
-            case 1:
-                [changeAsset setAssetType:kAssetTypeRed];
-                break;
-            case 2:
-                [changeAsset setAssetType:kAssetTypeYellow];
-                break;
-        }
-        
+        [self randomColor:changeAsset];
         [changeAsset setPosition:pos];
     }
 }
@@ -102,19 +184,27 @@
 {
     for (GameAsset *a in _assetArray) {
         
-        int randomAsset = arc4random()%3;
-        
-        switch (randomAsset) {
-            case 0:
-                [a setAssetType:kAssetTypeBlue];
-                break;
-            case 1:
-                [a setAssetType:kAssetTypeRed];
-                break;
-            case 2:
-                [a setAssetType:kAssetTypeYellow];
-                break;
-        }
+        [self randomColor:a];
+    }
+}
+
+- (void)randomColor:(GameAsset *)asset
+{
+    int randomAsset = arc4random()%4;
+    
+    switch (randomAsset) {
+        case 0:
+            [asset setAssetType:kAssetTypeBlue];
+            break;
+        case 1:
+            [asset setAssetType:kAssetTypeRed];
+            break;
+        case 2:
+            [asset setAssetType:kAssetTypeYellow];
+            break;
+        case 3:
+            [asset setAssetType:kAssetTypePurple];
+            break;
     }
 }
 
@@ -157,7 +247,7 @@
 
 - (id)initGamePadWithAsset:(NSMutableArray *)assets
 {
-    CGRect frame = CGRectMake(2.5, 80, 315, 483);
+    CGRect frame = CGRectMake(2.5, 100, 315, 483);
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -193,7 +283,7 @@
 
 - (id)initGamePadWithAssetDict:(NSDictionary *)assets
 {
-    CGRect frame = CGRectMake(2.5, 80, 315, 483);
+    CGRect frame = CGRectMake(2.5, 100, 315, 483);
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code

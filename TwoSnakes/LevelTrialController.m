@@ -34,10 +34,16 @@
     
     if (_assetArray)
         self.gamePad = [[GamePad alloc]initGamePadWithAsset:_assetArray];
-    else if (_assetDict)
+    else if (_assetDict) {
         self.gamePad = [[GamePad alloc]initGamePadWithAssetDict:_assetDict];
+        for (GameAsset *a in self.gamePad.assetArray) {
+            a.layer.borderWidth = 1;
+        }
+    }
 
     self.gamePad.center = self.view.center;
+    self.gamePad.frame = CGRectOffset(self.gamePad.frame, 0, 25);
+
     UITapGestureRecognizer *gamePadTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(directionChange:)];
     [self.gamePad addGestureRecognizer:gamePadTap];
     [self.view addSubview:self.gamePad];
@@ -52,7 +58,7 @@
     exitButton.titleLabel.textColor = [UIColor blackColor];
     [exitButton addTarget:self action:@selector(exitTrial) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:exitButton];
-    timeInterval = 0.2;
+    timeInterval = 0.25;
     
 }
 

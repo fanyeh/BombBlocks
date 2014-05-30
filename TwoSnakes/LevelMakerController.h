@@ -11,5 +11,6 @@
 
 
 @interface LevelMakerController : GameSceneTemplateController
+@property (strong,nonatomic) NSDictionary *assetDict;
 
 @end
