@@ -156,7 +156,7 @@
                 
                 self.snake.snakeMouth.backgroundColor = [UIColor whiteColor];
                 
-                [self.snake updateExclamationText];
+                [self.snake updateExclamationText:nil];
                 
                 [self.gamePad changeAssetType:v];
                 

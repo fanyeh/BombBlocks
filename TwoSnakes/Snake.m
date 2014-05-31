@@ -187,12 +187,6 @@
     }
 }
 
--(void)updateExclamationText
-{
-    exclamationText = [NSString stringWithFormat:@"Combo %ld!",_combos];
-    exclamation.text = exclamationText;
-}
-
 #pragma mark - Directions
 
 - (MoveDirection)getBodyDirection:(UIView *)body
@@ -686,7 +680,7 @@
     _rightEye.alpha = 0;
     _snakeMouth.backgroundColor = color;
     _combos++;
-    [self updateExclamationText];
+    [self updateExclamationText:nil];
     
     for (NSInteger i = start ; i < end +1 ; i ++) {
         
@@ -703,7 +697,7 @@
         _rightEye.layer.borderWidth = 0.5;
         
     } completion:^(BOOL finished) {
-        
+                
         for (NSInteger i = start ; i < end +1 ; i ++) {
             SnakeBody *u = _snakeBody[i];
             [u.layer removeAllAnimations];
@@ -853,6 +847,16 @@
         exclamationView.hidden = YES;
         [exclamation.layer removeAllAnimations];
     }
+}
+
+-(void)updateExclamationText:(NSString *)text
+{
+    if (text == nil)
+        exclamationText = [NSString stringWithFormat:@"Combo %ld!",_combos];
+    else
+        exclamationText = text;
+
+    exclamation.text = exclamationText;
 }
 
 #pragma mark - Game Over Animation

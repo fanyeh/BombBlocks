@@ -56,10 +56,11 @@ typedef enum {
 - (void)startRotate;
 - (void)stopRotate;
 - (void)gameOver;
-- (void)updateExclamationText;
+- (void)updateExclamationText:(NSString *)text;
 - (void)mouthAnimation:(float)timeInterval;
 - (BOOL)checkCombo:(void(^)(void))completeBlock;
 - (void)setWallBounds:(NSMutableArray *)wallbounds;
-
+- (void)showExclamation:(BOOL)show;
+-(void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(void(^)(void))completeBlock;
 
 @end

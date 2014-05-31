@@ -91,15 +91,20 @@
 - (void)changeEnemyDirection
 {
     int i = arc4random()%3;
-    if (i == 2 || [enemyPath count]==1) {
+    if (i == 2 || [enemyPath count]==2) {
         enemyPath =  [self.gamePad searchPathPlayer:self.snake.frame enemy:enemySnake.frame];
     }
     
-    enemySnake.frame = [[enemyPath firstObject]frame];
+    CGRect nextMove = [[enemyPath firstObject]frame];
+    NSLog(@"enemy %@ : next %@",NSStringFromCGRect(enemySnake.frame),NSStringFromCGRect(nextMove));
+    [enemySnake setTurningNode:nextMove.origin];
+    enemySnake.frame = nextMove;
     [enemyPath removeObjectAtIndex:0];
+    [enemySnake.turningNodes removeAllObjects];
     
     SnakeBody *breakBody = nil;
     
+    // Enemy touched snake body
     for (SnakeBody *s in [self.snake snakeBody]) {
         if ([[NSValue valueWithCGRect:enemySnake.frame] isEqualToValue:[NSValue valueWithCGRect:s.frame]]) {
             breakBody = s;
@@ -108,18 +113,31 @@
     }
     
     if (breakBody) {
+        
+        [self stopMoveTimer];
+        [self.gamePad bringSubviewToFront:enemySnake];
+        
+        [enemySnake updateExclamationText:@"Oh Yea!"];
+        [enemySnake showExclamation:YES];
+        
         NSInteger i = [self.snake.snakeBody indexOfObject:breakBody];
-        while ([self.snake.snakeBody count] > i) {
-            [[self.snake.snakeBody objectAtIndex:i] removeFromSuperview];
-            [self.snake.snakeBody removeObjectAtIndex:i];
+        NSInteger range = [self.snake.snakeBody count]-i;
+        
+        [self.snake removeSnakeBodyByRangeStart:i
+                                       andRange:range
+                                       complete:^{
+                                           
+                                           [enemySnake showExclamation:NO];
+                                           [self startMoveTimer];
 
-        }
+        
+        }];
+//        while ([self.snake.snakeBody count] > i) {
+//            [[self.snake.snakeBody objectAtIndex:i] removeFromSuperview];
+//            [self.snake.snakeBody removeObjectAtIndex:i];
+//
+//        }
     }
-}
-
-- (void)enemyHitBody
-{
-    
 }
 
 -(void)changeDirection
@@ -129,7 +147,8 @@
     
     if ([self.snake changeDirectionWithGameIsOver:NO]) {
         
-        [self.moveTimer invalidate];
+        [self stopMoveTimer];
+//        [self.moveTimer invalidate];
         
         UIColor *gameOverColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
         
@@ -174,7 +193,9 @@
             
             [self.gamePad addSubview:[self.snake addSnakeBodyWithAsset:v]];
             
-            [self.moveTimer invalidate];
+//            [self.moveTimer invalidate];
+            
+            [self stopMoveTimer];
             
             self.gamePad.userInteractionEnabled = NO;
             
@@ -199,7 +220,7 @@
                 if (numDotAte%30==0 && numDotAte != 0)
                     timeInterval -= 0.005;
                 
-                [self.snake updateExclamationText];
+                [self.snake updateExclamationText:nil];
                 
                 [self.gamePad changeAssetType:v];
                 
@@ -207,10 +228,12 @@
                     [self.moveTimer invalidate];
                 
                 if (!self.gamePause)
-                    self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
-                                                                    selector:@selector(changeDirection)
-                                                                    userInfo:nil
-                                                                     repeats:YES];
+                    
+                    [self startMoveTimer];
+//                    self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
+//                                                                    selector:@selector(changeDirection)
+//                                                                    userInfo:nil
+//                                                                     repeats:YES];
                 
             }];
             
@@ -281,10 +304,16 @@
                                                userInfo:nil
                                                 repeats:YES];
     
-    enemyTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval*2 target:self
+    enemyTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval*1.5 target:self
                                                 selector:@selector(changeEnemyDirection)
                                                 userInfo:nil
                                                  repeats:YES];
+}
+
+- (void)stopMoveTimer
+{
+    [self.moveTimer invalidate];
+    [enemyTimer invalidate];
 }
 
 #pragma mark - Setscore
