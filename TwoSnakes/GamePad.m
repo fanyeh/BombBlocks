@@ -68,36 +68,29 @@
         
         for (GameAsset *b in _assetArray) {
 
-                CGRect upper = CGRectOffset(a.frame, 0, -21);
-                CGRect down = CGRectOffset(a.frame, 0, 21);
-                CGRect left = CGRectOffset(a.frame, -21, 0);
-                CGRect right = CGRectOffset(a.frame, 21, 0);
-
-                
-                if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:upper]]) {
-                    [a.neighbors addObject:b];
-                }
-                
-                else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:down]]) {
-                    [a.neighbors addObject:b];
-                }
-                
-                else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:left]]) {
-                    [a.neighbors addObject:b];
-                }
-                
-                else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:right]]) {
-                    [a.neighbors addObject:b];
-                }
-                
+            CGRect upper = CGRectOffset(a.frame, 0, -21);
+            CGRect down = CGRectOffset(a.frame, 0, 21);
+            CGRect left = CGRectOffset(a.frame, -21, 0);
+            CGRect right = CGRectOffset(a.frame, 21, 0);
+            
+            if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:upper]]) {
+                [a.neighbors addObject:b];
             }
-
+            
+            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:down]]) {
+                [a.neighbors addObject:b];
+            }
+            
+            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:left]]) {
+                [a.neighbors addObject:b];
+            }
+            
+            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:right]]) {
+                [a.neighbors addObject:b];
+            }
+            
+        }
     }
-//    
-//    for (GameAsset *a in _assetArray) {
-//    
-//        NSLog(@"A neighbor %@",a.neighbors);
-//    }
 }
 
 - (NSMutableArray *)constructPath:(GameAsset *)asset

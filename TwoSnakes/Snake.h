@@ -43,7 +43,7 @@ typedef enum {
 
 
 - (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad headFrame:(CGRect)frame;
-- (SnakeBody *)addSnakeBodyWithAsset:(GameAsset *)assetView;
+- (SnakeBody *)addSnakeBody:(UIColor *)backgroundColor;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
 - (UIView *)snakeTail;

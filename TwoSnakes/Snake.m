@@ -422,7 +422,7 @@
 
 #pragma mark - Snake Body
 
-- (SnakeBody *)addSnakeBodyWithAsset:(GameAsset *)assetView
+- (SnakeBody *)addSnakeBody:(UIColor *)backgroundColor
 {
     CGRect bodyFrame;
     CGRect snakeTailFrame =  [self snakeTail].frame;
@@ -445,8 +445,10 @@
     
     SnakeBody *snakeBody = [[SnakeBody alloc]initWithFrame:bodyFrame];
     snakeBody.layer.cornerRadius = bodyFrame.size.width/4;
-    snakeBody.backgroundColor = assetView.classicAssetLabel.backgroundColor;
+    snakeBody.backgroundColor = backgroundColor;
     snakeBody.tag = _snakeLength;
+//    snakeBody.layer.borderColor = [[UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000]CGColor];
+//    snakeBody.layer.borderWidth = 1;
 //    snakeBody.skillType.type = dot.skillType.type;
     [_snakeBody addObject:snakeBody];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];

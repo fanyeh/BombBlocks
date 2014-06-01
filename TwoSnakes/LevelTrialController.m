@@ -135,7 +135,7 @@
             
             [self.gamePad bringSubviewToFront:[self.snake snakeHead]];
             
-            [self.gamePad addSubview:[self.snake addSnakeBodyWithAsset:v]];
+            [self.gamePad addSubview:[self.snake addSnakeBody:v.classicAssetLabel.backgroundColor]];
             
             [self.moveTimer invalidate];
             

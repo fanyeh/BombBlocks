@@ -59,7 +59,23 @@
     [self.gamePad addSubview:self.snake];
     
     enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(210, 126, 20, 20)];
-    enemySnake.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
+    
+    int c = arc4random()%2;
+    
+    switch (c) {
+        case 0:
+            enemySnake.backgroundColor = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
+            break;
+        case 1:
+            enemySnake.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
+        case 2:
+            enemySnake.backgroundColor = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
+            break;
+        case 3:
+            enemySnake.backgroundColor = [UIColor colorWithRed:0.592 green:0.408 blue:0.820 alpha:1.000];
+            break;
+    }
+ 
     [self.gamePad addSubview:enemySnake];
     
     
@@ -99,16 +115,19 @@
     
     if ([color isEqual:enemySnake.backgroundColor]) {
         
+        
+        SnakeBody *body = [enemySnake.snakeBody lastObject];
+
         [UIView animateWithDuration:1.0
                          animations:^{
                              
-                             enemySnake.alpha =0;
+                             body.alpha =0;
                              
                          } completion:^(BOOL finished) {
-                             [enemySnake removeFromSuperview];
+                             [body removeFromSuperview];
+                             [enemySnake.snakeBody removeLastObject];
                          }];
     }
-
 }
 
 - (void)changeEnemyDirection
@@ -118,12 +137,64 @@
         enemyPath =  [self.gamePad searchPathPlayer:self.snake.frame enemy:enemySnake.frame];
     }
     
-    CGRect nextMove = [[enemyPath firstObject]frame];
-    NSLog(@"enemy %@ : next %@",NSStringFromCGRect(enemySnake.frame),NSStringFromCGRect(nextMove));
-    [enemySnake setTurningNode:nextMove.origin];
-    enemySnake.frame = nextMove;
+    CGPoint nextMoveOrigin = [[enemyPath firstObject]frame].origin;
+//    CGRect nextMoveFrame = [[enemyPath firstObject]frame];
+
+    
+    CGPoint headOrigin = enemySnake.frame.origin;
+    MoveDirection direction;
+    
+    switch ([enemySnake headDirection]) {
+        case kMoveDirectionUp:
+            if (nextMoveOrigin.x > headOrigin.x) {
+                direction = kMoveDirectionRight;
+                [enemySnake setTurningNode:nextMoveOrigin];
+            }
+
+            else if (nextMoveOrigin.x < headOrigin.x) {
+                direction = kMoveDirectionLeft;
+                [enemySnake setTurningNode:nextMoveOrigin];
+            }
+
+            break;
+        case kMoveDirectionDown:
+            if (nextMoveOrigin.x > headOrigin.x) {
+                direction = kMoveDirectionRight;
+                [enemySnake setTurningNode:nextMoveOrigin];
+            }
+            else if (nextMoveOrigin.x < headOrigin.x) {
+                direction = kMoveDirectionLeft;
+                [enemySnake setTurningNode:nextMoveOrigin];
+            }
+            break;
+        case kMoveDirectionLeft:
+                if (nextMoveOrigin.y > headOrigin.y) {
+                    direction = kMoveDirectionDown;
+                    [enemySnake setTurningNode:nextMoveOrigin];
+                }
+                else if (nextMoveOrigin.y < headOrigin.y) {
+                    direction = kMoveDirectionUp;
+                    [enemySnake setTurningNode:nextMoveOrigin];
+                }
+            break;
+        case kMoveDirectionRight:
+                if (nextMoveOrigin.y > headOrigin.y) {
+                    direction = kMoveDirectionDown;
+                    [enemySnake setTurningNode:nextMoveOrigin];
+                }
+                else if (nextMoveOrigin.y < headOrigin.y) {
+                    direction = kMoveDirectionUp;
+                    [enemySnake setTurningNode:nextMoveOrigin];
+                }
+            break;
+    }
+
+    [enemySnake changeDirectionWithGameIsOver:NO];
     [enemyPath removeObjectAtIndex:0];
-    [enemySnake.turningNodes removeAllObjects];
+
+//    enemySnake.frame = nextMoveFrame;
+//    [enemySnake.turningNodes removeAllObjects];
+
     
     SnakeBody *breakBody = nil;
     
@@ -152,6 +223,8 @@
                                            
                                            [enemySnake showExclamation:NO];
                                            [self startMoveTimer];
+                                           
+                                           [self.gamePad addSubview:[enemySnake addSnakeBody:enemySnake.backgroundColor]];
 
         
         }];
@@ -209,7 +282,7 @@
             
             [self.gamePad bringSubviewToFront:[self.snake snakeHead]];
             
-            [self.gamePad addSubview:[self.snake addSnakeBodyWithAsset:v]];
+            [self.gamePad addSubview:[self.snake addSnakeBody:v.classicAssetLabel.backgroundColor]];
             
             
             [self stopMoveTimer];
