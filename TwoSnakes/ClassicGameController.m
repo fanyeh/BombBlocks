@@ -59,7 +59,7 @@
     [self.gamePad addSubview:self.snake];
     
     enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(210, 126, 20, 20)];
-    enemySnake.backgroundColor = [UIColor redColor];
+    enemySnake.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
     [self.gamePad addSubview:enemySnake];
     
     
@@ -85,13 +85,36 @@
     maxCombos = 0;
     
     enemyPath = [self.gamePad searchPathPlayer:self.snake.frame enemy:enemySnake.frame];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attackEnemy:) name:@"attackEnemy" object:nil];
+
+
+}
+
+- (void)attackEnemy:(NSNotification *)notification
+{
+    NSDictionary *comboColorDict = [notification userInfo];
+    
+    UIColor *color = [comboColorDict objectForKey:@"comboColor"];
+    
+    if ([color isEqual:enemySnake.backgroundColor]) {
+        
+        [UIView animateWithDuration:1.0
+                         animations:^{
+                             
+                             enemySnake.alpha =0;
+                             
+                         } completion:^(BOOL finished) {
+                             [enemySnake removeFromSuperview];
+                         }];
+    }
 
 }
 
 - (void)changeEnemyDirection
 {
     int i = arc4random()%3;
-    if (i == 2 || [enemyPath count]==2) {
+    if (i == 2 || [enemyPath count] < 1) {
         enemyPath =  [self.gamePad searchPathPlayer:self.snake.frame enemy:enemySnake.frame];
     }
     
@@ -132,11 +155,6 @@
 
         
         }];
-//        while ([self.snake.snakeBody count] > i) {
-//            [[self.snake.snakeBody objectAtIndex:i] removeFromSuperview];
-//            [self.snake.snakeBody removeObjectAtIndex:i];
-//
-//        }
     }
 }
 
@@ -193,9 +211,9 @@
             
             [self.gamePad addSubview:[self.snake addSnakeBodyWithAsset:v]];
             
-//            [self.moveTimer invalidate];
             
             [self stopMoveTimer];
+            
             
             self.gamePad.userInteractionEnabled = NO;
             
@@ -230,10 +248,6 @@
                 if (!self.gamePause)
                     
                     [self startMoveTimer];
-//                    self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
-//                                                                    selector:@selector(changeDirection)
-//                                                                    userInfo:nil
-//                                                                     repeats:YES];
                 
             }];
             
@@ -304,10 +318,11 @@
                                                userInfo:nil
                                                 repeats:YES];
     
-    enemyTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval*1.5 target:self
-                                                selector:@selector(changeEnemyDirection)
-                                                userInfo:nil
-                                                 repeats:YES];
+    if (enemySnake.alpha != 0)
+        enemyTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval*1.5 target:self
+                                                    selector:@selector(changeEnemyDirection)
+                                                    userInfo:nil
+                                                     repeats:YES];
 }
 
 - (void)stopMoveTimer

@@ -519,6 +519,9 @@
             if (!_isRotate)
                 [self startRotate];
             
+            NSDictionary *comboColorDict = @{@"comboColor":repeatColor} ;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"attackEnemy" object:nil userInfo:comboColorDict];
+
             [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:v.backgroundColor otherCombo:NO];
             
             

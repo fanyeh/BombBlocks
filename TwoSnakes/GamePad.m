@@ -152,7 +152,7 @@
             
             for (GameAsset *neighbor in asset.neighbors) {
                 
-                if (![closedArray containsObject:neighbor] && ![openArray containsObject:neighbor]) {
+                if (![closedArray containsObject:neighbor] && ![openArray containsObject:neighbor] && neighbor.gameAssetType == kAssetTypeEmpty) {
                     
                     neighbor.pathParent = asset;
                     [openArray addObject:neighbor];
