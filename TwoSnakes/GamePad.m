@@ -27,7 +27,7 @@
 
 - (id)initGamePad
 {
-    CGRect frame = CGRectMake(0, 0, 315, 483);
+    CGRect frame = CGRectMake(0, 0, 315, 441);
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -42,8 +42,8 @@
     CGFloat assetPosX;
     CGFloat assetPosY;
     
-    for (int i = 0 ; i < 14; i ++ ) {
-        for (int j = 0 ; j < 23 ; j++) {
+    for (int i = 0 ; i < 15; i ++ ) {
+        for (int j = 0 ; j < 21 ; j++) {
             GameAsset *asset = [[GameAsset alloc]init];
 
             assetPosX = i * 21;
@@ -67,7 +67,7 @@
     for (GameAsset *a in _assetArray) {
         
         for (GameAsset *b in _assetArray) {
-
+            
             CGRect upper = CGRectOffset(a.frame, 0, -21);
             CGRect down = CGRectOffset(a.frame, 0, 21);
             CGRect left = CGRectOffset(a.frame, -21, 0);
@@ -96,7 +96,6 @@
 - (NSMutableArray *)constructPath:(GameAsset *)asset
 {
     NSMutableArray *path = [[NSMutableArray alloc]init];
-    NSLog(@"construct path");
 
     while (asset.pathParent != nil) {
         [path insertObject:asset atIndex:0];
@@ -105,50 +104,82 @@
     return path;
 }
 
-- (NSMutableArray *)searchPathPlayer:(CGRect)playerFrame enemy:(CGRect)enemyFrame
+- (NSMutableArray *)searchPathPlayer:(CGRect)playerFrame enemy:(CGRect)enemyFrame moveDirection:(MoveDirection)moveDirection
 {
-    GameAsset *startAsset;
-    GameAsset *goalAsset;
+    GameAsset *enemyAsset;
+    GameAsset *playerAsset;
     
     for (GameAsset *a in _assetArray) {
         
         if ([[NSValue valueWithCGRect:a.frame] isEqualToValue:[NSValue valueWithCGRect:playerFrame]]) {
-            goalAsset = a;
+            playerAsset = a;
         }
         
         if ([[NSValue valueWithCGRect:a.frame] isEqualToValue:[NSValue valueWithCGRect:enemyFrame]]) {
-            startAsset = a;
+            enemyAsset = a;
         }
     }
-    
+
     NSMutableArray *closedArray  = [[NSMutableArray alloc]init];
     
     NSMutableArray *openArray  = [[NSMutableArray alloc]init];
-    [openArray addObject:startAsset];
-    startAsset.pathParent = nil;
+    
+    [openArray addObject:enemyAsset];
+    
+    enemyAsset.pathParent = nil;
+    
+    CGRect backwardFrame;
+    switch (moveDirection) {
+            
+        case kMoveDirectionUp:
+            backwardFrame = CGRectOffset(enemyFrame, 0, 21);
+            break;
+            
+        case kMoveDirectionDown:
+            backwardFrame = CGRectOffset(enemyFrame, 0, -21);
+            break;
+            
+        case kMoveDirectionLeft:
+            backwardFrame = CGRectOffset(enemyFrame, 21, 0);
+            break;
+            
+        case kMoveDirectionRight:
+            backwardFrame = CGRectOffset(enemyFrame, -21, 0);
+            break;
+            
+    }
+
     
     while ([openArray count] > 0) {
-        GameAsset *asset = [openArray firstObject];
+        
+        GameAsset *nextMoveFrame = [openArray firstObject];
         
         
-        NSLog(@"Asset Frame %@ : Goal Frame %@", NSStringFromCGRect(asset.frame),NSStringFromCGRect(goalAsset.frame));
-
-        
-        if ([[NSValue valueWithCGRect:asset.frame] isEqualToValue:[NSValue valueWithCGRect:goalAsset.frame]]) {
+        if ([[NSValue valueWithCGRect:nextMoveFrame.frame] isEqualToValue:[NSValue valueWithCGRect:playerAsset.frame]]) {
             
-            return [self constructPath:goalAsset];
+            return [self constructPath:playerAsset];
             
         } else {
             
-            [closedArray addObject:asset];
+            [closedArray addObject:nextMoveFrame];
             
             
-            for (GameAsset *neighbor in asset.neighbors) {
+            for (GameAsset *neighbor in nextMoveFrame.neighbors) {
                 
-                if (![closedArray containsObject:neighbor] && ![openArray containsObject:neighbor] && neighbor.gameAssetType == kAssetTypeEmpty) {
-                    
-                    neighbor.pathParent = asset;
-                    [openArray addObject:neighbor];
+                
+                if (![closedArray containsObject:neighbor] && ![openArray containsObject:neighbor] && ![self compareFromFrame:neighbor.frame toFrame:backwardFrame]) {
+ 
+                    if (neighbor.gameAssetType == kAssetTypeEmpty) {
+                        
+                        neighbor.pathParent = nextMoveFrame;
+                        [openArray addObject:neighbor];
+                        
+                    }
+                    else if ((neighbor.gameAssetType != kAssetTypeEmpty) && [self compareFromFrame:neighbor.frame toFrame:playerAsset.frame]) {
+                        neighbor.pathParent = nextMoveFrame;
+                        [openArray addObject:neighbor];
+                        
+                    }
 
                 }
                 
@@ -160,6 +191,14 @@
     }
     
     return nil;
+}
+
+- (BOOL)compareFromFrame:(CGRect)fromFrame toFrame:(CGRect)toFrame
+{
+    if ([[NSValue valueWithCGRect:fromFrame] isEqualToValue:[NSValue valueWithCGRect:toFrame]])
+        return YES;
+    else
+        return NO;
 }
 
 - (void)changeAssetType:(GameAsset *)asset
@@ -183,7 +222,7 @@
 
 - (void)randomColor:(GameAsset *)asset
 {
-    int randomAsset = arc4random()%4;
+    int randomAsset = arc4random()%3;
     
     switch (randomAsset) {
         case 0:
@@ -195,9 +234,9 @@
         case 2:
             [asset setAssetType:kAssetTypeYellow];
             break;
-        case 3:
-            [asset setAssetType:kAssetTypePurple];
-            break;
+//        case 3:
+//            [asset setAssetType:kAssetTypePurple];
+//            break;
     }
 }
 

@@ -64,8 +64,8 @@
         turningNodeTags = [[NSMutableDictionary alloc]init];
         _snakeLength = 1;
         self.tag = 0;
-        _xOffset = headFrame.size.width+1;
-        _yOffset = headFrame.size.height+1;
+        _xOffset = (headFrame.size.width+1)/1;
+        _yOffset = (headFrame.size.height+1)/1;
         [_snakeBody addObject:self];
         [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
         
@@ -252,8 +252,11 @@
         
         if (!gameIsOver) {
             CGRect newFrame = newPosition;
-            view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+
+
+      
             
+            view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
             if (view.tag == 0) {
                 // Update exclamation mark position
                 
@@ -290,7 +293,7 @@
 -(void)setTurningNode:(CGPoint)location
 {
     CGPoint headOrigin = [self snakeHead].frame.origin;
-    MoveDirection direction;
+    MoveDirection direction = [self headDirection];
     switch ([self headDirection]) {
         case kMoveDirectionUp:
             if (location.x > headOrigin.x)

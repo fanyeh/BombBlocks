@@ -49,18 +49,18 @@
     // Setup game pad
     self.gamePad = [[GamePad alloc]initGamePad];
     self.gamePad.center = self.view.center;
-    self.gamePad.frame = CGRectOffset(self.gamePad.frame, 0, 25);
+//    self.gamePad.frame = CGRectOffset(self.gamePad.frame, 0, 25);
     UITapGestureRecognizer *gamePadTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(directionChange:)];
     [self.gamePad addGestureRecognizer:gamePadTap];
     [self.view addSubview:self.gamePad];
     
     // Setup snake head
-    self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(147, 189, 20, 20)];
+    self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(126, 189, 20, 20)];
     [self.gamePad addSubview:self.snake];
     
-    enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(210, 126, 20, 20)];
+    enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(126, 189, 20, 20)];
     
-    int c = arc4random()%2;
+    int c = arc4random()%3;
     
     switch (c) {
         case 0:
@@ -71,12 +71,13 @@
         case 2:
             enemySnake.backgroundColor = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
             break;
-        case 3:
-            enemySnake.backgroundColor = [UIColor colorWithRed:0.592 green:0.408 blue:0.820 alpha:1.000];
-            break;
+//        case 3:
+//            enemySnake.backgroundColor = [UIColor colorWithRed:0.592 green:0.408 blue:0.820 alpha:1.000];
+//            break;
     }
  
     [self.gamePad addSubview:enemySnake];
+    enemySnake.hidden = YES;
     
     
     // Setup score label
@@ -100,10 +101,7 @@
     timeInterval = 0.2;
     maxCombos = 0;
     
-    enemyPath = [self.gamePad searchPathPlayer:self.snake.frame enemy:enemySnake.frame];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attackEnemy:) name:@"attackEnemy" object:nil];
-
 
 }
 
@@ -113,7 +111,7 @@
     
     UIColor *color = [comboColorDict objectForKey:@"comboColor"];
     
-    if ([color isEqual:enemySnake.backgroundColor]) {
+    if ([color isEqual:enemySnake.backgroundColor] && !enemySnake.hidden) {
         
         
         SnakeBody *body = [enemySnake.snakeBody lastObject];
@@ -121,11 +119,18 @@
         [UIView animateWithDuration:1.0
                          animations:^{
                              
-                             body.alpha =0;
+                             body.alpha = 0;
                              
                          } completion:^(BOOL finished) {
-                             [body removeFromSuperview];
-                             [enemySnake.snakeBody removeLastObject];
+                             if ([enemySnake.snakeBody count]==1) {
+                                 
+                                 enemySnake.frame =  CGRectMake(126, 189, 20, 20);
+                                 enemySnake.hidden = YES;
+                                 
+                             } else {
+                                 [body removeFromSuperview];
+                                 [enemySnake.snakeBody removeLastObject];
+                             }
                          }];
     }
 }
@@ -133,73 +138,24 @@
 - (void)changeEnemyDirection
 {
     int i = arc4random()%3;
-    if (i == 2 || [enemyPath count] < 1) {
-        enemyPath =  [self.gamePad searchPathPlayer:self.snake.frame enemy:enemySnake.frame];
+    if (i == 2 || [enemyPath count] < 1 || enemyPath == nil) {
+        
+        enemyPath =  [self.gamePad searchPathPlayer:self.snake.frame enemy:enemySnake.frame moveDirection:[enemySnake headDirection]];
+        
     }
     
     CGPoint nextMoveOrigin = [[enemyPath firstObject]frame].origin;
-//    CGRect nextMoveFrame = [[enemyPath firstObject]frame];
-
-    
-    CGPoint headOrigin = enemySnake.frame.origin;
-    MoveDirection direction;
-    
-    switch ([enemySnake headDirection]) {
-        case kMoveDirectionUp:
-            if (nextMoveOrigin.x > headOrigin.x) {
-                direction = kMoveDirectionRight;
-                [enemySnake setTurningNode:nextMoveOrigin];
-            }
-
-            else if (nextMoveOrigin.x < headOrigin.x) {
-                direction = kMoveDirectionLeft;
-                [enemySnake setTurningNode:nextMoveOrigin];
-            }
-
-            break;
-        case kMoveDirectionDown:
-            if (nextMoveOrigin.x > headOrigin.x) {
-                direction = kMoveDirectionRight;
-                [enemySnake setTurningNode:nextMoveOrigin];
-            }
-            else if (nextMoveOrigin.x < headOrigin.x) {
-                direction = kMoveDirectionLeft;
-                [enemySnake setTurningNode:nextMoveOrigin];
-            }
-            break;
-        case kMoveDirectionLeft:
-                if (nextMoveOrigin.y > headOrigin.y) {
-                    direction = kMoveDirectionDown;
-                    [enemySnake setTurningNode:nextMoveOrigin];
-                }
-                else if (nextMoveOrigin.y < headOrigin.y) {
-                    direction = kMoveDirectionUp;
-                    [enemySnake setTurningNode:nextMoveOrigin];
-                }
-            break;
-        case kMoveDirectionRight:
-                if (nextMoveOrigin.y > headOrigin.y) {
-                    direction = kMoveDirectionDown;
-                    [enemySnake setTurningNode:nextMoveOrigin];
-                }
-                else if (nextMoveOrigin.y < headOrigin.y) {
-                    direction = kMoveDirectionUp;
-                    [enemySnake setTurningNode:nextMoveOrigin];
-                }
-            break;
-    }
+    [enemySnake setTurningNode:nextMoveOrigin];
 
     [enemySnake changeDirectionWithGameIsOver:NO];
+    
     [enemyPath removeObjectAtIndex:0];
 
-//    enemySnake.frame = nextMoveFrame;
-//    [enemySnake.turningNodes removeAllObjects];
-
-    
     SnakeBody *breakBody = nil;
     
     // Enemy touched snake body
     for (SnakeBody *s in [self.snake snakeBody]) {
+        
         if ([[NSValue valueWithCGRect:enemySnake.frame] isEqualToValue:[NSValue valueWithCGRect:s.frame]]) {
             breakBody = s;
             break;
@@ -209,6 +165,7 @@
     if (breakBody) {
         
         [self stopMoveTimer];
+        [self stopEnemyTimer];
         [self.gamePad bringSubviewToFront:enemySnake];
         
         [enemySnake updateExclamationText:@"Oh Yea!"];
@@ -222,7 +179,10 @@
                                        complete:^{
                                            
                                            [enemySnake showExclamation:NO];
+                                           
                                            [self startMoveTimer];
+                                           
+                                           [self startEnemyTimer];
                                            
                                            [self.gamePad addSubview:[enemySnake addSnakeBody:enemySnake.backgroundColor]];
 
@@ -239,7 +199,6 @@
     if ([self.snake changeDirectionWithGameIsOver:NO]) {
         
         [self stopMoveTimer];
-//        [self.moveTimer invalidate];
         
         UIColor *gameOverColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
         
@@ -248,7 +207,8 @@
         [UIView animateWithDuration:1 animations:^{
             
             for (GameAsset *v in [self.gamePad assetArray]) {
-                v.classicAssetLabel.backgroundColor = gameOverColor;
+                if (v.gameAssetType != kAssetTypeEmpty)
+                    v.classicAssetLabel.backgroundColor = gameOverColor;
             }
             
             for (UIView *v in [self.snake snakeBody]) {
@@ -286,7 +246,7 @@
             
             
             [self stopMoveTimer];
-            
+            [self stopEnemyTimer];
             
             self.gamePad.userInteractionEnabled = NO;
             
@@ -308,19 +268,33 @@
                 self.snake.snakeMouth.backgroundColor = [UIColor whiteColor];
                 
                 // Increase speed for every 30 dots eaten
-                if (numDotAte%30==0 && numDotAte != 0)
+                if (numDotAte%30==0 && numDotAte != 0) {
+                    
                     timeInterval -= 0.005;
+                    
+                    if (enemySnake.hidden) {
+                        
+                        [self startEnemyTimer];
+                        
+                    }
+                }
                 
                 [self.snake updateExclamationText:nil];
                 
                 [self.gamePad changeAssetType:v];
                 
                 if (self.moveTimer.isValid)
+                    
                     [self.moveTimer invalidate];
                 
-                if (!self.gamePause)
+                if (!self.gamePause) {
                     
                     [self startMoveTimer];
+                    
+                    if (!enemyTimer.isValid && !enemySnake.hidden)
+                        [self startEnemyTimer];
+                    
+                }
                 
             }];
             
@@ -390,18 +364,27 @@
                                                selector:@selector(changeDirection)
                                                userInfo:nil
                                                 repeats:YES];
-    
-    if (enemySnake.alpha != 0)
-        enemyTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval*1.5 target:self
-                                                    selector:@selector(changeEnemyDirection)
-                                                    userInfo:nil
-                                                     repeats:YES];
+}
+
+- (void)startEnemyTimer
+{
+    enemyTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval*1.5 target:self
+                                            selector:@selector(changeEnemyDirection)
+                                            userInfo:nil
+                                             repeats:YES];
+
+    enemySnake.hidden = NO;
+    enemySnake.alpha = 1;
+}
+
+- (void)stopEnemyTimer
+{
+    [enemyTimer invalidate];
 }
 
 - (void)stopMoveTimer
 {
     [self.moveTimer invalidate];
-    [enemyTimer invalidate];
 }
 
 #pragma mark - Setscore

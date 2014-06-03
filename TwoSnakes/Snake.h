@@ -22,7 +22,7 @@ typedef enum {
 @interface Snake : UIView
 
 @property (nonatomic) int snakeLength;
-@property (nonatomic) MoveDirection snakeDirection;
+//@property (nonatomic) MoveDirection snakeDirection;
 @property (strong,nonatomic) NSMutableArray *snakeBody;
 @property (strong,nonatomic) NSMutableDictionary *bodyDirections;
 @property (strong,nonatomic) NSMutableDictionary *turningNodes;

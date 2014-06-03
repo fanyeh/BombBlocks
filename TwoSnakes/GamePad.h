@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Snake.h"
 @class GameAsset;
+
 
 @interface GamePad : UIView
 
@@ -22,6 +24,6 @@
 - (id)initGamePadWithAsset:(NSMutableArray *)gameAssets;
 - (id)initGamePadWithAssetDict:(NSDictionary *)assets;
 - (void)resetClassicGamePad;
-- (NSMutableArray *)searchPathPlayer:(CGRect)playerFrame enemy:(CGRect)enemyFrame;
+- (NSMutableArray *)searchPathPlayer:(CGRect)playerFrame enemy:(CGRect)enemyFrame moveDirection:(MoveDirection)moveDirection;
 
 @end
