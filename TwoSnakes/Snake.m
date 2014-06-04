@@ -453,8 +453,8 @@
     snakeBody.layer.cornerRadius = bodyFrame.size.width/4;
     snakeBody.backgroundColor = backgroundColor;
     snakeBody.tag = _snakeLength;
-    snakeBody.layer.borderColor = self.backgroundColor.CGColor;
-    snakeBody.layer.borderWidth = 3;
+//    snakeBody.layer.borderColor = self.backgroundColor.CGColor;
+//    snakeBody.layer.borderWidth = 3;
 //    snakeBody.skillType.type = dot.skillType.type;
     [_snakeBody addObject:snakeBody];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];
