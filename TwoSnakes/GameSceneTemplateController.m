@@ -16,7 +16,7 @@
 
 @interface GameSceneTemplateController ()
 {
-    CircleLabel *pauseLabel;
+    UILabel *pauseLabel;
     GameMenu *menu;
 }
 
@@ -53,9 +53,20 @@
     UITapGestureRecognizer *levelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(listLevels)];
     [menu.levelLabel addGestureRecognizer:levelTap];
     
-    pauseLabel = [[CircleLabel alloc]initWithFrame:CGRectMake(280, 10, 30, 30)];
-    pauseLabel.text = @"P";
+    pauseLabel = [[UILabel alloc]initWithFrame:CGRectMake(145, 508, 30, 30)];
+//    pauseLabel.text = @"P";
     pauseLabel.backgroundColor = [UIColor blackColor];
+    UIView *pauseLeft = [[UIView alloc]initWithFrame:CGRectMake(10, 7, 4, 16)];
+    pauseLeft.backgroundColor = [UIColor whiteColor];
+    UIView *pauseRight= [[UIView alloc]initWithFrame:CGRectMake(16, 7, 4, 16)];
+    pauseRight.backgroundColor = [UIColor whiteColor];
+    
+    [pauseLabel addSubview:pauseLeft];
+    [pauseLabel addSubview:pauseRight];
+
+    pauseLabel.layer.cornerRadius = 30/4;
+    pauseLabel.layer.masksToBounds = YES;
+    pauseLabel.userInteractionEnabled = YES;
     [self.view addSubview:pauseLabel];
     
     UITapGestureRecognizer *pauseTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pauseGame)];

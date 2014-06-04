@@ -38,7 +38,7 @@
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         </view>
                         <view contentMode="scaleToFill" id="zSP-Oh-nTa" userLabel="mouth">
-                            <rect key="frame" x="65" y="215" width="170" height="170"/>
+                            <rect key="frame" x="65" y="244" width="170" height="62"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         </view>

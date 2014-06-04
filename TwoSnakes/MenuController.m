@@ -57,8 +57,8 @@
     _rightEye.layer.borderWidth = 30;
     _rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     
-    _mouth.layer.cornerRadius = _mouth.frame.size.width/4;
-    _mouth.frame = CGRectInset(_mouth.frame, -10 , 0);
+    _mouth.layer.cornerRadius = _mouth.frame.size.width/8;
+    _mouth.frame = CGRectInset(_mouth.frame, -10 , -10);
     _gamecenterLabel.layer.cornerRadius = _gamecenterLabel.frame.size.width/2;
     UITapGestureRecognizer *gamecenterTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showGameCenter)];
     [_gamecenterLabel addGestureRecognizer:gamecenterTap];

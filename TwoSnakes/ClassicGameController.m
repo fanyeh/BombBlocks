@@ -58,7 +58,7 @@
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(126, 189, 20, 20)];
     [self.gamePad addSubview:self.snake];
     
-    enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(126, 189, 20, 20)];
+    enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(147, 210, 20, 20)];
     
     int c = arc4random()%3;
     
@@ -78,12 +78,12 @@
  
     [self.gamePad addSubview:enemySnake];
     enemySnake.hidden = YES;
-    
+
     
     // Setup score label
     CGFloat labelWidth = 100;
-    scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 20, labelWidth, 50)];
-    scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
+    scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 15, labelWidth, 50)];
+    scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:25];
     scoreLabel.text = @"Score";
     scoreLabel.textColor = [UIColor blackColor];
     scoreLabel.textAlignment = NSTextAlignmentCenter;
@@ -147,48 +147,92 @@
     CGPoint nextMoveOrigin = [[enemyPath firstObject]frame].origin;
     [enemySnake setTurningNode:nextMoveOrigin];
 
-    [enemySnake changeDirectionWithGameIsOver:NO];
-    
-    [enemyPath removeObjectAtIndex:0];
-
     SnakeBody *breakBody = nil;
     
     // Enemy touched snake body
     for (SnakeBody *s in [self.snake snakeBody]) {
         
-        if ([[NSValue valueWithCGRect:enemySnake.frame] isEqualToValue:[NSValue valueWithCGRect:s.frame]]) {
+        if ([[NSValue valueWithCGRect:[[enemyPath firstObject]frame]] isEqualToValue:[NSValue valueWithCGRect:s.frame]]) {
             breakBody = s;
             break;
         }
     }
     
     if (breakBody) {
-        
         [self stopMoveTimer];
         [self stopEnemyTimer];
-        [self.gamePad bringSubviewToFront:enemySnake];
         
         [enemySnake updateExclamationText:@"Oh Yea!"];
         [enemySnake showExclamation:YES];
         
-        NSInteger i = [self.snake.snakeBody indexOfObject:breakBody];
-        NSInteger range = [self.snake.snakeBody count]-i;
+        [self.snake updateExclamationText:@"Oh NO!"];
+        [self.snake startRotate];
         
-        [self.snake removeSnakeBodyByRangeStart:i
-                                       andRange:range
-                                       complete:^{
-                                           
-                                           [enemySnake showExclamation:NO];
-                                           
-                                           [self startMoveTimer];
-                                           
-                                           [self startEnemyTimer];
-                                           
-                                           [self.gamePad addSubview:[enemySnake addSnakeBody:enemySnake.backgroundColor]];
+        CGFloat offset = 7;
+        enemySnake.snakeMouth.frame = CGRectInset( enemySnake.snakeMouth.frame,offset, offset);
+        
+        enemySnake.snakeMouth.backgroundColor = [UIColor whiteColor];
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            enemySnake.snakeMouth.frame = CGRectInset( enemySnake.snakeMouth.frame, -offset, -offset*1.1);
+            
+        } completion:^(BOOL finished) {
+            
+            
+            [UIView animateWithDuration:0.5 animations:^{
+                
+                [enemySnake changeDirectionWithGameIsOver:NO];
+                enemySnake.snakeMouth.frame = CGRectInset( enemySnake.snakeMouth.frame, offset, offset*1.1);
+                breakBody.frame = CGRectInset( breakBody.frame, 20, 20);
+                
+            }completion:^(BOOL finished) {
+                
+                enemySnake.snakeMouth.backgroundColor = [UIColor clearColor];
+                enemySnake.snakeMouth.frame = CGRectInset( enemySnake.snakeMouth.frame, -offset, -offset*1.1);
+                [enemyPath removeObjectAtIndex:0];
+                [self enemyAttack:breakBody];
 
-        
+                
+            }];
+            
         }];
+
+    } else {
+        
+        [enemySnake changeDirectionWithGameIsOver:NO];
+        
+        [enemyPath removeObjectAtIndex:0];
     }
+
+}
+
+- (void)enemyAttack:(SnakeBody *)body
+{
+
+    [self.gamePad bringSubviewToFront:enemySnake];
+    
+    NSInteger i = [self.snake.snakeBody indexOfObject:body];
+    NSInteger range = [self.snake.snakeBody count]-i;
+    
+    [self.snake removeSnakeBodyByRangeStart:i
+                                   andRange:range
+                                   complete:^{
+                                       
+                                       
+                                       [enemySnake showExclamation:NO];
+                                       
+                                       [self.snake stopRotate];
+
+                                       [self startMoveTimer];
+                                       
+                                       [self startEnemyTimer];
+                                       
+                                       [self.gamePad addSubview:[enemySnake addSnakeBody:enemySnake.backgroundColor]];
+                                       
+                                       
+                                   }];
+
 }
 
 -(void)changeDirection
@@ -309,6 +353,7 @@
 - (void)pauseGame
 {
     [super pauseGame];
+    
     if (!self.gamePause) {
         [super menuFade:NO];
         self.gamePause = YES;

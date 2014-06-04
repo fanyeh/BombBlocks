@@ -52,7 +52,7 @@
         _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
         [self addSubview:_rightEye];
 
-        _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake(15, 4, 12, 12)];
+        _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake(13, 3, 14, 14)];
         _snakeMouth.layer.cornerRadius = _snakeMouth.frame.size.width/2;
         _snakeMouth.layer.borderColor = [[UIColor whiteColor]CGColor];
         [self addSubview:_snakeMouth];

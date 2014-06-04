@@ -34,7 +34,7 @@
     if (self) {
         // Initialization code
         self.frame = CGRectMake(0, 0, 20, 20);
-        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(4, 4, 12 ,12)];
+        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(3, 3, 14 ,14)];
         _classicAssetLabel.layer.masksToBounds = YES;
         [self addSubview:_classicAssetLabel];
         _gameAssetType = kAssetTypeEmpty;
