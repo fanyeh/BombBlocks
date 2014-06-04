@@ -24,6 +24,8 @@
     Snake *enemySnake;
     NSMutableArray *enemyPath;
     
+    CGRect startFrame;
+    
     //    NSTimer *countDownTimer;
     //    NSInteger counter;
 
@@ -45,20 +47,55 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    //self.view.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+
+    UILabel *backLabel = [[UILabel alloc]initWithFrame:CGRectMake(13.5, 5, 50, 30)];
+    backLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
+    backLabel.text = @"Back";
+    backLabel.layer.cornerRadius = 5;
+    backLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
+    backLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    backLabel.textAlignment = NSTextAlignmentCenter;
+    backLabel.layer.masksToBounds = YES;
+    backLabel.userInteractionEnabled = YES;
+    [self.view addSubview:backLabel];
+    
+    UITapGestureRecognizer *homeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backToMenu)];
+    [backLabel addGestureRecognizer:homeTap];
+    
+    UILabel *menuLabel = [[UILabel alloc]initWithFrame:CGRectMake(320-13.5-50, 5, 50, 30)];
+    menuLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
+    menuLabel.text = @"Menu";
+    menuLabel.layer.cornerRadius = 5;
+    menuLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
+    menuLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    menuLabel.textAlignment = NSTextAlignmentCenter;
+    menuLabel.layer.masksToBounds = YES;
+    [self.view addSubview:menuLabel];
+    
+    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 293, 461)];
+    
+    backgroundView.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
+    backgroundView.layer.cornerRadius = 10;
+    backgroundView.center = self.view.center;
+    [self.view addSubview:backgroundView];
     
     // Setup game pad
     self.gamePad = [[GamePad alloc]initGamePad];
     self.gamePad.center = self.view.center;
-//    self.gamePad.frame = CGRectOffset(self.gamePad.frame, 0, 25);
+    self.gamePad.backgroundColor = [UIColor whiteColor];
+    self.gamePad.layer.cornerRadius = 10;
+    self.gamePad.layer.masksToBounds = YES;
     UITapGestureRecognizer *gamePadTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(directionChange:)];
     [self.gamePad addGestureRecognizer:gamePadTap];
     [self.view addSubview:self.gamePad];
     
+    startFrame = CGRectMake(128, 212, 20, 20);
     // Setup snake head
-    self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(126, 189, 20, 20)];
+    self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
     [self.gamePad addSubview:self.snake];
     
-    enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:CGRectMake(147, 210, 20, 20)];
+    enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
     
     int c = arc4random()%3;
     
@@ -78,15 +115,17 @@
  
     [self.gamePad addSubview:enemySnake];
     enemySnake.hidden = YES;
-
     
     // Setup score label
-    CGFloat labelWidth = 100;
-    scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 15, labelWidth, 50)];
-    scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:25];
+    CGFloat labelWidth = 120;
+    scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 30, labelWidth, 30)];
+    scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
     scoreLabel.text = @"Score";
-    scoreLabel.textColor = [UIColor blackColor];
+    scoreLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
     scoreLabel.textAlignment = NSTextAlignmentCenter;
+    scoreLabel.backgroundColor =  [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
+    scoreLabel.layer.cornerRadius = 10;
+    scoreLabel.layer.masksToBounds = YES;
     [self.view addSubview:scoreLabel];
     
     numFormatter = [[NSNumberFormatter alloc] init];
@@ -124,7 +163,7 @@
                          } completion:^(BOOL finished) {
                              if ([enemySnake.snakeBody count]==1) {
                                  
-                                 enemySnake.frame =  CGRectMake(126, 189, 20, 20);
+                                 enemySnake.frame =  startFrame;
                                  enemySnake.hidden = YES;
                                  
                              } else {
@@ -162,10 +201,10 @@
         [self stopMoveTimer];
         [self stopEnemyTimer];
         
-        [enemySnake updateExclamationText:@"Oh Yea!"];
+        [enemySnake updateExclamationText:@"Yummy!"];
         [enemySnake showExclamation:YES];
         
-        [self.snake updateExclamationText:@"Oh NO!"];
+        [self.snake updateExclamationText:@"Ouch!"];
         [self.snake startRotate];
         
         CGFloat offset = 7;
@@ -218,7 +257,6 @@
     [self.snake removeSnakeBodyByRangeStart:i
                                    andRange:range
                                    complete:^{
-                                       
                                        
                                        [enemySnake showExclamation:NO];
                                        
@@ -454,43 +492,5 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-//#pragma mark - Game state
-//
-//- (void)countDown
-//{
-//    if (counter == 0) {
-//        self.gamePad.userInteractionEnabled = YES;
-//        [countDownTimer invalidate];
-//        counter = 3;
-//
-//        [self.gamePad hideAllAssets];
-//
-//        self.gamePad.alpha = 0;
-//        [UIView animateWithDuration:1 animations:^{
-//            [self.snake snakeHead].alpha = 1;
-//            [self.gamePad setupDotForGameStart:[self.snake snakeHead].frame];
-//
-//        } completion:^(BOOL finished) {
-//
-//            moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
-//                                                       selector:@selector(changeDirection)
-//                                                       userInfo:nil
-//                                                        repeats:YES];
-//        }];
-//    }
-//    else {
-////        [self.gamePad counterDots:counter];
-//        counter--;
-//    }
-//}
-//
-//- (void)startCoundDown
-//{
-//    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self
-//                                                    selector:@selector(countDown)
-//                                                    userInfo:nil
-//                                                     repeats:YES];
-//}
 
 @end

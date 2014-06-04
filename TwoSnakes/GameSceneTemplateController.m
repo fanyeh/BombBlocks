@@ -55,16 +55,18 @@
     
     pauseLabel = [[UILabel alloc]initWithFrame:CGRectMake(145, 508, 30, 30)];
 //    pauseLabel.text = @"P";
-    pauseLabel.backgroundColor = [UIColor blackColor];
     UIView *pauseLeft = [[UIView alloc]initWithFrame:CGRectMake(10, 7, 4, 16)];
-    pauseLeft.backgroundColor = [UIColor whiteColor];
+    pauseLeft.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
     UIView *pauseRight= [[UIView alloc]initWithFrame:CGRectMake(16, 7, 4, 16)];
-    pauseRight.backgroundColor = [UIColor whiteColor];
+    pauseRight.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
     
     [pauseLabel addSubview:pauseLeft];
     [pauseLabel addSubview:pauseRight];
 
-    pauseLabel.layer.cornerRadius = 30/4;
+//    pauseLabel.layer.borderColor = [[UIColor blackColor]CGColor];
+//    pauseLabel.layer.borderWidth = 3;
+    pauseLabel.layer.cornerRadius = 5;
+    pauseLabel.backgroundColor =  [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
     pauseLabel.layer.masksToBounds = YES;
     pauseLabel.userInteractionEnabled = YES;
     [self.view addSubview:pauseLabel];

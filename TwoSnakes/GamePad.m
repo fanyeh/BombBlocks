@@ -27,7 +27,7 @@
 
 - (id)initGamePad
 {
-    CGRect frame = CGRectMake(0, 0, 315, 441);
+    CGRect frame = CGRectMake(0, 0, 277, 445);
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -42,12 +42,12 @@
     CGFloat assetPosX;
     CGFloat assetPosY;
     
-    for (int i = 0 ; i < 15; i ++ ) {
+    for (int i = 0 ; i < 13; i ++ ) {
         for (int j = 0 ; j < 21 ; j++) {
             GameAsset *asset = [[GameAsset alloc]init];
 
-            assetPosX = i * 21;
-            assetPosY = j * 21;
+            assetPosX = i * 21+2;
+            assetPosY = j * 21+2;
             
             if (i%2==1 && j%2==1)
                 [self randomColor:asset];
@@ -244,7 +244,7 @@
 
 - (id)initEmptyGamePad
 {
-    CGRect frame = CGRectMake(2.5, 80, 315, 483);
+    CGRect frame = CGRectMake(0, 0, 315, 441);
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -260,7 +260,7 @@
     CGFloat assetPosY;
     
     for (int i = 0 ; i < 15; i ++ ) {
-        for (int j = 0 ; j < 23 ; j++) {
+        for (int j = 0 ; j < 21 ; j++) {
             
             assetPosX = i * 21;
             assetPosY = j * 21;

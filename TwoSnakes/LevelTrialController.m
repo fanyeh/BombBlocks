@@ -49,7 +49,7 @@
     [self.view addSubview:self.gamePad];
     
     // Setup snake head
-    self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionUp gamePad:self.gamePad headFrame:CGRectMake(147, 441, 20, 20)];
+    self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionUp gamePad:self.gamePad headFrame:CGRectMake(147, 399, 20, 20)];
     [self.snake setWallBounds:[self walls]];
     [self.gamePad addSubview:self.snake];
 

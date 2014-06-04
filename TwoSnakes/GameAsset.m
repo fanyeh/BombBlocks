@@ -34,7 +34,7 @@
     if (self) {
         // Initialization code
         self.frame = CGRectMake(0, 0, 20, 20);
-        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(3, 3, 14 ,14)];
+        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, 10 ,10)];
         _classicAssetLabel.layer.masksToBounds = YES;
         [self addSubview:_classicAssetLabel];
         _gameAssetType = kAssetTypeEmpty;
@@ -43,6 +43,8 @@
         [self addSubview:_assetImageView];
         
         _neighbors = [[NSMutableArray alloc]init];
+        
+        //self.backgroundColor = [UIColor brownColor];
     }
     return self;
 }
@@ -89,7 +91,7 @@
             self.assetName = @"Magic";
             break;
         case kAssetTypeEmpty:
-            self.backgroundColor = [UIColor whiteColor];
+           // self.backgroundColor = [UIColor whiteColor];
             self.assetName = @"Empty";
             break;
         case kAssetTypeBlue:

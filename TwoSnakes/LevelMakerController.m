@@ -46,6 +46,7 @@
         self.gamePad = [[GamePad alloc]initEmptyGamePad];
     
     [self.view addSubview:self.gamePad];
+    self.gamePad.center = self.view.center;
     
     UIPanGestureRecognizer *panBlock = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(blockPan:)];
     [self.gamePad addGestureRecognizer:panBlock];
@@ -116,7 +117,7 @@
     [trialButton addTarget:self action:@selector(tryGame:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:trialButton];
     
-    UIButton *clearButton = [[UIButton alloc]initWithFrame:CGRectMake(70, 50, 50, 20)];
+    UIButton *clearButton = [[UIButton alloc]initWithFrame:CGRectMake(70, 35, 50, 20)];
     clearButton.layer.borderWidth = 1;
     [clearButton setTitle:@"Clear" forState:UIControlStateNormal];
     clearButton.backgroundColor = [UIColor blackColor];
@@ -137,7 +138,7 @@
     [loadButton addTarget:self action:@selector(listAllLevels) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:loadButton];
     
-    levelNameField = [[UITextField alloc]initWithFrame:CGRectMake(130, 50, 180, 25)];
+    levelNameField = [[UITextField alloc]initWithFrame:CGRectMake(130, 35, 180, 25)];
     levelNameField.borderStyle = UITextBorderStyleLine;
     levelNameField.placeholder = @"Enter Level Name";
     levelNameField.delegate = self;

@@ -37,19 +37,22 @@
     self = [self initWithFrame:headFrame];
     if (self) {
         
-        self.backgroundColor = [UIColor colorWithWhite:0.200 alpha:1.000];
+        self.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
         self.layer.cornerRadius = headFrame.size.width/4;
         
         _leftEye = [[UIView alloc]initWithFrame:CGRectMake(2, 2, 5, 5)];
         _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
         _leftEye.layer.borderWidth = 1.5;
         _leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
+        _leftEye.backgroundColor = [UIColor blackColor];
         [self addSubview:_leftEye];
         
         _rightEye = [[UIView alloc]initWithFrame:CGRectMake(2, 13, 5, 5)];
         _rightEye.layer.borderWidth = 1.5;
         _rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
         _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
+        _rightEye.backgroundColor = [UIColor blackColor];
+
         [self addSubview:_rightEye];
 
         _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake(13, 3, 14, 14)];
@@ -450,8 +453,8 @@
     snakeBody.layer.cornerRadius = bodyFrame.size.width/4;
     snakeBody.backgroundColor = backgroundColor;
     snakeBody.tag = _snakeLength;
-//    snakeBody.layer.borderColor = [[UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000]CGColor];
-//    snakeBody.layer.borderWidth = 1;
+    snakeBody.layer.borderColor = self.backgroundColor.CGColor;
+    snakeBody.layer.borderWidth = 3;
 //    snakeBody.skillType.type = dot.skillType.type;
     [_snakeBody addObject:snakeBody];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];
