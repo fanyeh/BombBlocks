@@ -25,5 +25,6 @@
 - (id)initGamePadWithAssetDict:(NSDictionary *)assets;
 - (void)resetClassicGamePad;
 - (NSMutableArray *)searchPathPlayer:(CGRect)playerFrame enemy:(CGRect)enemyFrame moveDirection:(MoveDirection)moveDirection;
+- (id)initBossGamePad;
 
 @end

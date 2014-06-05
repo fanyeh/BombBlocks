@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C12008A1940BB4D00F11816 /* BossFightController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1200891940BB4D00F11816 /* BossFightController.m */; };
 		4C1828531929CBAA00CB295F /* SnakeSkill.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1828521929CBAA00CB295F /* SnakeSkill.m */; };
 		4C1828591929CEF600CB295F /* SnakeSkillType.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1828581929CEF600CB295F /* SnakeSkillType.m */; };
 		4C18285C1929D1A400CB295F /* SnakeSkillTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C18285B1929D1A400CB295F /* SnakeSkillTree.m */; };
@@ -75,6 +76,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4C1200881940BB4C00F11816 /* BossFightController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BossFightController.h; sourceTree = "<group>"; };
+		4C1200891940BB4D00F11816 /* BossFightController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BossFightController.m; sourceTree = "<group>"; };
 		4C1828511929CBAA00CB295F /* SnakeSkill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeSkill.h; sourceTree = "<group>"; };
 		4C1828521929CBAA00CB295F /* SnakeSkill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeSkill.m; sourceTree = "<group>"; };
 		4C1828571929CEF600CB295F /* SnakeSkillType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeSkillType.h; sourceTree = "<group>"; };
@@ -312,6 +315,8 @@
 				4C78A076192D9EB8003F9ABE /* GameSceneTemplateController.m */,
 				4C78A078192DA14D003F9ABE /* ClassicGameController.h */,
 				4C78A079192DA14D003F9ABE /* ClassicGameController.m */,
+				4C1200881940BB4C00F11816 /* BossFightController.h */,
+				4C1200891940BB4D00F11816 /* BossFightController.m */,
 			);
 			name = "Game Scene";
 			sourceTree = "<group>";
@@ -556,6 +561,7 @@
 				4C7D4D2E192B153A005486A6 /* BaseStats.m in Sources */,
 				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,
 				4CAA5DEE1929A0F900049F52 /* GameSceneController.m in Sources */,
+				4C12008A1940BB4D00F11816 /* BossFightController.m in Sources */,
 				4C1828531929CBAA00CB295F /* SnakeSkill.m in Sources */,
 				4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */,
 				4C1828591929CEF600CB295F /* SnakeSkillType.m in Sources */,

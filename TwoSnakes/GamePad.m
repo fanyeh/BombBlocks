@@ -31,19 +31,30 @@
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-        [self createClassicGameAsset];
+        [self createClassicGameAssetColumn:13 andRow:21];
     }
     return self;
 }
 
-- (void)createClassicGameAsset
+- (id)initBossGamePad
+{
+    CGRect frame = CGRectMake(0, 0, 277, 277);
+    self = [self initWithFrame:frame];
+    if (self) {
+        // Initialization code
+        [self createClassicGameAssetColumn:13 andRow:13];
+    }
+    return self;
+}
+
+- (void)createClassicGameAssetColumn:(int)column andRow:(int)row
 {
     _assetArray = [[NSMutableArray alloc]init];
     CGFloat assetPosX;
     CGFloat assetPosY;
     
-    for (int i = 0 ; i < 13; i ++ ) {
-        for (int j = 0 ; j < 21 ; j++) {
+    for (int i = 0 ; i < column; i ++ ) {
+        for (int j = 0 ; j < row ; j++) {
             GameAsset *asset = [[GameAsset alloc]init];
 
             assetPosX = i * 21+2;

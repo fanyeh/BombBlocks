@@ -25,10 +25,6 @@
     NSMutableArray *enemyPath;
     
     CGRect startFrame;
-    
-    //    NSTimer *countDownTimer;
-    //    NSInteger counter;
-
 }
 @end
 

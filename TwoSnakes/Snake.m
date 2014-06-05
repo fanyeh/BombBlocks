@@ -230,6 +230,7 @@
             direction = [[_bodyDirections objectForKey:[NSNumber numberWithInteger:view.tag]] intValue];
         
         CGRect newPosition = [self getNewPosition:view direction:direction];
+        CGPoint newPoint = [self getNewPoint:direction];
         
         // Check if snake head touched body or gampad bounds
         
@@ -254,12 +255,18 @@
         // If not game over then update the frame of each snake part view
         
         if (!gameIsOver) {
-            CGRect newFrame = newPosition;
-
-
-      
             
-            view.frame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
+            // Animation Type 1
+            CGRect newFrame = newPosition;
+            view.frame = CGRectMake((int)roundf(newFrame.origin.x),
+                                    (int)roundf(newFrame.origin.y),
+                                    (int)roundf(newFrame.size.width),
+                                    (int)roundf(newFrame.size.height));
+            
+            // Animation Type 2
+            // [self moveAnimationFrom:view.layer newPoint:newPoint];
+
+            
             if (view.tag == 0) {
                 // Update exclamation mark position
                 
@@ -291,6 +298,26 @@
             break;
     }
     return newPos;
+}
+
+- (CGPoint)getNewPoint:(MoveDirection)direction
+{
+    CGPoint newPoint;
+    switch (direction) {
+        case kMoveDirectionUp:
+            newPoint = CGPointMake(0, -_yOffset);
+            break;
+        case kMoveDirectionDown:
+            newPoint = CGPointMake(0, _yOffset);
+            break;
+        case kMoveDirectionLeft:
+            newPoint = CGPointMake(-_xOffset, 0);
+            break;
+        case kMoveDirectionRight:
+            newPoint = CGPointMake(_xOffset, 0);
+            break;
+    }
+    return newPoint;
 }
 
 -(void)setTurningNode:(CGPoint)location
@@ -746,6 +773,39 @@
 }
 
 #pragma mark - Body Animations
+
+-(void)moveAnimationFrom:(CALayer *)startLayer newPoint:(CGPoint)newPoint
+{
+    NSLog(@"Start Point %@",NSStringFromCGPoint(startLayer.position));
+    
+    CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position"];
+    
+    CGPoint endPoint = CGPointMake(startLayer.position.x + newPoint.x, startLayer.position.y + newPoint.y);
+    
+    NSLog(@"End Point %@",NSStringFromCGPoint(endPoint));
+
+    
+    anim.fromValue = [startLayer valueForKey:@"position"];
+
+    anim.toValue =[NSValue valueWithCGPoint:endPoint];
+
+    // Update the layer's position so that the layer doesn't snap back when the animation completes.
+    
+    anim.duration = 0.2;
+
+    anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    
+
+    // Add the animation, overriding the implicit animation.
+    [startLayer addAnimation:anim forKey:@"position"];
+    
+    startLayer.position = endPoint;
+
+    
+    // 动画终了后不返回初始状态
+//    anim.removedOnCompletion = NO;
+//    anim.fillMode = kCAFillModeForwards;
+}
 
 -(CABasicAnimation *)bodyAnimation:(NSInteger)i
 {

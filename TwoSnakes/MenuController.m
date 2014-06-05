@@ -12,10 +12,12 @@
 #import "GameRecordController.h"
 #import "LevelListController.h"
 #import "LevelMakerController.h"
+#import "BossFightController.h"
 
 @interface MenuController ()
 {
     ClassicGameController *classicGameController;
+    BossFightController *bossFightController;
     SnakeButton *button;
 }
 
@@ -43,39 +45,30 @@
     button = [[SnakeButton alloc]initWithTitle:@"Not A "];
     [self.view addSubview:button];
 
-    
     _newgameLabel.layer.cornerRadius = _newgameLabel.frame.size.width/2;
     _newgameLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
     _newgameLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
     UITapGestureRecognizer *newgameTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showNewGame)];
     [_newgameLabel addGestureRecognizer:newgameTap];
     
-    [button showHead:^{
-        
-        [UIView animateWithDuration:1.0 animations:^{
-            _newgameLabel.alpha = 1;
-        }];
-        
-    }];
+//    [button showHead:^{
+//        
+//        [UIView animateWithDuration:1.0 animations:^{
+//            _newgameLabel.alpha = 1;
+//        }];
+//        
+//    }];
 
     if (_state == kGameStateContinue)
         _newgameLabel.text = @"Continue";
     else
         _newgameLabel.text = @"Play";
+
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
-#pragma mark - Hide statu bar
 
--(BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
+
 
 //#pragma mark - Game center
 //
@@ -94,10 +87,24 @@
         
     } else {
         
-        classicGameController =  [[ClassicGameController alloc]init];
-        [self presentViewController:classicGameController animated:YES completion:nil];
+        //classicGameController =  [[ClassicGameController alloc]init];
+        bossFightController = [[BossFightController alloc]init];
+        [self presentViewController:bossFightController animated:YES completion:nil];
         
     }
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Hide statu bar
+
+-(BOOL)prefersStatusBarHidden
+{
+    return YES;
 }
 
 @end
