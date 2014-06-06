@@ -10,22 +10,27 @@
 #import "GamePad.h"
 #import "Snake.h"
 
+
+typedef enum {
+    kCurrentGameStatePause = 0,
+    kCurrentGameStatePlay,
+    kCurrentGameStateReplay
+} CurrentGameState;
+
 @interface GameSceneTemplateController : UIViewController
 
 @property(strong,nonatomic) GamePad *gamePad;
 @property(strong,nonatomic) Snake *snake;
+@property(strong,nonatomic) UILabel *scoreLabel;
 @property(strong,nonatomic) NSTimer *moveTimer;
-
-@property(nonatomic) BOOL gamePause;
+@property(nonatomic) CurrentGameState gameState;
+@property(strong,nonatomic) UILabel *pauseLabel;
 
 - (void)directionChange:(UITapGestureRecognizer *)sender;
-- (void)pauseGame;
-- (void)backgroundPauseGame;
-- (void)resumeGame;
-- (void)retryGame;
 - (void)backToMenu;
 - (void)startMoveTimer;
-- (void)menuFade:(BOOL)fade;
--(void)changeDirection;
+- (void)changeDirection;
+- (void)changeGameState;
+
 
 @end

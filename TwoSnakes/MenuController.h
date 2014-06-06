@@ -13,6 +13,6 @@ typedef enum {
 } GameState;
 @interface MenuController : UIViewController
 @property (nonatomic) GameState state;
-- (void)pauseGameOnBackground;
 
+- (void)pauseGameOnBackground;
 @end

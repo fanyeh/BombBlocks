@@ -163,7 +163,7 @@
                 if (self.moveTimer.isValid)
                     [self.moveTimer invalidate];
                 
-                if (!self.gamePause)
+                if (self.gameState == kCurrentGameStatePlay)
                     self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self
                                                                     selector:@selector(changeDirection)
                                                                     userInfo:nil
@@ -189,45 +189,6 @@
 }
 
 
-#pragma mark - menu controls
-
-- (void)pauseGame
-{
-    [super pauseGame];
-    if (!self.gamePause) {
-        [super menuFade:NO];
-        self.gamePause = YES;
-        [self.moveTimer invalidate];
-    } else {
-        [self startMoveTimer];
-    }
-}
-
-- (void)backgroundPauseGame
-{
-    [super backgroundPauseGame];
-    [self.moveTimer invalidate];
-}
-
-- (void)resumeGame
-{
-    [super resumeGame];
-    if (!isCheckingCombo)
-        self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
-                                                          target:self
-                                                        selector:@selector(changeDirection)
-                                                        userInfo:nil
-                                                         repeats:YES];
-}
-
-- (void)retryGame
-{
-    [super retryGame];
-    timeInterval = 0.2;
-    [self.snake resetSnake];
-    [self.gamePad resetClassicGamePad];
-    [self startMoveTimer];
-}
 
 - (void)backToMenu
 {

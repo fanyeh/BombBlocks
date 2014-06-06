@@ -15,10 +15,6 @@
 
 
 @interface GameSceneTemplateController ()
-{
-    UILabel *pauseLabel;
-    GameMenu *menu;
-}
 
 @end
 
@@ -37,46 +33,62 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    menu = [[GameMenu alloc]initWithFrame:self.view.frame];
-    menu.frame = CGRectOffset(menu.frame, 0, -568);
-    [self.view addSubview:menu];
+    
+    UILabel *backLabel = [[UILabel alloc]initWithFrame:CGRectMake(13.5, 5, 50, 30)];
+    backLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
+    backLabel.text = @"Back";
+    backLabel.layer.cornerRadius = 5;
+    backLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
+    backLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    backLabel.textAlignment = NSTextAlignmentCenter;
+    backLabel.layer.masksToBounds = YES;
+    backLabel.userInteractionEnabled = YES;
+    [self.view addSubview:backLabel];
     
     UITapGestureRecognizer *homeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backToMenu)];
-    [menu.homeLabel addGestureRecognizer:homeTap];
+    [backLabel addGestureRecognizer:homeTap];
     
-    UITapGestureRecognizer *resumeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(resumeGame)];
-    [menu.resumeLabel addGestureRecognizer:resumeTap];
+    UILabel *menuLabel = [[UILabel alloc]initWithFrame:CGRectMake(320-13.5-50, 5, 50, 30)];
+    menuLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
+    menuLabel.text = @"Menu";
+    menuLabel.layer.cornerRadius = 5;
+    menuLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
+    menuLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    menuLabel.textAlignment = NSTextAlignmentCenter;
+    menuLabel.layer.masksToBounds = YES;
+    [self.view addSubview:menuLabel];
     
-    UITapGestureRecognizer *retryTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(retryGame)];
-    [menu.retryLabel addGestureRecognizer:retryTap];
+    // Setup score label
+    CGFloat labelWidth = 120;
+    _scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 27, labelWidth, 30)];
+    _scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
+    _scoreLabel.text = @"Score";
+    _scoreLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    _scoreLabel.textAlignment = NSTextAlignmentCenter;
+    _scoreLabel.backgroundColor =  [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
+    _scoreLabel.layer.cornerRadius = 15;
+    _scoreLabel.layer.masksToBounds = YES;
+    [self.view addSubview:_scoreLabel];
     
-    UITapGestureRecognizer *levelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(listLevels)];
-    [menu.levelLabel addGestureRecognizer:levelTap];
-    
-    pauseLabel = [[UILabel alloc]initWithFrame:CGRectMake(145, 508, 30, 30)];
-//    pauseLabel.text = @"P";
+    _pauseLabel = [[UILabel alloc]initWithFrame:CGRectMake(145, 508, 30, 30)];
     UIView *pauseLeft = [[UIView alloc]initWithFrame:CGRectMake(10, 7, 4, 16)];
     pauseLeft.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
     UIView *pauseRight= [[UIView alloc]initWithFrame:CGRectMake(16, 7, 4, 16)];
     pauseRight.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
     
-    [pauseLabel addSubview:pauseLeft];
-    [pauseLabel addSubview:pauseRight];
-
-//    pauseLabel.layer.borderColor = [[UIColor blackColor]CGColor];
-//    pauseLabel.layer.borderWidth = 3;
-    pauseLabel.layer.cornerRadius = 5;
-    pauseLabel.backgroundColor =  [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
-    pauseLabel.layer.masksToBounds = YES;
-    pauseLabel.userInteractionEnabled = YES;
-    [self.view addSubview:pauseLabel];
-    
-    UITapGestureRecognizer *pauseTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pauseGame)];
-    [pauseLabel addGestureRecognizer:pauseTap];
+    //[pauseLabel addSubview:pauseLeft];
+    //[pauseLabel addSubview:pauseRight];
+    _pauseLabel.layer.cornerRadius = 5;
+    _pauseLabel.text = @"Pl";
+    _pauseLabel.textAlignment = NSTextAlignmentCenter;
+    _pauseLabel.backgroundColor =  [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
+    _pauseLabel.layer.masksToBounds = YES;
+    _pauseLabel.userInteractionEnabled = YES;
+    [self.view addSubview:_pauseLabel];
     
     // Game Settings
     self.gamePad.userInteractionEnabled = NO;
-    _gamePause = YES;
+    _gameState = kCurrentGameStatePause;
 }
 
 - (void)listLevels
@@ -119,55 +131,38 @@
     
 }
 
-#pragma mark - menu controls
-
-- (void)pauseGame
+- (void)changeGameState
 {
+    
+    switch (_gameState) {
+        case kCurrentGameStatePlay:
+            _gameState = kCurrentGameStatePause;
+            _pauseLabel.text = @"Pl";
+            
+            break;
+        case kCurrentGameStatePause:
+            _gameState = kCurrentGameStatePlay;
+            _pauseLabel.text = @"Pa";
 
-}
+            break;
+        case kCurrentGameStateReplay:
+            _gameState = kCurrentGameStatePlay;
+            _pauseLabel.text = @"Rp";
 
-- (void)backgroundPauseGame
-{
-    [self menuFade:NO];
-    _gamePause = YES;
-}
-
-- (void)resumeGame
-{
-    [self menuFade:YES];
-    _gamePause = NO;
-}
-
-- (void)retryGame
-{
-    [self menuFade:YES];
-    _gamePause = NO;
+            break;
+    }
+    
 }
 
 - (void)backToMenu
 {
-    [self menuFade:YES];
-    _gamePause = YES;
+    _gameState = kCurrentGameStatePause;
     
     MenuController *controller = [[MenuController alloc]init];
     controller.state = kGameStateContinue;
     [self presentViewController:controller animated:YES completion:nil];
 }
 
-- (void)menuFade:(BOOL)fade
-{
-    if (fade) {
-        [UIView animateWithDuration:0.5 animations:^{
-            menu.frame = CGRectOffset(menu.frame, 0, -568);
-        }];
-    } else {
-        [self.view bringSubviewToFront:menu];
-        [UIView animateWithDuration:0.5 animations:^{
-            menu.frame = CGRectOffset(menu.frame, 0, 568);
-        }];
-    }
-    
-}
 
 #pragma change direction
 
@@ -180,7 +175,7 @@
 - (void)startMoveTimer
 {
     self.gamePad.userInteractionEnabled = YES;
-    _gamePause = NO;
+    _gameState = kCurrentGameStatePlay;
 }
 
 #pragma mark - Memory Management

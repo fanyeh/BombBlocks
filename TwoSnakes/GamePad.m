@@ -12,6 +12,7 @@
 @implementation GamePad
 {
     NSMutableArray *gameAssets;
+    CGFloat moveSize;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -27,22 +28,32 @@
 
 - (id)initGamePad
 {
-    CGRect frame = CGRectMake(0, 0, 277, 445);
+    int column = 13;
+    int row = 19;
+    moveSize = 23;
+
+    CGRect frame = CGRectMake(0, 0, moveSize*column+4, moveSize*row+4);
+
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-        [self createClassicGameAssetColumn:13 andRow:21];
+        [self createClassicGameAssetColumn:column andRow:row];
     }
     return self;
 }
 
 - (id)initBossGamePad
 {
-    CGRect frame = CGRectMake(0, 0, 277, 277);
+    int column = 13;
+    int row = 13;
+    moveSize = 23;
+    
+    CGRect frame = CGRectMake(0, 0, moveSize*column+4, moveSize*row+4);
+    
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-        [self createClassicGameAssetColumn:13 andRow:13];
+        [self createClassicGameAssetColumn:column andRow:row];
     }
     return self;
 }
@@ -57,8 +68,8 @@
         for (int j = 0 ; j < row ; j++) {
             GameAsset *asset = [[GameAsset alloc]init];
 
-            assetPosX = i * 21+2;
-            assetPosY = j * 21+2;
+            assetPosX = i * moveSize+2;
+            assetPosY = j * moveSize+2;
             
             if (i%2==1 && j%2==1)
                 [self randomColor:asset];
@@ -79,10 +90,10 @@
         
         for (GameAsset *b in _assetArray) {
             
-            CGRect upper = CGRectOffset(a.frame, 0, -21);
-            CGRect down = CGRectOffset(a.frame, 0, 21);
-            CGRect left = CGRectOffset(a.frame, -21, 0);
-            CGRect right = CGRectOffset(a.frame, 21, 0);
+            CGRect upper = CGRectOffset(a.frame, 0, -moveSize);
+            CGRect down = CGRectOffset(a.frame, 0, moveSize);
+            CGRect left = CGRectOffset(a.frame, -moveSize, 0);
+            CGRect right = CGRectOffset(a.frame, moveSize, 0);
             
             if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:upper]]) {
                 [a.neighbors addObject:b];
@@ -143,19 +154,19 @@
     switch (moveDirection) {
             
         case kMoveDirectionUp:
-            backwardFrame = CGRectOffset(enemyFrame, 0, 21);
+            backwardFrame = CGRectOffset(enemyFrame, 0, moveSize);
             break;
             
         case kMoveDirectionDown:
-            backwardFrame = CGRectOffset(enemyFrame, 0, -21);
+            backwardFrame = CGRectOffset(enemyFrame, 0, -moveSize);
             break;
             
         case kMoveDirectionLeft:
-            backwardFrame = CGRectOffset(enemyFrame, 21, 0);
+            backwardFrame = CGRectOffset(enemyFrame, moveSize, 0);
             break;
             
         case kMoveDirectionRight:
-            backwardFrame = CGRectOffset(enemyFrame, -21, 0);
+            backwardFrame = CGRectOffset(enemyFrame, -moveSize, 0);
             break;
             
     }

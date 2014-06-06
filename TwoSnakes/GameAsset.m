@@ -33,8 +33,8 @@
     self = [super init];
     if (self) {
         // Initialization code
-        self.frame = CGRectMake(0, 0, 20, 20);
-        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, 10 ,10)];
+        self.frame = CGRectMake(0, 0, 22, 22);
+        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, 12 ,12)];
         _classicAssetLabel.layer.masksToBounds = YES;
         [self addSubview:_classicAssetLabel];
         _gameAssetType = kAssetTypeEmpty;
@@ -95,26 +95,20 @@
             self.assetName = @"Empty";
             break;
         case kAssetTypeBlue:
-            _classicAssetLabel.backgroundColor = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
+            _classicAssetLabel.backgroundColor = BlueDotColor;
             _classicAssetLabel.layer.cornerRadius = _classicAssetLabel.frame.size.width/2;
-
             self.assetName = @"Blue";
             break;
         case kAssetTypeRed:
-            _classicAssetLabel.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
+            _classicAssetLabel.backgroundColor = RedDotColor;
             _classicAssetLabel.layer.cornerRadius = _classicAssetLabel.frame.size.width/2;
 
             self.assetName = @"Red";
             break;
         case kAssetTypeYellow:
-            _classicAssetLabel.backgroundColor = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
+            _classicAssetLabel.backgroundColor = YellowDotColor;
             _classicAssetLabel.layer.cornerRadius = _classicAssetLabel.frame.size.width/2;
             self.assetName = @"Yellow";
-            break;
-        case kAssetTypePurple:
-            _classicAssetLabel.backgroundColor = [UIColor colorWithRed:0.592 green:0.408 blue:0.820 alpha:1.000];
-            _classicAssetLabel.layer.cornerRadius = _classicAssetLabel.frame.size.width/2;
-            self.assetName = @"Purple";
             break;
         case kAssetTypeGoal:
             self.backgroundColor = [UIColor clearColor];

@@ -47,43 +47,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    UILabel *backLabel = [[UILabel alloc]initWithFrame:CGRectMake(13.5, 5, 50, 30)];
-    backLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
-    backLabel.text = @"Back";
-    backLabel.layer.cornerRadius = 5;
-    backLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
-    backLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    backLabel.textAlignment = NSTextAlignmentCenter;
-    backLabel.layer.masksToBounds = YES;
-    backLabel.userInteractionEnabled = YES;
-    [self.view addSubview:backLabel];
-    
-    UITapGestureRecognizer *homeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backToMenu)];
-    [backLabel addGestureRecognizer:homeTap];
-    
-    UILabel *menuLabel = [[UILabel alloc]initWithFrame:CGRectMake(320-13.5-50, 5, 50, 30)];
-    menuLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
-    menuLabel.text = @"Menu";
-    menuLabel.layer.cornerRadius = 5;
-    menuLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
-    menuLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    menuLabel.textAlignment = NSTextAlignmentCenter;
-    menuLabel.layer.masksToBounds = YES;
-    [self.view addSubview:menuLabel];
-    
-    // Setup score label
-    CGFloat labelWidth = 120;
-    scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 30, labelWidth, 30)];
-    scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
-    scoreLabel.text = @"Score";
-    scoreLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    scoreLabel.textAlignment = NSTextAlignmentCenter;
-    scoreLabel.backgroundColor =  [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
-    scoreLabel.layer.cornerRadius = 10;
-    scoreLabel.layer.masksToBounds = YES;
-    [self.view addSubview:scoreLabel];
-    
-    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 293, 461)];
+    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 303+16, 441)];
     backgroundView.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
     backgroundView.layer.cornerRadius = 10;
     backgroundView.center = self.view.center;
@@ -92,7 +56,7 @@
     // Setup game pad
     self.gamePad = [[GamePad alloc]initBossGamePad];
     self.gamePad.center = self.view.center;
-    self.gamePad.frame = CGRectOffset(self.gamePad.frame, 0, 84);
+    self.gamePad.frame = CGRectOffset(self.gamePad.frame, 0, 61);
     self.gamePad.backgroundColor = [UIColor whiteColor];
     self.gamePad.layer.cornerRadius = 10;
     self.gamePad.layer.masksToBounds = YES;
@@ -100,16 +64,17 @@
     [self.gamePad addGestureRecognizer:gamePadTap];
     [self.view addSubview:self.gamePad];
     
-    startFrame = CGRectMake(128, 128, 20, 20);
+    
+    startFrame = CGRectMake(140 , 209 , 22 , 22);
     // Setup snake head
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
     [self.gamePad addSubview:self.snake];
-    UIView *boss = [[UIView alloc]initWithFrame:CGRectMake(84+8, 42 + 8, 105, 105)];
+    UIView *boss = [[UIView alloc]initWithFrame:CGRectMake((319-92)/2, 8+23, 92, 92)];
     boss.layer.borderWidth = 5;
     boss.layer.cornerRadius = 5;
     [backgroundView addSubview:boss];
     
-    floatingFrame = CGRectMake((backgroundView.frame.size.width - 100)/2, 20, 100, 20);
+    floatingFrame = CGRectMake((backgroundView.frame.size.width - 100)/2, 10, 100, 20);
     floatingLabel = [[UILabel alloc]initWithFrame:floatingFrame];
     floatingLabel.textColor = [UIColor blackColor];
     floatingLabel.text = @"-100";

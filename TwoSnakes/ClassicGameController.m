@@ -12,8 +12,6 @@
 
 @interface ClassicGameController ()
 {
-
-    UILabel *scoreLabel;
     NSNumberFormatter *numFormatter; //Formatter for score
     NSInteger score;
     NSInteger numDotAte;
@@ -23,7 +21,6 @@
     NSTimer *enemyTimer;
     Snake *enemySnake;
     NSMutableArray *enemyPath;
-    
     CGRect startFrame;
 }
 @end
@@ -43,38 +40,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    //self.view.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-
-    UILabel *backLabel = [[UILabel alloc]initWithFrame:CGRectMake(13.5, 5, 50, 30)];
-    backLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
-    backLabel.text = @"Back";
-    backLabel.layer.cornerRadius = 5;
-    backLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
-    backLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    backLabel.textAlignment = NSTextAlignmentCenter;
-    backLabel.layer.masksToBounds = YES;
-    backLabel.userInteractionEnabled = YES;
-    [self.view addSubview:backLabel];
-    
-    UITapGestureRecognizer *homeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backToMenu)];
-    [backLabel addGestureRecognizer:homeTap];
-    
-    UILabel *menuLabel = [[UILabel alloc]initWithFrame:CGRectMake(320-13.5-50, 5, 50, 30)];
-    menuLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
-    menuLabel.text = @"Menu";
-    menuLabel.layer.cornerRadius = 5;
-    menuLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
-    menuLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    menuLabel.textAlignment = NSTextAlignmentCenter;
-    menuLabel.layer.masksToBounds = YES;
-    [self.view addSubview:menuLabel];
-    
-    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 293, 461)];
-    
-    backgroundView.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
-    backgroundView.layer.cornerRadius = 10;
-    backgroundView.center = self.view.center;
-    [self.view addSubview:backgroundView];
     
     // Setup game pad
     self.gamePad = [[GamePad alloc]initGamePad];
@@ -84,9 +49,16 @@
     self.gamePad.layer.masksToBounds = YES;
     UITapGestureRecognizer *gamePadTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(directionChange:)];
     [self.gamePad addGestureRecognizer:gamePadTap];
+    
+    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.gamePad.frame.size.width+16, self.gamePad.frame.size.height+16)];
+    backgroundView.backgroundColor = PadBackgroundColor;
+    backgroundView.layer.cornerRadius = 10;
+    backgroundView.center = self.view.center;
+    [self.view addSubview:backgroundView];
+    
     [self.view addSubview:self.gamePad];
     
-    startFrame = CGRectMake(128, 212, 20, 20);
+    startFrame = CGRectMake(140 , 209 , 22 , 22);
     // Setup snake head
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
     [self.gamePad addSubview:self.snake];
@@ -97,32 +69,19 @@
     
     switch (c) {
         case 0:
-            enemySnake.backgroundColor = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
+            enemySnake.backgroundColor = BlueDotColor;
             break;
         case 1:
-            enemySnake.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
+            enemySnake.backgroundColor = RedDotColor;
         case 2:
-            enemySnake.backgroundColor = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
+            enemySnake.backgroundColor = YellowDotColor;
             break;
-//        case 3:
-//            enemySnake.backgroundColor = [UIColor colorWithRed:0.592 green:0.408 blue:0.820 alpha:1.000];
-//            break;
     }
  
     [self.gamePad addSubview:enemySnake];
     enemySnake.hidden = YES;
     
-    // Setup score label
-    CGFloat labelWidth = 120;
-    scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 30, labelWidth, 30)];
-    scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
-    scoreLabel.text = @"Score";
-    scoreLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    scoreLabel.textAlignment = NSTextAlignmentCenter;
-    scoreLabel.backgroundColor =  [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
-    scoreLabel.layer.cornerRadius = 10;
-    scoreLabel.layer.masksToBounds = YES;
-    [self.view addSubview:scoreLabel];
+
     
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
@@ -133,11 +92,13 @@
     numDotAte = 0;
     maxCombos = 0;
     score = 0;
-    timeInterval = 0.2;
+    timeInterval = 0.30;
     maxCombos = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attackEnemy:) name:@"attackEnemy" object:nil];
-
+    
+    UITapGestureRecognizer *changeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changeGameState)];
+    [self.pauseLabel addGestureRecognizer:changeTap];
 }
 
 - (void)attackEnemy:(NSNotification *)notification
@@ -276,6 +237,8 @@
     
     if ([self.snake changeDirectionWithGameIsOver:NO]) {
         
+        [self stopEnemyTimer];
+        
         [self stopMoveTimer];
         
         UIColor *gameOverColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
@@ -365,7 +328,7 @@
                     
                     [self.moveTimer invalidate];
                 
-                if (!self.gamePause) {
+                if (self.gameState == kCurrentGameStatePlay) {
                     
                     [self startMoveTimer];
                     
@@ -381,58 +344,48 @@
     }
 }
 
-
-#pragma mark - menu controls
-
-- (void)pauseGame
+- (void)changeGameState
 {
-    [super pauseGame];
+    [super changeGameState];
     
-    if (!self.gamePause) {
-        [super menuFade:NO];
-        self.gamePause = YES;
-        [self.moveTimer invalidate];
-    } else {
-        [self startMoveTimer];
+    switch (self.gameState) {
+            
+        case kCurrentGameStatePlay:
+            
+            if (!isCheckingCombo)
+                [self startMoveTimer];
+
+            break;
+        case kCurrentGameStatePause:
+        
+            [self stopMoveTimer];
+            
+            [self stopEnemyTimer];
+
+            break;
+        case kCurrentGameStateReplay:
+            
+            numDotAte = 0;
+            maxCombos = 0;
+            score = 0;
+            timeInterval = 0.30;
+            maxCombos = 0;
+            
+            [self setScore];
+            [self.snake resetSnake];
+            [self.gamePad resetClassicGamePad];
+            [self startMoveTimer];
+    
+            break;
     }
-}
-
-- (void)backgroundPauseGame
-{
-    [super backgroundPauseGame];
-    [self.moveTimer invalidate];
-}
-
-- (void)resumeGame
-{
-    [super resumeGame];
-    if (!isCheckingCombo)
-        self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval
-                                                     target:self
-                                                   selector:@selector(changeDirection)
-                                                   userInfo:nil
-                                                    repeats:YES];
-}
-
-- (void)retryGame
-{
-    [super retryGame];
-    numDotAte = 0;
-    maxCombos = 0;
-    score = 0;
-    timeInterval = 0.2;
-    maxCombos = 0;
-    [self setScore];
-    
-//    [self.snake snakeHead].alpha = 0;
-    [self.snake resetSnake];
-    [self.gamePad resetClassicGamePad];
-    [self startMoveTimer];
 }
 
 - (void)backToMenu
 {
-    [self.moveTimer invalidate];
+    [self stopMoveTimer];
+    
+    [self stopEnemyTimer];
+    
     [super backToMenu];
 }
 
@@ -478,7 +431,7 @@
     self.snake.combos = 0;
     numDotAte++;
     score++;
-    scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
+    self.scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
 }
 
 #pragma mark - Memory management

@@ -51,13 +51,13 @@
     UITapGestureRecognizer *newgameTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showNewGame)];
     [_newgameLabel addGestureRecognizer:newgameTap];
     
-//    [button showHead:^{
-//        
-//        [UIView animateWithDuration:1.0 animations:^{
-//            _newgameLabel.alpha = 1;
-//        }];
-//        
-//    }];
+    [button showHead:^{
+        
+        [UIView animateWithDuration:1.0 animations:^{
+            _newgameLabel.alpha = 1;
+        }];
+        
+    }];
 
     if (_state == kGameStateContinue)
         _newgameLabel.text = @"Continue";
@@ -66,9 +66,11 @@
 
 }
 
-
-
-
+- (void)pauseGameOnBackground
+{
+    if (classicGameController && classicGameController.gameState == kCurrentGameStatePlay)
+        [classicGameController changeGameState];
+}
 
 //#pragma mark - Game center
 //
@@ -87,9 +89,11 @@
         
     } else {
         
-        //classicGameController =  [[ClassicGameController alloc]init];
-        bossFightController = [[BossFightController alloc]init];
-        [self presentViewController:bossFightController animated:YES completion:nil];
+        classicGameController =  [[ClassicGameController alloc]init];
+        [self presentViewController:classicGameController animated:YES completion:nil];
+
+//        bossFightController = [[BossFightController alloc]init];
+//        [self presentViewController:bossFightController animated:YES completion:nil];
         
     }
 }

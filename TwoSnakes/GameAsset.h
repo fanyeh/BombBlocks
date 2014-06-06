@@ -18,7 +18,6 @@ typedef enum {
     kAssetTypeYellow,
     kAssetTypeRed,
     kAssetTypeBlue,
-    kAssetTypePurple,
     kAssetTypeGoal,
     kAssetTypeKey,
     kAssetTypeMagicWall,

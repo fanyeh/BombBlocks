@@ -63,10 +63,16 @@
 
     snakeHead = [[UIView alloc]initWithFrame:CGRectMake(xPos, yPos, headSize, headSize)];
     //snakeHead.backgroundColor = [UIColor colorWithRed:0.204 green:0.220 blue:0.247 alpha:1.000];
-    snakeHead.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    //snakeHead.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
 
     snakeHead.alpha = 0;
     snakeHead.layer.cornerRadius = headSize/4;
+    
+    UIImageView *snakeView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, headSize, headSize)];
+    snakeView.image = [UIImage imageNamed:@"snake.png"];
+    //snakeView.transform = CGAffineTransformMakeRotation(-M_PI/2);
+    [snakeHead addSubview:snakeView];
+
     
     CGFloat eyeSize = headSize/3;
     leftEye = [[UIView alloc]initWithFrame:CGRectMake(3, 3, eyeSize, eyeSize)];
@@ -74,14 +80,14 @@
     leftEye.layer.borderWidth = 4.5;
     leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     leftEye.layer.cornerRadius = eyeSize/2;
-    [snakeHead addSubview:leftEye];
+    //[snakeHead addSubview:leftEye];
     
     rightEye = [[UIView alloc]initWithFrame:CGRectMake(3 , headSize - 3 - eyeSize, eyeSize, eyeSize)];
     rightEye.backgroundColor = [UIColor blackColor];
     rightEye.layer.borderWidth = 4.5;
     rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     rightEye.layer.cornerRadius = eyeSize/2;
-    [snakeHead addSubview:rightEye];
+    //[snakeHead addSubview:rightEye];
     
     CGFloat mouthSize = blockSize;
     mouth = [[UIView alloc]initWithFrame:CGRectMake(headSize - mouthSize/2, (headSize - blockSize) / 2, mouthSize, mouthSize)];
@@ -120,7 +126,7 @@
 
 - (void)showHead:(void(^)(void))completeBlock
 {
-    float time = 2.5;
+    float time = 1.5;
     float duration = time/(length+4);
     
     [UIView animateWithDuration:duration animations:^{

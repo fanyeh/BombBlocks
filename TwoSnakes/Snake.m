@@ -33,12 +33,19 @@
 
 - (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad headFrame:(CGRect)frame
 {
-    headFrame = frame; //CGRectMake(147, 189, 20, 20);
+    headFrame = frame;
     self = [self initWithFrame:headFrame];
     if (self) {
         
-        self.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+        self.backgroundColor = [UIColor colorWithRed:0.345 green:0.561 blue:0.153 alpha:1.000];
         self.layer.cornerRadius = headFrame.size.width/4;
+        
+        UIImageView *snakeView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, headFrame.size.width, headFrame.size.height)];
+        snakeView.image = [UIImage imageNamed:@"snake.png"];
+        //snakeView.transform = CGAffineTransformMakeRotation(-M_PI/2);
+        
+                                  
+        //[self addSubview:snakeView];
         
         _leftEye = [[UIView alloc]initWithFrame:CGRectMake(2, 2, 5, 5)];
         _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
@@ -55,10 +62,10 @@
 
         [self addSubview:_rightEye];
 
-        _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake(13, 3, 14, 14)];
+        _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake((headFrame.size.width - 14)/2, headFrame.size.height-7, 14, 14)];
         _snakeMouth.layer.cornerRadius = _snakeMouth.frame.size.width/2;
         _snakeMouth.layer.borderColor = [[UIColor whiteColor]CGColor];
-        [self addSubview:_snakeMouth];
+        [snakeView addSubview:_snakeMouth];
         
         _gamePad = gamePad;
         _snakeBody = [[NSMutableArray alloc]init];
@@ -155,7 +162,7 @@
     exclamationView.hidden = YES;
     exclamation = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, exalamtionWidth, 15)];
     exclamation.text = exclamationText;
-    exclamation.textColor = [UIColor blackColor];
+    exclamation.textColor = GameTextColor;
     exclamation.textAlignment = NSTextAlignmentRight;
 
     exclamation.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
@@ -230,7 +237,7 @@
             direction = [[_bodyDirections objectForKey:[NSNumber numberWithInteger:view.tag]] intValue];
         
         CGRect newPosition = [self getNewPosition:view direction:direction];
-        CGPoint newPoint = [self getNewPoint:direction];
+        //CGPoint newPoint = [self getNewPoint:direction];
         
         // Check if snake head touched body or gampad bounds
         
@@ -887,6 +894,8 @@
         
         // Mouth Open
         _snakeMouth.frame = CGRectInset(_snakeMouth.frame, -closeInsetSize, -closeInsetSize);
+        
+        [self mouthAnimation:duration];
         
     }];
 }

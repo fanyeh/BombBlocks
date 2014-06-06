@@ -330,21 +330,6 @@
     }
 }
 
-#pragma mark - menu controls
-
-- (void)pauseGame
-{
-    [super pauseGame];
-    if (self.gamePause) {
-        [self menuFade:NO];
-        self.gamePause = NO;
-    }
-    else {
-        [self menuFade:YES];
-        self.gamePause = YES;
-    }
-}
-
 
 #pragma mark - Hide statu bar
 
