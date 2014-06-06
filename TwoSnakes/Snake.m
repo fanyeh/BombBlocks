@@ -42,17 +42,15 @@
         
         UIImageView *snakeView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, headFrame.size.width, headFrame.size.height)];
         snakeView.image = [UIImage imageNamed:@"snake.png"];
-        //snakeView.transform = CGAffineTransformMakeRotation(-M_PI/2);
-        
-                                  
-        //[self addSubview:snakeView];
+        snakeView.transform = CGAffineTransformMakeRotation(-M_PI/2);
+        [self addSubview:snakeView];
         
         _leftEye = [[UIView alloc]initWithFrame:CGRectMake(2, 2, 5, 5)];
         _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
         _leftEye.layer.borderWidth = 1.5;
         _leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
         _leftEye.backgroundColor = [UIColor blackColor];
-        [self addSubview:_leftEye];
+        //[self addSubview:_leftEye];
         
         _rightEye = [[UIView alloc]initWithFrame:CGRectMake(2, 13, 5, 5)];
         _rightEye.layer.borderWidth = 1.5;
@@ -60,12 +58,12 @@
         _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
         _rightEye.backgroundColor = [UIColor blackColor];
 
-        [self addSubview:_rightEye];
+        //[self addSubview:_rightEye];
 
         _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake((headFrame.size.width - 14)/2, headFrame.size.height-7, 14, 14)];
         _snakeMouth.layer.cornerRadius = _snakeMouth.frame.size.width/2;
         _snakeMouth.layer.borderColor = [[UIColor whiteColor]CGColor];
-        [snakeView addSubview:_snakeMouth];
+        //[snakeView addSubview:_snakeMouth];
         
         _gamePad = gamePad;
         _snakeBody = [[NSMutableArray alloc]init];
