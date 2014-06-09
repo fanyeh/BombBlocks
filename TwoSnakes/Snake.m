@@ -7,7 +7,6 @@
 //
 
 #import "Snake.h"
-#import "SnakeSkill.h"
 #import "GameAsset.h"
 
 @implementation Snake
@@ -37,33 +36,27 @@
     self = [self initWithFrame:headFrame];
     if (self) {
         
-        self.backgroundColor = [UIColor colorWithRed:0.345 green:0.561 blue:0.153 alpha:1.000];
+        self.backgroundColor = SnakeColor;
         self.layer.cornerRadius = headFrame.size.width/4;
         
-        UIImageView *snakeView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, headFrame.size.width, headFrame.size.height)];
-        snakeView.image = [UIImage imageNamed:@"snake.png"];
-        snakeView.transform = CGAffineTransformMakeRotation(-M_PI/2);
-        [self addSubview:snakeView];
-        
-        _leftEye = [[UIView alloc]initWithFrame:CGRectMake(2, 2, 5, 5)];
+        _leftEye = [[UIView alloc]initWithFrame:CGRectMake(4, 2, 7, 7)];
         _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
-        _leftEye.layer.borderWidth = 1.5;
+        _leftEye.layer.borderWidth = 1;
         _leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
         _leftEye.backgroundColor = [UIColor blackColor];
-        //[self addSubview:_leftEye];
+        [self addSubview:_leftEye];
         
-        _rightEye = [[UIView alloc]initWithFrame:CGRectMake(2, 13, 5, 5)];
-        _rightEye.layer.borderWidth = 1.5;
+        _rightEye = [[UIView alloc]initWithFrame:CGRectMake(4, 13 , 7, 7)];
+        _rightEye.layer.borderWidth = 1;
         _rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
         _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
         _rightEye.backgroundColor = [UIColor blackColor];
+        [self addSubview:_rightEye];
 
-        //[self addSubview:_rightEye];
-
-        _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake((headFrame.size.width - 14)/2, headFrame.size.height-7, 14, 14)];
+        _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake(headFrame.size.width - 14/2, (headFrame.size.height-14)/2, 14, 14)];
         _snakeMouth.layer.cornerRadius = _snakeMouth.frame.size.width/2;
-        _snakeMouth.layer.borderColor = [[UIColor whiteColor]CGColor];
-        //[snakeView addSubview:_snakeMouth];
+        //_snakeMouth.layer.borderColor = [[UIColor whiteColor]CGColor];
+        [self addSubview:_snakeMouth];
         
         _gamePad = gamePad;
         _snakeBody = [[NSMutableArray alloc]init];
@@ -97,12 +90,8 @@
             case kMoveDirectionRight:
                 break;
         }
-        
         _isRotate = NO;
-        
         chain = 2;
-        _skill = [[SnakeSkill alloc]init];
-        _snakeType = [[SnakeType alloc]initWithSnakeType:kSnakeTypeStrength];
     }
     return self;
 }
@@ -460,7 +449,7 @@
 
 #pragma mark - Snake Body
 
-- (SnakeBody *)addSnakeBody:(UIColor *)backgroundColor
+- (UIView *)addSnakeBody:(UIColor *)backgroundColor
 {
     CGRect bodyFrame;
     CGRect snakeTailFrame =  [self snakeTail].frame;
@@ -481,13 +470,12 @@
             break;
     }
     
-    SnakeBody *snakeBody = [[SnakeBody alloc]initWithFrame:bodyFrame];
+    UIView *snakeBody = [[UIView alloc]initWithFrame:bodyFrame];
     snakeBody.layer.cornerRadius = bodyFrame.size.width/4;
     snakeBody.backgroundColor = backgroundColor;
     snakeBody.tag = _snakeLength;
 //    snakeBody.layer.borderColor = self.backgroundColor.CGColor;
 //    snakeBody.layer.borderWidth = 3;
-//    snakeBody.skillType.type = dot.skillType.type;
     [_snakeBody addObject:snakeBody];
     [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];
     _snakeLength ++;
@@ -553,8 +541,6 @@
         
         if (endIndex - startIndex == chain) {
             
-            [self updateInitSkillView:[_snakeBody objectAtIndex:startIndex]];
-            
             // Shake snake head
             if (!_isRotate)
                 [self startRotate];
@@ -577,14 +563,12 @@
 {
     BOOL completeCheck = YES;
     // Remove each body with same color
-    for (SnakeBody *v in _snakeBody) {
+    for (UIView *v in _snakeBody) {
         if ([v.backgroundColor isEqual:color]) {
             NSInteger index = [_snakeBody indexOfObject:v];
             [self removeSnakeBodyByIndex:index andColor:v.backgroundColor complete:completeBlock];
             completeCheck = NO;
-            
-            // Update skill adder
-            [_skill updateSkillAdder:v.skillType.type adder:1];
+
             
             break;
         }
@@ -601,8 +585,8 @@
     for (NSInteger i=index; i < [_snakeBody count];i++) {
         if (i < [_snakeBody count] -1) {
             // Next body
-            SnakeBody *currentBody = [_snakeBody objectAtIndex:i];
-            SnakeBody *nextBody = [_snakeBody objectAtIndex:i+1];
+            UIView *currentBody = [_snakeBody objectAtIndex:i];
+            UIView *nextBody = [_snakeBody objectAtIndex:i+1];
             
             [UIView animateWithDuration:0.0 animations:^{
                 
@@ -633,15 +617,12 @@
     NSInteger endIndex = 0;
     BOOL hasCombo = NO;
     
-    for (SnakeBody *v in _snakeBody) {
+    for (UIView *v in _snakeBody) {
         
         if (![repeatColor isEqual:v.backgroundColor]) {
             
             if (hasCombo) {
                 // Invalidate timer if there combo
-                
-                [self updateSupplementSkill:[_snakeBody objectAtIndex:startIndex]];
-
                 
                 [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
                 
@@ -663,8 +644,6 @@
             
             if ([v isEqual:[_snakeBody lastObject]] && hasCombo) {
                 
-                [self updateSupplementSkill:[_snakeBody objectAtIndex:startIndex]];
-
                 
                 [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
                 
@@ -692,8 +671,8 @@
             if (i < [_snakeBody count] -1) {
                 
                 // Next body
-                SnakeBody *currentBody = [_snakeBody objectAtIndex:i];
-                SnakeBody *nextBody = [_snakeBody objectAtIndex:i+1];
+                UIView *currentBody = [_snakeBody objectAtIndex:i];
+                UIView *nextBody = [_snakeBody objectAtIndex:i+1];
                 currentBody.backgroundColor = nextBody.backgroundColor;
             }
         }
@@ -727,9 +706,8 @@
     
     for (NSInteger i = start ; i < end +1 ; i ++) {
         
-        SnakeBody *u = _snakeBody[i];
+        UIView *u = _snakeBody[i];
         [u.layer addAnimation:[self bodyAnimation:i] forKey:nil];
-        [_skill updateSkillAdder:u.skillType.type adder:1];
     }
     
     [UIView animateWithDuration:1 animations:^{
@@ -742,7 +720,7 @@
     } completion:^(BOOL finished) {
                 
         for (NSInteger i = start ; i < end +1 ; i ++) {
-            SnakeBody *u = _snakeBody[i];
+            UIView *u = _snakeBody[i];
             [u.layer removeAllAnimations];
         }
         
@@ -755,26 +733,6 @@
             [self cancelSnakeBodyByColor:color complete:completeBlock];
     }];
     
-}
-
-#pragma mark - Skill View
-
-- (void)updateInitSkillView:(SnakeBody *)body
-{
-    _initSkillView.backgroundColor = body.backgroundColor;
-    [_skill setInitialSkill:body.skillType.type];
-}
-
-- (void)updateSupplementSkill:(SnakeBody *)body
-{
-    if ([_supplementSkillView1.backgroundColor isEqual:[UIColor whiteColor]]) {
-        _supplementSkillView1.backgroundColor = body.backgroundColor;
-        [_skill setSupplementSkill:body.skillType.type];
-
-    } else if ([_supplementSkillView2.backgroundColor isEqual:[UIColor whiteColor]] && ![_supplementSkillView1.backgroundColor isEqual:body.backgroundColor]) {
-        _supplementSkillView2.backgroundColor = body.backgroundColor;
-        [_skill setSupplementSkill:body.skillType.type];
-    }
 }
 
 #pragma mark - Body Animations
@@ -892,9 +850,7 @@
         
         // Mouth Open
         _snakeMouth.frame = CGRectInset(_snakeMouth.frame, -closeInsetSize, -closeInsetSize);
-        
-        [self mouthAnimation:duration];
-        
+                
     }];
 }
 

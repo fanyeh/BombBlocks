@@ -9,15 +9,10 @@
 #import "MenuController.h"
 #import "ClassicGameController.h"
 #import "SnakeButton.h"
-#import "GameRecordController.h"
-#import "LevelListController.h"
-#import "LevelMakerController.h"
-#import "BossFightController.h"
 
 @interface MenuController ()
 {
     ClassicGameController *classicGameController;
-    BossFightController *bossFightController;
     SnakeButton *button;
 }
 
@@ -40,7 +35,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    //self.view.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
 
     button = [[SnakeButton alloc]initWithTitle:@"Not A "];
     [self.view addSubview:button];
@@ -58,12 +52,6 @@
         }];
         
     }];
-
-    if (_state == kGameStateContinue)
-        _newgameLabel.text = @"Continue";
-    else
-        _newgameLabel.text = @"Play";
-
 }
 
 - (void)pauseGameOnBackground
@@ -83,19 +71,10 @@
 
 - (void)showNewGame
 {
-    if (_state == kGameStateContinue) {
-        
-        [self dismissViewControllerAnimated:YES completion:nil];
-        
-    } else {
-        
-        classicGameController =  [[ClassicGameController alloc]init];
-        [self presentViewController:classicGameController animated:YES completion:nil];
+    classicGameController =  [[ClassicGameController alloc]init];
+    classicGameController.newGame = YES;
+    [self presentViewController:classicGameController animated:YES completion:nil];
 
-//        bossFightController = [[BossFightController alloc]init];
-//        [self presentViewController:bossFightController animated:YES completion:nil];
-        
-    }
 }
 
 - (void)didReceiveMemoryWarning

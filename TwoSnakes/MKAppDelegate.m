@@ -8,16 +8,12 @@
 
 #import "MKAppDelegate.h"
 #import "MenuController.h"
-#import "GameSceneController.h"
 #import "ClassicGameController.h"
-#import "LevelMakerController.h"
 
 @implementation MKAppDelegate
 {
     MenuController *menuController;
-    GameSceneController *sceneController;
     ClassicGameController *classicController;
-    LevelMakerController *levelMaker;
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -30,9 +26,7 @@
     // Override point for customization after application launch.
     
     menuController = [[MenuController alloc]init];
-    sceneController = [[GameSceneController alloc]init];
     classicController = [[ClassicGameController alloc]init];
-    levelMaker = [[LevelMakerController alloc]init];
     
     [self.window setRootViewController:menuController];
     self.window.backgroundColor = [UIColor whiteColor];

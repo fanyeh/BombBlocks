@@ -22,6 +22,12 @@
     Snake *enemySnake;
     NSMutableArray *enemyPath;
     CGRect startFrame;
+    NSInteger newLifeCounter;
+    UILabel *newLifeTimerLabel;
+    UILabel *lifeCountLabel;
+    NSInteger lifeCount;
+    UIView *lifeView;
+    NSTimer *newLifeTimer;
 }
 @end
 
@@ -55,16 +61,50 @@
     backgroundView.layer.cornerRadius = 10;
     backgroundView.center = self.view.center;
     [self.view addSubview:backgroundView];
-    
     [self.view addSubview:self.gamePad];
     
+    lifeCount = 2;
+    lifeView = [[UIView alloc]initWithFrame:CGRectMake(320-13.5-50, 10, 50, 50)];
+    lifeView.backgroundColor = PadBackgroundColor;
+    lifeView.layer.cornerRadius = 5;
+    [self.view addSubview:lifeView];
+    
+    lifeCountLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 30)];
+    lifeCountLabel.text = [NSString stringWithFormat:@"%ld",lifeCount];
+    lifeCountLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
+    lifeCountLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    lifeCountLabel.textAlignment = NSTextAlignmentCenter;
+    lifeCountLabel.layer.masksToBounds = YES;
+    lifeCountLabel.userInteractionEnabled = YES;
+    [lifeView addSubview:lifeCountLabel];
+    
+    newLifeTimerLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 30, 50, 10)];
+    newLifeTimerLabel.text = @"0:00";
+    newLifeTimerLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:10];
+    newLifeTimerLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    newLifeTimerLabel.textAlignment = NSTextAlignmentCenter;
+    newLifeTimerLabel.layer.masksToBounds = YES;
+    [lifeView addSubview:newLifeTimerLabel];
+    
+    // Setup score label
+    CGFloat labelWidth = 120;
+    _scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2,10 , labelWidth, 30)];
+    _scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
+    _scoreLabel.text = @"Score";
+    _scoreLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    _scoreLabel.textAlignment = NSTextAlignmentCenter;
+    _scoreLabel.backgroundColor =  [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
+    _scoreLabel.layer.cornerRadius = 5;
+    _scoreLabel.layer.masksToBounds = YES;
+    [self.view addSubview:_scoreLabel];
+    
+    // Setup player snake head
     startFrame = CGRectMake(140 , 209 , 22 , 22);
-    // Setup snake head
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
     [self.gamePad addSubview:self.snake];
     
+    // Set up enemy snake
     enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
-    
     int c = arc4random()%3;
     
     switch (c) {
@@ -99,6 +139,9 @@
     
     UITapGestureRecognizer *changeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changeGameState)];
     [self.pauseLabel addGestureRecognizer:changeTap];
+    
+    newLifeCounter = 1800;
+    newLifeTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(newLifeCountDown) userInfo:nil repeats:YES];
 }
 
 - (void)attackEnemy:(NSNotification *)notification
@@ -110,7 +153,7 @@
     if ([color isEqual:enemySnake.backgroundColor] && !enemySnake.hidden) {
         
         
-        SnakeBody *body = [enemySnake.snakeBody lastObject];
+        UIView *body = [enemySnake.snakeBody lastObject];
 
         [UIView animateWithDuration:1.0
                          animations:^{
@@ -143,10 +186,10 @@
     CGPoint nextMoveOrigin = [[enemyPath firstObject]frame].origin;
     [enemySnake setTurningNode:nextMoveOrigin];
 
-    SnakeBody *breakBody = nil;
+    UIView *breakBody = nil;
     
     // Enemy touched snake body
-    for (SnakeBody *s in [self.snake snakeBody]) {
+    for (UIView *s in [self.snake snakeBody]) {
         
         if ([[NSValue valueWithCGRect:[[enemyPath firstObject]frame]] isEqualToValue:[NSValue valueWithCGRect:s.frame]]) {
             breakBody = s;
@@ -166,7 +209,6 @@
         
         CGFloat offset = 7;
         enemySnake.snakeMouth.frame = CGRectInset( enemySnake.snakeMouth.frame,offset, offset);
-        
         enemySnake.snakeMouth.backgroundColor = [UIColor whiteColor];
         
         [UIView animateWithDuration:0.5 animations:^{
@@ -203,7 +245,7 @@
 
 }
 
-- (void)enemyAttack:(SnakeBody *)body
+- (void)enemyAttack:(UIView *)body
 {
 
     [self.gamePad bringSubviewToFront:enemySnake];
@@ -244,6 +286,9 @@
         UIColor *gameOverColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
         
         [self.snake gameOver];
+        
+        self.gameState = kCurrentGameStateReplay;
+        self.stateSign.image = [UIImage imageNamed:@"replay.png"];
         
         [UIView animateWithDuration:1 animations:^{
             
@@ -346,47 +391,69 @@
 
 - (void)changeGameState
 {
-    [super changeGameState];
     
-    switch (self.gameState) {
-            
-        case kCurrentGameStatePlay:
-            
-            if (!isCheckingCombo)
-                [self startMoveTimer];
-
-            break;
-        case kCurrentGameStatePause:
+    if (self.gameState == kCurrentGameStatePlay || lifeCount > 0 || (self.gameState == kCurrentGameStatePause && !_newGame)) {
         
-            [self stopMoveTimer];
-            
-            [self stopEnemyTimer];
+        [super changeGameState];
+        
+        // Current game start after change
+        switch (self.gameState) {
+                
+            case kCurrentGameStatePlay:
+                
+                if (_newGame) {
+                    lifeCount--;
+                    [self updateLife];
+                    _newGame = NO;
+                }
+                
+                if (!isCheckingCombo)
+                    [self startMoveTimer];
+                
+                break;
+            case kCurrentGameStatePause:
+                
+                [self stopMoveTimer];
+                
+                [self stopEnemyTimer];
+                
+                break;
+            case kCurrentGameStateReplay:
+                
+                lifeCount--;
+                [self updateLife];
 
-            break;
-        case kCurrentGameStateReplay:
-            
-            numDotAte = 0;
-            maxCombos = 0;
-            score = 0;
-            timeInterval = 0.30;
-            maxCombos = 0;
-            
-            [self setScore];
-            [self.snake resetSnake];
-            [self.gamePad resetClassicGamePad];
-            [self startMoveTimer];
-    
-            break;
+                numDotAte = 0;
+                maxCombos = 0;
+                score = 0;
+                timeInterval = 0.30;
+                maxCombos = 0;
+                
+                [self setScore];
+                [self.snake resetSnake];
+                [self.gamePad resetClassicGamePad];
+                [self startMoveTimer];
+                
+                self.gameState = kCurrentGameStatePlay;
+                
+                break;
+        }
+        
+    } else {
+        
+        [self noLifeAlert];
     }
 }
 
-- (void)backToMenu
+- (void)noLifeAlert
 {
-    [self stopMoveTimer];
-    
-    [self stopEnemyTimer];
-    
-    [super backToMenu];
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"No Lives!"
+                                                   message:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"Close"
+                                         otherButtonTitles:nil, nil];
+    [alert show];
+
 }
 
 - (void)startMoveTimer
@@ -417,6 +484,40 @@
 - (void)stopMoveTimer
 {
     [self.moveTimer invalidate];
+}
+
+- (void)newLifeCountDown
+{
+    if (newLifeCounter == 0) {
+        newLifeCounter = 1800;
+        lifeCount++;
+        [self updateLife];
+    }
+    [self minuteFromSeconds:newLifeCounter];
+    newLifeCounter--;
+}
+
+- (void)minuteFromSeconds:(NSInteger)seconds
+{
+    NSInteger sec = seconds%60;
+    NSString *secondString;
+    
+    if (sec < 10)
+        secondString = [NSString stringWithFormat:@"0%ld",sec];
+    else
+        secondString = [NSString stringWithFormat:@"%ld",sec];
+
+    
+    NSInteger minutes = seconds/60;
+    
+    newLifeTimerLabel.text = [NSString stringWithFormat:@"%ld:%@",minutes,secondString];
+    
+}
+
+- (void)updateLife
+{
+    lifeCountLabel.text = [NSString stringWithFormat:@"%ld",lifeCount];
+
 }
 
 #pragma mark - Setscore

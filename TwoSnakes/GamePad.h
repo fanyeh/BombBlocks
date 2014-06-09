@@ -17,14 +17,10 @@
 @property (strong,nonatomic) NSMutableArray *assetArray;
 
 - (id)initGamePad;
-- (id)initEmptyGamePad;
 - (void)setupDotForGameStart:(CGRect)headFrame;
 - (void)hideAllAssets;
 - (void)changeAssetType:(GameAsset *)asset;
-- (id)initGamePadWithAsset:(NSMutableArray *)gameAssets;
-- (id)initGamePadWithAssetDict:(NSDictionary *)assets;
 - (void)resetClassicGamePad;
 - (NSMutableArray *)searchPathPlayer:(CGRect)playerFrame enemy:(CGRect)enemyFrame moveDirection:(MoveDirection)moveDirection;
-- (id)initBossGamePad;
 
 @end

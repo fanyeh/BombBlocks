@@ -21,13 +21,13 @@ typedef enum {
 
 @property(strong,nonatomic) GamePad *gamePad;
 @property(strong,nonatomic) Snake *snake;
-@property(strong,nonatomic) UILabel *scoreLabel;
 @property(strong,nonatomic) NSTimer *moveTimer;
 @property(nonatomic) CurrentGameState gameState;
 @property(strong,nonatomic) UILabel *pauseLabel;
+@property(strong,nonatomic) UIImageView *stateSign;
+
 
 - (void)directionChange:(UITapGestureRecognizer *)sender;
-- (void)backToMenu;
 - (void)startMoveTimer;
 - (void)changeDirection;
 - (void)changeGameState;

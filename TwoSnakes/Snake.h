@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SnakeBody.h"
-#import "SnakeType.h"
+#
 @class SnakeSkill;
 @class GameAsset;
 
@@ -22,7 +21,6 @@ typedef enum {
 @interface Snake : UIView
 
 @property (nonatomic) int snakeLength;
-//@property (nonatomic) MoveDirection snakeDirection;
 @property (strong,nonatomic) NSMutableArray *snakeBody;
 @property (strong,nonatomic) NSMutableDictionary *bodyDirections;
 @property (strong,nonatomic) NSMutableDictionary *turningNodes;
@@ -33,17 +31,15 @@ typedef enum {
 @property (strong,nonatomic) UIView *initSkillView;
 @property (strong,nonatomic) UIView *supplementSkillView1;
 @property (strong,nonatomic) UIView *supplementSkillView2;
-@property (strong,nonatomic) SnakeSkill *skill;
 
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
 @property (nonatomic) BOOL isRotate;
 @property (nonatomic) NSInteger combos;
-@property (nonatomic) SnakeType *snakeType;
 
 
 - (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad headFrame:(CGRect)frame;
-- (SnakeBody *)addSnakeBody:(UIColor *)backgroundColor;
+- (UIView *)addSnakeBody:(UIColor *)backgroundColor;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
 - (UIView *)snakeTail;

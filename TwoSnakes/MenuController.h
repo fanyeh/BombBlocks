@@ -7,12 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-typedef enum {
-    kGameStateNew = 0,
-    kGameStateContinue
-} GameState;
-@interface MenuController : UIViewController
-@property (nonatomic) GameState state;
 
+@interface MenuController : UIViewController
 - (void)pauseGameOnBackground;
 @end

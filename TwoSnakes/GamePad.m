@@ -42,22 +42,6 @@
     return self;
 }
 
-- (id)initBossGamePad
-{
-    int column = 13;
-    int row = 13;
-    moveSize = 23;
-    
-    CGRect frame = CGRectMake(0, 0, moveSize*column+4, moveSize*row+4);
-    
-    self = [self initWithFrame:frame];
-    if (self) {
-        // Initialization code
-        [self createClassicGameAssetColumn:column andRow:row];
-    }
-    return self;
-}
-
 - (void)createClassicGameAssetColumn:(int)column andRow:(int)row
 {
     _assetArray = [[NSMutableArray alloc]init];
@@ -238,7 +222,8 @@
 {
     for (GameAsset *a in _assetArray) {
         
-        [self randomColor:a];
+        if (a.gameAssetType != kAssetTypeEmpty)
+            [self randomColor:a];
     }
 }
 
@@ -256,122 +241,8 @@
         case 2:
             [asset setAssetType:kAssetTypeYellow];
             break;
-//        case 3:
-//            [asset setAssetType:kAssetTypePurple];
-//            break;
     }
 }
-
-#pragma mark - Puzzle Maker
-
-- (id)initEmptyGamePad
-{
-    CGRect frame = CGRectMake(0, 0, 315, 441);
-    self = [self initWithFrame:frame];
-    if (self) {
-        // Initialization code
-        [self createEmptyPad];        
-    }
-    return self;
-}
-
-- (void)createEmptyPad
-{
-    _assetArray = [[NSMutableArray alloc]init];
-    CGFloat assetPosX;
-    CGFloat assetPosY;
-    
-    for (int i = 0 ; i < 15; i ++ ) {
-        for (int j = 0 ; j < 21 ; j++) {
-            
-            assetPosX = i * 21;
-            assetPosY = j * 21;
-            
-            GameAsset *emptyAsset = [[GameAsset alloc]initWithFrame:CGRectMake(assetPosX, assetPosY, 20, 20)];
-            emptyAsset.indexPath = [NSIndexPath indexPathForRow:i inSection:j];
-            emptyAsset.layer.borderWidth = 1;
-            [self addSubview:emptyAsset];
-            [self sendSubviewToBack:emptyAsset];
-            [_assetArray addObject:emptyAsset];
-        }
-    }
-}
-
-#pragma mark - Puzzle Trial
-
-- (id)initGamePadWithAsset:(NSMutableArray *)assets
-{
-    CGRect frame = CGRectMake(2.5, 100, 315, 483);
-    self = [self initWithFrame:frame];
-    if (self) {
-        // Initialization code
-        gameAssets = assets;
-        _assetArray = [[NSMutableArray alloc]init];
-
-        [self createPadWithAssets];
-
-    }
-    return self;
-}
-
-- (void)createPadWithAssets
-{
-    for (GameAsset *a in gameAssets) {
-        
-        GameAsset *newAsset = [[GameAsset alloc]init];
-        [newAsset setAssetType:a.gameAssetType];
-        CGFloat assetPosX = a.indexPath.row * 21;
-        CGFloat assetPosY = a.indexPath.section * 21;
-        
-        [newAsset setPosition:CGPointMake(assetPosX, assetPosY)];
-        
-        //        newAsset.layer.borderWidth = 1;
-        [self addSubview:newAsset];
-        [self sendSubviewToBack:newAsset];
-        
-        [_assetArray addObject:newAsset];
-    }
-}
-
-#pragma mark - Puzzle Play
-
-- (id)initGamePadWithAssetDict:(NSDictionary *)assets
-{
-    CGRect frame = CGRectMake(2.5, 100, 315, 483);
-    self = [self initWithFrame:frame];
-    if (self) {
-        // Initialization code
-        _assetArray = [[NSMutableArray alloc]init];
-        
-        [self createPadWithAssetsDict:assets];
-        
-    }
-    return self;
-}
-
-- (void)createPadWithAssetsDict:(NSDictionary *)assetsDict
-{
-    NSArray *assets = [assetsDict allValues];
-    for (NSDictionary *a in assets) {
-        
-        GameAsset *newAsset = [[GameAsset alloc]init];
-        NSNumber *assetType = [a objectForKey:@"AssetType"];
-        NSNumber *row = [a objectForKey:@"Row"];
-        NSNumber *column = [a objectForKey:@"Column"];
-        
-        NSInteger assetPosX = [row integerValue] * 21;
-        NSInteger assetPosY = [column integerValue] * 21;
-        
-        [newAsset setAssetType:[assetType intValue]];
-        [newAsset setPosition:CGPointMake(assetPosX, assetPosY)];
-        
-        [self addSubview:newAsset];
-        [self sendSubviewToBack:newAsset];
-        
-        [_assetArray addObject:newAsset];
-    }
-}
-
 
 - (void)setupDotForGameStart:(CGRect)headFrame
 {
@@ -390,5 +261,7 @@
         v.alpha = 0;
     }
 }
+
+
 
 @end

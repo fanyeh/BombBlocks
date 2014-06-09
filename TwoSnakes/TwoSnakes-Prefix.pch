@@ -26,3 +26,4 @@
 #define YellowDotColor [UIColor colorWithRed:0.937 green:0.788 blue:0.298 alpha:1.000]
 #define PadBackgroundColor [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000]
 #define GameTextColor [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000]
+#define SnakeColor [UIColor colorWithRed:0.345 green:0.561 blue:0.153 alpha:1.000]

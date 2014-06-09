@@ -62,32 +62,26 @@
     CGFloat yPos = 0;
 
     snakeHead = [[UIView alloc]initWithFrame:CGRectMake(xPos, yPos, headSize, headSize)];
-    //snakeHead.backgroundColor = [UIColor colorWithRed:0.204 green:0.220 blue:0.247 alpha:1.000];
-    //snakeHead.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-
+    snakeHead.backgroundColor = SnakeColor;
     snakeHead.alpha = 0;
     snakeHead.layer.cornerRadius = headSize/4;
-    
-    UIImageView *snakeView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, headSize, headSize)];
-    snakeView.image = [UIImage imageNamed:@"snake.png"];
-    //snakeView.transform = CGAffineTransformMakeRotation(-M_PI/2);
-    [snakeHead addSubview:snakeView];
+
 
     
     CGFloat eyeSize = headSize/3;
     leftEye = [[UIView alloc]initWithFrame:CGRectMake(3, 3, eyeSize, eyeSize)];
     leftEye.backgroundColor = [UIColor blackColor];
-    leftEye.layer.borderWidth = 4.5;
+    leftEye.layer.borderWidth = 2.5;
     leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     leftEye.layer.cornerRadius = eyeSize/2;
-    //[snakeHead addSubview:leftEye];
+    [snakeHead addSubview:leftEye];
     
     rightEye = [[UIView alloc]initWithFrame:CGRectMake(3 , headSize - 3 - eyeSize, eyeSize, eyeSize)];
     rightEye.backgroundColor = [UIColor blackColor];
-    rightEye.layer.borderWidth = 4.5;
+    rightEye.layer.borderWidth = 2.5;
     rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     rightEye.layer.cornerRadius = eyeSize/2;
-    //[snakeHead addSubview:rightEye];
+    [snakeHead addSubview:rightEye];
     
     CGFloat mouthSize = blockSize;
     mouth = [[UIView alloc]initWithFrame:CGRectMake(headSize - mouthSize/2, (headSize - blockSize) / 2, mouthSize, mouthSize)];
@@ -247,7 +241,7 @@
                         
                         exlamationLabel.alpha = 1;
                         
-                        NSInteger index  = [bodyArray count] - 1;
+                        NSInteger index  = [bodyArray count] -1;
                         NSInteger charIndex = 0;
                         
                         for (NSInteger i = index ; i > 1 ; i -- ) {
@@ -255,6 +249,7 @@
                             UILabel *label = [bodyArray objectAtIndex:i];
                             label.text = [NSString stringWithFormat:@"%c",[introTitle characterAtIndex:charIndex]];
                             label.textColor = [UIColor whiteColor];
+                            //label.backgroundColor = [UIColor clearColor];
                             label.textAlignment = NSTextAlignmentCenter;
                             label.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
                             charIndex++;
