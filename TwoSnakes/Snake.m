@@ -55,8 +55,11 @@
         [self addSubview:_rightEye];
         
         UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 22, 22)];
-        if (snakeType == kSnakeTypePlayer)
+        if (snakeType == kSnakeTypePlayer) {
             headImageView.image = [UIImage imageNamed:@"snake.png"];
+            headImageView.backgroundColor = SnakeColor;
+            headImageView.layer.cornerRadius = headFrame.size.width/4;
+        }
         else
             headImageView.image = [UIImage imageNamed:@"enemySnake.png"];
         
@@ -554,12 +557,8 @@
             // Shake snake head
             if (!_isRotate)
                 [self startRotate];
-            
-            NSDictionary *comboColorDict = @{@"comboColor":repeatColor} ;
-            //[[NSNotificationCenter defaultCenter] postNotificationName:@"attackEnemy" object:nil userInfo:comboColorDict];
 
             [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:v.backgroundColor otherCombo:NO];
-            
             
             return YES;
         }
@@ -575,16 +574,15 @@
     // Remove each body with same color
     for (UIView *v in _snakeBody) {
         if ([v.backgroundColor isEqual:color]) {
+            
+            // Remove same color body from initial combo
             NSInteger index = [_snakeBody indexOfObject:v];
             [self removeSnakeBodyByIndex:index andColor:v.backgroundColor complete:completeBlock];
             completeCheck = NO;
-
             break;
         }
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"showAttack" object:nil userInfo:nil];
-
     // Check if there is other combos
     if (completeCheck)
         [self otherCombo:completeBlock];
@@ -637,7 +635,6 @@
                 
                 [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
                 
-                
                 return YES;
             } else {
                 repeatColor = v.backgroundColor;
@@ -655,10 +652,8 @@
             
             if ([v isEqual:[_snakeBody lastObject]] && hasCombo) {
                 
-                
                 [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
                 
-
                 return YES;
                 
             }
@@ -672,8 +667,6 @@
 -(void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(void(^)(void))completeBlock
 {
     if (range == 0) {
-        
-        
 
         [self otherCombo:completeBlock];
         
@@ -732,7 +725,7 @@
         _leftEye.layer.borderWidth = 0.5;
         _rightEye.layer.borderWidth = 0.5;
         
-        if (!other) {
+        if (!other && _hasEnemy) {
             for (NSInteger i = start ; i < end +1 ; i ++) {
                 
                 UIView *u = _snakeBody[i];
@@ -743,7 +736,7 @@
     } completion:^(BOOL finished) {
         
         
-        if (!other) {
+        if (!other && _hasEnemy) {
             _gamePad.skillView.backgroundColor = color;
             
             [UIView animateWithDuration:1.5 animations:^{
@@ -770,22 +763,32 @@
                     _leftEye.layer.borderWidth = 1.5;
                     _rightEye.layer.borderWidth = 1.5;
                     
+                    NSDictionary *comboColorDict = @{@"comboColor":color} ;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"showAttack" object:nil userInfo:comboColorDict];
+
+                    
                     [self cancelSnakeBodyByColor:color complete:completeBlock];
 
                     
-//                    if (other)
-//                        [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
-//                    else
-//                        [self cancelSnakeBodyByColor:color complete:completeBlock];
                     
                 }];
             }];
             
         } else {
             
+            for (NSInteger i = start ; i < end +1 ; i ++) {
+                UIView *u = _snakeBody[i];
+                [u.layer removeAllAnimations];
+            }
             _leftEye.layer.borderWidth = 1.5;
             _rightEye.layer.borderWidth = 1.5;
-            [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
+            
+            if (other)
+                [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
+            else
+                [self cancelSnakeBodyByColor:color complete:completeBlock];
+
+            //[self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
 
         }
     }];
@@ -924,15 +927,15 @@
 
 - (void)showExclamation:(BOOL)show
 {
-    if (show) {
-        exclamationView.hidden = NO;
-        [exclamation.layer addAnimation:[self exclamationAnimation] forKey:nil];
-        [_gamePad bringSubviewToFront:exclamationView];
-    }
-    else {
-        exclamationView.hidden = YES;
-        [exclamation.layer removeAllAnimations];
-    }
+//    if (show) {
+//        exclamationView.hidden = NO;
+//        [exclamation.layer addAnimation:[self exclamationAnimation] forKey:nil];
+//        [_gamePad bringSubviewToFront:exclamationView];
+//    }
+//    else {
+//        exclamationView.hidden = YES;
+//        [exclamation.layer removeAllAnimations];
+//    }
 }
 
 -(void)updateExclamationText:(NSString *)text
@@ -945,7 +948,7 @@
     exclamation.text = exclamationText;
 }
 
-- (void)showAttackEnemyAnimation
+- (void)showAttackEnemyAnimation:(UIColor *)color
 {
     UIView *attackView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 22, 22)];
     attackView.backgroundColor = [UIColor blackColor];
@@ -966,6 +969,9 @@
         } completion:^(BOOL finished) {
             
             [attackView removeFromSuperview];
+            
+            NSDictionary *comboColorDict = @{@"comboColor":color} ;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"attackEnemy" object:nil userInfo:comboColorDict];
             
         }];
 

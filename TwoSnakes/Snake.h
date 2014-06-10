@@ -33,6 +33,7 @@ typedef enum {
 @property (strong,nonatomic) UIView *rightEye;
 @property (strong,nonatomic) UIView *snakeMouth;
 @property (strong,nonatomic) GamePad *gamePad;
+@property (nonatomic) BOOL hasEnemy;
 
 
 @property (nonatomic) CGFloat xOffset;
@@ -61,6 +62,6 @@ typedef enum {
 - (void)setWallBounds:(NSMutableArray *)wallbounds;
 - (void)showExclamation:(BOOL)show;
 - (void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(void(^)(void))completeBlock;
-- (void)showAttackEnemyAnimation;
+- (void)showAttackEnemyAnimation:(UIColor *)color;
 
 @end

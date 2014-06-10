@@ -203,6 +203,8 @@
                                  
                                  enemySnake.frame =  startFrame;
                                  enemySnake.hidden = YES;
+                                 [self stopEnemyTimer];
+                                 self.snake.hasEnemy = NO;
                                  
                              } else {
                                  [body removeFromSuperview];
@@ -214,8 +216,11 @@
 
 - (void)showAttack:(NSNotification *)notification
 {
+    NSDictionary *comboColorDict = [notification userInfo];
+    UIColor *color = [comboColorDict objectForKey:@"comboColor"];
+
     if (!enemySnake.hidden)
-        [enemySnake showAttackEnemyAnimation];
+        [enemySnake showAttackEnemyAnimation:color];
 }
 
 - (void)changeEnemyDirection
@@ -416,6 +421,7 @@
                     if (enemySnake.hidden) {
                         
                         [self startEnemyTimer];
+                        self.snake.hasEnemy = YES;
                         
                     }
                 }
