@@ -65,7 +65,10 @@
     snakeHead.backgroundColor = SnakeColor;
     snakeHead.alpha = 0;
     snakeHead.layer.cornerRadius = headSize/4;
-
+    UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 40, 40)];
+    headImageView.image = [UIImage imageNamed:@"snakeLarge.png"];
+    headImageView.transform = CGAffineTransformMakeRotation(-M_PI/2);
+    [snakeHead addSubview:headImageView];
 
     
     CGFloat eyeSize = headSize/3;
@@ -74,14 +77,14 @@
     leftEye.layer.borderWidth = 2.5;
     leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     leftEye.layer.cornerRadius = eyeSize/2;
-    [snakeHead addSubview:leftEye];
+    //[snakeHead addSubview:leftEye];
     
     rightEye = [[UIView alloc]initWithFrame:CGRectMake(3 , headSize - 3 - eyeSize, eyeSize, eyeSize)];
     rightEye.backgroundColor = [UIColor blackColor];
     rightEye.layer.borderWidth = 2.5;
     rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
     rightEye.layer.cornerRadius = eyeSize/2;
-    [snakeHead addSubview:rightEye];
+    //[snakeHead addSubview:rightEye];
     
     CGFloat mouthSize = blockSize;
     mouth = [[UIView alloc]initWithFrame:CGRectMake(headSize - mouthSize/2, (headSize - blockSize) / 2, mouthSize, mouthSize)];
@@ -106,7 +109,21 @@
         //letterLabel.text = [NSString stringWithFormat:@"%c",[title characterAtIndex:i]];
         letterLabel.textColor = [UIColor whiteColor];
         letterLabel.textAlignment = NSTextAlignmentCenter;
-        letterLabel.backgroundColor = snakeHead.backgroundColor;
+        
+        switch (i%3) {
+            case 0:
+                letterLabel.backgroundColor = RedDotColor;
+
+                break;
+            case 1:
+                letterLabel.backgroundColor = YellowDotColor;
+                break;
+            case 2:
+                letterLabel.backgroundColor = BlueDotColor;
+
+                break;
+        }
+        
         letterLabel.layer.cornerRadius = blockSize/2;
         letterLabel.layer.masksToBounds = YES;
         letterLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
@@ -120,7 +137,7 @@
 
 - (void)showHead:(void(^)(void))completeBlock
 {
-    float time = 1.5;
+    float time = 2.5;
     float duration = time/(length+4);
     
     [UIView animateWithDuration:duration animations:^{
@@ -170,17 +187,17 @@
         
     } completion:^(BOOL finished) {
         
-        [letter removeFromSuperview];
-        [letterArray removeObject:letter];
-        
         CGRect lastFrame = [[bodyArray lastObject]frame];
         CGRect bodyFrame = CGRectOffset(lastFrame, -headSize-2, 0);
         UILabel *body = [[UILabel alloc]initWithFrame:bodyFrame];
         body.layer.cornerRadius = headSize/4;
         body.layer.masksToBounds = YES;
-        body.backgroundColor = snakeHead.backgroundColor;
+        body.backgroundColor = letter.backgroundColor;
         [_letterButtons addSubview:body];
         [bodyArray addObject:body];
+        
+        [letter removeFromSuperview];
+        [letterArray removeObject:letter];
         
         if ([letterArray firstObject]) {
             
@@ -211,7 +228,8 @@
                 }
                 
             } completion:^(BOOL finished) {
-                UIView *newMouth = [[UIView alloc]initWithFrame:CGRectMake(headSize/2, headSize/2-8, 16, 16)];
+                
+                UIView *newMouth = [[UIView alloc]initWithFrame:CGRectMake(headSize-8, headSize/2-8, 16, 16)];
                 newMouth.layer.cornerRadius = 8;
                 newMouth.backgroundColor = [UIColor whiteColor];
                 [snakeHead addSubview:newMouth];
@@ -219,7 +237,7 @@
                 
                 UILabel *exlamationLabel = [[UILabel alloc]initWithFrame:CGRectMake(frameWidth-labelHeight + 12 + headSize , 0, labelHeight, labelHeight)];
                 exlamationLabel.text = @"!";
-                exlamationLabel.textColor = letter.backgroundColor;
+                exlamationLabel.textColor = snakeHead.backgroundColor;
                 exlamationLabel.textAlignment = NSTextAlignmentCenter;
                 exlamationLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:30];
                 [self addSubview:exlamationLabel];
@@ -230,7 +248,7 @@
                 [UIView animateWithDuration:duration animations:^{
                     
                     snakeHead.transform = CGAffineTransformRotate(snakeHead.transform, M_PI/2);
-                    newMouth.frame = CGRectInset(newMouth.frame, -8, -11);
+                    newMouth.frame = CGRectInset(newMouth.frame, -7, -9);
                     
 
                     

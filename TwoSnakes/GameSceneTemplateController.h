@@ -26,11 +26,9 @@ typedef enum {
 @property(strong,nonatomic) UILabel *pauseLabel;
 @property(strong,nonatomic) UIImageView *stateSign;
 
-
 - (void)directionChange:(UITapGestureRecognizer *)sender;
 - (void)startMoveTimer;
 - (void)changeDirection;
 - (void)changeGameState;
-
 
 @end

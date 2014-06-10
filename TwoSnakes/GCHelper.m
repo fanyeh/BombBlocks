@@ -327,6 +327,32 @@ static GCHelper *sharedHelper = nil;
     }];
 }
 
+- (void)getScoreRankFromLeaderboard:(void(^)(NSArray *topScores))completeBlock
+{
+    // features are enabled
+    if (!_gameCenterAvailable) {
+        NSLog(@"Player not authenticated");
+        return;
+    }
+    
+    [GKLeaderboard loadLeaderboardsWithCompletionHandler:^(NSArray *leaderboards, NSError *error) {
+        
+        for (GKLeaderboard *board in leaderboards) {
+            
+            if ([board.identifier isEqualToString:kHighScoreLeaderboardId]) {
+                
+                [board loadScoresWithCompletionHandler:^(NSArray *scores, NSError *error) {
+                    
+                    completeBlock(scores);
+                    
+                }];
+                
+            }
+        }
+    
+    }];
+}
+
 #pragma mark Property setters
 -(void) setLastError:(NSError*)error {
     _lastError = [error copy];

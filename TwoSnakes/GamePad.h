@@ -10,11 +10,10 @@
 #import "Snake.h"
 @class GameAsset;
 
-
 @interface GamePad : UIView
 
-//@property (strong,nonatomic) NSMutableArray *dotArray;
 @property (strong,nonatomic) NSMutableArray *assetArray;
+@property (strong,nonatomic) UIView *skillView;
 
 - (id)initGamePad;
 - (void)setupDotForGameStart:(CGRect)headFrame;

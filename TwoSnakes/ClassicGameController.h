@@ -11,6 +11,5 @@
 @interface ClassicGameController : GameSceneTemplateController
 
 @property(strong,nonatomic) UILabel *scoreLabel;
-@property(nonatomic) BOOL newGame;
 
 @end

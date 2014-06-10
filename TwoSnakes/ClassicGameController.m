@@ -22,12 +22,10 @@
     Snake *enemySnake;
     NSMutableArray *enemyPath;
     CGRect startFrame;
-    NSInteger newLifeCounter;
-    UILabel *newLifeTimerLabel;
-    UILabel *lifeCountLabel;
-    NSInteger lifeCount;
-    UIView *lifeView;
-    NSTimer *newLifeTimer;
+    UILabel *comboCountLabel;
+    UILabel *comboLabel;
+    UIView *comboView;
+    UIView *rankView;
 }
 @end
 
@@ -46,6 +44,10 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    numFormatter = [[NSNumberFormatter alloc] init];
+    [numFormatter setGroupingSeparator:@","];
+    [numFormatter setGroupingSize:3];
+    [numFormatter setUsesGroupingSeparator:YES];
     
     // Setup game pad
     self.gamePad = [[GamePad alloc]initGamePad];
@@ -56,6 +58,8 @@
     UITapGestureRecognizer *gamePadTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(directionChange:)];
     [self.gamePad addGestureRecognizer:gamePadTap];
     
+    
+    // Background
     UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.gamePad.frame.size.width+16, self.gamePad.frame.size.height+16)];
     backgroundView.backgroundColor = PadBackgroundColor;
     backgroundView.layer.cornerRadius = 10;
@@ -63,32 +67,60 @@
     [self.view addSubview:backgroundView];
     [self.view addSubview:self.gamePad];
     
-    lifeCount = 2;
-    lifeView = [[UIView alloc]initWithFrame:CGRectMake(320-13.5-50, 10, 50, 50)];
-    lifeView.backgroundColor = PadBackgroundColor;
-    lifeView.layer.cornerRadius = 5;
-    [self.view addSubview:lifeView];
+    CGFloat viewHeight = 40;
+    CGFloat viewWidth = 50;
     
-    lifeCountLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 30)];
-    lifeCountLabel.text = [NSString stringWithFormat:@"%ld",lifeCount];
-    lifeCountLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
-    lifeCountLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    lifeCountLabel.textAlignment = NSTextAlignmentCenter;
-    lifeCountLabel.layer.masksToBounds = YES;
-    lifeCountLabel.userInteractionEnabled = YES;
-    [lifeView addSubview:lifeCountLabel];
+    // Combo
+    comboView = [[UIView alloc]initWithFrame:CGRectMake(320-13.5-50, 20, viewWidth, viewHeight)];
+    comboView.backgroundColor = PadBackgroundColor;
+    comboView.layer.cornerRadius = 5;
+    [self.view addSubview:comboView];
     
-    newLifeTimerLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 30, 50, 10)];
-    newLifeTimerLabel.text = @"0:00";
-    newLifeTimerLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:10];
-    newLifeTimerLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    newLifeTimerLabel.textAlignment = NSTextAlignmentCenter;
-    newLifeTimerLabel.layer.masksToBounds = YES;
-    [lifeView addSubview:newLifeTimerLabel];
+    comboLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, viewWidth, 20)];
+    comboLabel.text = @"Combo";
+    comboLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
+    comboLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    comboLabel.textAlignment = NSTextAlignmentCenter;
+    comboLabel.userInteractionEnabled = YES;
+    [comboView addSubview:comboLabel];
+    
+    comboCountLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, viewWidth, 13)];
+    comboCountLabel.text = [NSString stringWithFormat:@"%ld",maxCombos];
+    comboCountLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:13];
+    comboCountLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    comboCountLabel.textAlignment = NSTextAlignmentCenter;
+    [comboView addSubview:comboCountLabel];
+    
+    
+    // Rank
+    rankView = [[UIView alloc]initWithFrame:CGRectMake(13.5, 20, viewWidth, viewHeight)];
+    rankView.backgroundColor = PadBackgroundColor;
+    rankView.layer.cornerRadius = 5;
+    [self.view addSubview:rankView];
+    
+    UILabel *rankLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, viewWidth, 20)];
+    rankLabel.text = @"Rank";
+    rankLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
+    rankLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    rankLabel.textAlignment = NSTextAlignmentCenter;
+    [rankView addSubview:rankLabel];
+    
+    UILabel *currentRank = [[UILabel alloc]initWithFrame:CGRectMake(0, 20, 50, 13)];
+    currentRank.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:13];
+    currentRank.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+    currentRank.textAlignment = NSTextAlignmentCenter;
+    [rankView addSubview:currentRank];
+    
+    [[GCHelper sharedInstance]getScoreRankFromLeaderboard:^(NSArray *topScores) {
+        
+        GKScore *topScore = [topScores firstObject];
+        currentRank.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:topScore.rank]];
+
+    }];
     
     // Setup score label
     CGFloat labelWidth = 120;
-    _scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2,10 , labelWidth, 30)];
+    _scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2,20, labelWidth, 40)];
     _scoreLabel.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:20];
     _scoreLabel.text = @"Score";
     _scoreLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
@@ -100,11 +132,11 @@
     
     // Setup player snake head
     startFrame = CGRectMake(140 , 209 , 22 , 22);
-    self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
+    self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame snakeType:kSnakeTypePlayer];
     [self.gamePad addSubview:self.snake];
     
     // Set up enemy snake
-    enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
+    enemySnake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame snakeType:kSnakeTypeEnemy];
     int c = arc4random()%3;
     
     switch (c) {
@@ -121,27 +153,33 @@
     [self.gamePad addSubview:enemySnake];
     enemySnake.hidden = YES;
     
-
-    
-    numFormatter = [[NSNumberFormatter alloc] init];
-    [numFormatter setGroupingSeparator:@","];
-    [numFormatter setGroupingSize:3];
-    [numFormatter setUsesGroupingSeparator:YES];
-    
     // Game Settings
     numDotAte = 0;
-    maxCombos = 0;
     score = 0;
-    timeInterval = 0.30;
+    timeInterval = 0.20;
     maxCombos = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attackEnemy:) name:@"attackEnemy" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAttack:) name:@"showAttack" object:nil];
+
     
     UITapGestureRecognizer *changeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changeGameState)];
     [self.pauseLabel addGestureRecognizer:changeTap];
     
-    newLifeCounter = 1800;
-    newLifeTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(newLifeCountDown) userInfo:nil repeats:YES];
+    // Game Center Label
+    UILabel *gameCenterLabel = [[UILabel alloc]initWithFrame:CGRectMake(13.5, 508, viewWidth, viewHeight)];
+    gameCenterLabel.backgroundColor = PadBackgroundColor;
+    gameCenterLabel.layer.cornerRadius = 5;
+    gameCenterLabel.layer.masksToBounds = YES;
+    UIImageView *gamecenterImageView = [[UIImageView alloc]initWithFrame:CGRectMake(10, 5, 30, 30)];
+    UIImage *gamecenterImage = [UIImage imageNamed:@"gamecenter.png"];
+    gamecenterImageView.image = gamecenterImage;
+    [gameCenterLabel addSubview:gamecenterImageView];
+    [self.view addSubview:gameCenterLabel];
+    
+    UITapGestureRecognizer *gamecenterTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showGameCenter)];
+    [gameCenterLabel addGestureRecognizer:gamecenterTap];
+    gameCenterLabel.userInteractionEnabled = YES;
 }
 
 - (void)attackEnemy:(NSNotification *)notification
@@ -172,6 +210,12 @@
                              }
                          }];
     }
+}
+
+- (void)showAttack:(NSNotification *)notification
+{
+    if (!enemySnake.hidden)
+        [enemySnake showAttackEnemyAnimation];
 }
 
 - (void)changeEnemyDirection
@@ -211,15 +255,18 @@
         enemySnake.snakeMouth.frame = CGRectInset( enemySnake.snakeMouth.frame,offset, offset);
         enemySnake.snakeMouth.backgroundColor = [UIColor whiteColor];
         
+        // Enemy eating animation
+        CGAffineTransform currentTransform = enemySnake.transform;
         [UIView animateWithDuration:0.5 animations:^{
             
+            enemySnake.transform = CGAffineTransformScale(currentTransform, 2.0, 2.0);
             enemySnake.snakeMouth.frame = CGRectInset( enemySnake.snakeMouth.frame, -offset, -offset*1.1);
             
         } completion:^(BOOL finished) {
             
-            
             [UIView animateWithDuration:0.5 animations:^{
                 
+                enemySnake.transform = CGAffineTransformScale(currentTransform, 1, 1);
                 [enemySnake changeDirectionWithGameIsOver:NO];
                 enemySnake.snakeMouth.frame = CGRectInset( enemySnake.snakeMouth.frame, offset, offset*1.1);
                 breakBody.frame = CGRectInset( breakBody.frame, 20, 20);
@@ -290,6 +337,14 @@
         self.gameState = kCurrentGameStateReplay;
         self.stateSign.image = [UIImage imageNamed:@"replay.png"];
         
+        NSInteger bestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"BestScore"];
+        
+        if (score > bestScore) {
+            
+            [[NSUserDefaults standardUserDefaults] setInteger:score forKey:@"BestScore"];
+            [[GCHelper sharedInstance] submitScore:score leaderboardId:kHighScoreLeaderboardId];
+        }
+        
         [UIView animateWithDuration:1 animations:^{
             
             for (GameAsset *v in [self.gamePad assetArray]) {
@@ -330,8 +385,8 @@
             
             [self.gamePad addSubview:[self.snake addSnakeBody:v.classicAssetLabel.backgroundColor]];
             
-            
             [self stopMoveTimer];
+            
             [self stopEnemyTimer];
             
             self.gamePad.userInteractionEnabled = NO;
@@ -378,6 +433,7 @@
                     [self startMoveTimer];
                     
                     if (!enemyTimer.isValid && !enemySnake.hidden)
+                        
                         [self startEnemyTimer];
                     
                 }
@@ -391,21 +447,12 @@
 
 - (void)changeGameState
 {
-    
-    if (self.gameState == kCurrentGameStatePlay || lifeCount > 0 || (self.gameState == kCurrentGameStatePause && !_newGame)) {
-        
         [super changeGameState];
         
         // Current game start after change
         switch (self.gameState) {
                 
             case kCurrentGameStatePlay:
-                
-                if (_newGame) {
-                    lifeCount--;
-                    [self updateLife];
-                    _newGame = NO;
-                }
                 
                 if (!isCheckingCombo)
                     [self startMoveTimer];
@@ -420,9 +467,6 @@
                 break;
             case kCurrentGameStateReplay:
                 
-                lifeCount--;
-                [self updateLife];
-
                 numDotAte = 0;
                 maxCombos = 0;
                 score = 0;
@@ -438,11 +482,6 @@
                 
                 break;
         }
-        
-    } else {
-        
-        [self noLifeAlert];
-    }
 }
 
 - (void)noLifeAlert
@@ -486,17 +525,6 @@
     [self.moveTimer invalidate];
 }
 
-- (void)newLifeCountDown
-{
-    if (newLifeCounter == 0) {
-        newLifeCounter = 1800;
-        lifeCount++;
-        [self updateLife];
-    }
-    [self minuteFromSeconds:newLifeCounter];
-    newLifeCounter--;
-}
-
 - (void)minuteFromSeconds:(NSInteger)seconds
 {
     NSInteger sec = seconds%60;
@@ -510,14 +538,8 @@
     
     NSInteger minutes = seconds/60;
     
-    newLifeTimerLabel.text = [NSString stringWithFormat:@"%ld:%@",minutes,secondString];
+    comboCountLabel.text = [NSString stringWithFormat:@"%ld:%@",minutes,secondString];
     
-}
-
-- (void)updateLife
-{
-    lifeCountLabel.text = [NSString stringWithFormat:@"%ld",lifeCount];
-
 }
 
 #pragma mark - Setscore
@@ -529,10 +551,23 @@
         score += comboAdder;
         comboAdder *= 2;
     }
+    
+    if (self.snake.combos > maxCombos) {
+        maxCombos = self.snake.combos;
+        comboCountLabel.text = [NSString stringWithFormat:@"%ld",maxCombos];
+    }
+    
     self.snake.combos = 0;
     numDotAte++;
     score++;
     self.scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
+}
+
+#pragma mark - Game center
+
+- (void)showGameCenter
+{
+    [[GCHelper sharedInstance] showGameCenterViewController:self];
 }
 
 #pragma mark - Memory management

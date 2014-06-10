@@ -9,11 +9,15 @@
 #import "MenuController.h"
 #import "ClassicGameController.h"
 #import "SnakeButton.h"
+#import "GADInterstitial.h"
+
 
 @interface MenuController ()
 {
     ClassicGameController *classicGameController;
     SnakeButton *button;
+    GADInterstitial *interstitial_;
+
 }
 
 @property (weak, nonatomic) IBOutlet UILabel *newgameLabel;
@@ -40,8 +44,6 @@
     [self.view addSubview:button];
 
     _newgameLabel.layer.cornerRadius = _newgameLabel.frame.size.width/2;
-    _newgameLabel.textColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    _newgameLabel.backgroundColor = [UIColor colorWithRed:0.851 green:0.902 blue:0.894 alpha:1.000];
     UITapGestureRecognizer *newgameTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showNewGame)];
     [_newgameLabel addGestureRecognizer:newgameTap];
     
@@ -52,6 +54,10 @@
         }];
         
     }];
+    
+    interstitial_ = [[GADInterstitial alloc] init];
+    interstitial_.adUnitID = @"ca-app-pub-5576864578595597/8891080263";
+    [interstitial_ loadRequest:[GADRequest request]];
 }
 
 - (void)pauseGameOnBackground
@@ -60,19 +66,17 @@
         [classicGameController changeGameState];
 }
 
-//#pragma mark - Game center
-//
-//- (void)showGameCenter
-//{
-//    [[GCHelper sharedInstance] showGameCenterViewController:self];
-//}
+#pragma mark - Show Ad
+- (IBAction)showAd:(id)sender 
+{
+    [interstitial_ presentFromRootViewController:self];
+}
 
 #pragma mark - New Game
 
 - (void)showNewGame
 {
     classicGameController =  [[ClassicGameController alloc]init];
-    classicGameController.newGame = YES;
     [self presentViewController:classicGameController animated:YES completion:nil];
 
 }

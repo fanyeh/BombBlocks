@@ -38,6 +38,11 @@
     if (self) {
         // Initialization code
         [self createClassicGameAssetColumn:column andRow:row];
+        _skillView = [[UIView alloc]initWithFrame:CGRectMake((frame.size.width-66)/2, 22 , 66, 88)];
+        _skillView.layer.cornerRadius = 5;
+        _skillView.layer.masksToBounds = YES;
+        _skillView.alpha = 0;
+        [self addSubview:_skillView];
     }
     return self;
 }

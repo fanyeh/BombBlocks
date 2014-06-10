@@ -8,6 +8,7 @@
 
 #import "Snake.h"
 #import "GameAsset.h"
+#import "GamePad.h"
 
 @implementation Snake
 {
@@ -30,7 +31,7 @@
     return self;
 }
 
-- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad headFrame:(CGRect)frame
+- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(GamePad *)gamePad headFrame:(CGRect)frame snakeType:(SnakeType)snakeType
 {
     headFrame = frame;
     self = [self initWithFrame:headFrame];
@@ -52,6 +53,15 @@
         _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
         _rightEye.backgroundColor = [UIColor blackColor];
         [self addSubview:_rightEye];
+        
+        UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 22, 22)];
+        if (snakeType == kSnakeTypePlayer)
+            headImageView.image = [UIImage imageNamed:@"snake.png"];
+        else
+            headImageView.image = [UIImage imageNamed:@"enemySnake.png"];
+        
+        headImageView.transform = CGAffineTransformMakeRotation(-M_PI/2);
+        [self addSubview:headImageView];
 
         _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake(headFrame.size.width - 14/2, (headFrame.size.height-14)/2, 14, 14)];
         _snakeMouth.layer.cornerRadius = _snakeMouth.frame.size.width/2;
@@ -149,7 +159,7 @@
     exclamationView.hidden = YES;
     exclamation = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, exalamtionWidth, 15)];
     exclamation.text = exclamationText;
-    exclamation.textColor = GameTextColor;
+    exclamation.textColor = [UIColor blackColor];
     exclamation.textAlignment = NSTextAlignmentRight;
 
     exclamation.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
@@ -546,7 +556,7 @@
                 [self startRotate];
             
             NSDictionary *comboColorDict = @{@"comboColor":repeatColor} ;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"attackEnemy" object:nil userInfo:comboColorDict];
+            //[[NSNotificationCenter defaultCenter] postNotificationName:@"attackEnemy" object:nil userInfo:comboColorDict];
 
             [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:v.backgroundColor otherCombo:NO];
             
@@ -569,11 +579,12 @@
             [self removeSnakeBodyByIndex:index andColor:v.backgroundColor complete:completeBlock];
             completeCheck = NO;
 
-            
             break;
         }
     }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"showAttack" object:nil userInfo:nil];
+
     // Check if there is other combos
     if (completeCheck)
         [self otherCombo:completeBlock];
@@ -662,6 +673,8 @@
 {
     if (range == 0) {
         
+        
+
         [self otherCombo:completeBlock];
         
     } else {
@@ -710,29 +723,72 @@
         [u.layer addAnimation:[self bodyAnimation:i] forKey:nil];
     }
     
-    [UIView animateWithDuration:1 animations:^{
+    CGRect startFrame = CGRectMake(140 , 44 , 22 , 22);
+
+    [UIView animateWithDuration:1.5 animations:^{
         
         _leftEye.alpha = 1;
         _rightEye.alpha = 1;
         _leftEye.layer.borderWidth = 0.5;
         _rightEye.layer.borderWidth = 0.5;
         
-    } completion:^(BOOL finished) {
+        if (!other) {
+            for (NSInteger i = start ; i < end +1 ; i ++) {
                 
-        for (NSInteger i = start ; i < end +1 ; i ++) {
-            UIView *u = _snakeBody[i];
-            [u.layer removeAllAnimations];
+                UIView *u = _snakeBody[i];
+                u.frame = startFrame;
+            }
         }
         
-        _leftEye.layer.borderWidth = 1.5;
-        _rightEye.layer.borderWidth = 1.5;
+    } completion:^(BOOL finished) {
         
-        if (other)
+        
+        if (!other) {
+            _gamePad.skillView.backgroundColor = color;
+            
+            [UIView animateWithDuration:1.5 animations:^{
+                
+                _gamePad.skillView.alpha = 1;
+                
+            } completion:^(BOOL finished) {
+            
+                CGRect skillFrame = _gamePad.skillView.frame;
+                [UIView animateWithDuration:0.5 animations:^{
+                    
+                    _gamePad.skillView.frame = CGRectInset(_gamePad.skillView.frame, 66, 88);
+                    
+                } completion:^(BOOL finished) {
+                    
+                    _gamePad.skillView.alpha = 0;
+                    _gamePad.skillView.frame = skillFrame;
+                    
+                    for (NSInteger i = start ; i < end +1 ; i ++) {
+                        UIView *u = _snakeBody[i];
+                        [u.layer removeAllAnimations];
+                    }
+                    
+                    _leftEye.layer.borderWidth = 1.5;
+                    _rightEye.layer.borderWidth = 1.5;
+                    
+                    [self cancelSnakeBodyByColor:color complete:completeBlock];
+
+                    
+//                    if (other)
+//                        [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
+//                    else
+//                        [self cancelSnakeBodyByColor:color complete:completeBlock];
+                    
+                }];
+            }];
+            
+        } else {
+            
+            _leftEye.layer.borderWidth = 1.5;
+            _rightEye.layer.borderWidth = 1.5;
             [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
-        else
-            [self cancelSnakeBodyByColor:color complete:completeBlock];
+
+        }
     }];
-    
 }
 
 #pragma mark - Body Animations
@@ -764,10 +820,6 @@
     
     startLayer.position = endPoint;
 
-    
-    // 动画终了后不返回初始状态
-//    anim.removedOnCompletion = NO;
-//    anim.fillMode = kCAFillModeForwards;
 }
 
 -(CABasicAnimation *)bodyAnimation:(NSInteger)i
@@ -891,6 +943,34 @@
         exclamationText = text;
 
     exclamation.text = exclamationText;
+}
+
+- (void)showAttackEnemyAnimation
+{
+    UIView *attackView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 22, 22)];
+    attackView.backgroundColor = [UIColor blackColor];
+    attackView.frame = CGRectOffset(self.snakeHead.frame, 0, -33);
+    attackView.alpha = 0;
+    [_gamePad addSubview:attackView];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        
+        attackView.alpha = 1;
+
+        
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            attackView.frame = CGRectOffset(attackView.frame, 0, 22);
+            
+        } completion:^(BOOL finished) {
+            
+            [attackView removeFromSuperview];
+            
+        }];
+
+    }];
+    
 }
 
 #pragma mark - Game Over Animation

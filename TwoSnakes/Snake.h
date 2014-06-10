@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#
-@class SnakeSkill;
+
 @class GameAsset;
+@class GamePad;
 
 typedef enum {
     kMoveDirectionUp = 0,
@@ -18,19 +18,22 @@ typedef enum {
     kMoveDirectionRight
 } MoveDirection;
 
+typedef enum {
+    kSnakeTypePlayer = 0,
+    kSnakeTypeEnemy
+} SnakeType;
+
 @interface Snake : UIView
 
 @property (nonatomic) int snakeLength;
 @property (strong,nonatomic) NSMutableArray *snakeBody;
 @property (strong,nonatomic) NSMutableDictionary *bodyDirections;
 @property (strong,nonatomic) NSMutableDictionary *turningNodes;
-@property (strong,nonatomic) UIView *gamePad;
 @property (strong,nonatomic) UIView *leftEye;
 @property (strong,nonatomic) UIView *rightEye;
 @property (strong,nonatomic) UIView *snakeMouth;
-@property (strong,nonatomic) UIView *initSkillView;
-@property (strong,nonatomic) UIView *supplementSkillView1;
-@property (strong,nonatomic) UIView *supplementSkillView2;
+@property (strong,nonatomic) GamePad *gamePad;
+
 
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
@@ -38,7 +41,7 @@ typedef enum {
 @property (nonatomic) NSInteger combos;
 
 
-- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(UIView *)gamePad headFrame:(CGRect)frame;
+- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(GamePad *)gamePad headFrame:(CGRect)frame snakeType:(SnakeType)snakeType;
 - (UIView *)addSnakeBody:(UIColor *)backgroundColor;
 - (MoveDirection)headDirection;
 - (UIView *)snakeHead;
@@ -57,6 +60,7 @@ typedef enum {
 - (BOOL)checkCombo:(void(^)(void))completeBlock;
 - (void)setWallBounds:(NSMutableArray *)wallbounds;
 - (void)showExclamation:(BOOL)show;
--(void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(void(^)(void))completeBlock;
+- (void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(void(^)(void))completeBlock;
+- (void)showAttackEnemyAnimation;
 
 @end

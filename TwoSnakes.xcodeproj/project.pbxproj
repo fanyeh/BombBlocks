@@ -13,8 +13,22 @@
 		4C78A081192DDABB003F9ABE /* GameAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C78A080192DDABB003F9ABE /* GameAsset.m */; };
 		4C7F13571911F36D00565A01 /* Snake.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F13561911F36D00565A01 /* Snake.m */; };
 		4C85418D1945545700810CE4 /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C85418A1945545700810CE4 /* stop@2x.png */; };
-		4C85418E1945545700810CE4 /* replay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C85418B1945545700810CE4 /* replay@2x.png */; };
 		4C85418F1945545700810CE4 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C85418C1945545700810CE4 /* play@2x.png */; };
+		4C8541931945F3F900810CE4 /* replay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8541921945F3F900810CE4 /* replay@2x.png */; };
+		4C8541951945F40A00810CE4 /* heart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8541941945F40A00810CE4 /* heart@2x.png */; };
+		4C8541A51946A8B300810CE4 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4C8541971946A8B300810CE4 /* README.txt */; };
+		4C8541A61946A8B300810CE4 /* libGoogleAdMobAds.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8541981946A8B300810CE4 /* libGoogleAdMobAds.a */; };
+		4C8541A81946A8DE00810CE4 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8541A71946A8DE00810CE4 /* AdSupport.framework */; };
+		4C8541AA1946A8E900810CE4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8541A91946A8E900810CE4 /* AudioToolbox.framework */; };
+		4C8541AC1946A8F700810CE4 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8541AB1946A8F700810CE4 /* AVFoundation.framework */; };
+		4C8541AE1946A90900810CE4 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8541AD1946A90900810CE4 /* MessageUI.framework */; };
+		4C8541B01946A91200810CE4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8541AF1946A91200810CE4 /* StoreKit.framework */; };
+		4C8541B21946A91D00810CE4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C8541B11946A91D00810CE4 /* SystemConfiguration.framework */; };
+		4C8541BA1946D3C700810CE4 /* gamecenter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8541B91946D3C700810CE4 /* gamecenter@2x.png */; };
+		4C8541BE1946D82100810CE4 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8541BD1946D82100810CE4 /* icon.png */; };
+		4C8541C41946DAF200810CE4 /* snakeLarge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8541C31946DAF200810CE4 /* snakeLarge@2x.png */; };
+		4C8541C81946E0E500810CE4 /* enemySnake@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8541C71946E0E500810CE4 /* enemySnake@2x.png */; };
+		4C8541CA1946E2FC00810CE4 /* snake@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8541C91946E2FC00810CE4 /* snake@2x.png */; };
 		4C85859A1925A1990096F75B /* MenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8585981925A1990096F75B /* MenuController.m */; };
 		4C85859B1925A1990096F75B /* MenuController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C8585991925A1990096F75B /* MenuController.xib */; };
 		4C8585AB1925EA7B0096F75B /* CircleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8585AA1925EA7B0096F75B /* CircleLabel.m */; };
@@ -64,8 +78,34 @@
 		4C7F13551911F36D00565A01 /* Snake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snake.h; sourceTree = "<group>"; };
 		4C7F13561911F36D00565A01 /* Snake.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Snake.m; sourceTree = "<group>"; };
 		4C85418A1945545700810CE4 /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stop@2x.png"; sourceTree = "<group>"; };
-		4C85418B1945545700810CE4 /* replay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "replay@2x.png"; sourceTree = "<group>"; };
 		4C85418C1945545700810CE4 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
+		4C8541921945F3F900810CE4 /* replay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "replay@2x.png"; sourceTree = "<group>"; };
+		4C8541941945F40A00810CE4 /* heart@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "heart@2x.png"; sourceTree = "<group>"; };
+		4C8541971946A8B300810CE4 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		4C8541981946A8B300810CE4 /* libGoogleAdMobAds.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAdMobAds.a; sourceTree = "<group>"; };
+		4C8541991946A8B300810CE4 /* GADRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADRequestError.h; sourceTree = "<group>"; };
+		4C85419A1946A8B300810CE4 /* GADRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADRequest.h; sourceTree = "<group>"; };
+		4C85419B1946A8B300810CE4 /* GADModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADModules.h; sourceTree = "<group>"; };
+		4C85419C1946A8B300810CE4 /* GADInterstitialDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInterstitialDelegate.h; sourceTree = "<group>"; };
+		4C85419D1946A8B300810CE4 /* GADInterstitial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInterstitial.h; sourceTree = "<group>"; };
+		4C85419E1946A8B300810CE4 /* GADInAppPurchaseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchaseDelegate.h; sourceTree = "<group>"; };
+		4C85419F1946A8B300810CE4 /* GADInAppPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchase.h; sourceTree = "<group>"; };
+		4C8541A01946A8B300810CE4 /* GADBannerViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADBannerViewDelegate.h; sourceTree = "<group>"; };
+		4C8541A11946A8B300810CE4 /* GADBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADBannerView.h; sourceTree = "<group>"; };
+		4C8541A21946A8B300810CE4 /* GADAdSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADAdSize.h; sourceTree = "<group>"; };
+		4C8541A31946A8B300810CE4 /* GADAdNetworkExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADAdNetworkExtras.h; sourceTree = "<group>"; };
+		4C8541A41946A8B300810CE4 /* GADAdMobExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADAdMobExtras.h; sourceTree = "<group>"; };
+		4C8541A71946A8DE00810CE4 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		4C8541A91946A8E900810CE4 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		4C8541AB1946A8F700810CE4 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		4C8541AD1946A90900810CE4 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		4C8541AF1946A91200810CE4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		4C8541B11946A91D00810CE4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		4C8541B91946D3C700810CE4 /* gamecenter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamecenter@2x.png"; sourceTree = "<group>"; };
+		4C8541BD1946D82100810CE4 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		4C8541C31946DAF200810CE4 /* snakeLarge@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "snakeLarge@2x.png"; sourceTree = "<group>"; };
+		4C8541C71946E0E500810CE4 /* enemySnake@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "enemySnake@2x.png"; sourceTree = "<group>"; };
+		4C8541C91946E2FC00810CE4 /* snake@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "snake@2x.png"; sourceTree = "<group>"; };
 		4C8585971925A1990096F75B /* MenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuController.h; sourceTree = "<group>"; };
 		4C8585981925A1990096F75B /* MenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuController.m; sourceTree = "<group>"; };
 		4C8585991925A1990096F75B /* MenuController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuController.xib; sourceTree = "<group>"; };
@@ -107,11 +147,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C8541B21946A91D00810CE4 /* SystemConfiguration.framework in Frameworks */,
+				4C8541B01946A91200810CE4 /* StoreKit.framework in Frameworks */,
+				4C8541AE1946A90900810CE4 /* MessageUI.framework in Frameworks */,
+				4C8541AC1946A8F700810CE4 /* AVFoundation.framework in Frameworks */,
+				4C8541AA1946A8E900810CE4 /* AudioToolbox.framework in Frameworks */,
+				4C8541A81946A8DE00810CE4 /* AdSupport.framework in Frameworks */,
 				4CDBB71D1920A00900D8A9B4 /* Social.framework in Frameworks */,
 				4CB108A7190FF6440085C747 /* CoreGraphics.framework in Frameworks */,
 				4CB108AB190FF6440085C747 /* CoreData.framework in Frameworks */,
 				4CB108A9190FF6440085C747 /* UIKit.framework in Frameworks */,
 				4CB108A5190FF6440085C747 /* Foundation.framework in Frameworks */,
+				4C8541A61946A8B300810CE4 /* libGoogleAdMobAds.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +176,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C8541961946A6CD00810CE4 /* AdmobSDK */ = {
+			isa = PBXGroup;
+			children = (
+				4C8541971946A8B300810CE4 /* README.txt */,
+				4C8541981946A8B300810CE4 /* libGoogleAdMobAds.a */,
+				4C8541991946A8B300810CE4 /* GADRequestError.h */,
+				4C85419A1946A8B300810CE4 /* GADRequest.h */,
+				4C85419B1946A8B300810CE4 /* GADModules.h */,
+				4C85419C1946A8B300810CE4 /* GADInterstitialDelegate.h */,
+				4C85419D1946A8B300810CE4 /* GADInterstitial.h */,
+				4C85419E1946A8B300810CE4 /* GADInAppPurchaseDelegate.h */,
+				4C85419F1946A8B300810CE4 /* GADInAppPurchase.h */,
+				4C8541A01946A8B300810CE4 /* GADBannerViewDelegate.h */,
+				4C8541A11946A8B300810CE4 /* GADBannerView.h */,
+				4C8541A21946A8B300810CE4 /* GADAdSize.h */,
+				4C8541A31946A8B300810CE4 /* GADAdNetworkExtras.h */,
+				4C8541A41946A8B300810CE4 /* GADAdMobExtras.h */,
+			);
+			name = AdmobSDK;
+			sourceTree = "<group>";
+		};
 		4CAA5DEB1929A0C800049F52 /* Game Scene */ = {
 			isa = PBXGroup;
 			children = (
@@ -179,6 +247,12 @@
 		4CB108A3190FF6440085C747 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4C8541B11946A91D00810CE4 /* SystemConfiguration.framework */,
+				4C8541AF1946A91200810CE4 /* StoreKit.framework */,
+				4C8541AD1946A90900810CE4 /* MessageUI.framework */,
+				4C8541AB1946A8F700810CE4 /* AVFoundation.framework */,
+				4C8541A91946A8E900810CE4 /* AudioToolbox.framework */,
+				4C8541A71946A8DE00810CE4 /* AdSupport.framework */,
 				4CDBB71C1920A00900D8A9B4 /* Social.framework */,
 				4CB108A4190FF6440085C747 /* Foundation.framework */,
 				4CB108A6190FF6440085C747 /* CoreGraphics.framework */,
@@ -192,6 +266,7 @@
 		4CB108AC190FF6440085C747 /* TwoSnakes */ = {
 			isa = PBXGroup;
 			children = (
+				4C8541961946A6CD00810CE4 /* AdmobSDK */,
 				4CB108B5190FF6440085C747 /* MKAppDelegate.h */,
 				4CB108B6190FF6440085C747 /* MKAppDelegate.m */,
 				4CAA5DEB1929A0C800049F52 /* Game Scene */,
@@ -205,8 +280,14 @@
 		4CB108AD190FF6440085C747 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4C8541C91946E2FC00810CE4 /* snake@2x.png */,
+				4C8541C71946E0E500810CE4 /* enemySnake@2x.png */,
+				4C8541C31946DAF200810CE4 /* snakeLarge@2x.png */,
+				4C8541BD1946D82100810CE4 /* icon.png */,
+				4C8541B91946D3C700810CE4 /* gamecenter@2x.png */,
+				4C8541941945F40A00810CE4 /* heart@2x.png */,
+				4C8541921945F3F900810CE4 /* replay@2x.png */,
 				4C85418A1945545700810CE4 /* stop@2x.png */,
-				4C85418B1945545700810CE4 /* replay@2x.png */,
 				4C85418C1945545700810CE4 /* play@2x.png */,
 				4C8585B11925FF200096F75B /* Reachability.m */,
 				4C8585B21925FF200096F75B /* Reachability.h */,
@@ -314,14 +395,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C8541BE1946D82100810CE4 /* icon.png in Resources */,
 				4C85859B1925A1990096F75B /* MenuController.xib in Resources */,
+				4C8541C81946E0E500810CE4 /* enemySnake@2x.png in Resources */,
+				4C8541951945F40A00810CE4 /* heart@2x.png in Resources */,
 				4CB108B1190FF6440085C747 /* InfoPlist.strings in Resources */,
+				4C8541CA1946E2FC00810CE4 /* snake@2x.png in Resources */,
 				4C85418D1945545700810CE4 /* stop@2x.png in Resources */,
-				4C85418E1945545700810CE4 /* replay@2x.png in Resources */,
+				4C8541A51946A8B300810CE4 /* README.txt in Resources */,
 				4C8585AD1925FB150096F75B /* twitter40@2x.png in Resources */,
+				4C8541C41946DAF200810CE4 /* snakeLarge@2x.png in Resources */,
 				4C8585AF1925FB270096F75B /* faceboo40@2x.png in Resources */,
 				4C85418F1945545700810CE4 /* play@2x.png in Resources */,
+				4C8541BA1946D3C700810CE4 /* gamecenter@2x.png in Resources */,
 				4CB108BC190FF6440085C747 /* Images.xcassets in Resources */,
+				4C8541931945F3F900810CE4 /* replay@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,11 +556,15 @@
 		4CB108D4190FF6450085C747 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TwoSnakes/TwoSnakes-Prefix.pch";
 				INFOPLIST_FILE = "TwoSnakes/TwoSnakes-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TwoSnakes",
+				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -481,11 +573,15 @@
 		4CB108D5190FF6450085C747 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TwoSnakes/TwoSnakes-Prefix.pch";
 				INFOPLIST_FILE = "TwoSnakes/TwoSnakes-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TwoSnakes",
+				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
