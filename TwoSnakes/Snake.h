@@ -23,6 +23,8 @@ typedef enum {
     kSnakeTypeEnemy
 } SnakeType;
 
+typedef void (^completeComboCallback)(UIColor *color , BOOL hasCombo);
+
 @interface Snake : UIView
 
 @property (nonatomic) int snakeLength;
@@ -34,6 +36,8 @@ typedef enum {
 @property (strong,nonatomic) UIView *snakeMouth;
 @property (strong,nonatomic) GamePad *gamePad;
 @property (nonatomic) BOOL hasEnemy;
+@property (nonatomic) BOOL isStunned;
+@property (strong,nonatomic) Snake *enemy;
 
 
 @property (nonatomic) CGFloat xOffset;
@@ -58,10 +62,10 @@ typedef enum {
 - (void)gameOver;
 - (void)updateExclamationText:(NSString *)text;
 - (void)mouthAnimation:(float)timeInterval;
-- (BOOL)checkCombo:(void(^)(void))completeBlock;
+- (BOOL)checkCombo:(completeComboCallback)completeBlock;
 - (void)setWallBounds:(NSMutableArray *)wallbounds;
 - (void)showExclamation:(BOOL)show;
-- (void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(void(^)(void))completeBlock;
-- (void)showAttackEnemyAnimation:(UIColor *)color;
+- (void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(completeComboCallback)completeBlock;
+-(CABasicAnimation *)stunAnimation:(NSInteger)i;
 
 @end

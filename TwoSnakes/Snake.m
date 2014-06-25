@@ -20,6 +20,7 @@
     NSInteger chain;     // Same color required to form a combo
     CGRect headFrame;
     NSMutableArray *walls;
+    UIColor *initComboColor;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -54,7 +55,7 @@
         _rightEye.backgroundColor = [UIColor blackColor];
         [self addSubview:_rightEye];
         
-        UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 22, 22)];
+        UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 28, 28)];
         if (snakeType == kSnakeTypePlayer) {
             headImageView.image = [UIImage imageNamed:@"snake.png"];
             headImageView.backgroundColor = SnakeColor;
@@ -538,7 +539,7 @@
 
 #pragma mark - Combo
 
-- (BOOL)checkCombo:(void(^)(void))completeBlock
+- (BOOL)checkCombo:(completeComboCallback)completeBlock
 {
     UIColor *repeatColor;
     NSInteger startIndex = 0;
@@ -554,6 +555,8 @@
         
         if (endIndex - startIndex == chain) {
             
+            initComboColor = repeatColor;
+            
             // Shake snake head
             if (!_isRotate)
                 [self startRotate];
@@ -563,21 +566,25 @@
             return YES;
         }
     }
-    completeBlock();
+    completeBlock(nil,NO);
     return NO;
 }
 
 // Single body color check
-- (void)cancelSnakeBodyByColor:(UIColor *)color complete:(void(^)(void))completeBlock
+- (void)cancelSnakeBodyByColor:(UIColor *)color complete:(completeComboCallback)completeBlock
 {
     BOOL completeCheck = YES;
+    
     // Remove each body with same color
     for (UIView *v in _snakeBody) {
         if ([v.backgroundColor isEqual:color]) {
             
             // Remove same color body from initial combo
             NSInteger index = [_snakeBody indexOfObject:v];
+            
+            // Remove snake body with color same as combo
             [self removeSnakeBodyByIndex:index andColor:v.backgroundColor complete:completeBlock];
+            
             completeCheck = NO;
             break;
         }
@@ -589,23 +596,20 @@
 }
 
 // Single body removal
--(void)removeSnakeBodyByIndex:(NSInteger)index andColor:(UIColor *)color complete:(void(^)(void))completeBlock
+-(void)removeSnakeBodyByIndex:(NSInteger)index andColor:(UIColor *)color complete:(completeComboCallback)completeBlock
 {
     for (NSInteger i=index; i < [_snakeBody count];i++) {
+        
         if (i < [_snakeBody count] -1) {
+            
             // Next body
             UIView *currentBody = [_snakeBody objectAtIndex:i];
             UIView *nextBody = [_snakeBody objectAtIndex:i+1];
-            
-            [UIView animateWithDuration:0.0 animations:^{
-                
-                currentBody.backgroundColor = nextBody.backgroundColor;
-                
-            }];
+            currentBody.backgroundColor = nextBody.backgroundColor;
         }
     }
     
-    [UIView animateWithDuration:0.1 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         
         self.snakeTail.alpha = 0;
         
@@ -618,7 +622,8 @@
     }];
 }
 
--(BOOL)otherCombo:(void(^)(void))completeBlock
+
+-(BOOL)otherCombo:(completeComboCallback)completeBlock
 {
     UIColor *mouthColor;
     UIColor *repeatColor;
@@ -660,11 +665,11 @@
         }
     }
     // If no other combo call the complete block
-    completeBlock();
+    completeBlock(initComboColor,YES);
     return NO;
 }
 
--(void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(void(^)(void))completeBlock
+-(void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(completeComboCallback)completeBlock
 {
     if (range == 0) {
 
@@ -699,7 +704,7 @@
 }
 
 - (void)comboAnimationStartIndex:(NSInteger)start endIndex:(NSInteger)end
-                   completeBlock:(void(^)(void))completeBlock
+                   completeBlock:(completeComboCallback)completeBlock
                       mouthColor:(UIColor *)color
                       otherCombo:(BOOL)other
 {
@@ -718,14 +723,24 @@
     
     CGRect startFrame = CGRectMake(140 , 44 , 22 , 22);
 
-    [UIView animateWithDuration:1.5 animations:^{
+    float interval;
+    if (!other && _hasEnemy)
+        interval = 1.5;
+    else
+        interval = 1.0;
+    
+    [UIView animateWithDuration:interval animations:^{
         
+
         _leftEye.alpha = 1;
         _rightEye.alpha = 1;
         _leftEye.layer.borderWidth = 0.5;
         _rightEye.layer.borderWidth = 0.5;
         
         if (!other && _hasEnemy) {
+            
+            [_gamePad showSkillView];
+
             for (NSInteger i = start ; i < end +1 ; i ++) {
                 
                 UIView *u = _snakeBody[i];
@@ -735,41 +750,91 @@
         
     } completion:^(BOOL finished) {
         
-        
         if (!other && _hasEnemy) {
-            _gamePad.skillView.backgroundColor = color;
             
+            // Remove shaking animation and hide the combo body
+            for (NSInteger i = start ; i < end +1 ; i ++) {
+                UIView *u = _snakeBody[i];
+                [u.layer removeAllAnimations];
+                u.alpha = 0;
+            }
+            
+            _gamePad.skillView.backgroundColor = color;
+
             [UIView animateWithDuration:1.5 animations:^{
-                
+                // Show skill view
                 _gamePad.skillView.alpha = 1;
                 
             } completion:^(BOOL finished) {
             
+                
                 CGRect skillFrame = _gamePad.skillView.frame;
-                [UIView animateWithDuration:0.5 animations:^{
+                CGRect attackFrame = CGRectOffset(_enemy.snakeHead.frame, 0, -44);
+                attackFrame = CGRectInset(attackFrame, -11, -11);
+                
+                // Origin transform
+                CGAffineTransform skillTransform = _gamePad.skillView.transform;
+                
+                [UIView animateWithDuration:1.5 animations:^{
                     
-                    _gamePad.skillView.frame = CGRectInset(_gamePad.skillView.frame, 66, 88);
+                    // Shrink skill view
+                    _gamePad.skillView.transform = CGAffineTransformScale(skillTransform, 0.5, 0.5);
                     
                 } completion:^(BOOL finished) {
+
+                    _gamePad.skillBackgroundView.backgroundColor = [UIColor clearColor];
+                    _gamePad.skillView.transform = CGAffineTransformScale(skillTransform, 1, 1);
                     
+                    // Move skill view to top of enemy snake head
+                    _gamePad.skillView.frame = attackFrame;
+                    
+                    _gamePad.skillView.backgroundColor = [UIColor clearColor];
+                    UIImageView *skillImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 44, 44)];
                     _gamePad.skillView.alpha = 0;
-                    _gamePad.skillView.frame = skillFrame;
                     
-                    for (NSInteger i = start ; i < end +1 ; i ++) {
-                        UIView *u = _snakeBody[i];
-                        [u.layer removeAllAnimations];
+                    // Show skill image
+                    UIImage *skillImage;
+                    
+                    if ([color isEqual:RedDotColor]) {
+                        
+                        skillImage = [UIImage imageNamed:@"slow.png"];
+                        
+                    } else if ([color isEqual:YellowDotColor]) {
+                        
+                        skillImage = [UIImage imageNamed:@"sword.png"];
+                        
+                    } else {
+                        
+                        skillImage = [UIImage imageNamed:@"lightening.png"];
+                        
                     }
+                    skillImageView.image = skillImage;
                     
-                    _leftEye.layer.borderWidth = 1.5;
-                    _rightEye.layer.borderWidth = 1.5;
+                    [_gamePad.skillView addSubview:skillImageView];
                     
-                    NSDictionary *comboColorDict = @{@"comboColor":color} ;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"showAttack" object:nil userInfo:comboColorDict];
+                    [UIView animateWithDuration:1.5 animations:^{
+                        
+                        _gamePad.skillView.alpha = 1;
+                        // Show attack on enemy's top
+                        // Move skill down 22pt to enemy snake head
+                        //_gamePad.skillView.frame = CGRectOffset(_gamePad.skillView.frame, 0, 22);
+                        //_gamePad.skillView.layer.borderWidth = 3;
+                        
+                        
+                        
+                    } completion:^(BOOL finished) {
+                        
+                        _gamePad.skillView.frame = skillFrame;
+                        [_gamePad hideSkillView];
+                        [skillImageView removeFromSuperview];
+                        
+                        _leftEye.layer.borderWidth = 1.5;
+                        _rightEye.layer.borderWidth = 1.5;
+                        
 
-                    
-                    [self cancelSnakeBodyByColor:color complete:completeBlock];
+                        [self cancelSnakeBodyByColor:color complete:completeBlock];
 
-                    
+                    }];
                     
                 }];
             }];
@@ -780,6 +845,7 @@
                 UIView *u = _snakeBody[i];
                 [u.layer removeAllAnimations];
             }
+            
             _leftEye.layer.borderWidth = 1.5;
             _rightEye.layer.borderWidth = 1.5;
             
@@ -787,8 +853,6 @@
                 [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
             else
                 [self cancelSnakeBodyByColor:color complete:completeBlock];
-
-            //[self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
 
         }
     }];
@@ -836,6 +900,29 @@
     } else {
         toAngle = M_PI/6;
         fromAngle = -M_PI/6;
+    }
+    
+    CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    [anim setToValue:[NSNumber numberWithFloat:toAngle]]; // satrt angle
+    [anim setFromValue:[NSNumber numberWithDouble:fromAngle]]; // rotation angle
+    [anim setDuration:0.1]; // rotate speed
+    [anim setRepeatCount:HUGE_VAL];
+    [anim setAutoreverses:YES];
+    
+    return anim;
+}
+
+-(CABasicAnimation *)stunAnimation:(NSInteger)i
+{
+    CGFloat toAngle;
+    CGFloat fromAngle;
+    
+    if (i%2 == 0) {
+        toAngle = -M_PI/24;
+        fromAngle = M_PI/24;
+    } else {
+        toAngle = M_PI/24;
+        fromAngle = -M_PI/24;
     }
     
     CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
@@ -946,37 +1033,6 @@
         exclamationText = text;
 
     exclamation.text = exclamationText;
-}
-
-- (void)showAttackEnemyAnimation:(UIColor *)color
-{
-    UIView *attackView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 22, 22)];
-    attackView.backgroundColor = [UIColor blackColor];
-    attackView.frame = CGRectOffset(self.snakeHead.frame, 0, -33);
-    attackView.alpha = 0;
-    [_gamePad addSubview:attackView];
-    
-    [UIView animateWithDuration:0.5 animations:^{
-        
-        attackView.alpha = 1;
-
-        
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.5 animations:^{
-            
-            attackView.frame = CGRectOffset(attackView.frame, 0, 22);
-            
-        } completion:^(BOOL finished) {
-            
-            [attackView removeFromSuperview];
-            
-            NSDictionary *comboColorDict = @{@"comboColor":color} ;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"attackEnemy" object:nil userInfo:comboColorDict];
-            
-        }];
-
-    }];
-    
 }
 
 #pragma mark - Game Over Animation

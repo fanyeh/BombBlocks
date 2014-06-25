@@ -28,9 +28,9 @@
 
 - (id)initGamePad
 {
-    int column = 13;
-    int row = 19;
-    moveSize = 23;
+    int column = 11;
+    int row = 15;
+    moveSize = 29;
 
     CGRect frame = CGRectMake(0, 0, moveSize*column+4, moveSize*row+4);
 
@@ -42,9 +42,29 @@
         _skillView.layer.cornerRadius = 5;
         _skillView.layer.masksToBounds = YES;
         _skillView.alpha = 0;
-        [self addSubview:_skillView];
+        
+        _skillBackgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+        _skillBackgroundView.layer.cornerRadius = 10;
+        _skillBackgroundView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.500];
+        _skillBackgroundView.alpha = 0;
+        [_skillBackgroundView addSubview:_skillView];
+        
+        [self addSubview:_skillBackgroundView];
     }
     return self;
+}
+
+- (void)showSkillView
+{
+    [self bringSubviewToFront:_skillBackgroundView];
+    _skillBackgroundView.alpha = 1;
+}
+
+- (void)hideSkillView
+{
+    [self sendSubviewToBack:_skillBackgroundView];
+    _skillBackgroundView.alpha = 0;
+    _skillBackgroundView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.500];
 }
 
 - (void)createClassicGameAssetColumn:(int)column andRow:(int)row
@@ -55,11 +75,13 @@
     
     for (int i = 0 ; i < column; i ++ ) {
         for (int j = 0 ; j < row ; j++) {
+            
+
             GameAsset *asset = [[GameAsset alloc]init];
 
             assetPosX = i * moveSize+2;
             assetPosY = j * moveSize+2;
-            
+
             if (i%2==1 && j%2==1)
                 [self randomColor:asset];
             else
@@ -70,6 +92,10 @@
             [self addSubview:asset];
             [self sendSubviewToBack:asset];
             [_assetArray addObject:asset];
+            
+            if (i == 5 && j == 7) {
+                NSLog(@"center frame %@", NSStringFromCGRect(asset.frame));
+            }
             
         }
     }

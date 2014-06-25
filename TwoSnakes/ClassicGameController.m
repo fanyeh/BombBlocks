@@ -17,6 +17,7 @@
     NSInteger numDotAte;
     NSInteger maxCombos;
     float timeInterval; // Movement speed of snake
+    float enemyTimeInterval;
     BOOL isCheckingCombo;
     NSTimer *enemyTimer;
     Snake *enemySnake;
@@ -26,6 +27,11 @@
     UILabel *comboLabel;
     UIView *comboView;
     UIView *rankView;
+    NSInteger stunTimeCount;
+    NSTimer *stunTimer;
+    
+    NSInteger slowTimeCount;
+    NSTimer *slowTimer;
 }
 @end
 
@@ -131,7 +137,7 @@
     [self.view addSubview:_scoreLabel];
     
     // Setup player snake head
-    startFrame = CGRectMake(140 , 209 , 22 , 22);
+    startFrame = CGRectMake(147 , 205 , 28 , 28);
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame snakeType:kSnakeTypePlayer];
     [self.gamePad addSubview:self.snake];
     
@@ -152,16 +158,16 @@
  
     [self.gamePad addSubview:enemySnake];
     enemySnake.hidden = YES;
+    self.snake.enemy = enemySnake;
     
     // Game Settings
     numDotAte = 0;
     score = 0;
     timeInterval = 0.20;
+    enemyTimeInterval = timeInterval;
     maxCombos = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(attackEnemy:) name:@"attackEnemy" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAttack:) name:@"showAttack" object:nil];
-
     
     UITapGestureRecognizer *changeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changeGameState)];
     [self.pauseLabel addGestureRecognizer:changeTap];
@@ -188,11 +194,52 @@
     
     UIColor *color = [comboColorDict objectForKey:@"comboColor"];
     
-    if ([color isEqual:enemySnake.backgroundColor] && !enemySnake.hidden) {
+    if ([color isEqual:BlueDotColor]) {
         
+        enemySnake.isStunned = YES;
+        // Cancel current negative state
+        if (slowTimeCount > 0) {
+            slowTimeCount = 0;
+            [self slowCountdown];
+        }
         
+        // Lightening
+        stunTimeCount = 5;
+        for (int i = 0; i < [enemySnake.snakeBody count];i++) {
+            
+            UIView *body = [enemySnake.snakeBody objectAtIndex:i];
+            [body.layer addAnimation:[enemySnake stunAnimation:i] forKey:nil];
+        }
+        
+        // Overwrite same negative state
+        if (stunTimer.isValid)
+            [stunTimer invalidate];
+        
+        [self stopEnemyTimer];
+        stunTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(stunCountdown) userInfo:nil repeats:YES];
+        
+    } else if ([color isEqual:RedDotColor]) {
+        
+        // Cancel current negative state
+        if (stunTimeCount > 0) {
+            stunTimeCount = 0;
+            [self stunCountdown];
+        }
+        
+        // Slow
+        slowTimeCount = 10;
+        enemyTimeInterval = timeInterval - 0.05;
+        
+        // Overwrite same negative state
+        if (slowTimer.isValid)
+            [slowTimer invalidate];
+        
+        slowTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(slowCountdown) userInfo:nil repeats:YES];
+        
+    } else if ([color isEqual:YellowDotColor]) {
+        // Sword
         UIView *body = [enemySnake.snakeBody lastObject];
-
+        
         [UIView animateWithDuration:1.0
                          animations:^{
                              
@@ -209,18 +256,45 @@
                              } else {
                                  [body removeFromSuperview];
                                  [enemySnake.snakeBody removeLastObject];
+                                 
+                                 [self startEnemyTimer];
                              }
                          }];
+
     }
 }
 
-- (void)showAttack:(NSNotification *)notification
+-(void)stunCountdown
 {
-    NSDictionary *comboColorDict = [notification userInfo];
-    UIColor *color = [comboColorDict objectForKey:@"comboColor"];
+    if (stunTimeCount == 0) {
+        
+        for (int i = 0; i < [enemySnake.snakeBody count];i++) {
+            
+            UIView *body = [enemySnake.snakeBody objectAtIndex:i];
+            [body.layer removeAllAnimations];
+            
+        }
+        [stunTimer invalidate];
+        [self startEnemyTimer];
+        enemySnake.isStunned = NO;
 
-    if (!enemySnake.hidden)
-        [enemySnake showAttackEnemyAnimation:color];
+    }
+    else {
+        stunTimeCount--;
+    }
+}
+
+-(void)slowCountdown
+{
+    if (slowTimeCount == 0) {
+        
+        enemyTimeInterval = timeInterval;
+        
+        [slowTimer invalidate];
+    }
+    else {
+        slowTimeCount--;
+    }
 }
 
 - (void)changeEnemyDirection
@@ -307,8 +381,8 @@
     
     [self.snake removeSnakeBodyByRangeStart:i
                                    andRange:range
-                                   complete:^{
-                                       
+                                   complete:^(UIColor *color, BOOL hasCombo) {
+           
                                        [enemySnake showExclamation:NO];
                                        
                                        [self.snake stopRotate];
@@ -398,7 +472,9 @@
             
             isCheckingCombo = YES;
             
-            [self.snake checkCombo:^{
+            [self.snake checkCombo:^(UIColor *color, BOOL hasCombo) {
+                
+
                 
                 self.gamePad.userInteractionEnabled = YES;
                 
@@ -434,16 +510,32 @@
                     
                     [self.moveTimer invalidate];
                 
-                if (self.gameState == kCurrentGameStatePlay) {
-                    
-                    [self startMoveTimer];
-                    
-                    if (!enemyTimer.isValid && !enemySnake.hidden)
-                        
-                        [self startEnemyTimer];
-                    
-                }
                 
+                if (hasCombo) {
+                    [self stopEnemyTimer];
+                    
+                    NSDictionary *comboColorDict = @{@"comboColor":color} ;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"attackEnemy" object:nil userInfo:comboColorDict];
+                    
+                    if (self.gameState == kCurrentGameStatePlay) {
+                        
+                        [self startMoveTimer];
+                    }
+
+                } else {
+
+                    if (self.gameState == kCurrentGameStatePlay) {
+                        
+                        [self startMoveTimer];
+                        
+                        if (!enemyTimer.isValid && !enemySnake.hidden && !enemySnake.isStunned)
+                            
+                            [self startEnemyTimer];
+                        
+                    }
+
+                }
+            
             }];
             
             break;
@@ -512,7 +604,7 @@
 
 - (void)startEnemyTimer
 {
-    enemyTimer = [NSTimer scheduledTimerWithTimeInterval:timeInterval*1.5 target:self
+    enemyTimer = [NSTimer scheduledTimerWithTimeInterval:enemyTimeInterval*1.5 target:self
                                             selector:@selector(changeEnemyDirection)
                                             userInfo:nil
                                              repeats:YES];
