@@ -47,7 +47,7 @@
 
     
     // Game Settings
-    self.gamePad.userInteractionEnabled = NO;
+    self.gamePad.userInteractionEnabled = YES;
     _gameState = kCurrentGameStatePause;
 }
 

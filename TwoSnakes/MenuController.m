@@ -10,8 +10,6 @@
 #import "ClassicGameController.h"
 #import "SnakeButton.h"
 #import "GADInterstitial.h"
-#import "ParticleView.h"
-
 
 @interface MenuController ()
 {
@@ -60,8 +58,6 @@
     interstitial_.adUnitID = @"ca-app-pub-5576864578595597/8891080263";
     [interstitial_ loadRequest:[GADRequest request]];
 
-    ParticleView *particle = [[ParticleView alloc]initWithFrame:CGRectMake(0, 0, 320,50)];
-    [self.view addSubview:particle];
 }
 
 - (void)pauseGameOnBackground

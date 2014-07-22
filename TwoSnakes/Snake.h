@@ -7,64 +7,44 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ParticleView.h"
+#import "GameAsset.h"
+#import "SnakeNode.h"
 
-@class GameAsset;
 @class GamePad;
 
 typedef enum {
-    kMoveDirectionUp = 0,
-    kMoveDirectionDown,
-    kMoveDirectionLeft,
-    kMoveDirectionRight
-} MoveDirection;
+    kPatternTypeSquare = 0,
+    kPatternTypeRow,
+    kPatternTypeCol,
+    kPatternTypeDiagonalDown,
+    kPatternTypeDiagonalUp
+} PatternType;
 
-typedef enum {
-    kSnakeTypePlayer = 0,
-    kSnakeTypeEnemy
-} SnakeType;
+typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 
-typedef void (^completeComboCallback)(UIColor *color , BOOL hasCombo);
+@interface Snake : SnakeNode
 
-@interface Snake : UIView
-
-@property (nonatomic) int snakeLength;
 @property (strong,nonatomic) NSMutableArray *snakeBody;
-@property (strong,nonatomic) NSMutableDictionary *bodyDirections;
-@property (strong,nonatomic) NSMutableDictionary *turningNodes;
-@property (strong,nonatomic) UIView *leftEye;
-@property (strong,nonatomic) UIView *rightEye;
-@property (strong,nonatomic) UIView *snakeMouth;
 @property (strong,nonatomic) GamePad *gamePad;
-@property (nonatomic) BOOL hasEnemy;
-@property (nonatomic) BOOL isStunned;
-@property (strong,nonatomic) Snake *enemy;
-
-
+@property (strong,nonatomic) ParticleView *particleView;
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
 @property (nonatomic) BOOL isRotate;
 @property (nonatomic) NSInteger combos;
 
-
-- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(GamePad *)gamePad headFrame:(CGRect)frame snakeType:(SnakeType)snakeType;
-- (UIView *)addSnakeBody:(UIColor *)backgroundColor;
+- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(GamePad *)gamePad headFrame:(CGRect)frame;
 - (MoveDirection)headDirection;
-- (UIView *)snakeHead;
-- (UIView *)snakeTail;
+- (SnakeNode *)snakeHead;
+- (SnakeNode *)snakeTail;
 - (void)setTurningNode:(CGPoint)location;
-- (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver;
+- (void)setTurningNodeBySwipe:(UISwipeGestureRecognizerDirection)swipeDirection;
 - (void)resetSnake;
-- (void)removeSnakeBody:(UIView *)body;
-- (void)removeSnakeBodyFromArray:(NSMutableArray *)removeArray;
-- (void)updateTurningNode;
 - (void)startRotate;
 - (void)stopRotate;
 - (void)gameOver;
-- (void)updateExclamationText:(NSString *)text;
-- (void)mouthAnimation:(float)timeInterval;
 - (BOOL)checkCombo:(completeComboCallback)completeBlock;
 - (void)setWallBounds:(NSMutableArray *)wallbounds;
-- (void)showExclamation:(BOOL)show;
 - (void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(completeComboCallback)completeBlock;
 -(CABasicAnimation *)stunAnimation:(NSInteger)i;
 

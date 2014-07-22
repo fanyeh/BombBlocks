@@ -15,12 +15,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        
-        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 5, frame.size.width  , frame.size.height)];
-        _classicAssetLabel.layer.masksToBounds = YES;
-        [self addSubview:_classicAssetLabel];
         _gameAssetType = kAssetTypeEmpty;
-        
         _assetImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
         [self addSubview:_assetImageView];
 
@@ -33,18 +28,22 @@
     self = [super init];
     if (self) {
         // Initialization code
-        self.frame = CGRectMake(0, 0, 28, 28);
-        _classicAssetLabel = [[UILabel alloc]initWithFrame:CGRectMake(6, 6, 16 , 16)];
-        _classicAssetLabel.layer.masksToBounds = YES;
-        [self addSubview:_classicAssetLabel];
+        self.frame = CGRectMake(0, 0,40,40);
+
         _gameAssetType = kAssetTypeEmpty;
-        
-        _assetImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        CGFloat imageViewSize = self.frame.size.width-16;
+        CGFloat imageViewPos = (self.frame.size.width - imageViewSize)/2;
+        _assetImageView = [[UIImageView alloc]initWithFrame:CGRectMake(imageViewPos, imageViewPos, imageViewSize, imageViewSize)];
+        _assetImageView.layer.cornerRadius = (imageViewSize)/2;
         [self addSubview:_assetImageView];
         
         _neighbors = [[NSMutableArray alloc]init];
         
-        //self.backgroundColor = [UIColor brownColor];
+        //self.layer.cornerRadius = 10;
+        
+       // self.backgroundColor = [UIColor colorWithRed:0.248 green:0.323 blue:0.373 alpha:1.000];
+        //self.layer.borderWidth = 2;
+       // self.layer.borderColor = [UIColor colorWithRed:0.216 green:0.282 blue:0.322 alpha:1.000].CGColor;
     }
     return self;
 }
@@ -59,77 +58,36 @@
 - (void)setAssetType:(AssetType)type;
 {
     _gameAssetType = type;
-    _classicAssetLabel.layer.cornerRadius = 0;
     _assetImageView.image = nil;
 
     switch (type) {
-        case kAssetTypeWall:
-            self.backgroundColor = [UIColor blackColor];
-//            _assetImageView.image = [UIImage imageNamed:@"wall.png"];
-            self.assetName = @"Wall";
-            break;
-        case kAssetTypeMonster:
-            self.backgroundColor = [UIColor redColor];
-            self.assetName = @"Monster";
-            break;
-        case kAssetTypeSword:
-//            self.backgroundColor = [UIColor colorWithRed:1.000 green:0.733 blue:0.125 alpha:1.000];
-            _assetImageView.image = [UIImage imageNamed:@"sword.png"];
-
-            self.assetName = @"Sword";
-            break;
-        case kAssetTypeShield:
-//            self.backgroundColor = [UIColor colorWithRed:1.000 green:0.208 blue:0.545 alpha:1.000];
-            _assetImageView.image = [UIImage imageNamed:@"shield.jpg"];
-
-            self.assetName = @"Shield";
-            break;
-        case kAssetTypeMagic:
-//            self.backgroundColor = [UIColor colorWithRed:0.235 green:0.729 blue:0.784 alpha:1.000];
-            _assetImageView.image = [UIImage imageNamed:@"magic.png"];
-
-            self.assetName = @"Magic";
-            break;
+            
         case kAssetTypeEmpty:
-           // self.backgroundColor = [UIColor whiteColor];
-            self.assetName = @"Empty";
             break;
         case kAssetTypeBlue:
-            _classicAssetLabel.backgroundColor = BlueDotColor;
-            _classicAssetLabel.layer.cornerRadius = _classicAssetLabel.frame.size.width/2;
-            self.assetName = @"Blue";
+            _assetImageView.backgroundColor = BlueDotColor;
+            //_assetImageView.image = [UIImage imageNamed:@"blue.png"];
+
             break;
         case kAssetTypeRed:
-            _classicAssetLabel.backgroundColor = RedDotColor;
-            _classicAssetLabel.layer.cornerRadius = _classicAssetLabel.frame.size.width/2;
+            _assetImageView.backgroundColor = RedDotColor;
 
-            self.assetName = @"Red";
+            //_assetImageView.image = [UIImage imageNamed:@"red.png"];
+
             break;
         case kAssetTypeYellow:
-            _classicAssetLabel.backgroundColor = YellowDotColor;
-            _classicAssetLabel.layer.cornerRadius = _classicAssetLabel.frame.size.width/2;
-            self.assetName = @"Yellow";
-            break;
-        case kAssetTypeGoal:
-            self.backgroundColor = [UIColor clearColor];
-            _assetImageView.image = [UIImage imageNamed:@"teleport.jpg"];
+            _assetImageView.backgroundColor = YellowDotColor;
 
-            self.assetName = @"Goal";
+            //_assetImageView.image = [UIImage imageNamed:@"yellow.png"];
+
             break;
-        case kAssetTypeKey:
-            self.backgroundColor = [UIColor clearColor];
-            _assetImageView.image = [UIImage imageNamed:@"Key.png"];
-            self.assetName = @"Key";
+        case kAssetTypeGreen:
+            _assetImageView.backgroundColor = GreenDotColor;
+
+            //_assetImageView.image = [UIImage imageNamed:@"green.png"];
+
             break;
-        case kAssetTypeMagicWall:
-            self.backgroundColor = [UIColor brownColor];
-            self.assetName = @"MagicWall";
-            break;
-        case kAssetTypeDoor:
-            self.backgroundColor = [UIColor clearColor];
-            _assetImageView.image = [UIImage imageNamed:@"door.png"];
-            self.assetName = @"door";
-            break;
+           
     }
 }
 

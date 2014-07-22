@@ -9,18 +9,15 @@
 #import "Snake.h"
 #import "GameAsset.h"
 #import "GamePad.h"
+#import "ParticleView.h"
+#import "SnakeNode.h"
 
 @implementation Snake
 {
-    NSMutableDictionary *turningNodeTags;
-    UILabel *exclamation;
-    UIView *exclamationView;
-    CGFloat exalamtionWidth;
-    NSString *exclamationText;
     NSInteger chain;     // Same color required to form a combo
     CGRect headFrame;
     NSMutableArray *walls;
-    UIColor *initComboColor;
+    AssetType initComboType;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -32,66 +29,33 @@
     return self;
 }
 
-- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(GamePad *)gamePad headFrame:(CGRect)frame snakeType:(SnakeType)snakeType
+- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(GamePad *)gamePad headFrame:(CGRect)frame
 {
     headFrame = frame;
     self = [self initWithFrame:headFrame];
     if (self) {
         
-        self.backgroundColor = SnakeColor;
-        self.layer.cornerRadius = headFrame.size.width/4;
+        self.backgroundColor = [UIColor whiteColor];
+        [self setNodeIndexRow:4 andCol:3];
         
-        _leftEye = [[UIView alloc]initWithFrame:CGRectMake(4, 2, 7, 7)];
-        _leftEye.layer.cornerRadius = _leftEye.frame.size.width/2;
-        _leftEye.layer.borderWidth = 1;
-        _leftEye.layer.borderColor = [[UIColor whiteColor]CGColor];
-        _leftEye.backgroundColor = [UIColor blackColor];
-        [self addSubview:_leftEye];
-        
-        _rightEye = [[UIView alloc]initWithFrame:CGRectMake(4, 13 , 7, 7)];
-        _rightEye.layer.borderWidth = 1;
-        _rightEye.layer.borderColor = [[UIColor whiteColor]CGColor];
-        _rightEye.layer.cornerRadius = _rightEye.frame.size.width/2;
-        _rightEye.backgroundColor = [UIColor blackColor];
-        [self addSubview:_rightEye];
-        
-        UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 28, 28)];
-        if (snakeType == kSnakeTypePlayer) {
-            headImageView.image = [UIImage imageNamed:@"snake.png"];
-            headImageView.backgroundColor = SnakeColor;
-            headImageView.layer.cornerRadius = headFrame.size.width/4;
-        }
-        else
-            headImageView.image = [UIImage imageNamed:@"enemySnake.png"];
-        
+        // Snake head image
+        UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, headFrame.size.width, headFrame.size.height)];
+        headImageView.image = [UIImage imageNamed:@"head.png"];
+        headImageView.layer.cornerRadius = headFrame.size.width/4;
         headImageView.transform = CGAffineTransformMakeRotation(-M_PI/2);
         [self addSubview:headImageView];
-
-        _snakeMouth = [[UIView alloc]initWithFrame:CGRectMake(headFrame.size.width - 14/2, (headFrame.size.height-14)/2, 14, 14)];
-        _snakeMouth.layer.cornerRadius = _snakeMouth.frame.size.width/2;
-        //_snakeMouth.layer.borderColor = [[UIColor whiteColor]CGColor];
-        [self addSubview:_snakeMouth];
         
         _gamePad = gamePad;
         _snakeBody = [[NSMutableArray alloc]init];
-        _turningNodes = [[NSMutableDictionary alloc]init];
-        _bodyDirections = [[NSMutableDictionary alloc]init];
-        turningNodeTags = [[NSMutableDictionary alloc]init];
-        _snakeLength = 1;
-        self.tag = 0;
+        [_snakeBody addObject:self];
+
         _xOffset = (headFrame.size.width+1)/1;
         _yOffset = (headFrame.size.height+1)/1;
-        [_snakeBody addObject:self];
-        [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
         
-        exalamtionWidth = 85;
-        exclamationView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, exalamtionWidth, 15)];
-        exclamationText = @"Combo!";
-        
-        [self resetExclamationDirection:direction];
-        [_gamePad addSubview:exclamationView];
-        
-        switch (direction ) {
+        self.direction = direction;
+
+        switch (self.direction ) {
+                
             case kMoveDirectionLeft:
                     [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI);
                 break;
@@ -105,9 +69,34 @@
                 break;
         }
         _isRotate = NO;
-        chain = 2;
+        chain = 3;
     }
     return self;
+}
+
+- (void)updateSnakeNodeIndex:(SnakeNode *)node toFrame:(CGRect)toFrame
+{
+ 
+    int row = [node nodeIndexRow];
+    int col = [node nodeIndexCol];
+    CGRect fromFrame = node.frame;
+
+    if (toFrame.origin.x > fromFrame.origin.x) {
+        // Move to right
+        col = col + 1;
+    }
+    else if (toFrame.origin.x < fromFrame.origin.x) {
+        // Move to left
+        col = col - 1;
+    } else if (toFrame.origin.y > fromFrame.origin.y) {
+        // Move down
+        row = row + 1;
+    } else if (toFrame.origin.y < fromFrame.origin.y) {
+        // Move up
+        row = row - 1;
+    }
+    
+    [node setNodeIndexRow:row andCol:col];
 }
 
 #pragma mark - Reset Snake
@@ -116,26 +105,21 @@
 {
     [[self snakeHead].layer removeAllAnimations];
 
-    for (UIView *v in _snakeBody) {
+    for (SnakeNode *v in _snakeBody) {
         if (v.tag > 0)
             [v removeFromSuperview];
     }
     
     MoveDirection direction = [self headDirection];
-    UIView *snakeHead = [self snakeHead];
+    SnakeNode *snakeHead = [self snakeHead];
     snakeHead.frame = headFrame;
 
     [_snakeBody removeAllObjects];
-    [_turningNodes removeAllObjects];
-    [_bodyDirections removeAllObjects];
-    [turningNodeTags removeAllObjects];
-    _snakeLength = 1;
     
     _xOffset = headFrame.size.width+1;
     _yOffset = headFrame.size.height+1;
     [_snakeBody addObject:snakeHead];
     
-    [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:0]];
     _isRotate = NO;
     
     switch (direction) {
@@ -151,141 +135,15 @@
         case kMoveDirectionRight:
             break;
     }
-
-    [self resetExclamationDirection:direction];
-
-}
-
-- (void)resetExclamationDirection:(MoveDirection)direction
-{
-    if ([exclamation superview])
-        [exclamation removeFromSuperview];
-    exclamationView.hidden = YES;
-    exclamation = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, exalamtionWidth, 15)];
-    exclamation.text = exclamationText;
-    exclamation.textColor = [UIColor blackColor];
-    exclamation.textAlignment = NSTextAlignmentRight;
-
-    exclamation.font = [UIFont fontWithName:@"ChalkboardSE-Bold" size:15];
     
-    [exclamationView addSubview:exclamation];
-    
-    switch (direction) {
-            
-        case kMoveDirectionUp:
-            
-            exclamationView.frame = CGRectOffset([self snakeHead].frame, -exalamtionWidth/2+10, -25);
-            exclamation.textAlignment = NSTextAlignmentCenter;
-            break;
-            
-        case kMoveDirectionDown:
-            
-            exclamationView.frame = CGRectOffset([self snakeHead].frame, -exalamtionWidth/2+10, 25);
-            exclamation.textAlignment = NSTextAlignmentCenter;
-            break;
-            
-        case kMoveDirectionLeft:
-            
-            exclamationView.frame = CGRectOffset([self snakeHead].frame, 0, -20);
-            exclamation.textAlignment = NSTextAlignmentLeft;
-            break;
-            
-        case kMoveDirectionRight:
-            
-            exclamationView.frame = CGRectOffset([self snakeHead].frame, -exalamtionWidth+20 , -20);
-            exclamation.textAlignment = NSTextAlignmentRight;
-            break;
-    }
+    [self setNodeIndexRow:4 andCol:3];
 }
 
 #pragma mark - Directions
 
-- (MoveDirection)getBodyDirection:(UIView *)body
-{
-   return [[_bodyDirections objectForKey:[NSNumber numberWithInteger:body.tag]] intValue];
-}
-
 - (MoveDirection)headDirection
 {
-   return [[_bodyDirections objectForKey:[NSNumber numberWithInteger:0]] intValue];
-}
-
-- (BOOL)changeDirectionWithGameIsOver:(BOOL)gameIsOver
-{
-    MoveDirection direction;
-    
-    UIView *tail = [self snakeTail];
-    
-    for (UIView *view in _snakeBody) {
-        
-        CGRect newFrame = CGRectMake((int)roundf(view.frame.origin.x), (int)roundf(view.frame.origin.y), (int)roundf(view.frame.size.width), (int)roundf(view.frame.size.height));
-        
-        NSValue *directionValue = [_turningNodes objectForKey:[NSValue valueWithCGRect:newFrame]];
-        
-        // If body frame = turning node frame , then there's a direction change
-        if (directionValue) {
-            direction = [[_turningNodes objectForKey:[NSValue valueWithCGRect:newFrame]] intValue];
-            
-            // Set new direction for body
-            [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:view.tag]];
-            
-            // Remove turning node if last body has passed the node
-            if (view.tag == tail.tag) {
-                [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:newFrame]];
-            }
-            
-        } else
-            direction = [[_bodyDirections objectForKey:[NSNumber numberWithInteger:view.tag]] intValue];
-        
-        CGRect newPosition = [self getNewPosition:view direction:direction];
-        //CGPoint newPoint = [self getNewPoint:direction];
-        
-        // Check if snake head touched body or gampad bounds
-        
-        if (view.tag == 0 && !_isRotate) {
-            
-            for (UIView *v in _snakeBody) {
-                // If head touched body , game is over
-                if (CGRectIntersectsRect(newPosition, v.frame) && v.tag != 0) {
-                    gameIsOver  = YES;
-                    break;
-                }
-            }
-            
-            if ([self touchedScreenBounds:newPosition]) {
-                gameIsOver  = YES;
-            }
-            
-            if ([self touchWall:newPosition])
-                gameIsOver = YES;
-        }
-        
-        // If not game over then update the frame of each snake part view
-        
-        if (!gameIsOver) {
-            
-            // Animation Type 1
-            CGRect newFrame = newPosition;
-            view.frame = CGRectMake((int)roundf(newFrame.origin.x),
-                                    (int)roundf(newFrame.origin.y),
-                                    (int)roundf(newFrame.size.width),
-                                    (int)roundf(newFrame.size.height));
-            
-            // Animation Type 2
-            // [self moveAnimationFrom:view.layer newPoint:newPoint];
-
-            
-            if (view.tag == 0) {
-                // Update exclamation mark position
-                
-                exclamationView.frame = [self getNewPosition:exclamationView direction:[self headDirection]];
-            }
-        }
-        else {
-            return YES;
-        }
-    }
-    return NO;
+    return self.direction;
 }
 
 - (CGRect)getNewPosition:(UIView *)view direction:(MoveDirection)direction
@@ -308,53 +166,35 @@
     return newPos;
 }
 
-- (CGPoint)getNewPoint:(MoveDirection)direction
+-(void)setTurningNodeBySwipe:(UISwipeGestureRecognizerDirection)swipeDirection
 {
-    CGPoint newPoint;
-    switch (direction) {
-        case kMoveDirectionUp:
-            newPoint = CGPointMake(0, -_yOffset);
-            break;
-        case kMoveDirectionDown:
-            newPoint = CGPointMake(0, _yOffset);
-            break;
-        case kMoveDirectionLeft:
-            newPoint = CGPointMake(-_xOffset, 0);
-            break;
-        case kMoveDirectionRight:
-            newPoint = CGPointMake(_xOffset, 0);
-            break;
-    }
-    return newPoint;
-}
-
--(void)setTurningNode:(CGPoint)location
-{
-    CGPoint headOrigin = [self snakeHead].frame.origin;
+    
+    _gamePad.userInteractionEnabled = NO;
     MoveDirection direction = [self headDirection];
+    
     switch ([self headDirection]) {
         case kMoveDirectionUp:
-            if (location.x > headOrigin.x)
+            if (swipeDirection == UISwipeGestureRecognizerDirectionRight)
                 direction = kMoveDirectionRight;
-            else if (location.x < headOrigin.x)
+            else if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
                 direction = kMoveDirectionLeft;
             break;
         case kMoveDirectionDown:
-            if (location.x > headOrigin.x)
+            if (swipeDirection == UISwipeGestureRecognizerDirectionRight)
                 direction = kMoveDirectionRight;
-            else if (location.x < headOrigin.x)
+            else if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
                 direction = kMoveDirectionLeft;
             break;
         case kMoveDirectionLeft:
-            if (location.y > headOrigin.y)
+            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
                 direction = kMoveDirectionDown;
-            else if (location.y < headOrigin.y)
+            else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
                 direction = kMoveDirectionUp;
             break;
         case kMoveDirectionRight:
-            if (location.y > headOrigin.y)
+            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
                 direction = kMoveDirectionDown;
-            else if (location.y < headOrigin.y)
+            else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
                 direction = kMoveDirectionUp;
             break;
     }
@@ -362,62 +202,90 @@
     switch ([self headDirection] ) {
         case kMoveDirectionRight:
             if (direction == kMoveDirectionDown) {
-                [self resetExclamationDirection:kMoveDirectionDown];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
             }
             else if (direction == kMoveDirectionUp) {
-                [self resetExclamationDirection:kMoveDirectionUp];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
             }
             break;
         case kMoveDirectionLeft:
             if (direction == kMoveDirectionDown) {
-                [self resetExclamationDirection:kMoveDirectionDown];
                 [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
             }
             else if (direction == kMoveDirectionUp){
-                [self resetExclamationDirection:kMoveDirectionUp];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
             }
             break;
         case kMoveDirectionUp:
             if (direction == kMoveDirectionLeft){
-                [self resetExclamationDirection:kMoveDirectionLeft];
                 [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
             }
             else if (direction == kMoveDirectionRight){
-                [self resetExclamationDirection:kMoveDirectionRight];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
             }
             break;
         case kMoveDirectionDown:
             if (direction == kMoveDirectionLeft){
-                [self resetExclamationDirection:kMoveDirectionLeft];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
             }
-
+            
             else if (direction == kMoveDirectionRight){
-                [self resetExclamationDirection:kMoveDirectionRight];
                 [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
             }
             break;
     }
     
-    CGRect newFrame = [self snakeHead].frame;
-    newFrame = CGRectMake((int)roundf(newFrame.origin.x), (int)roundf(newFrame.origin.y), (int)roundf(newFrame.size.width), (int)roundf(newFrame.size.height));
-    [self snakeHead].frame = newFrame;
-    [_turningNodes setObject:[NSNumber numberWithInt:direction] forKey:[NSValue valueWithCGRect:newFrame]];
-}
+    CGRect newPosition = [self getNewPosition:[_snakeBody firstObject] direction:direction];
+    
+    // Check if snake head touched body or gampad bounds
+    
+//    if (view.tag == 0 && !_isRotate) {
+//        
+//        for (UIView *v in _snakeBody) {
+//            // If head touched body , game is over
+//            if (CGRectIntersectsRect(newPosition, v.frame) && v.tag != 0) {
+//                gameIsOver  = YES;
+//                break;
+//            }
+//        }
+//        
+//        if ([self touchedScreenBounds:newPosition]) {
+//            gameIsOver  = YES;
+//        }
+//        
+//        if ([self touchWall:newPosition])
+//            gameIsOver = YES;
+//    }
 
-- (void)updateTurningNode
-{
-    UIView *tail = [self snakeTail];
     
-    NSValue *directionValue = [_turningNodes objectForKey:[NSValue valueWithCGRect:tail.frame]];
     
-    // If body frame = turning node frame , then there's a direction change
-    if (directionValue)
-        [_turningNodes removeObjectForKey:[NSValue valueWithCGRect:tail.frame]];
+    __block CGRect previousFrame = newPosition;
+    __block CGRect currentFrame;
+    
+    __block MoveDirection previousDirection = direction;
+    __block MoveDirection currentDirection;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        
+        for (NSInteger i=0; i < [_snakeBody count];i++) {
+            
+            SnakeNode *currentBody = [_snakeBody objectAtIndex:i];
+            currentFrame = currentBody.frame;
+            currentDirection = currentBody.direction;
+            
+            [self updateSnakeNodeIndex:currentBody toFrame:previousFrame];
+            currentBody.frame = previousFrame;
+            currentBody.direction = previousDirection;
+            
+            previousFrame = currentFrame;
+            previousDirection = currentDirection;
+        }
+        
+    } completion:^(BOOL finished) {
+        
+        [self addSnakeBody];
+        
+    }];
 }
 
 #pragma mark - Out of bound
@@ -430,15 +298,22 @@
     CGRect leftBound = CGRectMake(-2, 0, 1, screen.size.height);
     CGRect rightBound = CGRectMake(screen.size.width+1, 0, 1, screen.size.height);
  
-    if (CGRectIntersectsRect(newPostion, topBound)) {
+    if (CGRectIntersectsRect(newPostion, topBound))
+    {
         return YES;
-    } else if (CGRectIntersectsRect(newPostion, botBound)) {
+    }
+    else if (CGRectIntersectsRect(newPostion, botBound))
+    {
         return YES;
 
-    } else if (CGRectIntersectsRect(newPostion, leftBound)) {
+    }
+    else if (CGRectIntersectsRect(newPostion, leftBound))
+    {
         return YES;
 
-    } else if (CGRectIntersectsRect(newPostion, rightBound)) {
+    }
+    else if (CGRectIntersectsRect(newPostion, rightBound))
+    {
         return YES;
     }
     else
@@ -450,443 +325,640 @@
     walls = wallbounds;
 }
 
-
 - (BOOL)touchWall:(CGRect)newPosition
 {
-    for (GameAsset *asset in walls) {
-        if (asset.gameAssetType == kAssetTypeWall)
-            if (CGRectIntersectsRect(newPosition, asset.frame))
-                return YES;
-    }
+//    for (GameAsset *asset in walls) {
+//        if (asset.gameAssetType == kAssetTypeWall)
+//            if (CGRectIntersectsRect(newPosition, asset.frame))
+//                return YES;
+//    }
     return NO;
 }
 
 #pragma mark - Snake Body
 
-- (UIView *)addSnakeBody:(UIColor *)backgroundColor
+- (void)addSnakeBody
 {
     CGRect bodyFrame;
     CGRect snakeTailFrame =  [self snakeTail].frame;
-    MoveDirection direction = [self getBodyDirection:[self snakeTail]];
+    MoveDirection direction = [self snakeTail].direction;
     
+    int col= [[self snakeTail]nodeIndexCol];
+    int row= [[self snakeTail]nodeIndexRow];
+
     switch (direction) {
         case kMoveDirectionUp:
             bodyFrame = CGRectOffset(snakeTailFrame, 0, _yOffset);
+            row = row + 1;
             break;
         case kMoveDirectionDown:
             bodyFrame = CGRectOffset(snakeTailFrame, 0, -_yOffset);
+            row = row - 1;
             break;
         case kMoveDirectionLeft:
             bodyFrame = CGRectOffset(snakeTailFrame, _xOffset, 0);
+            col = col + 1;
             break;
         case kMoveDirectionRight:
             bodyFrame = CGRectOffset(snakeTailFrame, -_xOffset, 0);
+            col = col - 1;
+            break;
+    }
+    GameAsset *asset = [[GameAsset alloc]init];
+    int randomAsset = arc4random()%3;
+    
+    switch (randomAsset) {
+        case 0:
+            [asset setAssetType:kAssetTypeBlue];
+            break;
+        case 1:
+            [asset setAssetType:kAssetTypeRed];
+            break;
+        case 2:
+            [asset setAssetType:kAssetTypeYellow];
+            break;
+        case 3:
+            [asset setAssetType:kAssetTypeGreen];
+            break;
+    }
+    SnakeNode *snakeBody = [[SnakeNode alloc]initWithFrame:bodyFrame gameAssetType:asset.gameAssetType];
+    [snakeBody setNodeIndexRow:row andCol:col];
+    CGFloat imageSize = 8;
+    UIImageView *bodyImageView = [[UIImageView alloc]initWithFrame:CGRectMake(imageSize/2,
+                                                                              imageSize/2,
+                                                                              bodyFrame.size.width-imageSize,
+                                                                              bodyFrame.size.height-imageSize)];
+    switch (asset.gameAssetType) {
+        case kAssetTypeGreen:
+            bodyImageView.image = [UIImage imageNamed:@"green1.png"];
+            snakeBody.nodeColor = GreenDotColor;
+            break;
+        case kAssetTypeBlue:
+            bodyImageView.image = [UIImage imageNamed:@"blue1.png"];
+            snakeBody.nodeColor = BlueDotColor;
+            break;
+        case kAssetTypeRed:
+            bodyImageView.image = [UIImage imageNamed:@"red1.png"];
+            snakeBody.nodeColor = RedDotColor;
+            break;
+        case kAssetTypeYellow:
+            bodyImageView.image = [UIImage imageNamed:@"yellow1.png"];
+            snakeBody.nodeColor = YellowDotColor;
+            break;
+        case kAssetTypeEmpty:
             break;
     }
     
-    UIView *snakeBody = [[UIView alloc]initWithFrame:bodyFrame];
-    snakeBody.layer.cornerRadius = bodyFrame.size.width/4;
-    snakeBody.backgroundColor = backgroundColor;
-    snakeBody.tag = _snakeLength;
-//    snakeBody.layer.borderColor = self.backgroundColor.CGColor;
-//    snakeBody.layer.borderWidth = 3;
+    [snakeBody addSubview:bodyImageView];
     [_snakeBody addObject:snakeBody];
-    [_bodyDirections setObject:[NSNumber numberWithInt:direction] forKey:[NSNumber numberWithInteger:snakeBody.tag]];
-    _snakeLength ++;
+    [_gamePad addSubview:snakeBody];
+
+    // Animation to populate new body
+    CGAffineTransform t = snakeBody.transform;
+    snakeBody.transform = CGAffineTransformScale(t, 0.5, 0.5);
+    [UIView animateWithDuration:0.5 animations:^{
+        
+        snakeBody.transform = t;
+
+    } completion:^(BOOL finished) {
+        
+        [self cancelPattern];
+        
+    }];
+}
+
+-(void)cancelPattern
+{
+    NSMutableArray *colPatterns = [self colPatternCheck];
+    NSMutableArray *rowPatterns = [self rowPatternCheck];
+    NSMutableArray *squarePatterns = [self patternCheck:kPatternTypeSquare];
     
-    return snakeBody;
-}
-
-- (UIView *)snakeHead
-{
-    return [_snakeBody firstObject];
-}
-
-- (UIView *)snakeTail
-{
-    return [_snakeBody lastObject];
-}
-
-- (void)removeSnakeBody:(UIView *)body
-{
-    [_bodyDirections removeObjectForKey:[NSNumber numberWithInteger:body.tag]];
-    [_snakeBody removeObject:body];
-}
-
-- (void)removeSnakeBodyFromArray:(NSMutableArray *)removeArray
-{
-    for (UIView *body in removeArray) {
-        [_bodyDirections removeObjectForKey:[NSNumber numberWithInteger:body.tag]];
+    NSMutableArray *allPatterns =[NSMutableArray arrayWithArray:colPatterns];
+    for (id element in rowPatterns) {
+        if (![allPatterns containsObject:element]) {
+            [allPatterns addObject:element];
+        }
     }
     
-    [_snakeBody removeObjectsInArray:removeArray];
+    for (id element in squarePatterns) {
+        if (![allPatterns containsObject:element]) {
+            [allPatterns addObject:element];
+        }
+    }
+    
+    if ([allPatterns count] > 0) {
+        
+        for (SnakeNode *n in allPatterns) {
+            n.backgroundColor = [UIColor whiteColor];
+            n.alpha = 0.5;
+        }
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            for (SnakeNode *n in allPatterns) {
+                n.alpha = 0.0;
+            }
+            
+        } completion:^(BOOL finished) {
+            
+            for (SnakeNode *n in allPatterns) {
+                
+                [self explodeBody:n];
+                [n removeFromSuperview];
+            }
+            
+            [self removeSnakeBodyFromArray:allPatterns];
+            
+        }];
+        
+    } else {
+        
+        _gamePad.userInteractionEnabled = YES;
+        
+    }
+}
+
+-(void)removeSnakeBodyFromArray:(NSMutableArray *)removalArray
+{
+    SnakeNode *removeBody = [removalArray firstObject];
+    __block CGRect previousFrame = removeBody.frame;
+    __block CGRect currentFrame;
+    __block MoveDirection previousDirection = removeBody.direction;
+    __block MoveDirection currentDirection;
+    
+    NSInteger index = [_snakeBody indexOfObject:removeBody];
+    [_snakeBody removeObject:removeBody];
+    [removalArray removeObjectAtIndex:0];
+
+    [UIView animateWithDuration:0.3 animations:^{
+        
+        for (NSInteger i=index; i < [_snakeBody count];i++) {
+            
+            SnakeNode *currentBody = [_snakeBody objectAtIndex:i];
+            currentFrame = currentBody.frame;
+            
+            [self updateSnakeNodeIndex:currentBody toFrame:previousFrame];
+            currentBody.frame = previousFrame;
+            currentBody.direction = previousDirection;
+
+            previousFrame = currentFrame;
+            previousDirection = currentDirection;
+        }
+        
+    } completion:^(BOOL finished) {
+        
+        if ([removalArray count] > 0)
+            [self removeSnakeBodyFromArray:removalArray];
+        else
+            [self cancelPattern];
+    }];
+}
+
+-(NSMutableArray *)patternCheck:(PatternType)patternType
+{
+    NSMutableArray *patternArray;
+    
+    for (SnakeNode *node in _snakeBody) {
+        
+        int r = [node nodeIndexRow];
+        int c = [node nodeIndexCol];
+        AssetType type = node.assetType;
+        
+        SnakeNode *node2;
+        SnakeNode *node3;
+        SnakeNode *node4;
+        
+        switch (patternType) {
+            case kPatternTypeSquare:
+                node2 = [self hasPatterRow:r col:c+1 assetType:type];
+                node3 = [self hasPatterRow:r+1 col:c assetType:type];
+                node4 = [self hasPatterRow:r+1 col:c+1 assetType:type];
+                break;
+            case kPatternTypeRow:
+                return [self colPatternCheck];
+                break;
+            case kPatternTypeCol:
+                return [self rowPatternCheck];
+                break;
+            case kPatternTypeDiagonalDown:
+                
+                break;
+            case kPatternTypeDiagonalUp:
+                
+                break;
+        }
+        
+        if ( node2 && node3 && node4) {
+            
+            patternArray = [[NSMutableArray alloc]initWithArray: @[node,node2,node3,node4]];
+            return patternArray;
+        }
+    }
+    return nil;
+}
+
+-(NSMutableArray *)colPatternCheck
+{
+    
+    for (SnakeNode *node in _snakeBody) {
+        
+        NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+        [patternArray addObject:node];
+
+        int r = [node nodeIndexRow];
+        int c = [node nodeIndexCol];
+        AssetType type = node.assetType;
+        
+        BOOL checkCol = YES;
+        int count = 0;
+
+        while (checkCol) {
+            r = r+1;
+            SnakeNode *n = [self hasPatterRow:r col:c assetType:type];
+            if (!n)
+                checkCol = NO;
+            else {
+                [patternArray addObject:n];
+                count++;
+            }
+        }
+    
+        if (count >= 2) {
+            
+            return patternArray;
+        }
+    }
+    return nil;
+}
+
+-(NSMutableArray *)rowPatternCheck
+{
+    
+    for (SnakeNode *node in _snakeBody) {
+        
+        NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+        [patternArray addObject:node];
+        
+        int r = [node nodeIndexRow];
+        int c = [node nodeIndexCol];
+        AssetType type = node.assetType;
+        
+        BOOL checkCol = YES;
+        int count = 0;
+        
+        while (checkCol) {
+            c = c+1;
+            SnakeNode *n = [self hasPatterRow:r col:c assetType:type];
+            if (!n)
+                checkCol = NO;
+            else {
+                [patternArray addObject:n];
+                count++;
+            }
+        }
+        
+        if (count >= 2) {
+            
+            return patternArray;
+        }
+    }
+    return nil;
+}
+
+- (SnakeNode *)hasPatterRow:(int)row col:(int)col assetType:(AssetType)type
+{
+    for (SnakeNode *node in _snakeBody) {
+        
+        if ([node nodeIndexRow] == row && [node nodeIndexCol] == col && node.assetType == type) {
+            
+            return node;
+        }
+    }
+    return nil;
+}
+
+
+- (SnakeNode *)snakeHead
+{
+    return (SnakeNode*)[_snakeBody firstObject];
+}
+
+- (SnakeNode *)snakeTail
+{
+    return (SnakeNode*)[_snakeBody lastObject];
 }
 
 - (void)startRotate
 {
     _isRotate = YES;
     [[self snakeHead].layer addAnimation:[self wobbleAnimation] forKey:nil];
-    [self showExclamation:YES];
 }
 
 - (void)stopRotate
 {
     _isRotate = NO;
     [[self snakeHead].layer removeAllAnimations];
-    [self showExclamation:NO];
-
 }
 
 #pragma mark - Combo
 
-- (BOOL)checkCombo:(completeComboCallback)completeBlock
+-(void)explodeBody:(SnakeNode *)removeBody
 {
-    UIColor *repeatColor;
-    NSInteger startIndex = 0;
-    NSInteger endIndex = 0;
-    for (UIView *v in _snakeBody) {
-        if (![repeatColor isEqual:v.backgroundColor]) {
-            repeatColor = v.backgroundColor;
-            startIndex = [_snakeBody indexOfObject:v];
-            endIndex = startIndex;
-        } else {
-            endIndex = [_snakeBody indexOfObject:v];
-        }
-        
-        if (endIndex - startIndex == chain) {
-            
-            initComboColor = repeatColor;
-            
-            // Shake snake head
-            if (!_isRotate)
-                [self startRotate];
-
-            [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:v.backgroundColor otherCombo:NO];
-            
-            return YES;
-        }
-    }
-    completeBlock(nil,NO);
-    return NO;
+    CGRect bodyFrame = [removeBody convertRect:removeBody.bounds toView:_gamePad];
+    bodyFrame.origin.y = _gamePad.frame.size.height - bodyFrame.origin.y;
+    CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
+    CGFloat posY = bodyFrame.origin.y-bodyFrame.size.height/2;
+    
+    [_particleView newExplosionWithPosX:posX
+                                andPosY:posY
+                               andColor:removeBody.nodeColor];
+    
+    removeBody.hidden = YES;
 }
+
+//- (BOOL)checkCombo:(completeComboCallback)completeBlock
+//{
+//    NSInteger startIndex = 0;
+//    NSInteger endIndex = 0;
+//    
+//    AssetType repeatType = kAssetTypeEmpty;
+//    
+//    for (SnakeNode *v in _snakeBody) {
+//        
+//        if (repeatType != v.assetType) {
+//            
+//            repeatType = v.assetType;
+//            startIndex = [_snakeBody indexOfObject:v];
+//            endIndex = startIndex;
+//            
+//        }
+//        else {
+//            
+//            endIndex = [_snakeBody indexOfObject:v];
+//        }
+//
+//        if (endIndex - startIndex == chain) {
+//            
+//            initComboType = repeatType;
+//            
+//            // Shake snake head
+//            if (!_isRotate)
+//                [self startRotate];
+//
+//            [self comboAnimationStartIndex:startIndex
+//                                  endIndex:endIndex
+//                             completeBlock:completeBlock
+//                                assetType:repeatType
+//                                otherCombo:NO];
+//            
+//            return YES;
+//        }
+//    }
+//    completeBlock(kAssetTypeEmpty,NO);
+//    return NO;
+//}
 
 // Single body color check
-- (void)cancelSnakeBodyByColor:(UIColor *)color complete:(completeComboCallback)completeBlock
-{
-    BOOL completeCheck = YES;
-    
-    // Remove each body with same color
-    for (UIView *v in _snakeBody) {
-        if ([v.backgroundColor isEqual:color]) {
-            
-            // Remove same color body from initial combo
-            NSInteger index = [_snakeBody indexOfObject:v];
-            
-            // Remove snake body with color same as combo
-            [self removeSnakeBodyByIndex:index andColor:v.backgroundColor complete:completeBlock];
-            
-            completeCheck = NO;
-            break;
-        }
-    }
-    
-    // Check if there is other combos
-    if (completeCheck)
-        [self otherCombo:completeBlock];
-}
+//- (void)cancelSnakeBodyByType:(AssetType)assetType complete:(completeComboCallback)completeBlock
+//{
+//    BOOL completeCheck = YES;
+//    
+//    // Remove each body with same color
+//    for (SnakeNode *v in _snakeBody) {
+//        if (v.assetType == assetType) {
+//            
+//            // Remove same color body from initial combo
+//            NSInteger index = [_snakeBody indexOfObject:v];
+//            
+//            // Remove snake body with color same as combo
+//            [self removeSnakeBodyByIndex:index andAssetType:v.assetType complete:completeBlock];
+//            
+//            completeCheck = NO;
+//            break;
+//        }
+//    }
+//    
+//    // Check if there is other combos
+//    if (completeCheck)
+//        [self otherCombo:completeBlock];
+//}
 
 // Single body removal
--(void)removeSnakeBodyByIndex:(NSInteger)index andColor:(UIColor *)color complete:(completeComboCallback)completeBlock
-{
-    for (NSInteger i=index; i < [_snakeBody count];i++) {
-        
-        if (i < [_snakeBody count] -1) {
-            
-            // Next body
-            UIView *currentBody = [_snakeBody objectAtIndex:i];
-            UIView *nextBody = [_snakeBody objectAtIndex:i+1];
-            currentBody.backgroundColor = nextBody.backgroundColor;
-        }
-    }
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        
-        self.snakeTail.alpha = 0;
-        
-    } completion:^(BOOL finished) {
-        
-        [self.snakeTail removeFromSuperview];
-        [self updateTurningNode];
-        [self.snakeBody removeLastObject];
-        [self cancelSnakeBodyByColor:color complete:completeBlock];
-    }];
-}
+//-(void)removeSnakeBodyByIndex:(NSInteger)index andAssetType:(AssetType)assetType complete:(completeComboCallback)completeBlock
+//{
+//    SnakeNode *removeBody = [_snakeBody objectAtIndex:index];
+//    __block CGRect previousFrame = removeBody.frame;
+//    __block CGRect currentFrame;
+//    
+//    if (!removeBody.isHidden)
+//        [self explodeBody:removeBody];
+//    
+//    [removeBody removeFromSuperview];
+//    
+//    [_snakeBody removeObjectAtIndex:index];
+//    
+//
+//    [UIView animateWithDuration:0.3 animations:^{
+//        
+//        for (NSInteger i=index; i < [_snakeBody count];i++) {
+//
+//            UIView *currentBody = [_snakeBody objectAtIndex:i];
+//            currentFrame = currentBody.frame;
+//            currentBody.frame = previousFrame;
+//            previousFrame = currentFrame;
+//        }
+//        
+//    } completion:^(BOOL finished) {
+//        
+//        //[self cancelSnakeBodyByType:assetType complete:completeBlock];
+//        
+//    }];
+//}
 
 
--(BOOL)otherCombo:(completeComboCallback)completeBlock
-{
-    UIColor *mouthColor;
-    UIColor *repeatColor;
-    NSInteger startIndex = 0;
-    NSInteger endIndex = 0;
-    BOOL hasCombo = NO;
-    
-    for (UIView *v in _snakeBody) {
-        
-        if (![repeatColor isEqual:v.backgroundColor]) {
-            
-            if (hasCombo) {
-                // Invalidate timer if there combo
-                
-                [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
-                
-                return YES;
-            } else {
-                repeatColor = v.backgroundColor;
-                startIndex = [_snakeBody indexOfObject:v];
-                endIndex = startIndex;
-            }
-        } else {
-            endIndex = [_snakeBody indexOfObject:v];
-            
-            // More than chain
-            if (endIndex - startIndex == chain) {
-                mouthColor = repeatColor;
-                hasCombo = YES;
-            }
-            
-            if ([v isEqual:[_snakeBody lastObject]] && hasCombo) {
-                
-                [self comboAnimationStartIndex:startIndex endIndex:endIndex completeBlock:completeBlock mouthColor:mouthColor otherCombo:YES];
-                
-                return YES;
-                
-            }
-        }
-    }
-    // If no other combo call the complete block
-    completeBlock(initComboColor,YES);
-    return NO;
-}
+//-(BOOL)otherCombo:(completeComboCallback)completeBlock
+//{
+//    AssetType repeatAsset = kAssetTypeEmpty;
+//    NSInteger startIndex = 0;
+//    NSInteger endIndex = 0;
+//    BOOL hasCombo = NO;
+//    
+//    for (SnakeNode *v in _snakeBody) {
+//        
+//        if (repeatAsset != v.assetType) {
+//            
+//            if (hasCombo) {
+//                // Invalidate timer if there combo
+//                [self comboAnimationStartIndex:startIndex
+//                                      endIndex:endIndex
+//                                 completeBlock:completeBlock
+//                                    assetType:repeatAsset
+//                                    otherCombo:YES];
+//                
+//                return YES;
+//                
+//            }
+//            else {
+//                repeatAsset = v.assetType;
+//                startIndex = [_snakeBody indexOfObject:v];
+//                endIndex = startIndex;
+//            }
+//            
+//        } else {
+//            
+//            endIndex = [_snakeBody indexOfObject:v];
+//            
+//            // More than chain
+//            if (endIndex - startIndex == chain) {
+//                
+//                hasCombo = YES;
+//            }
+//            
+//            if ([v isEqual:[_snakeBody lastObject]] && hasCombo) {
+//                
+//                [self comboAnimationStartIndex:startIndex
+//                                      endIndex:endIndex
+//                                 completeBlock:completeBlock
+//                                     assetType:repeatAsset
+//                                    otherCombo:YES];
+//                return YES;
+//                
+//            }
+//        }
+//    }
+//    // If no other combo call the complete block
+//    completeBlock(initComboType,YES);
+//    return NO;
+//}
 
--(void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(completeComboCallback)completeBlock
-{
-    if (range == 0) {
+//-(void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(completeComboCallback)completeBlock
+//{
+//    if (range == 0) {
+//
+//        [self otherCombo:completeBlock];
+//        
+//    } else {
+//
+//        SnakeNode *removeBody = [_snakeBody objectAtIndex:start];
+//        
+//        if (!removeBody.isHidden)
+//            [self explodeBody:removeBody];
+//        
+//        __block CGRect previousFrame = removeBody.frame;
+//        __block CGRect currentFrame;
+//        [removeBody removeFromSuperview];
+//
+//        [self.snakeBody removeObjectAtIndex:start];
+//
+//        [UIView animateWithDuration:0.3 animations:^{
+//            
+//            for (NSInteger i=start; i < [_snakeBody count];i++) {
+//                
+//                UIView *currentBody = [_snakeBody objectAtIndex:i];
+//                currentFrame = currentBody.frame;
+//                
+//                
+//                currentBody.frame = previousFrame;
+//                previousFrame = currentFrame;
+//            }
+//            
+//        } completion:^(BOOL finished) {
+//
+//            [self removeSnakeBodyByRangeStart:start andRange:range-1 complete:completeBlock];
+//
+//        }];
+//
+//    }
+//}
 
-        [self otherCombo:completeBlock];
-        
-    } else {
-
-        for (NSInteger i=start; i < [_snakeBody count] -1 ;i++) {
-            
-            if (i < [_snakeBody count] -1) {
-                
-                // Next body
-                UIView *currentBody = [_snakeBody objectAtIndex:i];
-                UIView *nextBody = [_snakeBody objectAtIndex:i+1];
-                currentBody.backgroundColor = nextBody.backgroundColor;
-            }
-        }
-        
-        [UIView animateWithDuration:0.1 animations:^{
-            
-            self.snakeTail.alpha = 0;
-            
-        } completion:^(BOOL finished) {
-            
-            [self.snakeTail removeFromSuperview];
-            [self updateTurningNode];
-            [self.snakeBody removeLastObject];
-            [self removeSnakeBodyByRangeStart:start andRange:range-1 complete:completeBlock];
-        }];
-        
-    }
-}
-
-- (void)comboAnimationStartIndex:(NSInteger)start endIndex:(NSInteger)end
-                   completeBlock:(completeComboCallback)completeBlock
-                      mouthColor:(UIColor *)color
-                      otherCombo:(BOOL)other
-{
-    
-    _leftEye.alpha = 0;
-    _rightEye.alpha = 0;
-    _snakeMouth.backgroundColor = color;
-    _combos++;
-    [self updateExclamationText:nil];
-    
-    for (NSInteger i = start ; i < end +1 ; i ++) {
-        
-        UIView *u = _snakeBody[i];
-        [u.layer addAnimation:[self bodyAnimation:i] forKey:nil];
-    }
-    
-    CGRect startFrame = CGRectMake(140 , 44 , 22 , 22);
-
-    float interval;
-    if (!other && _hasEnemy)
-        interval = 1.5;
-    else
-        interval = 1.0;
-    
-    [UIView animateWithDuration:interval animations:^{
-        
-
-        _leftEye.alpha = 1;
-        _rightEye.alpha = 1;
-        _leftEye.layer.borderWidth = 0.5;
-        _rightEye.layer.borderWidth = 0.5;
-        
-        if (!other && _hasEnemy) {
-            
-            [_gamePad showSkillView];
-
-            for (NSInteger i = start ; i < end +1 ; i ++) {
-                
-                UIView *u = _snakeBody[i];
-                u.frame = startFrame;
-            }
-        }
-        
-    } completion:^(BOOL finished) {
-        
-        if (!other && _hasEnemy) {
-            
-            // Remove shaking animation and hide the combo body
-            for (NSInteger i = start ; i < end +1 ; i ++) {
-                UIView *u = _snakeBody[i];
-                [u.layer removeAllAnimations];
-                u.alpha = 0;
-            }
-            
-            _gamePad.skillView.backgroundColor = color;
-
-            [UIView animateWithDuration:1.5 animations:^{
-                // Show skill view
-                _gamePad.skillView.alpha = 1;
-                
-            } completion:^(BOOL finished) {
-            
-                
-                CGRect skillFrame = _gamePad.skillView.frame;
-                CGRect attackFrame = CGRectOffset(_enemy.snakeHead.frame, 0, -44);
-                attackFrame = CGRectInset(attackFrame, -11, -11);
-                
-                // Origin transform
-                CGAffineTransform skillTransform = _gamePad.skillView.transform;
-                
-                [UIView animateWithDuration:1.5 animations:^{
-                    
-                    // Shrink skill view
-                    _gamePad.skillView.transform = CGAffineTransformScale(skillTransform, 0.5, 0.5);
-                    
-                } completion:^(BOOL finished) {
-
-                    _gamePad.skillBackgroundView.backgroundColor = [UIColor clearColor];
-                    _gamePad.skillView.transform = CGAffineTransformScale(skillTransform, 1, 1);
-                    
-                    // Move skill view to top of enemy snake head
-                    _gamePad.skillView.frame = attackFrame;
-                    
-                    _gamePad.skillView.backgroundColor = [UIColor clearColor];
-                    UIImageView *skillImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 44, 44)];
-                    _gamePad.skillView.alpha = 0;
-                    
-                    // Show skill image
-                    UIImage *skillImage;
-                    
-                    if ([color isEqual:RedDotColor]) {
-                        
-                        skillImage = [UIImage imageNamed:@"slow.png"];
-                        
-                    } else if ([color isEqual:YellowDotColor]) {
-                        
-                        skillImage = [UIImage imageNamed:@"sword.png"];
-                        
-                    } else {
-                        
-                        skillImage = [UIImage imageNamed:@"lightening.png"];
-                        
-                    }
-                    skillImageView.image = skillImage;
-                    
-                    [_gamePad.skillView addSubview:skillImageView];
-                    
-                    [UIView animateWithDuration:1.5 animations:^{
-                        
-                        _gamePad.skillView.alpha = 1;
-                        // Show attack on enemy's top
-                        // Move skill down 22pt to enemy snake head
-                        //_gamePad.skillView.frame = CGRectOffset(_gamePad.skillView.frame, 0, 22);
-                        //_gamePad.skillView.layer.borderWidth = 3;
-                        
-                        
-                        
-                    } completion:^(BOOL finished) {
-                        
-                        _gamePad.skillView.frame = skillFrame;
-                        [_gamePad hideSkillView];
-                        [skillImageView removeFromSuperview];
-                        
-                        _leftEye.layer.borderWidth = 1.5;
-                        _rightEye.layer.borderWidth = 1.5;
-                        
-
-                        [self cancelSnakeBodyByColor:color complete:completeBlock];
-
-                    }];
-                    
-                }];
-            }];
-            
-        } else {
-            
-            for (NSInteger i = start ; i < end +1 ; i ++) {
-                UIView *u = _snakeBody[i];
-                [u.layer removeAllAnimations];
-            }
-            
-            _leftEye.layer.borderWidth = 1.5;
-            _rightEye.layer.borderWidth = 1.5;
-            
-            if (other)
-                [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
-            else
-                [self cancelSnakeBodyByColor:color complete:completeBlock];
-
-        }
-    }];
-}
+//- (void)comboAnimationStartIndex:(NSInteger)start endIndex:(NSInteger)end
+//                   completeBlock:(completeComboCallback)completeBlock
+//                      assetType:(AssetType)assetType
+//                      otherCombo:(BOOL)other
+//{
+//    
+//    _combos++;
+//    
+//    // Apply shake animation
+//    for (NSInteger i = start ; i < end +1 ; i ++) {
+//        
+//        UIView *u = _snakeBody[i];
+//        [u.layer addAnimation:[self bodyAnimation:i] forKey:nil];
+//        
+//    }
+//    
+//    // Blink snake head
+//    [UIView animateWithDuration:0.5 animations:^{
+//        
+//        self.snakeHead.alpha = 0.0f;
+//
+//    } completion:^(BOOL finished) {
+//        
+//        self.snakeHead.alpha = 1.0f;
+//        
+//        // Remove all shake animation
+//        for (NSInteger i = start ; i < end +1 ; i ++) {
+//            UIView *u = _snakeBody[i];
+//            [u.layer removeAllAnimations];
+//        }
+//        
+//        if (other)
+//            [self removeSnakeBodyByRangeStart:start andRange:(end - start) + 1 complete:completeBlock];
+//        
+//        else {
+//            
+//            // Show explode animation
+//            // Check if these bodies overlapped with turning node , if yes remove turning node
+//            // Remove body from snake array
+//            for (NSInteger i = 0 ; i < chain+1 ; i ++) {
+//                
+//                [self explodeBody:[_snakeBody lastObject]];
+//                [[_snakeBody lastObject] removeFromSuperview];
+//                [_snakeBody removeLastObject];
+//            }
+//            
+//            [self cancelSnakeBodyByType:assetType complete:completeBlock];
+//            
+//        }
+//    }];
+//}
 
 #pragma mark - Body Animations
 
--(void)moveAnimationFrom:(CALayer *)startLayer newPoint:(CGPoint)newPoint
+- (void)startBlinkAnimation
 {
-    NSLog(@"Start Point %@",NSStringFromCGPoint(startLayer.position));
+    self.snakeHead.alpha = 1.0f;
     
-    CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"position"];
-    
-    CGPoint endPoint = CGPointMake(startLayer.position.x + newPoint.x, startLayer.position.y + newPoint.y);
-    
-    NSLog(@"End Point %@",NSStringFromCGPoint(endPoint));
+    [UIView animateWithDuration:0.12
+                          delay:0.0
+                        options:
+     
+     UIViewAnimationOptionCurveEaseInOut |
+     UIViewAnimationOptionRepeat |
+     UIViewAnimationOptionAutoreverse |
+     UIViewAnimationOptionAllowUserInteraction
+     
+                     animations:^{
+                         
+                         self.snakeHead.alpha = 0.0f;
+                     }
+                     completion:^(BOOL finished){
+                         // Do nothing
+                     }];
+}
 
-    
-    anim.fromValue = [startLayer valueForKey:@"position"];
-
-    anim.toValue =[NSValue valueWithCGPoint:endPoint];
-
-    // Update the layer's position so that the layer doesn't snap back when the animation completes.
-    
-    anim.duration = 0.2;
-
-    anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-    
-
-    // Add the animation, overriding the implicit animation.
-    [startLayer addAnimation:anim forKey:@"position"];
-    
-    startLayer.position = endPoint;
-
+-(void)stopBlinkAnimation
+{
+    [UIView animateWithDuration:0.12
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut |
+     UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{
+                         self.snakeHead.alpha = 1.0f;
+                     }
+                     completion:^(BOOL finished){
+                         // Do nothing
+                     }];
 }
 
 -(CABasicAnimation *)bodyAnimation:(NSInteger)i
@@ -974,65 +1046,6 @@
     [anim setRepeatCount:HUGE_VAL];
     [anim setAutoreverses:YES];
     return anim;
-}
-
-- (void)mouthAnimation:(float)timeInterval
-{
-    float duration = timeInterval;
-    float closeInsetSize =  _snakeMouth.frame.size.width/3;
-    
-    [UIView animateWithDuration:duration animations:^{
-        
-        // Mouth Close
-        _snakeMouth.frame = CGRectInset(_snakeMouth.frame, closeInsetSize, closeInsetSize);
-        
-    } completion:^(BOOL finished) {
-        
-        _snakeMouth.hidden = YES;
-        
-        // Mouth Open
-        _snakeMouth.frame = CGRectInset(_snakeMouth.frame, -closeInsetSize, -closeInsetSize);
-                
-    }];
-}
-
-#pragma mark - Exclamation Animation
-
--(CABasicAnimation *)exclamationAnimation
-{
-    CGFloat startAngle = - M_PI/60;
-    CGFloat endAngle = M_PI/60;
- 
-    CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
-    [anim setToValue:[NSNumber numberWithFloat:endAngle]]; // satrt angle
-    [anim setFromValue:[NSNumber numberWithDouble:startAngle]]; // rotation angle
-    [anim setDuration:0.1]; // rotate speed
-    [anim setRepeatCount:HUGE_VAL];
-    [anim setAutoreverses:YES];
-    return anim;
-}
-
-- (void)showExclamation:(BOOL)show
-{
-//    if (show) {
-//        exclamationView.hidden = NO;
-//        [exclamation.layer addAnimation:[self exclamationAnimation] forKey:nil];
-//        [_gamePad bringSubviewToFront:exclamationView];
-//    }
-//    else {
-//        exclamationView.hidden = YES;
-//        [exclamation.layer removeAllAnimations];
-//    }
-}
-
--(void)updateExclamationText:(NSString *)text
-{
-    if (text == nil)
-        exclamationText = [NSString stringWithFormat:@"Combo %ld!",_combos];
-    else
-        exclamationText = text;
-
-    exclamation.text = exclamationText;
 }
 
 #pragma mark - Game Over Animation

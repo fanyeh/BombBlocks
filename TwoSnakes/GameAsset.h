@@ -9,26 +9,18 @@
 #import <UIKit/UIKit.h>
 
 typedef enum {
-    kAssetTypeWall = 0,
-    kAssetTypeMonster,
-    kAssetTypeSword,
-    kAssetTypeShield,
-    kAssetTypeMagic,
-    kAssetTypeEmpty,
+
+    kAssetTypeEmpty = 0,
     kAssetTypeYellow,
     kAssetTypeRed,
     kAssetTypeBlue,
-    kAssetTypeGoal,
-    kAssetTypeKey,
-    kAssetTypeMagicWall,
-    kAssetTypeDoor
+    kAssetTypeGreen
+    
 } AssetType;
 
 @interface GameAsset : UIView
 
 @property (nonatomic) AssetType gameAssetType;
-@property (strong,nonatomic) UILabel *classicAssetLabel;
-@property (strong,nonatomic) NSString *assetName;
 @property (strong,nonatomic) NSIndexPath *indexPath;
 @property (strong,nonatomic) UIImageView *assetImageView;
 @property (strong,nonatomic) NSMutableArray *neighbors;
@@ -36,6 +28,5 @@ typedef enum {
 
 - (void)setPosition:(CGPoint)position;
 - (void)setAssetType:(AssetType)type;
-
 
 @end

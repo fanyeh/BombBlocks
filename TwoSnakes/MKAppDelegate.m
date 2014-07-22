@@ -28,11 +28,11 @@
     menuController = [[MenuController alloc]init];
     classicController = [[ClassicGameController alloc]init];
     
-    [self.window setRootViewController:menuController];
+    [self.window setRootViewController:classicController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center
-    [[GCHelper sharedInstance] authenticateLocalUser:menuController];
+    //[[GCHelper sharedInstance] authenticateLocalUser:menuController];
     return YES;
 }
 

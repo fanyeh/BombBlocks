@@ -7,7 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <SpriteKit/SpriteKit.h>
 
-@interface ParticleView : UIView
+
+@interface ParticleView : SKScene
+
+- (void)newExplosionWithPosX:(float)posX
+                     andPosY:(float)posY
+                    andColor:(UIColor *)color;
+
+//- (id)initWithFrame:(CGRect)frame andColor:(UIColor *)color;
+//
+//-(void) startEmission;
+//-(void) stopEmission;
+
 
 @end

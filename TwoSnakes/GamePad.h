@@ -13,16 +13,10 @@
 @interface GamePad : UIView
 
 @property (strong,nonatomic) NSMutableArray *assetArray;
-@property (strong,nonatomic) UIView *skillView;
-@property (strong,nonatomic) UIView *skillBackgroundView;
 
 - (id)initGamePad;
-- (void)setupDotForGameStart:(CGRect)headFrame;
 - (void)hideAllAssets;
 - (void)changeAssetType:(GameAsset *)asset;
 - (void)resetClassicGamePad;
-- (NSMutableArray *)searchPathPlayer:(CGRect)playerFrame enemy:(CGRect)enemyFrame moveDirection:(MoveDirection)moveDirection;
-- (void)showSkillView;
-- (void)hideSkillView;
 
 @end
