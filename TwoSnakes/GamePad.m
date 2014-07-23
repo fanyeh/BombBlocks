@@ -30,16 +30,16 @@
 
 - (id)initGamePad
 {
-    column = 7;
-    row = 9;
-    moveSize = 41;
+    column = 5;
+    row = 7;
+    moveSize = 51;
 
-    CGRect frame = CGRectMake(0, 0, moveSize*column+4, moveSize*row+4);
+    CGRect frame = CGRectMake(0, 0, moveSize*column+2, moveSize*row+2);
 
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-        [self createClassicGameAssetColumn:column andRow:row];
+        //[self createClassicGameAssetColumn:column andRow:row];
 
     }
     return self;
@@ -75,7 +75,7 @@
             [self sendSubviewToBack:asset];
             [_assetArray addObject:asset];
             
-            if (i == 3 && j == 4) {
+            if (i == 2 && j == 3) {
                 NSLog(@"center frame %@", NSStringFromCGRect(asset.frame));
             }
             

@@ -9,10 +9,7 @@
 #import "SnakeNode.h"
 
 @implementation SnakeNode
-{
-    NodeIndex nodePath;
 
-}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -36,18 +33,18 @@
 
 - (void)setNodeIndexRow:(int)row andCol:(int)col
 {
-    nodePath.row = row;
-    nodePath.col = col;
+    _nodePath.row = row;
+    _nodePath.col = col;
 }
 
 -(int)nodeIndexRow
 {
-    return nodePath.row;
+    return _nodePath.row;
 }
 
 -(int)nodeIndexCol
 {
-    return nodePath.col;
+    return _nodePath.col;
 }
 
 /*

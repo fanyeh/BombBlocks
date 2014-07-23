@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C67DD3E1919E45E00666A2D /* SnakeButton.m */; };
+		4C70B6D0197F8BB60024F9DF /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6CE197F8BB60024F9DF /* circle.png */; };
+		4C70B6D1197F8BB60024F9DF /* triangle.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6CF197F8BB60024F9DF /* triangle.png */; };
+		4C70B6D3197F8C480024F9DF /* TriangleParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6D2197F8C480024F9DF /* TriangleParticle.sks */; };
+		4C70B6D5197F8C5D0024F9DF /* CircleParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6D4197F8C5D0024F9DF /* CircleParticle.sks */; };
 		4C78A077192D9EB8003F9ABE /* GameSceneTemplateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C78A076192D9EB8003F9ABE /* GameSceneTemplateController.m */; };
 		4C78A07A192DA14D003F9ABE /* ClassicGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C78A079192DA14D003F9ABE /* ClassicGameController.m */; };
 		4C78A081192DDABB003F9ABE /* GameAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C78A080192DDABB003F9ABE /* GameAsset.m */; };
@@ -35,8 +39,7 @@
 		4C8585AF1925FB270096F75B /* faceboo40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8585AE1925FB270096F75B /* faceboo40@2x.png */; };
 		4C8585B31925FF200096F75B /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8585B11925FF200096F75B /* Reachability.m */; };
 		4CA0E58819760BFB008B2E71 /* square.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E58719760BFB008B2E71 /* square.png */; };
-		4CA0E59319764CD2008B2E71 /* MyParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E59119764CD2008B2E71 /* MyParticle.sks */; };
-		4CA0E59419764CD2008B2E71 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E59219764CD2008B2E71 /* spark.png */; };
+		4CA0E59319764CD2008B2E71 /* SquareParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E59119764CD2008B2E71 /* SquareParticle.sks */; };
 		4CA0E5D91977A0B6008B2E71 /* blue1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E5D11977A0B6008B2E71 /* blue1@2x.png */; };
 		4CA0E5DA1977A0B6008B2E71 /* blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E5D21977A0B6008B2E71 /* blue@2x.png */; };
 		4CA0E5DB1977A0B6008B2E71 /* red1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E5D31977A0B6008B2E71 /* red1@2x.png */; };
@@ -82,6 +85,10 @@
 /* Begin PBXFileReference section */
 		4C67DD3D1919E45E00666A2D /* SnakeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeButton.h; sourceTree = "<group>"; };
 		4C67DD3E1919E45E00666A2D /* SnakeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeButton.m; sourceTree = "<group>"; };
+		4C70B6CE197F8BB60024F9DF /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
+		4C70B6CF197F8BB60024F9DF /* triangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = triangle.png; sourceTree = "<group>"; };
+		4C70B6D2197F8C480024F9DF /* TriangleParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TriangleParticle.sks; sourceTree = "<group>"; };
+		4C70B6D4197F8C5D0024F9DF /* CircleParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CircleParticle.sks; sourceTree = "<group>"; };
 		4C78A075192D9EB8003F9ABE /* GameSceneTemplateController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameSceneTemplateController.h; sourceTree = "<group>"; };
 		4C78A076192D9EB8003F9ABE /* GameSceneTemplateController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSceneTemplateController.m; sourceTree = "<group>"; };
 		4C78A078192DA14D003F9ABE /* ClassicGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassicGameController.h; sourceTree = "<group>"; };
@@ -128,8 +135,7 @@
 		4C8585B11925FF200096F75B /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		4C8585B21925FF200096F75B /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		4CA0E58719760BFB008B2E71 /* square.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = square.png; sourceTree = "<group>"; };
-		4CA0E59119764CD2008B2E71 /* MyParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MyParticle.sks; sourceTree = "<group>"; };
-		4CA0E59219764CD2008B2E71 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
+		4CA0E59119764CD2008B2E71 /* SquareParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SquareParticle.sks; sourceTree = "<group>"; };
 		4CA0E5D11977A0B6008B2E71 /* blue1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue1@2x.png"; sourceTree = "<group>"; };
 		4CA0E5D21977A0B6008B2E71 /* blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@2x.png"; sourceTree = "<group>"; };
 		4CA0E5D31977A0B6008B2E71 /* red1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red1@2x.png"; sourceTree = "<group>"; };
@@ -204,6 +210,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C70B6D6197F8C650024F9DF /* Particles */ = {
+			isa = PBXGroup;
+			children = (
+				4CA0E59119764CD2008B2E71 /* SquareParticle.sks */,
+				4C70B6D2197F8C480024F9DF /* TriangleParticle.sks */,
+				4C70B6D4197F8C5D0024F9DF /* CircleParticle.sks */,
+			);
+			name = Particles;
+			sourceTree = "<group>";
+		};
 		4C8541961946A6CD00810CE4 /* AdmobSDK */ = {
 			isa = PBXGroup;
 			children = (
@@ -228,6 +244,7 @@
 		4CAA5DEB1929A0C800049F52 /* Game Scene */ = {
 			isa = PBXGroup;
 			children = (
+				4C70B6D6197F8C650024F9DF /* Particles */,
 				4C7F13551911F36D00565A01 /* Snake.h */,
 				4C7F13561911F36D00565A01 /* Snake.m */,
 				4C8585A91925EA7B0096F75B /* CircleLabel.h */,
@@ -251,8 +268,6 @@
 				4C78A079192DA14D003F9ABE /* ClassicGameController.m */,
 				4CE343B11957D6C00032E674 /* ParticleView.h */,
 				4CE343B21957D6C00032E674 /* ParticleView.m */,
-				4CA0E59119764CD2008B2E71 /* MyParticle.sks */,
-				4CA0E59219764CD2008B2E71 /* spark.png */,
 				4CA0E5E11977A405008B2E71 /* SnakeNode.h */,
 				4CA0E5E21977A405008B2E71 /* SnakeNode.m */,
 			);
@@ -314,6 +329,8 @@
 		4CB108AD190FF6440085C747 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4C70B6CE197F8BB60024F9DF /* circle.png */,
+				4C70B6CF197F8BB60024F9DF /* triangle.png */,
 				4CA0E5E61977AB98008B2E71 /* head@2x.png */,
 				4CA0E5D11977A0B6008B2E71 /* blue1@2x.png */,
 				4CA0E5D21977A0B6008B2E71 /* blue@2x.png */,
@@ -439,10 +456,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C8541BE1946D82100810CE4 /* icon.png in Resources */,
+				4C70B6D3197F8C480024F9DF /* TriangleParticle.sks in Resources */,
 				4CA0E5DC1977A0B6008B2E71 /* red@2x.png in Resources */,
 				4CA0E58819760BFB008B2E71 /* square.png in Resources */,
-				4CA0E59419764CD2008B2E71 /* spark.png in Resources */,
 				4CA0E5E71977AB98008B2E71 /* head@2x.png in Resources */,
+				4C70B6D1197F8BB60024F9DF /* triangle.png in Resources */,
 				4C85859B1925A1990096F75B /* MenuController.xib in Resources */,
 				4C8541C81946E0E500810CE4 /* enemySnake@2x.png in Resources */,
 				4C8541951945F40A00810CE4 /* heart@2x.png in Resources */,
@@ -451,6 +469,7 @@
 				4CA0E5D91977A0B6008B2E71 /* blue1@2x.png in Resources */,
 				4C8541A51946A8B300810CE4 /* README.txt in Resources */,
 				4C8585AD1925FB150096F75B /* twitter40@2x.png in Resources */,
+				4C70B6D5197F8C5D0024F9DF /* CircleParticle.sks in Resources */,
 				4CA0E5DE1977A0B6008B2E71 /* yellow@2x.png in Resources */,
 				4C8541C41946DAF200810CE4 /* snakeLarge@2x.png in Resources */,
 				4C8585AF1925FB270096F75B /* faceboo40@2x.png in Resources */,
@@ -459,11 +478,12 @@
 				4C85418F1945545700810CE4 /* play@2x.png in Resources */,
 				4C8541BA1946D3C700810CE4 /* gamecenter@2x.png in Resources */,
 				4CA0E5DB1977A0B6008B2E71 /* red1@2x.png in Resources */,
+				4C70B6D0197F8BB60024F9DF /* circle.png in Resources */,
 				4CA0E5DD1977A0B6008B2E71 /* yellow1@2x.png in Resources */,
 				4CA0E5DF1977A0B6008B2E71 /* green1@2x.png in Resources */,
 				4CB108BC190FF6440085C747 /* Images.xcassets in Resources */,
 				4C8541931945F3F900810CE4 /* replay@2x.png in Resources */,
-				4CA0E59319764CD2008B2E71 /* MyParticle.sks in Resources */,
+				4CA0E59319764CD2008B2E71 /* SquareParticle.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

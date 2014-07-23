@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import <SpriteKit/SpriteKit.h>
-
+#import "GameAsset.h"
 
 @interface ParticleView : SKScene
 
 - (void)newExplosionWithPosX:(float)posX
                      andPosY:(float)posY
-                    andColor:(UIColor *)color;
+                   assetType:(AssetType)type;
 
 //- (id)initWithFrame:(CGRect)frame andColor:(UIColor *)color;
 //

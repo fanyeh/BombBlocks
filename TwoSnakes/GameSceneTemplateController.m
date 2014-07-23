@@ -51,39 +51,39 @@
     _gameState = kCurrentGameStatePause;
 }
 
--(void)directionChange:(UITapGestureRecognizer *)sender
-{
-    if (_gamePad.userInteractionEnabled) {
-        CGPoint location = [sender locationInView:_gamePad];
-        [_snake setTurningNode:location];
-        _gamePad.userInteractionEnabled = NO;
-
-    }
-    
-    //    CGPoint location = [sender locationInView:newGamePad];
-    //
-    //    // Show tap point
-    //        UIView *tapDot = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 10, 10)];
-    //        tapDot.center = location;
-    //        tapDot.layer.cornerRadius = 5;
-    //        tapDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
-    //        tapDot.alpha = 0;
-    //        tapDot.layer.borderColor = [[UIColor colorWithWhite:0.400 alpha:1.000]CGColor];
-    //        tapDot.layer.borderWidth = 1.5;
-    //        [newGamePad addSubview:tapDot];
-    //
-    //        [UIView animateWithDuration:0.3 animations:^{
-    //            tapDot.alpha = 1;
-    //        } completion:^(BOOL finished) {
-    //            [UIView animateWithDuration:0.3 animations:^{
-    //                tapDot.alpha = 0;
-    //
-    //            } completion:^(BOOL finished) {
-    //                [tapDot removeFromSuperview];
-    //            }];
-    //        }];
-    
-}
+//-(void)directionChange:(UITapGestureRecognizer *)sender
+//{
+//    if (_gamePad.userInteractionEnabled) {
+//        CGPoint location = [sender locationInView:_gamePad];
+//        [_snake setTurningNode:location];
+//        _gamePad.userInteractionEnabled = NO;
+//
+//    }
+//    
+//    //    CGPoint location = [sender locationInView:newGamePad];
+//    //
+//    //    // Show tap point
+//    //        UIView *tapDot = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 10, 10)];
+//    //        tapDot.center = location;
+//    //        tapDot.layer.cornerRadius = 5;
+//    //        tapDot.backgroundColor = [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000];
+//    //        tapDot.alpha = 0;
+//    //        tapDot.layer.borderColor = [[UIColor colorWithWhite:0.400 alpha:1.000]CGColor];
+//    //        tapDot.layer.borderWidth = 1.5;
+//    //        [newGamePad addSubview:tapDot];
+//    //
+//    //        [UIView animateWithDuration:0.3 animations:^{
+//    //            tapDot.alpha = 1;
+//    //        } completion:^(BOOL finished) {
+//    //            [UIView animateWithDuration:0.3 animations:^{
+//    //                tapDot.alpha = 0;
+//    //
+//    //            } completion:^(BOOL finished) {
+//    //                [tapDot removeFromSuperview];
+//    //            }];
+//    //        }];
+//    
+//}
 
 - (void)changeGameState
 {

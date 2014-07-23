@@ -31,6 +31,8 @@ typedef struct NodeIndex NodeIndex;
 
 @property (nonatomic,assign) AssetType assetType;
 @property (nonatomic,assign) MoveDirection direction;
+@property (nonatomic,assign) NodeIndex nodePath;
 @property (nonatomic,strong) UIColor *nodeColor;
+@property (nonatomic,strong) NSString *name;
 
 @end

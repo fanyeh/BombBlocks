@@ -17,7 +17,7 @@
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         
-        self.backgroundColor = [SKColor colorWithCGColor:[UIColor colorWithRed:0.216 green:0.282 blue:0.322 alpha:1.000].CGColor];
+        self.backgroundColor = [SKColor colorWithCGColor:[UIColor blackColor].CGColor];
         
     }
     return self;
@@ -25,9 +25,42 @@
 
 - (void)newExplosionWithPosX:(float)posX
                      andPosY:(float)posY
-                    andColor:(UIColor *)color
+                   assetType:(AssetType)type
 {
-    SKEmitterNode *emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"MyParticle"ofType:@"sks"]];
+    SKEmitterNode *emitter;
+    UIColor *color;
+    
+    switch (type) {
+        case kAssetTypeBlue:
+            //Circle
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"CircleParticle"ofType:@"sks"]];
+            color = BlueDotColor;
+            break;
+        case kAssetTypeRed:
+            // 菱形
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SquareParticle"ofType:@"sks"]];
+            color = RedDotColor;
+
+            break;
+        case kAssetTypeGreen:
+            // Square
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SquareParticle"ofType:@"sks"]];
+            color = GreenDotColor;
+
+            break;
+        case kAssetTypeYellow:
+            // Triangle
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"TriangleParticle"ofType:@"sks"]];
+            color = YellowDotColor;
+
+            break;
+            
+        case kAssetTypeEmpty:
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SquareParticle"ofType:@"sks"]];
+            color = [UIColor clearColor];
+
+            break;
+    }
     emitter.position = CGPointMake(posX, posY);
     emitter.particleColor =  color;
     emitter.particleColorBlendFactor = 1.0;

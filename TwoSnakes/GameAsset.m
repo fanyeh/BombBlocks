@@ -28,7 +28,7 @@
     self = [super init];
     if (self) {
         // Initialization code
-        self.frame = CGRectMake(0, 0,40,40);
+        self.frame = CGRectMake(0, 0,50,50);
 
         _gameAssetType = kAssetTypeEmpty;
         CGFloat imageViewSize = self.frame.size.width-16;

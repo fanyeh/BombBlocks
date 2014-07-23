@@ -38,6 +38,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor blackColor];
     // Do any additional setup after loading the view.
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
@@ -69,7 +70,7 @@
     // Background
     UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.gamePad.frame.size.width+16, self.gamePad.frame.size.height+16)];
     backgroundView.backgroundColor = PadBackgroundColor;
-    backgroundView.layer.cornerRadius = 10;
+    //backgroundView.layer.cornerRadius = 10;
     backgroundView.center = self.view.center;
     [self.view addSubview:backgroundView];
     [self.view addSubview:self.gamePad];
@@ -137,7 +138,7 @@
     [self.view addSubview:_scoreLabel];
     
     // Setup player snake head
-    startFrame = CGRectMake(125, 166, 40 , 40);
+    startFrame = CGRectMake(104, 155, 50 , 50);
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
     [self.gamePad addSubview:self.snake];
     self.snake.particleView = particle;

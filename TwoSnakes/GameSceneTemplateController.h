@@ -28,7 +28,7 @@ typedef enum {
 
 - (void)directionChange:(UITapGestureRecognizer *)sender;
 - (void)startMoveTimer;
-- (void)changeDirection;
+//- (void)changeDirection;
 - (void)changeGameState;
 
 @end

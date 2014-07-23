@@ -37,15 +37,15 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 - (MoveDirection)headDirection;
 - (SnakeNode *)snakeHead;
 - (SnakeNode *)snakeTail;
-- (void)setTurningNode:(CGPoint)location;
+//- (void)setTurningNode:(CGPoint)location;
 - (void)setTurningNodeBySwipe:(UISwipeGestureRecognizerDirection)swipeDirection;
 - (void)resetSnake;
 - (void)startRotate;
 - (void)stopRotate;
 - (void)gameOver;
-- (BOOL)checkCombo:(completeComboCallback)completeBlock;
+//- (BOOL)checkCombo:(completeComboCallback)completeBlock;
 - (void)setWallBounds:(NSMutableArray *)wallbounds;
-- (void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(completeComboCallback)completeBlock;
+//- (void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(completeComboCallback)completeBlock;
 -(CABasicAnimation *)stunAnimation:(NSInteger)i;
 
 @end
