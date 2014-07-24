@@ -21,6 +21,10 @@
     UILabel *comboLabel;
     UIView *comboView;
     UIView *rankView;
+    SnakeNode *nextNode;
+    SnakeNode *nextNode2;
+    SnakeNode *nextNode3;
+
 }
 @end
 
@@ -38,7 +42,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor blackColor];
+    self.view.backgroundColor = [UIColor colorWithRed:0.059 green:0.051 blue:0.051 alpha:1.000];
     // Do any additional setup after loading the view.
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
@@ -49,10 +53,6 @@
     self.gamePad = [[GamePad alloc]initGamePad];
     self.gamePad.center = self.view.center;
     self.gamePad.backgroundColor = [UIColor whiteColor];
-    //self.gamePad.layer.cornerRadius = 10;
-    //self.gamePad.layer.masksToBounds = YES;
-    //UITapGestureRecognizer *gamePadTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(directionChange:)];
-    //[self.gamePad addGestureRecognizer:gamePadTap];
 
     // Configure the SKView
     SKView * skView = [[SKView alloc]initWithFrame:CGRectMake(0, 0, self.gamePad.frame.size.width, self.gamePad.frame.size.height)];
@@ -60,7 +60,6 @@
     // Create and configure the scene.
     ParticleView *particle = [[ParticleView alloc]initWithSize:skView.bounds.size];
     particle.scaleMode = SKSceneScaleModeAspectFill;
-    //[particle newExplosion:200  :100 :[UIColor blueColor].CGColor];
     [self.gamePad addSubview:skView];
     [self.gamePad sendSubviewToBack:skView];
 
@@ -68,10 +67,12 @@
     [skView presentScene:particle];
     
     // Background
-    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.gamePad.frame.size.width+16, self.gamePad.frame.size.height+16)];
-    backgroundView.backgroundColor = PadBackgroundColor;
-    //backgroundView.layer.cornerRadius = 10;
+    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.gamePad.frame.size.width+24, self.gamePad.frame.size.height+24)];
+    backgroundView.backgroundColor = [UIColor colorWithRed:0.059 green:0.051 blue:0.051 alpha:1.000];
     backgroundView.center = self.view.center;
+//    self.gamePad.frame = CGRectOffset(self.gamePad.frame, 0, 20);
+//    backgroundView.frame = CGRectOffset(backgroundView.frame, 0, 20);
+
     [self.view addSubview:backgroundView];
     [self.view addSubview:self.gamePad];
     
@@ -81,7 +82,7 @@
     // Combo
     comboView = [[UIView alloc]initWithFrame:CGRectMake(320-13.5-50, 20, viewWidth, viewHeight)];
     comboView.backgroundColor = PadBackgroundColor;
-    comboView.layer.cornerRadius = 5;
+    //comboView.layer.cornerRadius = 5;
     [self.view addSubview:comboView];
     
     comboLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, viewWidth, 20)];
@@ -100,9 +101,9 @@
     [comboView addSubview:comboCountLabel];
     
     // Rank
-    rankView = [[UIView alloc]initWithFrame:CGRectMake(13.5, 20, viewWidth, viewHeight)];
+    rankView = [[UIView alloc]initWithFrame:CGRectMake(13.5, 20 , viewWidth, viewHeight)];
     rankView.backgroundColor = PadBackgroundColor;
-    rankView.layer.cornerRadius = 5;
+    //rankView.layer.cornerRadius = 5;
     [self.view addSubview:rankView];
     
     UILabel *rankLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, viewWidth, 20)];
@@ -138,7 +139,7 @@
     [self.view addSubview:_scoreLabel];
     
     // Setup player snake head
-    startFrame = CGRectMake(104, 155, 50 , 50);
+    startFrame = CGRectMake(125, 166, 40 , 40);
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
     [self.gamePad addSubview:self.snake];
     self.snake.particleView = particle;
@@ -146,13 +147,13 @@
     score = 0;
     maxCombos = 0;
     
-    UITapGestureRecognizer *changeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changeGameState)];
-    [self.pauseLabel addGestureRecognizer:changeTap];
+    UITapGestureRecognizer *replayTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(replayGame)];
+    [self.pauseLabel addGestureRecognizer:replayTap];
     
     // Game Center Label
     UILabel *gameCenterLabel = [[UILabel alloc]initWithFrame:CGRectMake(13.5, 508, viewWidth, viewHeight)];
     gameCenterLabel.backgroundColor = PadBackgroundColor;
-    gameCenterLabel.layer.cornerRadius = 5;
+    //gameCenterLabel.layer.cornerRadius = 5;
     gameCenterLabel.layer.masksToBounds = YES;
     UIImageView *gamecenterImageView = [[UIImageView alloc]initWithFrame:CGRectMake(10, 5, 30, 30)];
     UIImage *gamecenterImage = [UIImage imageNamed:@"gamecenter.png"];
@@ -180,7 +181,53 @@
     UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDirection:)];
     [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
     [self.gamePad addGestureRecognizer:swipeUp];
+    
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-122)/2, 508, 40, 40)];
+    [self setNextNode:nextNode];
+    [self.view addSubview:nextNode];
 
+    nextNode2 = [[SnakeNode alloc]initWithFrame:CGRectOffset(nextNode.frame, 41, 0)];
+    [self setNextNode:nextNode2];
+    [self.view addSubview:nextNode2];
+
+    nextNode3 = [[SnakeNode alloc]initWithFrame:CGRectOffset(nextNode2.frame, 41, 0)];
+    [self setNextNode:nextNode3];
+    [self.view addSubview:nextNode3];
+
+    self.snake.nextNode = nextNode;
+    self.snake.nextNode2 = nextNode2;
+    self.snake.nextNode3 = nextNode3;
+}
+
+-(void)setNextNode:(SnakeNode *)node
+{
+    node.layer.borderWidth = 3;
+    node.layer.borderColor = PadBackgroundColor.CGColor;
+    int randomAsset = arc4random()%5;
+    switch (randomAsset) {
+        case 0:
+            node.assetType = kAssetTypeBlue;
+            node.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
+            break;
+        case 1:
+            node.assetType = kAssetTypeRed;
+            node.nodeImageView.image = [UIImage imageNamed:@"red.png"];
+            
+            break;
+        case 2:
+            node.assetType = kAssetTypeGreen;
+            node.nodeImageView.image = [UIImage imageNamed:@"green.png"];
+            
+            break;
+        case 3:
+            node.assetType = kAssetTypeYellow;
+            node.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
+            break;
+        case 4:
+            node.assetType = kAssetTypePurple;
+            node.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
+            break;
+    }
 }
 
 -(void)swipeDirection:(UISwipeGestureRecognizer *)sender
@@ -188,7 +235,8 @@
     
     if ([self moveDirecton:sender.direction]) {
         
-        [self.snake setTurningNodeBySwipe:sender.direction];
+        [self.snake swipeToMove:sender.direction];
+        //[self.snake setTurningNodeBySwipe:sender.direction];
         
 //        [self.snake checkCombo:^(AssetType type, BOOL hasCombo) {
 //            
@@ -241,33 +289,14 @@
 }
 #pragma mark - Dot
 
-- (void)changeGameState
+- (void)replayGame
 {
-        [super changeGameState];
-        
-        // Current game start after change
-        switch (self.gameState) {
-                
-            case kCurrentGameStatePlay:
-                
-                break;
-            case kCurrentGameStatePause:
-                
-                break;
-            case kCurrentGameStateReplay:
-                
-                maxCombos = 0;
-                score = 0;
-                
-                [self setScore];
-                [self.snake resetSnake];
-                [self.gamePad resetClassicGamePad];
-                [self startMoveTimer];
-                
-                self.gameState = kCurrentGameStatePlay;
-                
-                break;
-        }
+    maxCombos = 0;
+    score = 0;
+
+    [self setScore];
+    [self.snake resetSnake];
+    [self.gamePad resetClassicGamePad];
 }
 
 - (void)minuteFromSeconds:(NSInteger)seconds

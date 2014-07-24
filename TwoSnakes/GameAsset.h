@@ -14,7 +14,8 @@ typedef enum {
     kAssetTypeYellow,
     kAssetTypeRed,
     kAssetTypeBlue,
-    kAssetTypeGreen
+    kAssetTypeGreen,
+    kAssetTypePurple
     
 } AssetType;
 

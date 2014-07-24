@@ -54,6 +54,12 @@
             color = YellowDotColor;
 
             break;
+        case kAssetTypePurple:
+            // Triangle
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"TriangleParticle"ofType:@"sks"]];
+            color = PurpleDotColor;
+            
+            break;
             
         case kAssetTypeEmpty:
             emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SquareParticle"ofType:@"sks"]];

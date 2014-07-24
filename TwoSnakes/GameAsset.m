@@ -28,7 +28,7 @@
     self = [super init];
     if (self) {
         // Initialization code
-        self.frame = CGRectMake(0, 0,50,50);
+        self.frame = CGRectMake(0, 0,40,40);
 
         _gameAssetType = kAssetTypeEmpty;
         CGFloat imageViewSize = self.frame.size.width-16;
@@ -86,6 +86,12 @@
 
             //_assetImageView.image = [UIImage imageNamed:@"green.png"];
 
+            break;
+        case kAssetTypePurple:
+            _assetImageView.backgroundColor = PurpleDotColor;
+            
+            //_assetImageView.image = [UIImage imageNamed:@"green.png"];
+            
             break;
            
     }

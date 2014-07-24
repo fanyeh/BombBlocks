@@ -34,5 +34,6 @@ typedef struct NodeIndex NodeIndex;
 @property (nonatomic,assign) NodeIndex nodePath;
 @property (nonatomic,strong) UIColor *nodeColor;
 @property (nonatomic,strong) NSString *name;
+@property (nonatomic,strong) UIImageView *nodeImageView;
 
 @end

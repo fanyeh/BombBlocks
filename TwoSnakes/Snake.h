@@ -18,7 +18,8 @@ typedef enum {
     kPatternTypeRow,
     kPatternTypeCol,
     kPatternTypeDiagonalDown,
-    kPatternTypeDiagonalUp
+    kPatternTypeDiagonalUp,
+    kPatternTypeCross
 } PatternType;
 
 typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
@@ -28,6 +29,11 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 @property (strong,nonatomic) NSMutableArray *snakeBody;
 @property (strong,nonatomic) GamePad *gamePad;
 @property (strong,nonatomic) ParticleView *particleView;
+@property (strong,nonatomic) SnakeNode *nextNode;
+@property (strong,nonatomic) SnakeNode *nextNode2;
+@property (strong,nonatomic) SnakeNode *nextNode3;
+
+
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
 @property (nonatomic) BOOL isRotate;
@@ -37,15 +43,14 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 - (MoveDirection)headDirection;
 - (SnakeNode *)snakeHead;
 - (SnakeNode *)snakeTail;
-//- (void)setTurningNode:(CGPoint)location;
 - (void)setTurningNodeBySwipe:(UISwipeGestureRecognizerDirection)swipeDirection;
+- (void)swipeToMove:(UISwipeGestureRecognizerDirection)swipeDirection;
+
 - (void)resetSnake;
 - (void)startRotate;
 - (void)stopRotate;
 - (void)gameOver;
-//- (BOOL)checkCombo:(completeComboCallback)completeBlock;
 - (void)setWallBounds:(NSMutableArray *)wallbounds;
-//- (void)removeSnakeBodyByRangeStart:(NSInteger)start andRange:(NSInteger)range complete:(completeComboCallback)completeBlock;
 -(CABasicAnimation *)stunAnimation:(NSInteger)i;
 
 @end

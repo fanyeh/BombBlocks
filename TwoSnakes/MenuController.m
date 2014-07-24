@@ -60,12 +60,6 @@
 
 }
 
-- (void)pauseGameOnBackground
-{
-    if (classicGameController && classicGameController.gameState == kCurrentGameStatePlay)
-        [classicGameController changeGameState];
-}
-
 #pragma mark - Show Ad
 - (IBAction)showAd:(id)sender 
 {
