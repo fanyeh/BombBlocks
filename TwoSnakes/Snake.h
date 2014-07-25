@@ -31,11 +31,10 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 @property (strong,nonatomic) NSMutableArray *snakeBody;
 @property (strong,nonatomic) GamePad *gamePad;
 @property (strong,nonatomic) ParticleView *particleView;
-@property (strong,nonatomic) SnakeNode *nextNode;
-@property (strong,nonatomic) SnakeNode *nextNode2;
-@property (strong,nonatomic) SnakeNode *nextNode3;
-@property (strong,nonatomic) SnakeNode *nextNode4;
-
+//@property (strong,nonatomic) SnakeNode *nextNode;
+//@property (strong,nonatomic) SnakeNode *nextNode2;
+//@property (strong,nonatomic) SnakeNode *nextNode3;
+@property (strong,nonatomic) NSMutableArray *comingNodeArray;
 
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;

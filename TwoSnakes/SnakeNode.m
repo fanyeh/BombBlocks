@@ -16,7 +16,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        _nodeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(8, 8, 24, 24)];
+        _nodeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(6, 6, 28, 28)];
         [self addSubview:_nodeImageView];
     }
     return self;

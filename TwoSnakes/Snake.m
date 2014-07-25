@@ -173,164 +173,10 @@
 
 #pragma mark - Snake Movement
 
--(void)setTurningNodeBySwipe:(UISwipeGestureRecognizerDirection)swipeDirection
-{
-    
-    _gamePad.userInteractionEnabled = NO;
-    MoveDirection direction = [self headDirection];
-    
-    switch ([self headDirection]) {
-        case kMoveDirectionUp:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionRight)
-                direction = kMoveDirectionRight;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
-                direction = kMoveDirectionLeft;
-            break;
-        case kMoveDirectionDown:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionRight)
-                direction = kMoveDirectionRight;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
-                direction = kMoveDirectionLeft;
-            break;
-        case kMoveDirectionLeft:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
-                direction = kMoveDirectionDown;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
-                direction = kMoveDirectionUp;
-            break;
-        case kMoveDirectionRight:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
-                direction = kMoveDirectionDown;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
-                direction = kMoveDirectionUp;
-            break;
-    }
-    
-    switch ([self headDirection] ) {
-        case kMoveDirectionRight:
-            if (direction == kMoveDirectionDown) {
-                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
-            }
-            else if (direction == kMoveDirectionUp) {
-                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-            }
-            break;
-        case kMoveDirectionLeft:
-            if (direction == kMoveDirectionDown) {
-                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
-            }
-            else if (direction == kMoveDirectionUp){
-                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-            }
-            break;
-        case kMoveDirectionUp:
-            if (direction == kMoveDirectionLeft){
-                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
-            }
-            else if (direction == kMoveDirectionRight){
-                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-            }
-            break;
-        case kMoveDirectionDown:
-            if (direction == kMoveDirectionLeft){
-                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
-            }
-            
-            else if (direction == kMoveDirectionRight){
-                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-            }
-            break;
-    }
-    
-    CGRect newPosition = [self getNewPosition:[_snakeBody firstObject] direction:direction];
-    
-    BOOL move = YES;
-    
-    // Check if snake head touches body
-    for (SnakeNode *v in _snakeBody) {
-        // If head touched body , game is over
-        if (CGRectIntersectsRect(newPosition, v.frame) && ![v.name isEqualToString:@"name"]) {
-            move = NO;
-            break;
-        }
-    }
-    
-    // Check if snake head touches boundary
-    if ([self touchedScreenBounds:newPosition]) {
-        move  = NO;
-    }
-    
-    if (move) {
-        
-        __block CGRect previousFrame = newPosition;
-        __block CGRect currentFrame;
-        
-        __block MoveDirection previousDirection = direction;
-        __block MoveDirection currentDirection;
-        
-        __block NodeIndex previousNodePath;
-        __block NodeIndex currentNodePath;
-        
-        [UIView animateWithDuration:0.2 animations:^{
-            
-            for (NSInteger i=0; i < [_snakeBody count];i++) {
-                
-                SnakeNode *currentBody = [_snakeBody objectAtIndex:i];
-                currentFrame = currentBody.frame;
-                currentDirection = currentBody.direction;
-                currentNodePath = currentBody.nodePath;
-                
-                if (i==0)
-                    [self updateSnakeNodeIndex:currentBody toFrame:previousFrame];
-                else
-                    currentBody.nodePath = previousNodePath;
-                
-                currentBody.frame = previousFrame;
-                currentBody.direction = previousDirection;
-                
-                previousFrame = currentFrame;
-                previousDirection = currentDirection;
-                previousNodePath = currentNodePath;
-                
-            }
-            
-        } completion:^(BOOL finished) {
 
-            [self addSnakeBody:_nextNode.assetType];
-            
-            int randomAsset = arc4random()%4;
-            switch (randomAsset) {
-                case 0:
-                    _nextNode.assetType = kAssetTypeBlue;
-                    _nextNode.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
-                    break;
-                case 1:
-                    _nextNode.assetType = kAssetTypeRed;
-                    _nextNode.nodeImageView.image = [UIImage imageNamed:@"red.png"];
-                    
-                    break;
-                case 2:
-                    _nextNode.assetType = kAssetTypeGreen;
-                    _nextNode.nodeImageView.image = [UIImage imageNamed:@"green.png"];
-                    
-                    break;
-                case 3:
-                    _nextNode.assetType = kAssetTypeYellow;
-                    _nextNode.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
-                    break;
-            }
-        }];
-        
-    } else {
-        
-        _gamePad.userInteractionEnabled = YES;
-    }
-}
 
 -(void)swipeToMove:(UISwipeGestureRecognizerDirection)swipeDirection
 {
-    
-    _gamePad.userInteractionEnabled = NO;
     MoveDirection direction = [self headDirection];
     
     switch ([self headDirection]) {
@@ -428,42 +274,89 @@
             
         } completion:^(BOOL finished) {
             
-            [self addSnakeBodyAfterHead:_nextNode.assetType position:oldPosition nodePath:oldNodePath];
-            
-            _nextNode.assetType = _nextNode2.assetType;
-            _nextNode.nodeImageView.image =  _nextNode2.nodeImageView.image;
-            
-            _nextNode2.assetType = _nextNode3.assetType;
-            _nextNode2.nodeImageView.image =  _nextNode3.nodeImageView.image;
-            
-            _nextNode3.assetType = _nextNode4.assetType;
-            _nextNode3.nodeImageView.image =  _nextNode4.nodeImageView.image;
+            SnakeNode *nextNode = [_comingNodeArray firstObject];
+            SnakeNode *nextNode2 = [_comingNodeArray objectAtIndex:1];
+            SnakeNode *nextNode3 = [_comingNodeArray objectAtIndex:2];
 
-            int randomAsset = arc4random()%3;
-            switch (randomAsset) {
-                case 0:
-                    _nextNode4.assetType = kAssetTypeBlue;
-                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
-                    break;
-                case 1:
-                    _nextNode4.assetType = kAssetTypeRed;
-                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"red.png"];
+            [self addSnakeBodyAfterHead:nextNode.assetType position:oldPosition nodePath:oldNodePath];
+            
+            CGRect firstNodeFrame = nextNode.frame;
+            CGRect secondNodeFrame = nextNode2.frame;
+            CGAffineTransform nodeT = nextNode.transform;
+            
+            
+            // Shrink first node
+            [UIView animateWithDuration:0.3 animations:^{
+                
+                nextNode.transform = CGAffineTransformScale(nextNode.transform, 0, 0);
+                
+            } completion:^(BOOL finished) {
+                
+                nextNode.alpha = 0;
+                nextNode.transform = nodeT;
+                nextNode.frame = nextNode3.frame;
+                
+                // Move second node
+                [UIView animateWithDuration:0.2 animations:^{
                     
-                    break;
-                case 2:
-                    _nextNode4.assetType = kAssetTypeGreen;
-                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"green.png"];
+                    nextNode2.frame = firstNodeFrame;
                     
-                    break;
-                case 3:
-                    _nextNode4.assetType = kAssetTypeYellow;
-                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
-                    break;
-                case 4:
-                    _nextNode4.assetType = kAssetTypePurple;
-                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
-                    break;
-            }
+                } completion:^(BOOL finished) {
+                    
+                    // Move third node
+                    [UIView animateWithDuration:0.2 animations:^{
+                        
+                        nextNode3.frame = secondNodeFrame;
+                        nextNode.transform = CGAffineTransformScale(nextNode.transform, 0, 0);
+                        
+                    } completion:^(BOOL finished) {
+                        
+                        int randomAsset = arc4random()%3;
+                        switch (randomAsset) {
+                            case 0:
+                                nextNode.assetType = kAssetTypeBlue;
+                                nextNode.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
+                                break;
+                            case 1:
+                                nextNode.assetType = kAssetTypeRed;
+                                nextNode.nodeImageView.image = [UIImage imageNamed:@"red.png"];
+                                
+                                break;
+                            case 2:
+                                nextNode.assetType = kAssetTypeGreen;
+                                nextNode.nodeImageView.image = [UIImage imageNamed:@"green.png"];
+                                
+                                break;
+                            case 3:
+                                nextNode.assetType = kAssetTypeYellow;
+                                nextNode.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
+                                break;
+                            case 4:
+                                nextNode.assetType = kAssetTypePurple;
+                                nextNode.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
+                                break;
+                        }
+  
+                        [UIView animateWithDuration:0.3 animations:^{
+                            
+                            nextNode.transform = nodeT;
+                            nextNode.alpha = 1;
+                            
+                        } completion:^(BOOL finished) {
+          
+                            [_comingNodeArray addObject:nextNode];
+                            [_comingNodeArray removeObjectAtIndex:0];
+                            _gamePad.userInteractionEnabled = YES;
+
+                            
+                        }];
+                        
+                    }];
+
+                }];
+                
+            }];
+            
         }];
         
     } else {
@@ -732,7 +625,6 @@
             for (SnakeNode *n in allPatterns) {
                 
                 n.layer.borderColor = n.nodeColor.CGColor;
-
                 n.alpha = 1.0;
             }
             
@@ -745,14 +637,8 @@
             }
             
             [self removeSnakeBodyFromArray:allPatterns];
-
             
         }];
-        
-    } else {
-        
-        _gamePad.userInteractionEnabled = YES;
-        
     }
 }
 
