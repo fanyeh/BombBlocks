@@ -419,7 +419,7 @@
         CGRect oldPosition = [self snakeHead].frame;
         NodeIndex oldNodePath = [self snakeHead].nodePath;
         
-        [UIView animateWithDuration:0.2 animations:^{
+        [UIView animateWithDuration:0.1 animations:^{
             
             [self updateSnakeNodeIndex:[self snakeHead] toFrame:newPosition];
             [self snakeHead].frame = newPosition;
@@ -435,30 +435,33 @@
             
             _nextNode2.assetType = _nextNode3.assetType;
             _nextNode2.nodeImageView.image =  _nextNode3.nodeImageView.image;
+            
+            _nextNode3.assetType = _nextNode4.assetType;
+            _nextNode3.nodeImageView.image =  _nextNode4.nodeImageView.image;
 
-            int randomAsset = arc4random()%5;
+            int randomAsset = arc4random()%3;
             switch (randomAsset) {
                 case 0:
-                    _nextNode3.assetType = kAssetTypeBlue;
-                    _nextNode3.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
+                    _nextNode4.assetType = kAssetTypeBlue;
+                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
                     break;
                 case 1:
-                    _nextNode3.assetType = kAssetTypeRed;
-                    _nextNode3.nodeImageView.image = [UIImage imageNamed:@"red.png"];
+                    _nextNode4.assetType = kAssetTypeRed;
+                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"red.png"];
                     
                     break;
                 case 2:
-                    _nextNode3.assetType = kAssetTypeGreen;
-                    _nextNode3.nodeImageView.image = [UIImage imageNamed:@"green.png"];
+                    _nextNode4.assetType = kAssetTypeGreen;
+                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"green.png"];
                     
                     break;
                 case 3:
-                    _nextNode3.assetType = kAssetTypeYellow;
-                    _nextNode3.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
+                    _nextNode4.assetType = kAssetTypeYellow;
+                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
                     break;
                 case 4:
-                    _nextNode3.assetType = kAssetTypePurple;
-                    _nextNode3.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
+                    _nextNode4.assetType = kAssetTypePurple;
+                    _nextNode4.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
                     break;
             }
         }];
@@ -602,7 +605,7 @@
 - (void)addSnakeBodyAfterHead:(AssetType)assetType position:(CGRect)position nodePath:(NodeIndex)nodePath
 {
     SnakeNode *snakeBody = [[SnakeNode alloc]initWithFrame:position gameAssetType:assetType];
-    snakeBody.layer.borderColor = [UIColor colorWithWhite:0.400 alpha:1.000].CGColor;
+    snakeBody.layer.borderColor = FontColor.CGColor;
     snakeBody.layer.borderWidth = border;
     snakeBody.nodePath = nodePath;
     snakeBody.direction = [self snakeHead].direction;
@@ -668,6 +671,9 @@
     NSMutableArray *diaDownPatterns = [self patternCheck:kPatternTypeDiagonalDown];
     NSMutableArray *diaUpPatterns = [self patternCheck:kPatternTypeDiagonalUp];
     NSMutableArray *crossPatterns = [self patternCheck:kPatternTypeCross];
+    NSMutableArray *xPatterns = [self patternCheck:kPatternTypeX];
+    NSMutableArray *hallowSquarePatterns = [self patternCheck:kPatternTypeHallowSquare];
+
 
     
     NSMutableArray *allPatterns =[NSMutableArray arrayWithArray:colPatterns];
@@ -701,23 +707,37 @@
         }
     }
     
+    for (id element in xPatterns) {
+        if (![allPatterns containsObject:element]) {
+            [allPatterns addObject:element];
+        }
+    }
+    
+    for (id element in hallowSquarePatterns) {
+        if (![allPatterns containsObject:element]) {
+            [allPatterns addObject:element];
+        }
+    }
+    
     
     if ([allPatterns count] > 0) {
         
         for (SnakeNode *n in allPatterns) {
             
-            n.layer.borderColor = n.nodeColor.CGColor;
-            n.alpha = 0.5;
+            n.alpha = 0.6;
         }
         
-        [UIView animateWithDuration: 1.0 animations:^{
+        [UIView animateWithDuration: 0.8 animations:^{
             
             for (SnakeNode *n in allPatterns) {
+                
+                n.layer.borderColor = n.nodeColor.CGColor;
+
                 n.alpha = 1.0;
             }
             
         } completion:^(BOOL finished) {
-
+            
             for (SnakeNode *n in allPatterns) {
                 
                 [self explodeBody:n];
@@ -725,6 +745,7 @@
             }
             
             [self removeSnakeBodyFromArray:allPatterns];
+
             
         }];
         
@@ -758,7 +779,7 @@
     [removalArray removeObjectAtIndex:0];
 
     // Start pattern moving animation
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.3 animations:^{
         
         for (NSInteger i=index; i < [_snakeBody count];i++) {
             
@@ -768,7 +789,7 @@
             currentNodePath = currentBody.nodePath;
             
             // Set node indexpath based on move to frame position
-            //[self updateSnakeNodeIndex:currentBody toFrame:previousFrame];
+
             currentBody.frame = previousFrame;
             currentBody.direction = previousDirection;
             currentBody.nodePath = previousNodePath;
@@ -855,6 +876,12 @@
             case kPatternTypeCross:
                 return [self crossPatternCheck];
                 break;
+            case kPatternTypeX:
+                return [self xPatternCheck];
+                break;
+            case kPatternTypeHallowSquare:
+                return [self hallowSquarePatternCheck];
+                break;
         }
 
     }
@@ -887,6 +914,63 @@
             return patternArray;
         }
 
+    }
+    return nil;
+}
+
+-(NSMutableArray *)hallowSquarePatternCheck
+{
+    NSMutableArray *patternArray;
+    
+    for (SnakeNode *node in _snakeBody) {
+        
+        int r = [node nodeIndexRow];
+        int c = [node nodeIndexCol];
+        AssetType type = node.assetType;
+        
+        SnakeNode *node2;
+        SnakeNode *node3;
+        SnakeNode *node4;
+        
+        node2 = [self hasPatternRow:r+1 col:c-1 assetType:type];
+        node3 = [self hasPatternRow:r+1 col:c+1 assetType:type];
+        node4 = [self hasPatternRow:r+2 col:c assetType:type];
+        
+        if ( node2 && node3 && node4) {
+            
+            patternArray = [[NSMutableArray alloc]initWithArray: @[node,node2,node3,node4]];
+            return patternArray;
+        }
+        
+    }
+    return nil;
+}
+
+-(NSMutableArray *)xPatternCheck
+{
+    NSMutableArray *patternArray;
+    
+    for (SnakeNode *node in _snakeBody) {
+        
+        int r = [node nodeIndexRow];
+        int c = [node nodeIndexCol];
+        AssetType type = node.assetType;
+        
+        SnakeNode *node2;
+        SnakeNode *node3;
+        SnakeNode *node4;
+        SnakeNode *node5;
+        
+        node2 = [self hasPatternRow:r-1 col:c-1 assetType:type];
+        node3 = [self hasPatternRow:r-1 col:c+1 assetType:type];
+        node4 = [self hasPatternRow:r+1 col:c-1 assetType:type];
+        node5 = [self hasPatternRow:r+1 col:c+1 assetType:type];
+        
+        if ( node2 && node3 && node4 && node5) {
+            
+            patternArray = [[NSMutableArray alloc]initWithArray: @[node,node2,node3,node4,node5]];
+            return patternArray;
+        }
     }
     return nil;
 }
@@ -1038,7 +1122,6 @@
         }
     }
     return nil;
-
 }
 
 #pragma mark - Combo

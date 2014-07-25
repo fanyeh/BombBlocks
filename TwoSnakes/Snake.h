@@ -19,7 +19,9 @@ typedef enum {
     kPatternTypeCol,
     kPatternTypeDiagonalDown,
     kPatternTypeDiagonalUp,
-    kPatternTypeCross
+    kPatternTypeCross,
+    kPatternTypeX,
+    kPatternTypeHallowSquare
 } PatternType;
 
 typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
@@ -32,6 +34,7 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 @property (strong,nonatomic) SnakeNode *nextNode;
 @property (strong,nonatomic) SnakeNode *nextNode2;
 @property (strong,nonatomic) SnakeNode *nextNode3;
+@property (strong,nonatomic) SnakeNode *nextNode4;
 
 
 @property (nonatomic) CGFloat xOffset;

@@ -26,7 +26,7 @@
 #define YellowDotColor [UIColor colorWithRed:0.769 green:0.725 blue:0.255 alpha:1.000]
 #define GreenDotColor [UIColor colorWithRed:0.043 green:0.580 blue:0.267 alpha:1.000]
 #define PurpleDotColor [UIColor colorWithRed:0.400 green:0.176 blue:0.569 alpha:1.000]
-
-#define PadBackgroundColor [UIColor colorWithWhite:0.400 alpha:1.000]
+#define FontColor [UIColor colorWithWhite:0.231 alpha:1.000]
+#define PadBackgroundColor [UIColor colorWithRed:0.090 green:0.086 blue:0.094 alpha:1.000]
 #define GameTextColor [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000]
 #define SnakeColor [UIColor colorWithRed:0.431 green:0.780 blue:0.110 alpha:1.000]
