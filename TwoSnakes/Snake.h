@@ -36,7 +36,7 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 @property (nonatomic) CGFloat yOffset;
 @property (nonatomic) NSInteger combos;
 
-- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(GamePad *)gamePad headFrame:(CGRect)frame;
+- (id)initWithFrame:(CGRect)frame gamePad:(GamePad *)gamePad;
 - (MoveDirection)headDirection;
 - (SnakeNode *)snakeHead;
 - (SnakeNode *)snakeTail;

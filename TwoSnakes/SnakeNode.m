@@ -16,7 +16,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        _nodeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(6, 6, 28, 28)];
+        _nodeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(8, 8, 24, 24)];
         [self addSubview:_nodeImageView];
     }
     return self;
@@ -50,14 +50,5 @@
 {
     return _nodePath.col;
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 @end

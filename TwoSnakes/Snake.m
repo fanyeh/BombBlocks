@@ -28,7 +28,7 @@
     return self;
 }
 
-- (id)initWithSnakeHeadDirection:(MoveDirection)direction gamePad:(GamePad *)gamePad headFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame gamePad:(GamePad *)gamePad
 {
     headFrame = frame;
     self = [self initWithFrame:headFrame];
@@ -36,20 +36,14 @@
         border = 4;
         self.layer.borderColor = FontColor.CGColor;
         self.layer.borderWidth = border;
-        //self.backgroundColor = [UIColor whiteColor];
-        [self setNodeIndexRow:4 andCol:3];
+        [self setNodeIndexRow:0 andCol:0];
         self.name = @"head";
         
         // Snake head image
         CGFloat headOffset = 4;
         UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(headOffset, headOffset, headFrame.size.width-headOffset*2, headFrame.size.height-headOffset*2)];
         headImageView.image = [UIImage imageNamed:@"head.png"];
-        //headImageView.layer.cornerRadius = headFrame.size.width/4;
-        headImageView.transform = CGAffineTransformMakeRotation(-M_PI/2);
-        //headImageView.backgroundColor = [UIColor whiteColor];
         [self addSubview:headImageView];
-        
-        //[headImageView.layer addAnimation:[self gameOverAnimation] forKey:nil];
         
         _gamePad = gamePad;
         _snakeBody = [[NSMutableArray alloc]init];
@@ -57,24 +51,10 @@
 
         _xOffset = (headFrame.size.width+2)/1;
         _yOffset = (headFrame.size.height+2)/1;
-        
-        self.direction = direction;
 
-        switch (self.direction ) {
-                
-            case kMoveDirectionLeft:
-                    [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI);
-                break;
-            case kMoveDirectionUp:
-                    [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2);
-                break;
-            case kMoveDirectionDown:
-                    [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2);
-                break;
-            case kMoveDirectionRight:
-                break;
-        }
         chain = 2;
+        
+        self.direction = -1;
     }
     return self;
 }
@@ -114,8 +94,7 @@
         if (![v.name isEqualToString:@"head"])
             [v removeFromSuperview];
     }
-    
-    MoveDirection direction = [self headDirection];
+    self.direction = -1;
     SnakeNode *snakeHead = [self snakeHead];
     snakeHead.frame = headFrame;
 
@@ -125,22 +104,7 @@
     _yOffset = headFrame.size.height+1;
     [_snakeBody addObject:snakeHead];
     
-    
-    switch (direction) {
-        case kMoveDirectionLeft:
-            [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI);
-            break;
-        case kMoveDirectionUp:
-            [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2);
-            break;
-        case kMoveDirectionDown:
-            [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2);
-            break;
-        case kMoveDirectionRight:
-            break;
-    }
-    
-    [self setNodeIndexRow:4 andCol:3];
+    [self setNodeIndexRow:0 andCol:0];
 }
 
 #pragma mark - Directions
@@ -176,7 +140,7 @@
 
 -(void)swipeToMove:(UISwipeGestureRecognizerDirection)swipeDirection complete:(void(^)(void))completBlock
 {
-    MoveDirection direction = [self headDirection];
+    MoveDirection direction;
     
     switch ([self headDirection]) {
         case kMoveDirectionUp:
@@ -203,7 +167,21 @@
             else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
                 direction = kMoveDirectionUp;
             break;
+            
+        default:
+            
+            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
+                direction = kMoveDirectionDown;
+            else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
+                direction = kMoveDirectionUp;
+            else if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
+                direction = kMoveDirectionLeft;
+            else
+                direction = kMoveDirectionRight;
+            
+            break;
     }
+
     
 //    switch ([self headDirection] ) {
 //        case kMoveDirectionRight:
@@ -531,8 +509,7 @@
             
             switch (n.assetType) {
                 case kAssetTypeBlue:
-                    [self startBlinkAnimation:n];
-
+                    [self blinkAnimation:n];
 
                     break;
                 case kAssetTypeYellow:
@@ -542,10 +519,12 @@
                 case kAssetTypeRed:
                     [n.nodeImageView.layer addAnimation:[self rotateAnimation] forKey:nil];
 
-                    
                     break;
                 case kAssetTypeGreen:
-                    [n.nodeImageView.layer addAnimation:[self shakeAnimation:[allPatterns indexOfObject:n]] forKey:nil];
+                    // Shrink & Expand
+                    [self shrinkAnimation:n];
+                    
+//                    [n.nodeImageView.layer addAnimation:[self shakeAnimation:[allPatterns indexOfObject:n]] forKey:nil];
 
                     break;
             }
@@ -950,7 +929,7 @@
 
 #pragma mark - Body Animations
 
-- (void)startBlinkAnimation:(SnakeNode *)node
+- (void)blinkAnimation:(SnakeNode *)node
 {
     node.nodeImageView.alpha = 1.0f;
     
@@ -972,17 +951,26 @@
                      }];
 }
 
--(void)stopBlinkAnimation
+- (void)shrinkAnimation:(SnakeNode *)node
 {
-    [UIView animateWithDuration:0.12
+    CGAffineTransform t = node.nodeImageView.transform;
+    [UIView animateWithDuration:0.25
                           delay:0.0
-                        options:UIViewAnimationOptionCurveEaseInOut |
-     UIViewAnimationOptionBeginFromCurrentState
+                        options:
+     
+     UIViewAnimationOptionCurveEaseInOut |
+     UIViewAnimationOptionRepeat |
+     UIViewAnimationOptionAutoreverse |
+     UIViewAnimationOptionAllowUserInteraction
+     
                      animations:^{
-                         self.snakeHead.alpha = 1.0f;
+                         
+                         node.nodeImageView.transform = CGAffineTransformScale(t, 0.5, 0.5);
+                     
                      }
                      completion:^(BOOL finished){
                          // Do nothing
+                         node.nodeImageView.transform = t;
                      }];
 }
 
@@ -992,11 +980,11 @@
     CGFloat fromAngle;
     
     if (i%2 == 0) {
-        toAngle = -M_PI/24;
-        fromAngle = M_PI/24;
+        toAngle = -M_PI/12;
+        fromAngle = M_PI/12;
     } else {
-        toAngle = M_PI/24;
-        fromAngle = -M_PI/24;
+        toAngle = M_PI/12;
+        fromAngle = -M_PI/12;
     }
     
     CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
@@ -1050,8 +1038,6 @@
     return anim;
 }
 
-#pragma mark - Game Over Animation
-
 -(CABasicAnimation *)rotateAnimation
 {
     CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
@@ -1062,6 +1048,9 @@
     [anim setAutoreverses:NO];
     return anim;
 }
+
+#pragma mark - Game Over Animation
+
 
 - (void)gameOver
 {

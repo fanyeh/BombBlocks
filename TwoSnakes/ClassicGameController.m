@@ -128,7 +128,7 @@
     // Setup player snake head
     CGFloat snakeSize = 55 ;
     startFrame = CGRectMake(116, 173, snakeSize , snakeSize);
-    self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
+    self.snake = [[Snake alloc]initWithFrame:startFrame gamePad:self.gamePad];
     [self.gamePad addSubview:self.snake];
     self.snake.particleView = particle;
     
