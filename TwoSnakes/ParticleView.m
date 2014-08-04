@@ -17,7 +17,7 @@
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         
-        self.backgroundColor = [SKColor colorWithCGColor:[UIColor blackColor].CGColor];
+        self.backgroundColor = [UIColor colorWithRed:0.064 green:0.056 blue:0.056 alpha:1.000];//[SKColor colorWithCGColor:[UIColor blackColor].CGColor];
         
     }
     return self;

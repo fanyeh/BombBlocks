@@ -10,5 +10,5 @@
 #import <SpriteKit/SpriteKit.h>
 
 @interface MenuController : UIViewController
-- (void)pauseGameOnBackground;
+
 @end

@@ -42,7 +42,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithRed:0.059 green:0.051 blue:0.051 alpha:1.000];
+    self.view.backgroundColor = [UIColor blackColor];
     // Do any additional setup after loading the view.
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
@@ -71,11 +71,6 @@
     CGFloat viewHeight = 40;
     CGFloat viewWidth = 60;
     
-//    UIView *topBackView = [[UIView alloc]initWithFrame:CGRectMake(13.5, 10, 320-27, viewHeight+20)];
-//    topBackView.backgroundColor = [UIColor blackColor];
-//    [self.view addSubview:topBackView];
-
-    
     // Combo
     comboView = [[UIView alloc]initWithFrame:CGRectMake(320-13.5-50, 20, viewWidth, viewHeight)];
     //[self.view addSubview:comboView];
@@ -96,11 +91,11 @@
     [comboView addSubview:comboCountLabel];
     
     // ------------------------ Rank --------------------------- //
-    rankView = [[UIView alloc]initWithFrame:CGRectMake(13.5, 20 , viewWidth, viewHeight)];
+    rankView = [[UIView alloc]initWithFrame:CGRectMake(13.5, 15 , viewWidth, viewHeight)];
     //[self.view addSubview:rankView];
     UILabel *rankLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, viewWidth, 20)];
     rankLabel.text = @"Rank";
-    rankLabel.font = [UIFont fontWithName:@"AvenirNext-Medium" size:17];
+    rankLabel.font = [UIFont fontWithName:@"AvenirNext-Heavy" size:20];
     rankLabel.textColor = FontColor;
     rankLabel.textAlignment = NSTextAlignmentCenter;
     [rankView addSubview:rankLabel];
@@ -120,8 +115,8 @@
     
     // Setup score label
     CGFloat labelWidth = 120;
-    _scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2,40, labelWidth, 40)];
-    _scoreLabel.font = [UIFont fontWithName:@"AvenirNext-Medium" size:25];
+    _scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 30 , labelWidth, 40)];
+    _scoreLabel.font = [UIFont fontWithName:@"AvenirNext-Bold" size:25];
     _scoreLabel.text = @"Score";
     _scoreLabel.textColor = FontColor;
     _scoreLabel.textAlignment = NSTextAlignmentCenter;
@@ -131,7 +126,8 @@
     [self.view addSubview:_scoreLabel];
     
     // Setup player snake head
-    startFrame = CGRectMake(125, 166, 40 , 40);
+    CGFloat snakeSize = 55 ;
+    startFrame = CGRectMake(116, 173, snakeSize , snakeSize);
     self.snake = [[Snake alloc]initWithSnakeHeadDirection:kMoveDirectionDown gamePad:self.gamePad headFrame:startFrame];
     [self.gamePad addSubview:self.snake];
     self.snake.particleView = particle;
@@ -143,10 +139,7 @@
     [self.pauseLabel addGestureRecognizer:replayTap];
     
     // Game Center Label
-    UILabel *gameCenterLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 498, viewWidth, viewHeight)];
-    //gameCenterLabel.backgroundColor = PadBackgroundColor;
-    //gameCenterLabel.layer.cornerRadius = 5;
-    //gameCenterLabel.layer.masksToBounds = YES;
+    UILabel *gameCenterLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 10, viewWidth, viewHeight)];
     UIImageView *gamecenterImageView = [[UIImageView alloc]initWithFrame:CGRectMake(10, 5, 30, 30)];
     UIImage *gamecenterImage = [UIImage imageNamed:@"gamecenter.png"];
     gamecenterImageView.image = gamecenterImage;
@@ -174,15 +167,16 @@
     [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
     [self.gamePad addGestureRecognizer:swipeUp];
     
-    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-120)/2, 498, 40, 40)];
+    CGFloat nextNodeSize = 40;
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake(160-(nextNodeSize*1.5), 505, nextNodeSize, nextNodeSize)];
     [self setNextNode:nextNode];
     [self.view addSubview:nextNode];
 
-    nextNode2 = [[SnakeNode alloc]initWithFrame:CGRectOffset(nextNode.frame, 42, 0)];
+    nextNode2 = [[SnakeNode alloc]initWithFrame:CGRectOffset(nextNode.frame, nextNodeSize, 0)];
     [self setNextNode:nextNode2];
     [self.view addSubview:nextNode2];
 
-    nextNode3 = [[SnakeNode alloc]initWithFrame:CGRectOffset(nextNode2.frame, 42, 0)];
+    nextNode3 = [[SnakeNode alloc]initWithFrame:CGRectOffset(nextNode2.frame, nextNodeSize, 0)];
     [self setNextNode:nextNode3];
     [self.view addSubview:nextNode3];
     
@@ -194,7 +188,7 @@
 {
 //    node.layer.borderWidth = 3;
 //    node.layer.borderColor = FontColor.CGColor;
-    int randomAsset = arc4random()%3;
+    int randomAsset = arc4random()%4;
     switch (randomAsset) {
         case 0:
             node.assetType = kAssetTypeBlue;
@@ -203,12 +197,10 @@
         case 1:
             node.assetType = kAssetTypeRed;
             node.nodeImageView.image = [UIImage imageNamed:@"red.png"];
-            
             break;
         case 2:
             node.assetType = kAssetTypeGreen;
             node.nodeImageView.image = [UIImage imageNamed:@"green.png"];
-            
             break;
         case 3:
             node.assetType = kAssetTypeYellow;
@@ -227,7 +219,12 @@
     if ([self moveDirecton:sender.direction]) {
         
         self.gamePad.userInteractionEnabled = NO;
-        [self.snake swipeToMove:sender.direction];
+        score++;
+        [self.snake swipeToMove:sender.direction complete:^{
+            
+            [self setScore];
+
+        }];
 
     }
 
@@ -281,23 +278,6 @@
     [self setScore];
     [self.snake resetSnake];
     [self.gamePad resetClassicGamePad];
-}
-
-- (void)minuteFromSeconds:(NSInteger)seconds
-{
-    NSInteger sec = seconds%60;
-    NSString *secondString;
-    
-    if (sec < 10)
-        secondString = [NSString stringWithFormat:@"0%ld",sec];
-    else
-        secondString = [NSString stringWithFormat:@"%ld",sec];
-
-    
-    NSInteger minutes = seconds/60;
-    
-    comboCountLabel.text = [NSString stringWithFormat:@"%ld:%@",minutes,secondString];
-    
 }
 
 #pragma mark - Setscore

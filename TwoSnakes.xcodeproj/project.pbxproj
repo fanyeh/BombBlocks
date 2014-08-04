@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C2883FF198F3CC400999517 /* green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2883FB198F3CC400999517 /* green@2x.png */; };
+		4C288400198F3CC400999517 /* red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2883FC198F3CC400999517 /* red@2x.png */; };
+		4C288401198F3CC400999517 /* yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2883FD198F3CC400999517 /* yellow@2x.png */; };
+		4C288402198F3CC400999517 /* blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2883FE198F3CC400999517 /* blue@2x.png */; };
+		4C288404198F422900999517 /* head@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C288403198F422900999517 /* head@2x.png */; };
+		4C2B7A65198E7B8C00233F5E /* purple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2B7A64198E7B8C00233F5E /* purple@2x.png */; };
 		4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C67DD3E1919E45E00666A2D /* SnakeButton.m */; };
-		4C69FA811981479000DC0853 /* yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C69FA7C1981479000DC0853 /* yellow@2x.png */; };
-		4C69FA821981479000DC0853 /* purple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C69FA7D1981479000DC0853 /* purple@2x.png */; };
-		4C69FA831981479000DC0853 /* green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C69FA7E1981479000DC0853 /* green@2x.png */; };
-		4C69FA841981479000DC0853 /* blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C69FA7F1981479000DC0853 /* blue@2x.png */; };
-		4C69FA851981479000DC0853 /* red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C69FA801981479000DC0853 /* red@2x.png */; };
 		4C70B6D0197F8BB60024F9DF /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6CE197F8BB60024F9DF /* circle.png */; };
 		4C70B6D1197F8BB60024F9DF /* triangle.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6CF197F8BB60024F9DF /* triangle.png */; };
 		4C70B6D3197F8C480024F9DF /* TriangleParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6D2197F8C480024F9DF /* TriangleParticle.sks */; };
@@ -44,7 +45,6 @@
 		4CA0E58819760BFB008B2E71 /* square.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E58719760BFB008B2E71 /* square.png */; };
 		4CA0E59319764CD2008B2E71 /* SquareParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E59119764CD2008B2E71 /* SquareParticle.sks */; };
 		4CA0E5E31977A405008B2E71 /* SnakeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA0E5E21977A405008B2E71 /* SnakeNode.m */; };
-		4CA0E5E71977AB98008B2E71 /* head@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E5E61977AB98008B2E71 /* head@2x.png */; };
 		4CAA5DEA1929998000049F52 /* GamePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CAA5DE91929998000049F52 /* GamePad.m */; };
 		4CAA5DF21929AB9100049F52 /* SocialShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CAA5DF11929AB9100049F52 /* SocialShare.m */; };
 		4CB108A5190FF6440085C747 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A4190FF6440085C747 /* Foundation.framework */; };
@@ -78,13 +78,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4C2883FB198F3CC400999517 /* green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "green@2x.png"; sourceTree = "<group>"; };
+		4C2883FC198F3CC400999517 /* red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red@2x.png"; sourceTree = "<group>"; };
+		4C2883FD198F3CC400999517 /* yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yellow@2x.png"; sourceTree = "<group>"; };
+		4C2883FE198F3CC400999517 /* blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@2x.png"; sourceTree = "<group>"; };
+		4C288403198F422900999517 /* head@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "head@2x.png"; sourceTree = "<group>"; };
+		4C2B7A64198E7B8C00233F5E /* purple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple@2x.png"; sourceTree = "<group>"; };
 		4C67DD3D1919E45E00666A2D /* SnakeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeButton.h; sourceTree = "<group>"; };
 		4C67DD3E1919E45E00666A2D /* SnakeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeButton.m; sourceTree = "<group>"; };
-		4C69FA7C1981479000DC0853 /* yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yellow@2x.png"; sourceTree = "<group>"; };
-		4C69FA7D1981479000DC0853 /* purple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "purple@2x.png"; sourceTree = "<group>"; };
-		4C69FA7E1981479000DC0853 /* green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "green@2x.png"; sourceTree = "<group>"; };
-		4C69FA7F1981479000DC0853 /* blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue@2x.png"; sourceTree = "<group>"; };
-		4C69FA801981479000DC0853 /* red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "red@2x.png"; sourceTree = "<group>"; };
 		4C70B6CE197F8BB60024F9DF /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
 		4C70B6CF197F8BB60024F9DF /* triangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = triangle.png; sourceTree = "<group>"; };
 		4C70B6D2197F8C480024F9DF /* TriangleParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TriangleParticle.sks; sourceTree = "<group>"; };
@@ -136,7 +137,6 @@
 		4CA0E59119764CD2008B2E71 /* SquareParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SquareParticle.sks; sourceTree = "<group>"; };
 		4CA0E5E11977A405008B2E71 /* SnakeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeNode.h; sourceTree = "<group>"; };
 		4CA0E5E21977A405008B2E71 /* SnakeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeNode.m; sourceTree = "<group>"; };
-		4CA0E5E61977AB98008B2E71 /* head@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "head@2x.png"; sourceTree = "<group>"; };
 		4CAA5DE81929998000049F52 /* GamePad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GamePad.h; sourceTree = "<group>"; };
 		4CAA5DE91929998000049F52 /* GamePad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GamePad.m; sourceTree = "<group>"; };
 		4CAA5DF01929AB9100049F52 /* SocialShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialShare.h; sourceTree = "<group>"; };
@@ -267,6 +267,12 @@
 		4CB10898190FF6440085C747 = {
 			isa = PBXGroup;
 			children = (
+				4C288403198F422900999517 /* head@2x.png */,
+				4C2883FB198F3CC400999517 /* green@2x.png */,
+				4C2883FC198F3CC400999517 /* red@2x.png */,
+				4C2883FD198F3CC400999517 /* yellow@2x.png */,
+				4C2883FE198F3CC400999517 /* blue@2x.png */,
+				4C2B7A64198E7B8C00233F5E /* purple@2x.png */,
 				4CB108AC190FF6440085C747 /* TwoSnakes */,
 				4CB108C9190FF6440085C747 /* TwoSnakesTests */,
 				4CB108A3190FF6440085C747 /* Frameworks */,
@@ -319,14 +325,8 @@
 		4CB108AD190FF6440085C747 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4C69FA7C1981479000DC0853 /* yellow@2x.png */,
-				4C69FA7D1981479000DC0853 /* purple@2x.png */,
-				4C69FA7E1981479000DC0853 /* green@2x.png */,
-				4C69FA7F1981479000DC0853 /* blue@2x.png */,
-				4C69FA801981479000DC0853 /* red@2x.png */,
 				4C70B6CE197F8BB60024F9DF /* circle.png */,
 				4C70B6CF197F8BB60024F9DF /* triangle.png */,
-				4CA0E5E61977AB98008B2E71 /* head@2x.png */,
 				4CA0E58719760BFB008B2E71 /* square.png */,
 				4C8541BD1946D82100810CE4 /* icon.png */,
 				4C8541B91946D3C700810CE4 /* gamecenter@2x.png */,
@@ -440,26 +440,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C288402198F3CC400999517 /* blue@2x.png in Resources */,
 				4C8541BE1946D82100810CE4 /* icon.png in Resources */,
 				4C70B6D3197F8C480024F9DF /* TriangleParticle.sks in Resources */,
 				4CA0E58819760BFB008B2E71 /* square.png in Resources */,
-				4CA0E5E71977AB98008B2E71 /* head@2x.png in Resources */,
 				4C70B6D1197F8BB60024F9DF /* triangle.png in Resources */,
 				4C85859B1925A1990096F75B /* MenuController.xib in Resources */,
 				4C8541951945F40A00810CE4 /* heart@2x.png in Resources */,
+				4C288400198F3CC400999517 /* red@2x.png in Resources */,
 				4CB108B1190FF6440085C747 /* InfoPlist.strings in Resources */,
 				4C85418D1945545700810CE4 /* stop@2x.png in Resources */,
-				4C69FA821981479000DC0853 /* purple@2x.png in Resources */,
-				4C69FA851981479000DC0853 /* red@2x.png in Resources */,
 				4C8541A51946A8B300810CE4 /* README.txt in Resources */,
-				4C69FA811981479000DC0853 /* yellow@2x.png in Resources */,
-				4C69FA831981479000DC0853 /* green@2x.png in Resources */,
+				4C2883FF198F3CC400999517 /* green@2x.png in Resources */,
 				4C8585AD1925FB150096F75B /* twitter40@2x.png in Resources */,
+				4C288401198F3CC400999517 /* yellow@2x.png in Resources */,
 				4C70B6D5197F8C5D0024F9DF /* CircleParticle.sks in Resources */,
 				4C8585AF1925FB270096F75B /* faceboo40@2x.png in Resources */,
 				4C85418F1945545700810CE4 /* play@2x.png in Resources */,
+				4C2B7A65198E7B8C00233F5E /* purple@2x.png in Resources */,
+				4C288404198F422900999517 /* head@2x.png in Resources */,
 				4C8541BA1946D3C700810CE4 /* gamecenter@2x.png in Resources */,
-				4C69FA841981479000DC0853 /* blue@2x.png in Resources */,
 				4C70B6D0197F8BB60024F9DF /* circle.png in Resources */,
 				4CB108BC190FF6440085C747 /* Images.xcassets in Resources */,
 				4C8541931945F3F900810CE4 /* replay@2x.png in Resources */,

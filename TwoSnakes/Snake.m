@@ -16,8 +16,6 @@
 {
     NSInteger chain;     // Same color required to form a combo
     CGRect headFrame;
-    NSMutableArray *walls;
-    AssetType initComboType;
     CGFloat border;
 }
 
@@ -35,27 +33,30 @@
     headFrame = frame;
     self = [self initWithFrame:headFrame];
     if (self) {
-        border = 3;
-        self.layer.borderColor = [UIColor whiteColor].CGColor;
+        border = 4;
+        self.layer.borderColor = FontColor.CGColor;
         self.layer.borderWidth = border;
         //self.backgroundColor = [UIColor whiteColor];
         [self setNodeIndexRow:4 andCol:3];
         self.name = @"head";
         
         // Snake head image
-        UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(8, 8, headFrame.size.width-16, headFrame.size.height-16)];
-//        headImageView.image = [UIImage imageNamed:@"head.png"];
-//        headImageView.layer.cornerRadius = headFrame.size.width/4;
-//        headImageView.transform = CGAffineTransformMakeRotation(-M_PI/2);
-        headImageView.backgroundColor = [UIColor whiteColor];
+        CGFloat headOffset = 4;
+        UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(headOffset, headOffset, headFrame.size.width-headOffset*2, headFrame.size.height-headOffset*2)];
+        headImageView.image = [UIImage imageNamed:@"head.png"];
+        //headImageView.layer.cornerRadius = headFrame.size.width/4;
+        headImageView.transform = CGAffineTransformMakeRotation(-M_PI/2);
+        //headImageView.backgroundColor = [UIColor whiteColor];
         [self addSubview:headImageView];
+        
+        //[headImageView.layer addAnimation:[self gameOverAnimation] forKey:nil];
         
         _gamePad = gamePad;
         _snakeBody = [[NSMutableArray alloc]init];
         [_snakeBody addObject:self];
 
-        _xOffset = (headFrame.size.width+1)/1;
-        _yOffset = (headFrame.size.height+1)/1;
+        _xOffset = (headFrame.size.width+2)/1;
+        _yOffset = (headFrame.size.height+2)/1;
         
         self.direction = direction;
 
@@ -73,7 +74,6 @@
             case kMoveDirectionRight:
                 break;
         }
-        _isRotate = NO;
         chain = 2;
     }
     return self;
@@ -125,7 +125,6 @@
     _yOffset = headFrame.size.height+1;
     [_snakeBody addObject:snakeHead];
     
-    _isRotate = NO;
     
     switch (direction) {
         case kMoveDirectionLeft:
@@ -175,7 +174,7 @@
 
 
 
--(void)swipeToMove:(UISwipeGestureRecognizerDirection)swipeDirection
+-(void)swipeToMove:(UISwipeGestureRecognizerDirection)swipeDirection complete:(void(^)(void))completBlock
 {
     MoveDirection direction = [self headDirection];
     
@@ -206,41 +205,41 @@
             break;
     }
     
-    switch ([self headDirection] ) {
-        case kMoveDirectionRight:
-            if (direction == kMoveDirectionDown) {
-                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
-            }
-            else if (direction == kMoveDirectionUp) {
-                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-            }
-            break;
-        case kMoveDirectionLeft:
-            if (direction == kMoveDirectionDown) {
-                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
-            }
-            else if (direction == kMoveDirectionUp){
-                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-            }
-            break;
-        case kMoveDirectionUp:
-            if (direction == kMoveDirectionLeft){
-                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
-            }
-            else if (direction == kMoveDirectionRight){
-                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-            }
-            break;
-        case kMoveDirectionDown:
-            if (direction == kMoveDirectionLeft){
-                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
-            }
-            
-            else if (direction == kMoveDirectionRight){
-                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-            }
-            break;
-    }
+//    switch ([self headDirection] ) {
+//        case kMoveDirectionRight:
+//            if (direction == kMoveDirectionDown) {
+//                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
+//            }
+//            else if (direction == kMoveDirectionUp) {
+//                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+//            }
+//            break;
+//        case kMoveDirectionLeft:
+//            if (direction == kMoveDirectionDown) {
+//                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
+//            }
+//            else if (direction == kMoveDirectionUp){
+//                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
+//            }
+//            break;
+//        case kMoveDirectionUp:
+//            if (direction == kMoveDirectionLeft){
+//                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
+//            }
+//            else if (direction == kMoveDirectionRight){
+//                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+//            }
+//            break;
+//        case kMoveDirectionDown:
+//            if (direction == kMoveDirectionLeft){
+//                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
+//            }
+//            
+//            else if (direction == kMoveDirectionRight){
+//                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
+//            }
+//            break;
+//    }
     
     CGRect newPosition = [self getNewPosition:[_snakeBody firstObject] direction:direction];
     
@@ -278,7 +277,7 @@
             SnakeNode *nextNode2 = [_comingNodeArray objectAtIndex:1];
             SnakeNode *nextNode3 = [_comingNodeArray objectAtIndex:2];
 
-            [self addSnakeBodyAfterHead:nextNode.assetType position:oldPosition nodePath:oldNodePath];
+            [self addSnakeBodyAfterHead:nextNode.assetType position:oldPosition nodePath:oldNodePath complete:completBlock];
             
             CGRect firstNodeFrame = nextNode.frame;
             CGRect secondNodeFrame = nextNode2.frame;
@@ -286,7 +285,7 @@
             
             
             // Shrink first node
-            [UIView animateWithDuration:0.3 animations:^{
+            [UIView animateWithDuration:0.2 animations:^{
                 
                 nextNode.transform = CGAffineTransformScale(nextNode.transform, 0, 0);
                 
@@ -297,21 +296,21 @@
                 nextNode.frame = nextNode3.frame;
                 
                 // Move second node
-                [UIView animateWithDuration:0.2 animations:^{
+                [UIView animateWithDuration:0.15 animations:^{
                     
                     nextNode2.frame = firstNodeFrame;
                     
                 } completion:^(BOOL finished) {
                     
                     // Move third node
-                    [UIView animateWithDuration:0.2 animations:^{
+                    [UIView animateWithDuration:0.15 animations:^{
                         
                         nextNode3.frame = secondNodeFrame;
                         nextNode.transform = CGAffineTransformScale(nextNode.transform, 0, 0);
                         
                     } completion:^(BOOL finished) {
                         
-                        int randomAsset = arc4random()%3;
+                        int randomAsset = arc4random()%4;
                         switch (randomAsset) {
                             case 0:
                                 nextNode.assetType = kAssetTypeBlue;
@@ -320,12 +319,10 @@
                             case 1:
                                 nextNode.assetType = kAssetTypeRed;
                                 nextNode.nodeImageView.image = [UIImage imageNamed:@"red.png"];
-                                
                                 break;
                             case 2:
                                 nextNode.assetType = kAssetTypeGreen;
                                 nextNode.nodeImageView.image = [UIImage imageNamed:@"green.png"];
-                                
                                 break;
                             case 3:
                                 nextNode.assetType = kAssetTypeYellow;
@@ -334,10 +331,11 @@
                             case 4:
                                 nextNode.assetType = kAssetTypePurple;
                                 nextNode.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
+
                                 break;
                         }
   
-                        [UIView animateWithDuration:0.3 animations:^{
+                        [UIView animateWithDuration:0.2 animations:^{
                             
                             nextNode.transform = nodeT;
                             nextNode.alpha = 1;
@@ -361,6 +359,7 @@
         
     } else {
         
+        completBlock();
         _gamePad.userInteractionEnabled = YES;
     }
 }
@@ -397,143 +396,52 @@
         return NO;
 }
 
-- (void)setWallBounds:(NSMutableArray *)wallbounds
-{
-    walls = wallbounds;
-}
-
-- (BOOL)touchWall:(CGRect)newPosition
-{
-//    for (GameAsset *asset in walls) {
-//        if (asset.gameAssetType == kAssetTypeWall)
-//            if (CGRectIntersectsRect(newPosition, asset.frame))
-//                return YES;
-//    }
-    return NO;
-}
-
 #pragma mark - Snake Body
 
-- (void)addSnakeBody:(AssetType)assetType
+- (void)addSnakeBodyAfterHead:(AssetType)assetType position:(CGRect)position nodePath:(NodeIndex)nodePath complete:(void(^)(void))completBlock
 {
-    CGRect bodyFrame;
-    CGRect snakeTailFrame =  [self snakeTail].frame;
-    MoveDirection direction = [self snakeTail].direction;
-    
-    int col= [[self snakeTail]nodeIndexCol];
-    int row= [[self snakeTail]nodeIndexRow];
-    
-    switch (direction) {
-        case kMoveDirectionUp:
-            bodyFrame = CGRectOffset(snakeTailFrame, 0, _yOffset);
-            row = row + 1;
-            break;
-        case kMoveDirectionDown:
-            bodyFrame = CGRectOffset(snakeTailFrame, 0, -_yOffset);
-            row = row - 1;
-            break;
-        case kMoveDirectionLeft:
-            bodyFrame = CGRectOffset(snakeTailFrame, _xOffset, 0);
-            col = col + 1;
-            break;
-        case kMoveDirectionRight:
-            bodyFrame = CGRectOffset(snakeTailFrame, -_xOffset, 0);
-            col = col - 1;
-            break;
-    }
-
-    SnakeNode *snakeBody = [[SnakeNode alloc]initWithFrame:bodyFrame gameAssetType:assetType];
-    snakeBody.layer.borderColor = [UIColor colorWithWhite:0.400 alpha:1.000].CGColor;
-    snakeBody.layer.borderWidth = 3 ;
-    [snakeBody setNodeIndexRow:row andCol:col];
-    snakeBody.direction = direction;
-    CGFloat imageSize = 16;
-    UIImageView *bodyImageView = [[UIImageView alloc]initWithFrame:CGRectMake(imageSize/2,
-                                                                              imageSize/2,
-                                                                              bodyFrame.size.width-imageSize,
-                                                                              bodyFrame.size.height-imageSize)];
-    switch (assetType) {
-        case kAssetTypeGreen:
-            bodyImageView.image = [UIImage imageNamed:@"green.png"];
-            snakeBody.nodeColor = GreenDotColor;
-            break;
-        case kAssetTypeBlue:
-            bodyImageView.image = [UIImage imageNamed:@"blue.png"];
-            snakeBody.nodeColor = BlueDotColor;
-            break;
-        case kAssetTypeRed:
-            bodyImageView.image = [UIImage imageNamed:@"red.png"];
-            snakeBody.nodeColor = RedDotColor;
-            break;
-        case kAssetTypeYellow:
-            bodyImageView.image = [UIImage imageNamed:@"yellow.png"];
-            snakeBody.nodeColor = YellowDotColor;
-            break;
-        case kAssetTypePurple:
-            bodyImageView.image = [UIImage imageNamed:@"purple.png"];
-            snakeBody.nodeColor = YellowDotColor;
-            break;
-        case kAssetTypeEmpty:
-            break;
-    }
-    
-    [snakeBody addSubview:bodyImageView];
-    [_snakeBody addObject:snakeBody];
-    [_gamePad addSubview:snakeBody];
-
-    // Animation to populate new body
-    CGAffineTransform t = snakeBody.transform;
-    snakeBody.transform = CGAffineTransformScale(t, 0.5, 0.5);
-    [UIView animateWithDuration:0.2 animations:^{
-        
-        snakeBody.transform = t;
-
-    } completion:^(BOOL finished) {
-        
-        [self cancelPattern];
-        
-    }];
-}
-
-- (void)addSnakeBodyAfterHead:(AssetType)assetType position:(CGRect)position nodePath:(NodeIndex)nodePath
-{
-    SnakeNode *snakeBody = [[SnakeNode alloc]initWithFrame:position gameAssetType:assetType];
+    CGFloat imageSize = 18;
+    SnakeNode *snakeBody = [[SnakeNode alloc]initWithFrame:position gameAssetType:assetType imageFrame:CGRectMake(imageSize/2,
+                                                                                                                  imageSize/2,
+                                                                                                                  position.size.width-imageSize,
+                                                                                                                  position.size.height-imageSize)];
     snakeBody.layer.borderColor = FontColor.CGColor;
     snakeBody.layer.borderWidth = border;
     snakeBody.nodePath = nodePath;
     snakeBody.direction = [self snakeHead].direction;
-    
-    CGFloat imageSize = 12;
-    UIImageView *bodyImageView = [[UIImageView alloc]initWithFrame:CGRectMake(imageSize/2,
-                                                                              imageSize/2,
-                                                                              position.size.width-imageSize,
-                                                                              position.size.height-imageSize)];
+
     switch (assetType) {
         case kAssetTypeGreen:
-            bodyImageView.image = [UIImage imageNamed:@"green.png"];
             snakeBody.nodeColor = GreenDotColor;
+            snakeBody.nodeImageView.image = [UIImage imageNamed:@"green.png"];
+
             break;
         case kAssetTypeBlue:
-            bodyImageView.image = [UIImage imageNamed:@"blue.png"];
             snakeBody.nodeColor = BlueDotColor;
+            snakeBody.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
+
             break;
         case kAssetTypeRed:
-            bodyImageView.image = [UIImage imageNamed:@"red.png"];
             snakeBody.nodeColor = RedDotColor;
+            snakeBody.nodeImageView.image = [UIImage imageNamed:@"red.png"];
+
             break;
         case kAssetTypeYellow:
-            bodyImageView.image = [UIImage imageNamed:@"yellow.png"];
             snakeBody.nodeColor = YellowDotColor;
+            snakeBody.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
+
             break;
         case kAssetTypePurple:
-            bodyImageView.image = [UIImage imageNamed:@"purple.png"];
             snakeBody.nodeColor = PurpleDotColor;
+            snakeBody.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
+
             break;
         case kAssetTypeEmpty:
             break;
     }
     
-    [snakeBody addSubview:bodyImageView];
+    //[snakeBody addSubview:bodyImageView];
+
     
     if([_snakeBody count] == 1)
         [_snakeBody addObject:snakeBody];
@@ -551,12 +459,12 @@
         
     } completion:^(BOOL finished) {
         
-        [self cancelPattern];
+        [self cancelPattern:completBlock];
         
     }];
 }
 
--(void)cancelPattern
+-(void)cancelPattern:(void(^)(void))completBlock
 {
     NSMutableArray *colPatterns = [self colPatternCheck];
     NSMutableArray *rowPatterns = [self rowPatternCheck];
@@ -615,9 +523,32 @@
     
     if ([allPatterns count] > 0) {
         
+        //[[self snakeHead].layer addAnimation:[self wobbleAnimation] forKey:nil];
+        
         for (SnakeNode *n in allPatterns) {
             
             n.alpha = 0.6;
+            
+            switch (n.assetType) {
+                case kAssetTypeBlue:
+                    [self startBlinkAnimation:n];
+
+
+                    break;
+                case kAssetTypeYellow:
+                    [n.nodeImageView.layer addAnimation:[self shakeAnimation:[allPatterns indexOfObject:n]] forKey:nil];
+
+                    break;
+                case kAssetTypeRed:
+                    [n.nodeImageView.layer addAnimation:[self rotateAnimation] forKey:nil];
+
+                    
+                    break;
+                case kAssetTypeGreen:
+                    [n.nodeImageView.layer addAnimation:[self shakeAnimation:[allPatterns indexOfObject:n]] forKey:nil];
+
+                    break;
+            }
         }
         
         [UIView animateWithDuration: 0.8 animations:^{
@@ -636,13 +567,18 @@
                 [n removeFromSuperview];
             }
             
-            [self removeSnakeBodyFromArray:allPatterns];
+            [self removeSnakeBodyFromArray:allPatterns complete:completBlock];
             
         }];
     }
+    else {
+        
+        completBlock();
+        //[[self snakeHead].layer removeAllAnimations];
+    }
 }
 
--(void)removeSnakeBodyFromArray:(NSMutableArray *)removalArray
+-(void)removeSnakeBodyFromArray:(NSMutableArray *)removalArray complete:(void(^)(void))completBlock
 {
     // Get 1st objects from removal pattern array
     SnakeNode *removeBody = [removalArray firstObject];
@@ -689,9 +625,9 @@
         
         // Loop pattern removal till count = 0
         if ([removalArray count] > 0)
-            [self removeSnakeBodyFromArray:removalArray];
+            [self removeSnakeBodyFromArray:removalArray complete:completBlock];
         else // Check if there are more combos
-            [self cancelPattern];
+            [self cancelPattern:completBlock];
     }];
 }
 
@@ -703,18 +639,6 @@
 - (SnakeNode *)snakeTail
 {
     return (SnakeNode*)[_snakeBody lastObject];
-}
-
-- (void)startRotate
-{
-    _isRotate = YES;
-    [[self snakeHead].layer addAnimation:[self wobbleAnimation] forKey:nil];
-}
-
-- (void)stopRotate
-{
-    _isRotate = NO;
-    [[self snakeHead].layer removeAllAnimations];
 }
 
 #pragma mark - Pattern Check
@@ -1026,11 +950,11 @@
 
 #pragma mark - Body Animations
 
-- (void)startBlinkAnimation
+- (void)startBlinkAnimation:(SnakeNode *)node
 {
-    self.snakeHead.alpha = 1.0f;
+    node.nodeImageView.alpha = 1.0f;
     
-    [UIView animateWithDuration:0.12
+    [UIView animateWithDuration:0.08
                           delay:0.0
                         options:
      
@@ -1041,7 +965,7 @@
      
                      animations:^{
                          
-                         self.snakeHead.alpha = 0.0f;
+                         node.nodeImageView.alpha = 0.0f;
                      }
                      completion:^(BOOL finished){
                          // Do nothing
@@ -1062,30 +986,7 @@
                      }];
 }
 
--(CABasicAnimation *)bodyAnimation:(NSInteger)i
-{
-    CGFloat toAngle;
-    CGFloat fromAngle;
-    
-    if (i%2 == 0) {
-        toAngle = -M_PI/6;
-        fromAngle = M_PI/6;
-    } else {
-        toAngle = M_PI/6;
-        fromAngle = -M_PI/6;
-    }
-    
-    CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
-    [anim setToValue:[NSNumber numberWithFloat:toAngle]]; // satrt angle
-    [anim setFromValue:[NSNumber numberWithDouble:fromAngle]]; // rotation angle
-    [anim setDuration:0.1]; // rotate speed
-    [anim setRepeatCount:HUGE_VAL];
-    [anim setAutoreverses:YES];
-    
-    return anim;
-}
-
--(CABasicAnimation *)stunAnimation:(NSInteger)i
+-(CABasicAnimation *)shakeAnimation:(NSInteger)i
 {
     CGFloat toAngle;
     CGFloat fromAngle;
@@ -1151,7 +1052,7 @@
 
 #pragma mark - Game Over Animation
 
--(CABasicAnimation *)gameOverAnimation
+-(CABasicAnimation *)rotateAnimation
 {
     CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
     [anim setToValue:[NSNumber numberWithFloat:0]]; // satrt angle
@@ -1164,7 +1065,7 @@
 
 - (void)gameOver
 {
-    [[self snakeHead].layer addAnimation:[self gameOverAnimation] forKey:nil];
+    [[self snakeHead].layer addAnimation:[self rotateAnimation] forKey:nil];
 }
 
 @end

@@ -30,9 +30,9 @@
 
 - (id)initGamePad
 {
-    column = 7;
-    row = 9;
-    moveSize = 41;
+    column = 5;
+    row = 7;
+    moveSize = 57;
 
     CGRect frame = CGRectMake(0, 0, moveSize*column+2, moveSize*row+2);
 
@@ -75,7 +75,7 @@
             [self sendSubviewToBack:asset];
             [_assetArray addObject:asset];
             
-            if (i == 3 && j == 4) {
+            if (i == 2 && j == 3) {
                 NSLog(@"center frame %@", NSStringFromCGRect(asset.frame));
             }
             
@@ -143,7 +143,7 @@
 
 - (void)randomColor:(GameAsset *)asset
 {
-    int randomAsset = arc4random()%4;
+    int randomAsset = arc4random()%5;
     
     switch (randomAsset) {
         case 0:

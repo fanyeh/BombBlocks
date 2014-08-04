@@ -24,7 +24,7 @@ typedef struct NodeIndex NodeIndex;
 
 @interface SnakeNode : UIView
 
-- (id)initWithFrame:(CGRect)frame gameAssetType:(AssetType)assetType;
+- (id)initWithFrame:(CGRect)frame gameAssetType:(AssetType)assetType imageFrame:(CGRect)imageFrame;
 - (void)setNodeIndexRow:(int)row andCol:(int)col;
 -(int)nodeIndexRow;
 -(int)nodeIndexCol;

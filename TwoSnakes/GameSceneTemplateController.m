@@ -33,7 +33,7 @@
     _stateSign.image = [UIImage imageNamed:@"replay.png"];
     
     // Setup game state label
-    _pauseLabel = [[UILabel alloc]initWithFrame:CGRectMake(320-5-50, 498, 50, 40)];
+    _pauseLabel = [[UILabel alloc]initWithFrame:CGRectMake(320-5-50, 10, 50, 40)];
     //_pauseLabel.layer.cornerRadius = 5;
     //_pauseLabel.text = @"Pl";
     //_pauseLabel.textAlignment = NSTextAlignmentCenter;

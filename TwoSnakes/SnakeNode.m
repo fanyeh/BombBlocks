@@ -22,13 +22,14 @@
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame gameAssetType:(AssetType)assetType
+- (id)initWithFrame:(CGRect)frame gameAssetType:(AssetType)assetType imageFrame:(CGRect)imageFrame
 {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
         _assetType = assetType;
-
+        _nodeImageView = [[UIImageView alloc]initWithFrame:imageFrame];
+        [self addSubview:_nodeImageView];
 
     }
     return self;

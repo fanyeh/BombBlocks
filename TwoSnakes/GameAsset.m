@@ -28,7 +28,7 @@
     self = [super init];
     if (self) {
         // Initialization code
-        self.frame = CGRectMake(0, 0,40,40);
+        self.frame = CGRectMake(0, 0,55,55);
 
         _gameAssetType = kAssetTypeEmpty;
         CGFloat imageViewSize = self.frame.size.width-16;
@@ -38,12 +38,7 @@
         [self addSubview:_assetImageView];
         
         _neighbors = [[NSMutableArray alloc]init];
-        
-        //self.layer.cornerRadius = 10;
-        
-       // self.backgroundColor = [UIColor colorWithRed:0.248 green:0.323 blue:0.373 alpha:1.000];
-        //self.layer.borderWidth = 2;
-       // self.layer.borderColor = [UIColor colorWithRed:0.216 green:0.282 blue:0.322 alpha:1.000].CGColor;
+
     }
     return self;
 }
