@@ -17,6 +17,7 @@
     NSInteger chain;     // Same color required to form a combo
     CGRect headFrame;
     CGFloat border;
+    NSMutableArray *allPatterns;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -41,7 +42,10 @@
         
         // Snake head image
         CGFloat headOffset = 4;
-        UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(headOffset, headOffset, headFrame.size.width-headOffset*2, headFrame.size.height-headOffset*2)];
+        UIImageView *headImageView = [[UIImageView alloc]initWithFrame:CGRectMake(headOffset,
+                                                                                  headOffset,
+                                                                                  headFrame.size.width-headOffset*2,
+                                                                                  headFrame.size.height-headOffset*2)];
         headImageView.image = [UIImage imageNamed:@"head.png"];
         [self addSubview:headImageView];
         
@@ -53,7 +57,6 @@
         _yOffset = (headFrame.size.height+2)/1;
 
         chain = 2;
-        
         self.direction = -1;
     }
     return self;
@@ -61,7 +64,6 @@
 
 - (void)updateSnakeNodeIndex:(SnakeNode *)node toFrame:(CGRect)toFrame
 {
- 
     int row = [node nodeIndexRow];
     int col = [node nodeIndexCol];
     CGRect fromFrame = node.frame;
@@ -142,82 +144,14 @@
 {
     MoveDirection direction;
     
-    switch ([self headDirection]) {
-        case kMoveDirectionUp:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionRight)
-                direction = kMoveDirectionRight;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
-                direction = kMoveDirectionLeft;
-            break;
-        case kMoveDirectionDown:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionRight)
-                direction = kMoveDirectionRight;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
-                direction = kMoveDirectionLeft;
-            break;
-        case kMoveDirectionLeft:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
-                direction = kMoveDirectionDown;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
-                direction = kMoveDirectionUp;
-            break;
-        case kMoveDirectionRight:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
-                direction = kMoveDirectionDown;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
-                direction = kMoveDirectionUp;
-            break;
-            
-        default:
-            
-            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
-                direction = kMoveDirectionDown;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
-                direction = kMoveDirectionUp;
-            else if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
-                direction = kMoveDirectionLeft;
-            else
-                direction = kMoveDirectionRight;
-            
-            break;
-    }
-
-    
-//    switch ([self headDirection] ) {
-//        case kMoveDirectionRight:
-//            if (direction == kMoveDirectionDown) {
-//                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI/2); // ok
-//            }
-//            else if (direction == kMoveDirectionUp) {
-//                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-//            }
-//            break;
-//        case kMoveDirectionLeft:
-//            if (direction == kMoveDirectionDown) {
-//                [self snakeHead].transform =  CGAffineTransformMakeRotation(M_PI/2); // ok
-//            }
-//            else if (direction == kMoveDirectionUp){
-//                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI/2); // ok
-//            }
-//            break;
-//        case kMoveDirectionUp:
-//            if (direction == kMoveDirectionLeft){
-//                [self snakeHead].transform =  CGAffineTransformMakeRotation(-M_PI); // ok
-//            }
-//            else if (direction == kMoveDirectionRight){
-//                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-//            }
-//            break;
-//        case kMoveDirectionDown:
-//            if (direction == kMoveDirectionLeft){
-//                [self snakeHead].transform = CGAffineTransformMakeRotation(-M_PI); // ok
-//            }
-//            
-//            else if (direction == kMoveDirectionRight){
-//                [self snakeHead].transform = CGAffineTransformMakeRotation(M_PI_2 - M_PI/2); // ok
-//            }
-//            break;
-//    }
+    if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
+        direction = kMoveDirectionDown;
+    else if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
+        direction = kMoveDirectionUp;
+    else if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
+        direction = kMoveDirectionLeft;
+    else
+        direction = kMoveDirectionRight;
     
     CGRect newPosition = [self getNewPosition:[_snakeBody firstObject] direction:direction];
     
@@ -242,104 +176,109 @@
         CGRect oldPosition = [self snakeHead].frame;
         NodeIndex oldNodePath = [self snakeHead].nodePath;
         
+        // Move Head
         [UIView animateWithDuration:0.1 animations:^{
             
             [self updateSnakeNodeIndex:[self snakeHead] toFrame:newPosition];
             [self snakeHead].frame = newPosition;
             [self snakeHead].direction = direction;
+            
+        } completion:^(BOOL finished) {
+
+            // Add Body
+            [self addSnakeBodyAfterHead:[[_comingNodeArray firstObject]assetType] position:oldPosition nodePath:oldNodePath complete:completBlock];
+            
+            // Move next nodes
+            if ([allPatterns count] > 0)
+                [self moveNextNodesComplete:nil];
+            else
+                [self moveNextNodesComplete:completBlock];
+        }];
+        
+    } else {
+        
+        completBlock();
+    }
+}
+
+-(void)moveNextNodesComplete:(void(^)(void))completBlock
+{
+    SnakeNode *nextNode = [_comingNodeArray firstObject];
+    SnakeNode *nextNode2 = [_comingNodeArray objectAtIndex:1];
+    SnakeNode *nextNode3 = [_comingNodeArray objectAtIndex:2];
     
+    CGRect firstNodeFrame = nextNode.frame;
+    CGRect secondNodeFrame = nextNode2.frame;
+    CGAffineTransform nodeT = nextNode.transform;
+    
+    // Shrink first node
+    [UIView animateWithDuration:0.1 animations:^{
+        
+        nextNode.transform = CGAffineTransformScale(nextNode.transform, 0, 0);
+        
+    } completion:^(BOOL finished) {
+        
+        nextNode.alpha = 0;
+        nextNode.transform = nodeT;
+        nextNode.frame = nextNode3.frame;
+        
+        // Move second node
+        [UIView animateWithDuration:0.15 animations:^{
+            
+            nextNode2.frame = firstNodeFrame;
             
         } completion:^(BOOL finished) {
             
-            SnakeNode *nextNode = [_comingNodeArray firstObject];
-            SnakeNode *nextNode2 = [_comingNodeArray objectAtIndex:1];
-            SnakeNode *nextNode3 = [_comingNodeArray objectAtIndex:2];
-
-            [self addSnakeBodyAfterHead:nextNode.assetType position:oldPosition nodePath:oldNodePath complete:completBlock];
-            
-            CGRect firstNodeFrame = nextNode.frame;
-            CGRect secondNodeFrame = nextNode2.frame;
-            CGAffineTransform nodeT = nextNode.transform;
-            
-            
-            // Shrink first node
-            [UIView animateWithDuration:0.2 animations:^{
+            // Move third node
+            [UIView animateWithDuration:0.15 animations:^{
                 
+                nextNode3.frame = secondNodeFrame;
                 nextNode.transform = CGAffineTransformScale(nextNode.transform, 0, 0);
                 
             } completion:^(BOOL finished) {
                 
-                nextNode.alpha = 0;
-                nextNode.transform = nodeT;
-                nextNode.frame = nextNode3.frame;
+                int randomAsset = arc4random()%4;
+                switch (randomAsset) {
+                    case 0:
+                        nextNode.assetType = kAssetTypeBlue;
+                        nextNode.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
+                        break;
+                    case 1:
+                        nextNode.assetType = kAssetTypeRed;
+                        nextNode.nodeImageView.image = [UIImage imageNamed:@"red.png"];
+                        break;
+                    case 2:
+                        nextNode.assetType = kAssetTypeGreen;
+                        nextNode.nodeImageView.image = [UIImage imageNamed:@"green.png"];
+                        break;
+                    case 3:
+                        nextNode.assetType = kAssetTypeYellow;
+                        nextNode.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
+                        break;
+                    case 4:
+                        nextNode.assetType = kAssetTypePurple;
+                        nextNode.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
+                        break;
+                }
                 
-                // Move second node
-                [UIView animateWithDuration:0.15 animations:^{
+                [UIView animateWithDuration:0.1 animations:^{
                     
-                    nextNode2.frame = firstNodeFrame;
+                    nextNode.transform = nodeT;
+                    nextNode.alpha = 1;
                     
                 } completion:^(BOOL finished) {
                     
-                    // Move third node
-                    [UIView animateWithDuration:0.15 animations:^{
-                        
-                        nextNode3.frame = secondNodeFrame;
-                        nextNode.transform = CGAffineTransformScale(nextNode.transform, 0, 0);
-                        
-                    } completion:^(BOOL finished) {
-                        
-                        int randomAsset = arc4random()%4;
-                        switch (randomAsset) {
-                            case 0:
-                                nextNode.assetType = kAssetTypeBlue;
-                                nextNode.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
-                                break;
-                            case 1:
-                                nextNode.assetType = kAssetTypeRed;
-                                nextNode.nodeImageView.image = [UIImage imageNamed:@"red.png"];
-                                break;
-                            case 2:
-                                nextNode.assetType = kAssetTypeGreen;
-                                nextNode.nodeImageView.image = [UIImage imageNamed:@"green.png"];
-                                break;
-                            case 3:
-                                nextNode.assetType = kAssetTypeYellow;
-                                nextNode.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
-                                break;
-                            case 4:
-                                nextNode.assetType = kAssetTypePurple;
-                                nextNode.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
-
-                                break;
-                        }
-  
-                        [UIView animateWithDuration:0.2 animations:^{
-                            
-                            nextNode.transform = nodeT;
-                            nextNode.alpha = 1;
-                            
-                        } completion:^(BOOL finished) {
-          
-                            [_comingNodeArray addObject:nextNode];
-                            [_comingNodeArray removeObjectAtIndex:0];
-                            _gamePad.userInteractionEnabled = YES;
-
-                            
-                        }];
-                        
-                    }];
-
+                    [_comingNodeArray addObject:nextNode];
+                    [_comingNodeArray removeObjectAtIndex:0];
+                    if (completBlock != nil)
+                        completBlock();
                 }];
                 
             }];
             
         }];
         
-    } else {
-        
-        completBlock();
-        _gamePad.userInteractionEnabled = YES;
-    }
+    }];
 }
 
 #pragma mark - Out of bound
@@ -417,16 +356,17 @@
         case kAssetTypeEmpty:
             break;
     }
-    
-    //[snakeBody addSubview:bodyImageView];
 
-    
     if([_snakeBody count] == 1)
         [_snakeBody addObject:snakeBody];
     else
         [_snakeBody insertObject:snakeBody atIndex:1];
     
     [_gamePad addSubview:snakeBody];
+    
+    
+    // Check pattern
+    [self checkPatterns];
     
     // Animation to populate new body
     CGAffineTransform t = snakeBody.transform;
@@ -437,12 +377,16 @@
         
     } completion:^(BOOL finished) {
         
-        [self cancelPattern:completBlock];
+        // Cancel pattern
+        if ([allPatterns count] > 0)
+            [self cancelPattern:completBlock];
+        else
+            [self cancelPattern:nil];
         
     }];
 }
 
--(void)cancelPattern:(void(^)(void))completBlock
+-(NSMutableArray *)checkPatterns
 {
     NSMutableArray *colPatterns = [self colPatternCheck];
     NSMutableArray *rowPatterns = [self rowPatternCheck];
@@ -452,10 +396,10 @@
     NSMutableArray *crossPatterns = [self patternCheck:kPatternTypeCross];
     NSMutableArray *xPatterns = [self patternCheck:kPatternTypeX];
     NSMutableArray *hallowSquarePatterns = [self patternCheck:kPatternTypeHallowSquare];
-
-
     
-    NSMutableArray *allPatterns =[NSMutableArray arrayWithArray:colPatterns];
+    //allPatterns = [[NSMutableArray alloc]init];
+    allPatterns = [NSMutableArray arrayWithArray:colPatterns];
+    
     for (id element in rowPatterns) {
         if (![allPatterns containsObject:element]) {
             [allPatterns addObject:element];
@@ -497,35 +441,28 @@
             [allPatterns addObject:element];
         }
     }
-    
-    
+    return allPatterns;
+}
+
+-(void)cancelPattern:(void(^)(void))completBlock
+{
     if ([allPatterns count] > 0) {
-        
-        //[[self snakeHead].layer addAnimation:[self wobbleAnimation] forKey:nil];
         
         for (SnakeNode *n in allPatterns) {
             
             n.alpha = 0.6;
-            
             switch (n.assetType) {
                 case kAssetTypeBlue:
                     [self blinkAnimation:n];
-
                     break;
                 case kAssetTypeYellow:
                     [n.nodeImageView.layer addAnimation:[self shakeAnimation:[allPatterns indexOfObject:n]] forKey:nil];
-
                     break;
                 case kAssetTypeRed:
                     [n.nodeImageView.layer addAnimation:[self rotateAnimation] forKey:nil];
-
                     break;
                 case kAssetTypeGreen:
-                    // Shrink & Expand
                     [self shrinkAnimation:n];
-                    
-//                    [n.nodeImageView.layer addAnimation:[self shakeAnimation:[allPatterns indexOfObject:n]] forKey:nil];
-
                     break;
             }
         }
@@ -550,10 +487,9 @@
             
         }];
     }
-    else {
-        
-        completBlock();
-        //[[self snakeHead].layer removeAllAnimations];
+    else  {
+        if (completBlock != nil)
+            completBlock();
     }
 }
 
@@ -605,8 +541,12 @@
         // Loop pattern removal till count = 0
         if ([removalArray count] > 0)
             [self removeSnakeBodyFromArray:removalArray complete:completBlock];
-        else // Check if there are more combos
+        else {
+            // Check if there are more combos
+            [self checkPatterns];
             [self cancelPattern:completBlock];
+            
+        }
     }];
 }
 
@@ -766,27 +706,51 @@
 
 -(NSMutableArray *)colPatternCheck
 {
-    
+    NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+
     for (SnakeNode *node in _snakeBody) {
         
-        NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+        [patternArray removeAllObjects];
         [patternArray addObject:node];
 
         int r = [node nodeIndexRow];
         int c = [node nodeIndexCol];
         AssetType type = node.assetType;
         
-        BOOL checkCol = YES;
+        BOOL hasTop = YES;
+        BOOL hasBot = YES;
         int count = 0;
+        int top = r;
+        int bot = r;
+        SnakeNode *topNode;
+        SnakeNode *botNode;
+        
+        while (hasBot || hasTop) {
+            
+            if (hasTop) {
+                
+                top = top - 1;
+                topNode = [self hasPatternRow:top col:c assetType:type];
+                
+                if (!topNode)
+                    hasTop = NO;
+                else {
+                    [patternArray addObject:topNode];
+                    count++;
+                }
+            }
 
-        while (checkCol) {
-            r = r+1;
-            SnakeNode *n = [self hasPatternRow:r col:c assetType:type];
-            if (!n)
-                checkCol = NO;
-            else {
-                [patternArray addObject:n];
-                count++;
+            if (hasBot) {
+                
+                bot = bot + 1;
+                botNode = [self hasPatternRow:bot col:c assetType:type];
+                
+                if (!botNode)
+                    hasBot = NO;
+                else {
+                    [patternArray addObject:botNode];
+                    count++;
+                }
             }
         }
     
@@ -800,27 +764,53 @@
 
 -(NSMutableArray *)rowPatternCheck
 {
-    
+    NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+
     for (SnakeNode *node in _snakeBody) {
         
-        NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+        [patternArray removeAllObjects];
         [patternArray addObject:node];
         
         int r = [node nodeIndexRow];
         int c = [node nodeIndexCol];
         AssetType type = node.assetType;
-        
-        BOOL checkCol = YES;
+
+        BOOL hasRight = YES;
+        BOOL hasLeft = YES;
+
         int count = 0;
+        int right = c;
+        int left = c;
         
-        while (checkCol) {
-            c = c+1;
-            SnakeNode *n = [self hasPatternRow:r col:c assetType:type];
-            if (!n)
-                checkCol = NO;
-            else {
-                [patternArray addObject:n];
-                count++;
+        SnakeNode *rightNode;
+        SnakeNode *leftNode;
+        
+        while (hasLeft || hasRight) {
+            
+            if (hasRight) {
+                
+                right = right - 1;
+                rightNode = [self hasPatternRow:r col:right assetType:type];
+                
+                if (!rightNode)
+                    hasRight = NO;
+                else {
+                    [patternArray addObject:rightNode];
+                    count++;
+                }
+            }
+            
+            if (hasLeft) {
+                
+                left = left + 1;
+                leftNode = [self hasPatternRow:r col:left assetType:type];
+                
+                if (!leftNode)
+                    hasLeft = NO;
+                else {
+                    [patternArray addObject:leftNode];
+                    count++;
+                }
             }
         }
         
@@ -846,27 +836,56 @@
 
 -(NSMutableArray *)diagonalDownPatternCheck
 {
+    NSMutableArray *patternArray = [[NSMutableArray alloc]init];
     for (SnakeNode *node in _snakeBody) {
         
-        NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+        [patternArray removeAllObjects];
         [patternArray addObject:node];
         
         int r = [node nodeIndexRow];
         int c = [node nodeIndexCol];
         AssetType type = node.assetType;
         
-        BOOL checkCol = YES;
+        BOOL hasUpper = YES;
+        BOOL hasDown = YES;
+
         int count = 0;
         
-        while (checkCol) {
-            r = r+1;
-            c = c+1;
-            SnakeNode *n = [self hasPatternRow:r col:c assetType:type];
-            if (!n)
-                checkCol = NO;
-            else {
-                [patternArray addObject:n];
-                count++;
+        int upper_col = c;
+        int upper_row = r;
+
+        int down_col = c;
+        int down_row = r;
+        
+        SnakeNode *upperNode;
+        SnakeNode *downNode;
+        
+        while (hasUpper || hasDown) {
+
+            if (hasDown) {
+                down_col = down_col + 1;
+                down_row = down_row + 1;
+                downNode = [self hasPatternRow:down_row col:down_col assetType:type];
+                
+                if (!downNode) {
+                    hasDown = NO;
+                } else {
+                    [patternArray addObject:downNode];
+                    count++;
+                }
+            }
+            
+            if (hasUpper) {
+                upper_col = upper_col -1 ;
+                upper_row = upper_row - 1;
+                upperNode = [self hasPatternRow:upper_row col:upper_col assetType:type];
+                
+                if (!upperNode) {
+                    hasUpper = NO;
+                } else {
+                    [patternArray addObject:upperNode];
+                    count++;
+                }
             }
         }
         
@@ -876,32 +895,60 @@
         }
     }
     return nil;
-
 }
 
 -(NSMutableArray *)diagonalUpPatternCheck
 {
+    NSMutableArray *patternArray = [[NSMutableArray alloc]init];
     for (SnakeNode *node in _snakeBody) {
         
-        NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+        [patternArray removeAllObjects];
         [patternArray addObject:node];
         
         int r = [node nodeIndexRow];
         int c = [node nodeIndexCol];
         AssetType type = node.assetType;
         
-        BOOL checkCol = YES;
+        BOOL hasUpper = YES;
+        BOOL hasDown = YES;
+        
         int count = 0;
         
-        while (checkCol) {
-            r = r+1;
-            c = c-1;
-            SnakeNode *n = [self hasPatternRow:r col:c assetType:type];
-            if (!n)
-                checkCol = NO;
-            else {
-                [patternArray addObject:n];
-                count++;
+        int upper_col = c;
+        int upper_row = r;
+        
+        int down_col = c;
+        int down_row = r;
+        
+        SnakeNode *upperNode;
+        SnakeNode *downNode;
+        
+        while (hasUpper || hasDown) {
+            
+            if (hasDown) {
+                down_col = down_col - 1;
+                down_row = down_row + 1;
+                downNode = [self hasPatternRow:down_row col:down_col assetType:type];
+                
+                if (!downNode) {
+                    hasDown = NO;
+                } else {
+                    [patternArray addObject:downNode];
+                    count++;
+                }
+            }
+            
+            if (hasUpper) {
+                upper_col = upper_col + 1 ;
+                upper_row = upper_row - 1;
+                upperNode = [self hasPatternRow:upper_row col:upper_col assetType:type];
+                
+                if (!upperNode) {
+                    hasUpper = NO;
+                } else {
+                    [patternArray addObject:upperNode];
+                    count++;
+                }
             }
         }
         

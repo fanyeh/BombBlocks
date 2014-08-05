@@ -39,7 +39,7 @@
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-        [self createClassicGameAssetColumn:column andRow:row];
+       // [self createClassicGameAssetColumn:column andRow:row];
 
     }
     return self;

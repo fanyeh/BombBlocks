@@ -52,8 +52,6 @@
     // Setup game pad
     self.gamePad = [[GamePad alloc]initGamePad];
     self.gamePad.center = self.view.center;
-    //self.gamePad.frame = CGRectOffset(self.gamePad.frame, 0, 20);
-    //self.gamePad.backgroundColor = [UIColor whiteColor];
 
     // Configure the SKView
     SKView * skView = [[SKView alloc]initWithFrame:CGRectMake(0, 0, self.gamePad.frame.size.width, self.gamePad.frame.size.height)];
@@ -186,8 +184,6 @@
 
 -(void)setNextNode:(SnakeNode *)node
 {
-//    node.layer.borderWidth = 3;
-//    node.layer.borderColor = FontColor.CGColor;
     int randomAsset = arc4random()%4;
     switch (randomAsset) {
         case 0:
@@ -216,19 +212,19 @@
 -(void)swipeDirection:(UISwipeGestureRecognizer *)sender
 {
     
-    if ([self moveDirecton:sender.direction]) {
+    if (self.gamePad.userInteractionEnabled) {
         
         self.gamePad.userInteractionEnabled = NO;
         score++;
+        
         [self.snake swipeToMove:sender.direction complete:^{
             
+            self.gamePad.userInteractionEnabled = YES;
             [self setScore];
-
+            
         }];
-
     }
 
-    
     // If game is over
 //    [self.snake gameOver];
 //    self.gameState = kCurrentGameStateReplay;
