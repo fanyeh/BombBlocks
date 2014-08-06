@@ -42,6 +42,7 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 - (SnakeNode *)snakeTail;
 -(void)swipeToMove:(UISwipeGestureRecognizerDirection)swipeDirection complete:(void(^)(void))completBlock;
 - (void)resetSnake;
-- (void)gameOver;
+- (BOOL)checkIsGameover;
+-(void)setGameoverImage;
 
 @end

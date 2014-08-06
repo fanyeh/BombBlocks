@@ -18,7 +18,6 @@
 		4C70B6D1197F8BB60024F9DF /* triangle.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6CF197F8BB60024F9DF /* triangle.png */; };
 		4C70B6D3197F8C480024F9DF /* TriangleParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6D2197F8C480024F9DF /* TriangleParticle.sks */; };
 		4C70B6D5197F8C5D0024F9DF /* CircleParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6D4197F8C5D0024F9DF /* CircleParticle.sks */; };
-		4C78A077192D9EB8003F9ABE /* GameSceneTemplateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C78A076192D9EB8003F9ABE /* GameSceneTemplateController.m */; };
 		4C78A07A192DA14D003F9ABE /* ClassicGameController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C78A079192DA14D003F9ABE /* ClassicGameController.m */; };
 		4C78A081192DDABB003F9ABE /* GameAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C78A080192DDABB003F9ABE /* GameAsset.m */; };
 		4C7F13571911F36D00565A01 /* Snake.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F13561911F36D00565A01 /* Snake.m */; };
@@ -62,6 +61,10 @@
 		4CB108C6190FF6440085C747 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108AA190FF6440085C747 /* CoreData.framework */; };
 		4CB108CE190FF6440085C747 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4CB108CC190FF6440085C747 /* InfoPlist.strings */; };
 		4CB108D0190FF6440085C747 /* TwoSnakesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB108CF190FF6440085C747 /* TwoSnakesTests.m */; };
+		4CD7D11E1991D56400E1A03C /* go_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD7D11A1991D56400E1A03C /* go_red@2x.png */; };
+		4CD7D11F1991D56400E1A03C /* go_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD7D11B1991D56400E1A03C /* go_yellow@2x.png */; };
+		4CD7D1201991D56400E1A03C /* go_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD7D11C1991D56400E1A03C /* go_blue@2x.png */; };
+		4CD7D1211991D56400E1A03C /* go_green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD7D11D1991D56400E1A03C /* go_green@2x.png */; };
 		4CDBB71D1920A00900D8A9B4 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CDBB71C1920A00900D8A9B4 /* Social.framework */; };
 		4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDBB71F1920A22900D8A9B4 /* GCHelper.m */; };
 		4CE343B31957D6C00032E674 /* ParticleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE343B21957D6C00032E674 /* ParticleView.m */; };
@@ -90,8 +93,6 @@
 		4C70B6CF197F8BB60024F9DF /* triangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = triangle.png; sourceTree = "<group>"; };
 		4C70B6D2197F8C480024F9DF /* TriangleParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TriangleParticle.sks; sourceTree = "<group>"; };
 		4C70B6D4197F8C5D0024F9DF /* CircleParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CircleParticle.sks; sourceTree = "<group>"; };
-		4C78A075192D9EB8003F9ABE /* GameSceneTemplateController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameSceneTemplateController.h; sourceTree = "<group>"; };
-		4C78A076192D9EB8003F9ABE /* GameSceneTemplateController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSceneTemplateController.m; sourceTree = "<group>"; };
 		4C78A078192DA14D003F9ABE /* ClassicGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassicGameController.h; sourceTree = "<group>"; };
 		4C78A079192DA14D003F9ABE /* ClassicGameController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassicGameController.m; sourceTree = "<group>"; };
 		4C78A07F192DDABB003F9ABE /* GameAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameAsset.h; sourceTree = "<group>"; };
@@ -159,6 +160,10 @@
 		4CB108CB190FF6440085C747 /* TwoSnakesTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwoSnakesTests-Info.plist"; sourceTree = "<group>"; };
 		4CB108CD190FF6440085C747 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4CB108CF190FF6440085C747 /* TwoSnakesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwoSnakesTests.m; sourceTree = "<group>"; };
+		4CD7D11A1991D56400E1A03C /* go_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_red@2x.png"; sourceTree = "<group>"; };
+		4CD7D11B1991D56400E1A03C /* go_yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_yellow@2x.png"; sourceTree = "<group>"; };
+		4CD7D11C1991D56400E1A03C /* go_blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_blue@2x.png"; sourceTree = "<group>"; };
+		4CD7D11D1991D56400E1A03C /* go_green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_green@2x.png"; sourceTree = "<group>"; };
 		4CDBB71C1920A00900D8A9B4 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		4CDBB71E1920A22900D8A9B4 /* GCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCHelper.h; sourceTree = "<group>"; };
 		4CDBB71F1920A22900D8A9B4 /* GCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCHelper.m; sourceTree = "<group>"; };
@@ -252,8 +257,6 @@
 				4CAA5DF11929AB9100049F52 /* SocialShare.m */,
 				4CAA5DE81929998000049F52 /* GamePad.h */,
 				4CAA5DE91929998000049F52 /* GamePad.m */,
-				4C78A075192D9EB8003F9ABE /* GameSceneTemplateController.h */,
-				4C78A076192D9EB8003F9ABE /* GameSceneTemplateController.m */,
 				4C78A078192DA14D003F9ABE /* ClassicGameController.h */,
 				4C78A079192DA14D003F9ABE /* ClassicGameController.m */,
 				4CE343B11957D6C00032E674 /* ParticleView.h */,
@@ -267,6 +270,10 @@
 		4CB10898190FF6440085C747 = {
 			isa = PBXGroup;
 			children = (
+				4CD7D11A1991D56400E1A03C /* go_red@2x.png */,
+				4CD7D11B1991D56400E1A03C /* go_yellow@2x.png */,
+				4CD7D11C1991D56400E1A03C /* go_blue@2x.png */,
+				4CD7D11D1991D56400E1A03C /* go_green@2x.png */,
 				4C288403198F422900999517 /* head@2x.png */,
 				4C2883FB198F3CC400999517 /* green@2x.png */,
 				4C2883FC198F3CC400999517 /* red@2x.png */,
@@ -441,6 +448,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C288402198F3CC400999517 /* blue@2x.png in Resources */,
+				4CD7D11E1991D56400E1A03C /* go_red@2x.png in Resources */,
 				4C8541BE1946D82100810CE4 /* icon.png in Resources */,
 				4C70B6D3197F8C480024F9DF /* TriangleParticle.sks in Resources */,
 				4CA0E58819760BFB008B2E71 /* square.png in Resources */,
@@ -451,14 +459,17 @@
 				4CB108B1190FF6440085C747 /* InfoPlist.strings in Resources */,
 				4C85418D1945545700810CE4 /* stop@2x.png in Resources */,
 				4C8541A51946A8B300810CE4 /* README.txt in Resources */,
+				4CD7D11F1991D56400E1A03C /* go_yellow@2x.png in Resources */,
 				4C2883FF198F3CC400999517 /* green@2x.png in Resources */,
 				4C8585AD1925FB150096F75B /* twitter40@2x.png in Resources */,
+				4CD7D1201991D56400E1A03C /* go_blue@2x.png in Resources */,
 				4C288401198F3CC400999517 /* yellow@2x.png in Resources */,
 				4C70B6D5197F8C5D0024F9DF /* CircleParticle.sks in Resources */,
 				4C8585AF1925FB270096F75B /* faceboo40@2x.png in Resources */,
 				4C85418F1945545700810CE4 /* play@2x.png in Resources */,
 				4C2B7A65198E7B8C00233F5E /* purple@2x.png in Resources */,
 				4C288404198F422900999517 /* head@2x.png in Resources */,
+				4CD7D1211991D56400E1A03C /* go_green@2x.png in Resources */,
 				4C8541BA1946D3C700810CE4 /* gamecenter@2x.png in Resources */,
 				4C70B6D0197F8BB60024F9DF /* circle.png in Resources */,
 				4CB108BC190FF6440085C747 /* Images.xcassets in Resources */,
@@ -490,7 +501,6 @@
 				4C8585AB1925EA7B0096F75B /* CircleLabel.m in Sources */,
 				4CE343B31957D6C00032E674 /* ParticleView.m in Sources */,
 				4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */,
-				4C78A077192D9EB8003F9ABE /* GameSceneTemplateController.m in Sources */,
 				4C78A081192DDABB003F9ABE /* GameAsset.m in Sources */,
 				4CB108B3190FF6440085C747 /* main.m in Sources */,
 				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,

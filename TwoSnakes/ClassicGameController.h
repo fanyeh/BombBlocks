@@ -6,9 +6,7 @@
 //  Copyright (c) 2014年 MarriageKiller. All rights reserved.
 //
 
-#import "GameSceneTemplateController.h"
-
-@interface ClassicGameController : GameSceneTemplateController
+@interface ClassicGameController : UIViewController
 
 @property(strong,nonatomic) UILabel *scoreLabel;
 

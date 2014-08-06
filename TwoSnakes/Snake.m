@@ -18,6 +18,7 @@
     CGRect headFrame;
     CGFloat border;
     NSMutableArray *allPatterns;
+    NSMutableArray *flipBodyArray;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -58,6 +59,7 @@
 
         chain = 2;
         self.direction = -1;
+        _combos = 0;
     }
     return self;
 }
@@ -106,6 +108,8 @@
     _yOffset = headFrame.size.height+1;
     [_snakeBody addObject:snakeHead];
     
+    _combos = 0;
+    
     [self setNodeIndexRow:0 andCol:0];
 }
 
@@ -137,8 +141,6 @@
 }
 
 #pragma mark - Snake Movement
-
-
 
 -(void)swipeToMove:(UISwipeGestureRecognizerDirection)swipeDirection complete:(void(^)(void))completBlock
 {
@@ -640,6 +642,7 @@
         if ( node2 && node3 && node4 && node5) {
             
             patternArray = [[NSMutableArray alloc]initWithArray: @[node,node2,node3,node4,node5]];
+            _combos++;
             return patternArray;
         }
 
@@ -668,6 +671,7 @@
         if ( node2 && node3 && node4) {
             
             patternArray = [[NSMutableArray alloc]initWithArray: @[node,node2,node3,node4]];
+            _combos++;
             return patternArray;
         }
         
@@ -698,6 +702,7 @@
         if ( node2 && node3 && node4 && node5) {
             
             patternArray = [[NSMutableArray alloc]initWithArray: @[node,node2,node3,node4,node5]];
+            _combos++;
             return patternArray;
         }
     }
@@ -755,7 +760,7 @@
         }
     
         if (count >= chain) {
-            
+            _combos++;
             return patternArray;
         }
     }
@@ -815,7 +820,7 @@
         }
         
         if (count >= chain) {
-            
+            _combos++;
             return patternArray;
         }
     }
@@ -890,7 +895,8 @@
         }
         
         if (count >= chain) {
-            
+            _combos++;
+
             return patternArray;
         }
     }
@@ -953,7 +959,8 @@
         }
         
         if (count >= chain) {
-            
+            _combos++;
+
             return patternArray;
         }
     }
@@ -1096,12 +1103,102 @@
     return anim;
 }
 
+-(CABasicAnimation *)flipAnimation
+{
+    CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation.y"];
+    anim.delegate = self;
+    [anim setToValue:[NSNumber numberWithFloat:0]]; // satrt angle
+    [anim setFromValue:[NSNumber numberWithDouble:M_PI]]; // rotation angle
+    [anim setDuration:0.15]; // rotate speed
+    [anim setRepeatCount:1];
+    [anim setAutoreverses:NO];
+    return anim;
+}
+
 #pragma mark - Game Over Animation
 
 
-- (void)gameOver
+- (BOOL)checkIsGameover
 {
-    [[self snakeHead].layer addAnimation:[self rotateAnimation] forKey:nil];
+    CGRect newPosition1 = [self getNewPosition:[_snakeBody firstObject] direction:kMoveDirectionDown];
+    CGRect newPosition2 = [self getNewPosition:[_snakeBody firstObject] direction:kMoveDirectionUp];
+    CGRect newPosition3 = [self getNewPosition:[_snakeBody firstObject] direction:kMoveDirectionLeft];
+    CGRect newPosition4 = [self getNewPosition:[_snakeBody firstObject] direction:kMoveDirectionRight];
+    
+    NSMutableArray *newPosArray = [[NSMutableArray alloc]init];
+    [newPosArray addObject:[NSValue valueWithCGRect:newPosition1]];
+    [newPosArray addObject:[NSValue valueWithCGRect:newPosition2]];
+    [newPosArray addObject:[NSValue valueWithCGRect:newPosition3]];
+    [newPosArray addObject:[NSValue valueWithCGRect:newPosition4]];
+    
+    BOOL move = YES;
+
+    for (NSValue *n in newPosArray) {
+        
+        CGRect newPosition = [n CGRectValue];
+        
+        for (SnakeNode *v in _snakeBody) {
+            // If head touched body , game is over
+            if (CGRectIntersectsRect(newPosition, v.frame) && ![v.name isEqualToString:@"name"]) {
+                
+                move = NO;
+                break;
+            }
+        }
+        
+        if (move ) {
+            
+            if ([self touchedScreenBounds:newPosition]) {
+                move  = NO;
+            }
+
+        }
+        if (move)
+            return NO;
+        else
+            move = YES;
+    }
+    return move;
+}
+
+-(void)setGameoverImage
+{
+    flipBodyArray = [NSMutableArray arrayWithArray:_snakeBody];
+    [self flip];
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
+{
+    [flipBodyArray removeLastObject];
+    
+    if ([flipBodyArray count] > 1) {
+        
+        [self flip];
+        
+    }
+}
+
+-(void)flip
+{
+    SnakeNode *n = [flipBodyArray lastObject];
+    [n.nodeImageView.layer addAnimation:[self flipAnimation] forKey:nil];
+    switch (n.assetType) {
+        case kAssetTypeBlue:
+            n.nodeImageView.image = [UIImage imageNamed:@"go_blue.png"];
+            break;
+        case kAssetTypeRed:
+            n.nodeImageView.image = [UIImage imageNamed:@"go_red.png"];
+            break;
+        case kAssetTypeGreen:
+            n.nodeImageView.image = [UIImage imageNamed:@"go_green.png"];
+            break;
+        case kAssetTypeYellow:
+            n.nodeImageView.image = [UIImage imageNamed:@"go_yellow.png"];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 @end
