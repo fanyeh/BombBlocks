@@ -6,6 +6,9 @@
 //  Copyright (c) 2014年 MarriageKiller. All rights reserved.
 //
 
+#include <CoreMotion/CoreMotion.h>
+#import <CoreFoundation/CoreFoundation.h>
+
 @interface ClassicGameController : UIViewController
 
 @property(strong,nonatomic) UILabel *scoreLabel;

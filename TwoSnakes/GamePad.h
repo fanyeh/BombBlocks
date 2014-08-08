@@ -13,6 +13,8 @@
 @interface GamePad : UIView
 
 @property (strong,nonatomic) NSMutableArray *assetArray;
+@property (strong,nonatomic) NSMutableArray *indexpathArray;
+
 
 - (id)initGamePad;
 - (void)hideAllAssets;

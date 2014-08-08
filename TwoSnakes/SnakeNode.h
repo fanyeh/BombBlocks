@@ -20,6 +20,7 @@ struct NodeIndex {
     int row;
     int col;
 };
+
 typedef struct NodeIndex NodeIndex;
 
 @interface SnakeNode : UIView

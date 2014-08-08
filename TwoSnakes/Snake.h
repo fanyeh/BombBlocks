@@ -26,8 +26,17 @@ typedef enum {
 
 typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 
-@interface Snake : SnakeNode
+@protocol gameoverDelegate <NSObject>
+@required
 
+-(void)showReplayView;
+
+@end
+
+@interface Snake : SnakeNode
+{
+    __weak id<gameoverDelegate>_delegate;
+}
 @property (strong,nonatomic) NSMutableArray *snakeBody;
 @property (strong,nonatomic) GamePad *gamePad;
 @property (strong,nonatomic) ParticleView *particleView;
@@ -44,5 +53,6 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 - (void)resetSnake;
 - (BOOL)checkIsGameover;
 -(void)setGameoverImage;
+@property (weak,nonatomic) id<gameoverDelegate>delegate;
 
 @end

@@ -13,7 +13,7 @@
 #import "GamePad.h"
 #import "Snake.h"
 
-@interface ClassicGameController ()
+@interface ClassicGameController () <gameoverDelegate>
 {
     NSNumberFormatter *numFormatter; //Formatter for score
     NSInteger score;
@@ -24,8 +24,7 @@
     SnakeNode *nextNode3;
     GamePad *gamePad;
     Snake *snake;
-    UILabel *pauseLabel;
-    UIImageView *stateSign;
+    UIView *replayView;
 }
 @end
 
@@ -47,17 +46,39 @@
     self.view.backgroundColor = [UIColor colorWithRed:0.064 green:0.056 blue:0.056 alpha:1.000];
 
     // Do any additional setup after loading the view.
-    stateSign =  [[UIImageView alloc]initWithFrame:CGRectMake(10, 5, 30, 30)];
-    stateSign.image = [UIImage imageNamed:@"replay.png"];
+    UILabel *gameoverLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 250, 40)];
+    gameoverLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:40];
+    gameoverLabel.text = @"Game Over";
+    gameoverLabel.textColor = [UIColor colorWithWhite:0.502 alpha:1.000];
+    gameoverLabel.textAlignment = NSTextAlignmentCenter;
+    
+    UIButton *replayButton = [[UIButton alloc]initWithFrame:CGRectMake(75, 50, 100, 100)];
+    [replayButton setBackgroundImage:[UIImage imageNamed:@"replay.png"] forState:UIControlStateNormal];
+    [replayButton addTarget:self action:@selector(replayGame) forControlEvents:UIControlEventTouchDown];
+    
+    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake(25, 170, 50, 50)];
+    [facbookButton setBackgroundImage:[UIImage imageNamed:@"facebook40.png"] forState:UIControlStateNormal];
+    
+    UIButton *twitterButton = [[UIButton alloc]initWithFrame:CGRectMake(100, 170, 50, 50)];
+    [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter40.png"] forState:UIControlStateNormal];
     
     // Setup game state label
-    pauseLabel = [[UILabel alloc]initWithFrame:CGRectMake(320-5-50, 10, 50, 40)];
+    UILabel *pauseLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 250, 250)];
+    pauseLabel.backgroundColor = [UIColor whiteColor];
+    pauseLabel.center = self.view.center;
+    [pauseLabel addSubview:replayButton];
+    [pauseLabel addSubview:facbookButton];
+    [pauseLabel addSubview:twitterButton];
+    [pauseLabel addSubview:gameoverLabel];
     pauseLabel.userInteractionEnabled = YES;
-    [pauseLabel addSubview:stateSign];
-    UITapGestureRecognizer *replayTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(replayGame)];
-    [pauseLabel addGestureRecognizer:replayTap];
-    //[self.view addSubview:pauseLabel];
+
     
+    replayView = [[UIView alloc]initWithFrame:self.view.frame];
+    replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
+    replayView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.650];
+    [replayView addSubview:pauseLabel];
+    [self.view addSubview:replayView];
+
     CGFloat viewHeight = 40;
     CGFloat viewWidth = 60;
 
@@ -111,6 +132,7 @@
     CGFloat snakeSize = 55 ;
     startFrame = CGRectMake(116, 173, snakeSize , snakeSize);
     snake = [[Snake alloc]initWithFrame:startFrame gamePad:gamePad];
+    snake.delegate = self;
     [gamePad addSubview:snake];
     snake.particleView = particle;
     
@@ -154,6 +176,31 @@
     [self.view addSubview:nextNode3];
     
     snake.comingNodeArray = [[NSMutableArray alloc]initWithArray:@[nextNode,nextNode2,nextNode3]];
+    
+    // ------ Gyroscope --------//
+    
+    CMMotionManager *motionManager = [[CMMotionManager alloc]init];
+    
+    motionManager.gyroUpdateInterval = 1.0/60.0;
+    
+    if (motionManager.isGyroAvailable) {
+        
+        [motionManager startGyroUpdatesToQueue:[NSOperationQueue currentQueue] withHandler:^(CMGyroData *gyroData, NSError *error) {
+            
+            if (gyroData.rotationRate.y > 5)
+                NSLog(@"Postivie Y : %f",motionManager.gyroData.rotationRate.y);
+            
+            if (gyroData.rotationRate.y < -5)
+                NSLog(@"Negative Y : %f",motionManager.gyroData.rotationRate.y);
+            
+            if (gyroData.rotationRate.x > 5)
+                NSLog(@"Postivie X : %f",motionManager.gyroData.rotationRate.x);
+            
+            if (gyroData.rotationRate.x < -5)
+                NSLog(@"Negative X : %f",motionManager.gyroData.rotationRate.x);
+            
+        }];
+    }
 
 }
 
@@ -204,9 +251,8 @@
             [self setScore];
             
             if([snake checkIsGameover]) {
-                
-                gamePad.userInteractionEnabled = NO;
 
+                gamePad.userInteractionEnabled = NO;
                 [snake setGameoverImage];
                 
                 [self grayOutNode:nextNode];
@@ -221,7 +267,6 @@
                     [[GCHelper sharedInstance] submitScore:score leaderboardId:kHighScoreLeaderboardId];
                 }
 
-            
             }
             
         }];
@@ -242,6 +287,26 @@
             break;
         case kAssetTypeYellow:
             n.nodeImageView.image = [UIImage imageNamed:@"go_yellow.png"];
+            break;
+        default:
+            break;
+    }
+}
+
+-(void)changeNodeToNormal:(SnakeNode *)n
+{
+    switch (n.assetType) {
+        case kAssetTypeBlue:
+            n.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
+            break;
+        case kAssetTypeRed:
+            n.nodeImageView.image = [UIImage imageNamed:@"red.png"];
+            break;
+        case kAssetTypeGreen:
+            n.nodeImageView.image = [UIImage imageNamed:@"green.png"];
+            break;
+        case kAssetTypeYellow:
+            n.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
             break;
         default:
             break;
@@ -332,6 +397,16 @@
     [self setScore];
     [snake resetSnake];
     [gamePad resetClassicGamePad];
+    [self changeNodeToNormal:nextNode];
+    [self changeNodeToNormal:nextNode2];
+    [self changeNodeToNormal:nextNode3];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        
+        replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
+        
+    }];
+
 }
 
 #pragma mark - Setscore
@@ -360,6 +435,17 @@
 - (BOOL)prefersStatusBarHidden
 {
     return YES;
+}
+
+-(void)showReplayView
+{
+    [self.view bringSubviewToFront:replayView];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+       
+        replayView.frame = CGRectOffset(replayView.frame, 0, self.view.frame.size.height);
+        
+    }];
 }
 
 @end

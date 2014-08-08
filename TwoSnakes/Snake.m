@@ -1174,7 +1174,8 @@
     if ([flipBodyArray count] > 1) {
         
         [self flip];
-        
+    } else {
+        [_delegate showReplayView];
     }
 }
 

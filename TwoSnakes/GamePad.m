@@ -39,7 +39,7 @@
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-       // [self createClassicGameAssetColumn:column andRow:row];
+       [self createClassicGameAssetColumn:column andRow:row];
 
     }
     return self;
@@ -47,69 +47,69 @@
 
 - (void)createClassicGameAssetColumn:(int)cols andRow:(int)rows
 {
-    _assetArray = [[NSMutableArray alloc]init];
-    CGFloat assetPosX;
-    CGFloat assetPosY;
+//    _assetArray = [[NSMutableArray alloc]init];
+    _indexpathArray = [[NSMutableArray alloc]init];
+
+//    CGFloat assetPosX;
+//    CGFloat assetPosY;
     
     for (int i = 0 ; i < cols; i ++ ) {
         for (int j = 0 ; j < rows ; j++) {
             
-
-            GameAsset *asset = [[GameAsset alloc]init];
-
-            assetPosX = i * moveSize+2;
-            assetPosY = j * moveSize+2;
+//            GameAsset *asset = [[GameAsset alloc]init];
+//
+//            assetPosX = i * moveSize+2;
+//            assetPosY = j * moveSize+2;
 
 //            if (i%2==1 && j%2==1)
 //                [self randomColor:asset];
 //            else
 //                [asset setAssetType:kAssetTypeEmpty];
             
-            [asset setAssetType:kAssetTypeEmpty];
-
+//            [asset setAssetType:kAssetTypeEmpty];
+//            [asset setPosition:CGPointMake(assetPosX, assetPosY)];
+//            [self addSubview:asset];
+//            [self sendSubviewToBack:asset];
+//            [_assetArray addObject:asset];
             
-            [asset setPosition:CGPointMake(assetPosX, assetPosY)];
-
-
-            [self addSubview:asset];
-            [self sendSubviewToBack:asset];
-            [_assetArray addObject:asset];
+//            if (i == 2 && j == 3) {
+//                NSLog(@"center frame %@", NSStringFromCGRect(asset.frame));
+//            }
             
-            if (i == 2 && j == 3) {
-                NSLog(@"center frame %@", NSStringFromCGRect(asset.frame));
-            }
+            NSIndexPath *assetPath = [NSIndexPath indexPathForRow:j inSection:i];
+            [_indexpathArray addObject:assetPath];
             
         }
     }
     
     // Create Asset neighbors
-    for (GameAsset *a in _assetArray) {
-        
-        for (GameAsset *b in _assetArray) {
-            
-            CGRect upper = CGRectOffset(a.frame, 0, -moveSize);
-            CGRect down = CGRectOffset(a.frame, 0, moveSize);
-            CGRect left = CGRectOffset(a.frame, -moveSize, 0);
-            CGRect right = CGRectOffset(a.frame, moveSize, 0);
-            
-            if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:upper]]) {
-                [a.neighbors addObject:b];
-            }
-            
-            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:down]]) {
-                [a.neighbors addObject:b];
-            }
-            
-            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:left]]) {
-                [a.neighbors addObject:b];
-            }
-            
-            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:right]]) {
-                [a.neighbors addObject:b];
-            }
-            
-        }
-    }
+//    for (GameAsset *a in _assetArray) {
+//        
+//        for (GameAsset *b in _assetArray) {
+//            
+//            CGRect upper = CGRectOffset(a.frame, 0, -moveSize);
+//            CGRect down = CGRectOffset(a.frame, 0, moveSize);
+//            CGRect left = CGRectOffset(a.frame, -moveSize, 0);
+//            CGRect right = CGRectOffset(a.frame, moveSize, 0);
+//            
+//            if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:upper]]) {
+//                [a.neighbors addObject:b];
+//            }
+//            
+//            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:down]]) {
+//                [a.neighbors addObject:b];
+//            }
+//            
+//            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:left]]) {
+//                [a.neighbors addObject:b];
+//            }
+//            
+//            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:right]]) {
+//                [a.neighbors addObject:b];
+//            }
+//            
+//        }
+//    }
 }
 
 
