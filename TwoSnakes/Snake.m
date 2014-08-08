@@ -1202,4 +1202,40 @@
     }
 }
 
+- (void)moveBodyByGyroscope:(MoveDirection)direction
+{
+    for (NSIndexPath *path in _gamePad.indexpathArray) {
+        
+        for (SnakeNode *n in _snakeBody) {
+            
+            if (n.nodePath.col == path.section && n.nodePath.row == path.row) {
+                
+                switch (direction) {
+                    case kMoveDirectionDown:
+                        
+                        n.frame = CGRectOffset(n.frame, 0, _yOffset);
+
+                        break;
+                    case kMoveDirectionUp:
+                        
+                        n.frame = CGRectOffset(n.frame, 0, -_yOffset);
+
+                        break;
+                    case kMoveDirectionLeft:
+                        
+                        n.frame = CGRectOffset(n.frame, -_xOffset, 0);
+                        
+                        break;
+                    case kMoveDirectionRight:
+                        
+                        n.frame = CGRectOffset(n.frame, -_xOffset, 0);
+
+                        break;
+                        
+                }
+            }
+        }
+    }
+}
+
 @end

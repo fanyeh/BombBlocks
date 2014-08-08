@@ -72,7 +72,6 @@
     [pauseLabel addSubview:gameoverLabel];
     pauseLabel.userInteractionEnabled = YES;
 
-    
     replayView = [[UIView alloc]initWithFrame:self.view.frame];
     replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
     replayView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.650];
