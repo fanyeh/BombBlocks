@@ -8,17 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "Snake.h"
-@class GameAsset;
 
 @interface GamePad : UIView
 
-@property (strong,nonatomic) NSMutableArray *assetArray;
-@property (strong,nonatomic) NSMutableArray *indexpathArray;
-
-
 - (id)initGamePad;
-- (void)hideAllAssets;
-- (void)changeAssetType:(GameAsset *)asset;
-- (void)resetClassicGamePad;
+- (void)showEmptyNodeBorder:(SnakeNode *)node;
+- (void)resetEmptyNodeBorder;
+-(void)createBombWithReminder:(NSInteger)reminder body:(NSMutableArray *)snakeBody complete:(void(^)(void))completBlock;
+- (void)reset;
+- (void)bombExplosionWithPosX:(float)posX andPosY:(float)posY bomb:(SnakeNode *)bomb;
+- (void)bombExplosionSquare:(float)posX andPosY:(float)posY bomb:(SnakeNode *)bomb;
 
+@property (strong,nonatomic) NSMutableArray *emptyNodeArray;
+@property (strong,nonatomic) SnakeNode  *initialNode;
 @end

@@ -16,25 +16,34 @@ typedef enum {
     kMoveDirectionRight
 } MoveDirection;
 
-struct NodeIndex {
-    int row;
-    int col;
-};
-
 typedef struct NodeIndex NodeIndex;
+
+struct NodeIndex {
+    NSInteger col;
+    NSInteger row;
+};
 
 @interface SnakeNode : UIView
 
-- (id)initWithFrame:(CGRect)frame gameAssetType:(AssetType)assetType imageFrame:(CGRect)imageFrame;
-- (void)setNodeIndexRow:(int)row andCol:(int)col;
--(int)nodeIndexRow;
--(int)nodeIndexCol;
+- (id)initWithFrame:(CGRect)frame gameAssetType:(AssetType)assetType;
+- (id)initWithEmptyFrame:(CGRect)frame;
+- (void)setBombWithReminder:(NSInteger)reminder complete:(void(^)(void))completBlock;
+- (void)setNodeIndexRow:(NSInteger)row andCol:(NSInteger)col;
+- (void)scoreLabelAnimation;
+- (void)removeBomb;
+- (void)hideScoreLabel;
 
 @property (nonatomic,assign) AssetType assetType;
+@property (nonatomic,assign) BombType bombType;
 @property (nonatomic,assign) MoveDirection direction;
-@property (nonatomic,assign) NodeIndex nodePath;
 @property (nonatomic,strong) UIColor *nodeColor;
 @property (nonatomic,strong) NSString *name;
 @property (nonatomic,strong) UIImageView *nodeImageView;
+@property (nonatomic,assign) NodeIndex nodePath;
+@property (nonatomic,assign) NSInteger nodeColumn;
+@property (nonatomic,assign) NSInteger nodeRow;
+@property (nonatomic,assign) BOOL hasBomb;
+@property (nonatomic,assign) NSInteger scoreAdder;
+@property (nonatomic,assign) NSInteger level;
 
 @end

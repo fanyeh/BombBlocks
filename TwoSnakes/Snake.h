@@ -18,10 +18,8 @@ typedef enum {
     kPatternTypeRow,
     kPatternTypeCol,
     kPatternTypeDiagonalDown,
-    kPatternTypeDiagonalUp,
-    kPatternTypeCross,
-    kPatternTypeX,
-    kPatternTypeHallowSquare
+    kPatternTypeDiagonalUp
+
 } PatternType;
 
 typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
@@ -29,7 +27,8 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 @protocol gameoverDelegate <NSObject>
 @required
 
--(void)showReplayView;
+-(void)showReplayView:(NSInteger)totalBombs;
+-(void)updateScore:(NSInteger)s;
 
 @end
 
@@ -37,22 +36,27 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 {
     __weak id<gameoverDelegate>_delegate;
 }
+
 @property (strong,nonatomic) NSMutableArray *snakeBody;
 @property (strong,nonatomic) GamePad *gamePad;
 @property (strong,nonatomic) ParticleView *particleView;
-@property (strong,nonatomic) NSMutableArray *comingNodeArray;
 @property (nonatomic) CGFloat xOffset;
 @property (nonatomic) CGFloat yOffset;
 @property (nonatomic) NSInteger combos;
+@property (weak,nonatomic) id<gameoverDelegate>delegate;
+@property (strong,nonatomic) SnakeNode *nextNode;
+@property (nonatomic,assign) NSInteger reminder;
 
-- (id)initWithFrame:(CGRect)frame gamePad:(GamePad *)gamePad;
+- (id)initWithSnakeNode:(SnakeNode *)node gamePad:(GamePad *)gamePad;
 - (MoveDirection)headDirection;
 - (SnakeNode *)snakeHead;
 - (SnakeNode *)snakeTail;
--(void)swipeToMove:(UISwipeGestureRecognizerDirection)swipeDirection complete:(void(^)(void))completBlock;
 - (void)resetSnake;
 - (BOOL)checkIsGameover;
--(void)setGameoverImage;
-@property (weak,nonatomic) id<gameoverDelegate>delegate;
+- (void)setGameoverImage;
+- (void)updateNextNode:(SnakeNode *)node animation:(BOOL)animation;
+- (void)cancelPattern:(void(^)(void))completBlock;
+- (void)moveAllNodesBySwipe:(MoveDirection)direction complete:(void(^)(void))completBlock;
+- (void)createBody:(void(^)(void))completBlock;
 
 @end

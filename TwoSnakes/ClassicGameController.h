@@ -11,6 +11,6 @@
 
 @interface ClassicGameController : UIViewController
 
-@property(strong,nonatomic) UILabel *scoreLabel;
+//@property(strong,nonatomic) UILabel *scoreLabel;
 
 @end

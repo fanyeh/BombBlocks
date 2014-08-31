@@ -12,19 +12,27 @@
 #import "ParticleView.h"
 #import "GamePad.h"
 #import "Snake.h"
+#import "MKAppDelegate.h"
+#import "CustomLabel.h"
 
 @interface ClassicGameController () <gameoverDelegate>
 {
     NSNumberFormatter *numFormatter; //Formatter for score
     NSInteger score;
-    CGRect startFrame;
-    UILabel *comboLabel;
     SnakeNode *nextNode;
-    SnakeNode *nextNode2;
-    SnakeNode *nextNode3;
     GamePad *gamePad;
     Snake *snake;
-    UIView *replayView;
+    UIImageView *replayView;
+    NSInteger totalCombos;
+    NSInteger combosToCreateBomb;
+    BOOL swap;
+    CustomLabel *nextLabel;
+    CustomLabel *bestScoreLabel;
+    CustomLabel *scoreLabel;
+    CustomLabel *comLabel;
+    CustomLabel *bombLabel;
+    CustomLabel *currentScoreLabel;
+    BOOL gameIsOver;
 }
 @end
 
@@ -43,55 +51,11 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor colorWithRed:0.064 green:0.056 blue:0.056 alpha:1.000];
-
-    // Do any additional setup after loading the view.
-    UILabel *gameoverLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, 250, 40)];
-    gameoverLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:40];
-    gameoverLabel.text = @"Game Over";
-    gameoverLabel.textColor = [UIColor colorWithWhite:0.502 alpha:1.000];
-    gameoverLabel.textAlignment = NSTextAlignmentCenter;
+    self.view.backgroundColor = [UIColor colorWithWhite:0.063 alpha:1.000];
+    UIImageView *bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
+    [self.view addSubview:bgImageView];
     
-    UIButton *replayButton = [[UIButton alloc]initWithFrame:CGRectMake(75, 50, 100, 100)];
-    [replayButton setBackgroundImage:[UIImage imageNamed:@"replay.png"] forState:UIControlStateNormal];
-    [replayButton addTarget:self action:@selector(replayGame) forControlEvents:UIControlEventTouchDown];
-    
-    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake(25, 170, 50, 50)];
-    [facbookButton setBackgroundImage:[UIImage imageNamed:@"facebook40.png"] forState:UIControlStateNormal];
-    
-    UIButton *twitterButton = [[UIButton alloc]initWithFrame:CGRectMake(100, 170, 50, 50)];
-    [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter40.png"] forState:UIControlStateNormal];
-    
-    // Setup game state label
-    UILabel *pauseLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 250, 250)];
-    pauseLabel.backgroundColor = [UIColor whiteColor];
-    pauseLabel.center = self.view.center;
-    [pauseLabel addSubview:replayButton];
-    [pauseLabel addSubview:facbookButton];
-    [pauseLabel addSubview:twitterButton];
-    [pauseLabel addSubview:gameoverLabel];
-    pauseLabel.userInteractionEnabled = YES;
-
-    replayView = [[UIView alloc]initWithFrame:self.view.frame];
-    replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
-    replayView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.650];
-    [replayView addSubview:pauseLabel];
-    [self.view addSubview:replayView];
-
-    CGFloat viewHeight = 40;
-    CGFloat viewWidth = 60;
-
-    // Game Center Label
-    UILabel *gameCenterLabel = [[UILabel alloc]initWithFrame:CGRectMake(5, 10, viewWidth, viewHeight)];
-    UIImageView *gamecenterImageView = [[UIImageView alloc]initWithFrame:CGRectMake(10, 5, 30, 30)];
-    UIImage *gamecenterImage = [UIImage imageNamed:@"gamecenter.png"];
-    gamecenterImageView.image = gamecenterImage;
-    [gameCenterLabel addSubview:gamecenterImageView];
-    UITapGestureRecognizer *gamecenterTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(showGameCenter)];
-    [gameCenterLabel addGestureRecognizer:gamecenterTap];
-    gameCenterLabel.userInteractionEnabled = YES;
-    // [self.view addSubview:gameCenterLabel];
-    
+    [self setupReplayView];
     // Do any additional setup after loading the view.
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
@@ -101,11 +65,13 @@
     // -------------------- Setup game pad -------------------- //
     gamePad = [[GamePad alloc]initGamePad];
     gamePad.center = self.view.center;
+    //gamePad.frame = CGRectOffset(gamePad.frame, 0, 35);
 
     // -------------------- Setup particle views -------------------- //
     // Configure the SKView
     SKView * skView = [[SKView alloc]initWithFrame:CGRectMake(0, 0, gamePad.frame.size.width, gamePad.frame.size.height)];
-
+    skView.backgroundColor = [UIColor clearColor];
+    
     // Create and configure the scene.
     ParticleView *particle = [[ParticleView alloc]initWithSize:skView.bounds.size];
     particle.scaleMode = SKSceneScaleModeAspectFill;
@@ -116,33 +82,30 @@
     [skView presentScene:particle];
     [self.view addSubview:gamePad];
     
-    // Setup score label
-    CGFloat labelWidth = 120;
-    score = 0;
-    _scoreLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - labelWidth)/2, 30 , labelWidth, 40)];
-    _scoreLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:40];
-    _scoreLabel.text = @"Score";
-    _scoreLabel.textColor = [UIColor whiteColor];
-    _scoreLabel.textAlignment = NSTextAlignmentCenter;
-    _scoreLabel.backgroundColor =  [UIColor clearColor];
-    [self.view addSubview:_scoreLabel];
+    // Count down
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 25 , 250, 65) fontName:@"GeezaPro-Bold" fontSize:65];
+    scoreLabel.textColor = [UIColor whiteColor];
+    scoreLabel.text = @"0";
+    [self.view addSubview:scoreLabel];
+    
     
     // Setup player snake head
-    CGFloat snakeSize = 55 ;
-    startFrame = CGRectMake(116, 173, snakeSize , snakeSize);
-    snake = [[Snake alloc]initWithFrame:startFrame gamePad:gamePad];
+    snake = [[Snake alloc]initWithSnakeNode:gamePad.initialNode gamePad:gamePad];
     snake.delegate = self;
     [gamePad addSubview:snake];
     snake.particleView = particle;
     
-    // Combo
-    comboLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, gamePad.frame.origin.y, 320, 40)];
-    comboLabel.hidden = YES;
-    comboLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:30];
-    comboLabel.textColor = [UIColor whiteColor];
-    comboLabel.textAlignment = NSTextAlignmentCenter;
-    comboLabel.userInteractionEnabled = YES;
-    [self.view addSubview:comboLabel];
+    // Next Node
+    CGFloat nextNodeSize = 40;
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, self.view.frame.size.height - 90 , nextNodeSize, nextNodeSize)];
+    snake.nextNode = nextNode;
+    [snake updateNextNode:nextNode animation:YES];
+    [self.view addSubview:nextNode];
+    
+    nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(120, self.view.frame.size.height - 50, 80, 15) fontName:@"GeezaPro-Bold" fontSize:15];
+    nextLabel.text = @"Next";
+    nextLabel.textColor = [UIColor whiteColor];
+    [self.view addSubview:nextLabel];
 
     // Setup swipe gestures
     UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDirection:)];
@@ -161,206 +124,168 @@
     [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
     [gamePad addGestureRecognizer:swipeUp];
     
-    CGFloat nextNodeSize = 40;
-    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake(160-(nextNodeSize*1.5), 505, nextNodeSize, nextNodeSize)];
-    [self setNextNode:nextNode];
-    [self.view addSubview:nextNode];
-
-    nextNode2 = [[SnakeNode alloc]initWithFrame:CGRectOffset(nextNode.frame, nextNodeSize, 0)];
-    [self setNextNode:nextNode2];
-    [self.view addSubview:nextNode2];
-
-    nextNode3 = [[SnakeNode alloc]initWithFrame:CGRectOffset(nextNode2.frame, nextNodeSize, 0)];
-    [self setNextNode:nextNode3];
-    [self.view addSubview:nextNode3];
-    
-    snake.comingNodeArray = [[NSMutableArray alloc]initWithArray:@[nextNode,nextNode2,nextNode3]];
-    
-    // ------ Gyroscope --------//
-    
-    CMMotionManager *motionManager = [[CMMotionManager alloc]init];
-    
-    motionManager.gyroUpdateInterval = 1.0/60.0;
-    
-    if (motionManager.isGyroAvailable) {
-        
-        [motionManager startGyroUpdatesToQueue:[NSOperationQueue currentQueue] withHandler:^(CMGyroData *gyroData, NSError *error) {
-            
-            if (gyroData.rotationRate.y > 5)
-                NSLog(@"Postivie Y : %f",motionManager.gyroData.rotationRate.y);
-            
-            if (gyroData.rotationRate.y < -5)
-                NSLog(@"Negative Y : %f",motionManager.gyroData.rotationRate.y);
-            
-            if (gyroData.rotationRate.x > 5)
-                NSLog(@"Postivie X : %f",motionManager.gyroData.rotationRate.x);
-            
-            if (gyroData.rotationRate.x < -5)
-                NSLog(@"Negative X : %f",motionManager.gyroData.rotationRate.x);
-            
-        }];
-    }
-
+    //[self showReplayView:0];
 }
 
--(void)setNextNode:(SnakeNode *)node
+- (void)setupReplayView
 {
-    int randomAsset = arc4random()%4;
-    switch (randomAsset) {
-        case 0:
-            node.assetType = kAssetTypeBlue;
-            node.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
-            break;
-        case 1:
-            node.assetType = kAssetTypeRed;
-            node.nodeImageView.image = [UIImage imageNamed:@"red.png"];
-            break;
-        case 2:
-            node.assetType = kAssetTypeGreen;
-            node.nodeImageView.image = [UIImage imageNamed:@"green.png"];
-            break;
-        case 3:
-            node.assetType = kAssetTypeYellow;
-            node.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
-            break;
-        case 4:
-            node.assetType = kAssetTypePurple;
-            node.nodeImageView.image = [UIImage imageNamed:@"purple.png"];
-            break;
-    }
+    CGFloat pauseLabelWidth = self.view.frame.size.width;
+    CGFloat pauseLabelHeight = self.view.frame.size.height;
+    CGFloat socialButtonHeight = 40;
+    CGFloat socialButtonWidth = socialButtonHeight;
+
+    // Social share button
+    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake(220,
+                                                                        10,
+                                                                        socialButtonWidth,
+                                                                        socialButtonHeight)];
+    
+    [facbookButton setBackgroundImage:[UIImage imageNamed:@"facebook40.png"] forState:UIControlStateNormal];
+    facbookButton.layer.cornerRadius = socialButtonHeight/2;
+    facbookButton.layer.masksToBounds = YES;
+    facbookButton.backgroundColor = [UIColor whiteColor];
+
+    UIButton *twitterButton = [[UIButton alloc]initWithFrame:CGRectMake(0,
+                                                                        0,
+                                                                        socialButtonWidth,
+                                                                        socialButtonHeight)];
+    [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter40.png"] forState:UIControlStateNormal];
+    twitterButton.frame = CGRectOffset(facbookButton.frame, 50, 0);
+    twitterButton.layer.cornerRadius = socialButtonHeight/2;
+    twitterButton.backgroundColor = [UIColor whiteColor];
+    twitterButton.layer.masksToBounds = YES;
+    
+    // Game Center Label
+    UIButton *gamecenterButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, socialButtonHeight, socialButtonHeight)];
+    [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter2.png"] forState:UIControlStateNormal];
+    [gamecenterButton addTarget:self action:@selector(showGameCenter) forControlEvents:UIControlEventTouchDown];
+    
+    CGFloat yoffset = 235;
+    CGFloat labelWidth = 200;
+    CGFloat labelHeight = 25;
+    CGFloat fontSize = 25;
+    
+    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 135, pauseLabelWidth, 65) fontName:@"GeezaPro-Bold" fontSize:65];
+    
+    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelWidth)/2,yoffset,labelWidth,labelHeight) fontName:@"GeezaPro-Bold" fontSize:fontSize];
+    comLabel.text = NSTextAlignmentLeft;
+    
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelWidth)/2,yoffset+60,labelWidth,labelHeight) fontName:@"GeezaPro-Bold" fontSize:fontSize];
+    bombLabel.text = NSTextAlignmentLeft;
+    
+    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 385, pauseLabelWidth, 30) fontName:@"GeezaPro-Bold" fontSize:30];
+    bestScoreLabel.textColor = [UIColor colorWithWhite:0.298 alpha:1.000];
+
+    replayView = [[UIImageView alloc]initWithFrame:self.view.frame];
+    replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
+    replayView.image = [UIImage imageNamed:@"Background.png"];
+    //[replayView addSubview:pauseLabel];
+    replayView.userInteractionEnabled = YES;
+    
+    // Social Button
+    [replayView addSubview:facbookButton];
+    [replayView addSubview:twitterButton];
+    
+    // Gamecenter Button
+    [replayView addSubview:gamecenterButton];
+    
+    // Score stats
+    [replayView addSubview:currentScoreLabel];
+    [replayView addSubview:bestScoreLabel];
+    [replayView addSubview:comLabel];
+    [replayView addSubview:bombLabel];
+
+    UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake(130,pauseLabelHeight-50-50, 50, 50)];
+    replayBg.image = [UIImage imageNamed:@"replayButton.png"];
+    replayBg.userInteractionEnabled = YES;
+    [replayView addSubview:replayBg];
+    
+    UITapGestureRecognizer *replayTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(replayGame)];
+    [replayBg addGestureRecognizer:replayTap];
+    
+    [self.view addSubview:replayView];
 }
 
+#pragma mark - Game Over
+
+-(void)gameOver
+{
+    gamePad.userInteractionEnabled = NO;
+    [snake setGameoverImage];
+    gameIsOver = YES;
+}
+
+#pragma mark - Move
 -(void)swipeDirection:(UISwipeGestureRecognizer *)sender
 {
-    
     if (gamePad.userInteractionEnabled) {
         
+        SnakeNode *head = [snake.snakeBody firstObject];
+        [head.layer removeAllAnimations];
+        
         gamePad.userInteractionEnabled = NO;
-        [snake swipeToMove:sender.direction complete:^{
+        
+        MoveDirection dir;
+        switch (sender.direction) {
+            case UISwipeGestureRecognizerDirectionDown:
+                dir = kMoveDirectionDown;
+                break;
+            case UISwipeGestureRecognizerDirectionUp:
+                dir = kMoveDirectionUp;
+                break;
+            case UISwipeGestureRecognizerDirectionLeft:
+                dir = kMoveDirectionLeft;
+                break;
+            case UISwipeGestureRecognizerDirectionRight:
+                dir = kMoveDirectionRight;
+                break;
+        }
+        
+        [snake moveAllNodesBySwipe:dir complete:^{
             
-            if (snake.combos > 0) {
-                
-                [self showComboSlogan];
-
-            } else {
-                gamePad.userInteractionEnabled = YES;
-
-            }
-            snake.combos = 0;
-            [self setScore];
-            
-            if([snake checkIsGameover]) {
-
-                gamePad.userInteractionEnabled = NO;
-                [snake setGameoverImage];
-                
-                [self grayOutNode:nextNode];
-                [self grayOutNode:nextNode2];
-                [self grayOutNode:nextNode3];
-
-                NSInteger bestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"BestScore"];
-                
-                if (score > bestScore) {
-                    
-                    [[NSUserDefaults standardUserDefaults] setInteger:score forKey:@"BestScore"];
-                    [[GCHelper sharedInstance] submitScore:score leaderboardId:kHighScoreLeaderboardId];
-                }
-
-            }
-            
+            if (snake.combos == 0 ) {
+                [snake createBody:^ {
+                    [self actionsAfterMove];
+                }];
+            } else
+                [self actionsAfterMove];
+              
         }];
     }
 }
 
--(void)grayOutNode:(SnakeNode *)n
+- (void)actionsAfterMove
 {
-    switch (n.assetType) {
-        case kAssetTypeBlue:
-            n.nodeImageView.image = [UIImage imageNamed:@"go_blue.png"];
-            break;
-        case kAssetTypeRed:
-            n.nodeImageView.image = [UIImage imageNamed:@"go_red.png"];
-            break;
-        case kAssetTypeGreen:
-            n.nodeImageView.image = [UIImage imageNamed:@"go_green.png"];
-            break;
-        case kAssetTypeYellow:
-            n.nodeImageView.image = [UIImage imageNamed:@"go_yellow.png"];
-            break;
-        default:
-            break;
-    }
-}
+    totalCombos += snake.combos;
+    combosToCreateBomb += snake.combos;
+    snake.combos = 0;
 
--(void)changeNodeToNormal:(SnakeNode *)n
-{
-    switch (n.assetType) {
-        case kAssetTypeBlue:
-            n.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
-            break;
-        case kAssetTypeRed:
-            n.nodeImageView.image = [UIImage imageNamed:@"red.png"];
-            break;
-        case kAssetTypeGreen:
-            n.nodeImageView.image = [UIImage imageNamed:@"green.png"];
-            break;
-        case kAssetTypeYellow:
-            n.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
-            break;
-        default:
-            break;
-    }
-}
+    // Create Bomb
+    if (combosToCreateBomb > 2) {
+        
+        combosToCreateBomb = 0;
+        
+        gamePad.userInteractionEnabled = NO;
+        
+        [gamePad createBombWithReminder:snake.reminder body:[snake snakeBody] complete:^{
+            
+            [snake cancelPattern:^{
+                
+                if([snake checkIsGameover])
+                    [self gameOver];
+                else
+                    gamePad.userInteractionEnabled = YES;
+                
+            }];
 
-
-- (void)showComboSlogan
-{
-    switch (snake.combos) {
-        case 1:
-            comboLabel.text = @"Nice";
-            break;
-        case 2:
-            comboLabel.text = @"Good Job";
-            break;
-        case 3:
-            comboLabel.text = @"Well Done";
-            
-            break;
-        case 4:
-            comboLabel.text = @"Excellent";
-            
-            break;
-        case 5:
-            comboLabel.text = @"Amazing";
-            
-            break;
-        case 6:
-            comboLabel.text = @"Incredible";
-            
-            break;
-        case 7:
-            comboLabel.text = @"God-Like";
-            
-            break;
-        default:
-            comboLabel.text = @"";
-            
-            break;
+        }];
     }
-    
-    comboLabel.hidden = NO;
-    comboLabel.alpha = 0;
-    
-    [UIView animateWithDuration:1.5 animations:^{
+    else {
         
-        comboLabel.alpha = 1;
-        
-    } completion:^(BOOL finished) {
-        
-        comboLabel.hidden = YES;
         gamePad.userInteractionEnabled = YES;
-
-    }];
+        if([snake checkIsGameover])
+            [self gameOver];
+    }
 }
 
 - (BOOL)moveDirecton:(UISwipeGestureRecognizerDirection)swipeDirection
@@ -387,34 +312,67 @@
     }
     return YES;
 }
-#pragma mark - Dot
+
+#pragma mark - Replay
 
 - (void)replayGame
 {
+    nextNode.hidden = NO;
+    nextLabel.hidden = NO;
     gamePad.userInteractionEnabled = YES;
+    scoreLabel.text = @"0";
     score = 0;
-    [self setScore];
+    totalCombos = 0;
     [snake resetSnake];
-    [gamePad resetClassicGamePad];
-    [self changeNodeToNormal:nextNode];
-    [self changeNodeToNormal:nextNode2];
-    [self changeNodeToNormal:nextNode3];
+    [gamePad reset];
+    gameIsOver = NO;
+    [snake updateNextNode:nextNode animation:NO];
     
     [UIView animateWithDuration:0.5 animations:^{
         
         replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
         
     }];
-
 }
 
-#pragma mark - Setscore
+#pragma mark - Snake Delegate
 
-- (void)setScore
+-(void)showReplayView:(NSInteger)totalBombs
 {
-    score++;
-    self.scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
+    nextNode.hidden = YES;
+    nextLabel.hidden = YES;
+    comLabel.text = [NSString stringWithFormat:@"Combo    x     %ld",totalCombos];
+    bombLabel.text = [NSString stringWithFormat:@"Bomb      x     %ld",totalBombs];
+    
+    NSInteger bestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"BestScore"];
+    
+    currentScoreLabel.text = [NSString stringWithFormat:@"%ld",score];
+    
+    if (score > bestScore) {
+        
+        [[NSUserDefaults standardUserDefaults] setInteger:score forKey:@"BestScore"];
+        [[GCHelper sharedInstance] submitScore:score leaderboardId:kHighScoreLeaderboardId];
+        bestScoreLabel.text = [NSString stringWithFormat:@"Best %@",[numFormatter stringFromNumber:[NSNumber numberWithInteger:score]]];
+        
+    } else {
+        bestScoreLabel.text = [NSString stringWithFormat:@"Best %@",[numFormatter stringFromNumber:[NSNumber numberWithInteger:bestScore]]];
+    }
+    
+    [self.view bringSubviewToFront:replayView];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+       
+        replayView.frame = CGRectOffset(replayView.frame, 0, self.view.frame.size.height);
+        
+    }];
 }
+
+-(void)updateScore:(NSInteger)s
+{
+    score += s;
+    scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];// [NSString stringWithFormat:@"%ld",score];
+}
+
 
 #pragma mark - Game center
 
@@ -434,17 +392,6 @@
 - (BOOL)prefersStatusBarHidden
 {
     return YES;
-}
-
--(void)showReplayView
-{
-    [self.view bringSubviewToFront:replayView];
-    
-    [UIView animateWithDuration:0.5 animations:^{
-       
-        replayView.frame = CGRectOffset(replayView.frame, 0, self.view.frame.size.height);
-        
-    }];
 }
 
 @end

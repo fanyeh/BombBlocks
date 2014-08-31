@@ -12,14 +12,6 @@
 
 @interface ParticleView : SKScene
 
-- (void)newExplosionWithPosX:(float)posX
-                     andPosY:(float)posY
-                   assetType:(AssetType)type;
-
-//- (id)initWithFrame:(CGRect)frame andColor:(UIColor *)color;
-//
-//-(void) startEmission;
-//-(void) stopEmission;
-
+- (void)newExplosionWithPosX:(float)posX andPosY:(float)posY assetType:(AssetType)type;
 
 @end

@@ -17,7 +17,9 @@
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         
-        self.backgroundColor = [SKColor colorWithCGColor:[UIColor blackColor].CGColor];
+        //self.backgroundColor = [SKColor colorWithCGColor:[UIColor colorWithWhite:0.024 alpha:0.500].CGColor];
+        
+        self.backgroundColor = [SKColor colorWithCGColor:[UIColor clearColor].CGColor];
         
     }
     return self;
@@ -32,39 +34,28 @@
     
     switch (type) {
         case kAssetTypeBlue:
-            //Circle
-            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"CircleParticle"ofType:@"sks"]];
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"BlueParticle"ofType:@"sks"]];
             color = BlueDotColor;
             break;
         case kAssetTypeRed:
-            // 菱形
-            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SquareParticle"ofType:@"sks"]];
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"RedParticle"ofType:@"sks"]];
             color = RedDotColor;
-
             break;
         case kAssetTypeGreen:
-            // Square
-            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SquareParticle"ofType:@"sks"]];
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"GreenParticle"ofType:@"sks"]];
             color = GreenDotColor;
-
             break;
         case kAssetTypeYellow:
-            // Triangle
-            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"TriangleParticle"ofType:@"sks"]];
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"YellowParticle"ofType:@"sks"]];
             color = YellowDotColor;
-
             break;
-        case kAssetTypePurple:
-            // Triangle
-            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"TriangleParticle"ofType:@"sks"]];
-            color = PurpleDotColor;
-            
+        case kAssetTypeGrey:
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"GreyParticle"ofType:@"sks"]];
+            color = GreyDotColor;
             break;
-            
-        case kAssetTypeEmpty:
-            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SquareParticle"ofType:@"sks"]];
-            color = [UIColor clearColor];
-
+        case kAssetTypeOrange:
+            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"OrangeParticle"ofType:@"sks"]];
+            color = OrangeDotColor;
             break;
     }
     emitter.position = CGPointMake(posX, posY);
@@ -74,6 +65,5 @@
     [emitter resetSimulation];
     [self addChild:emitter];
 }
-
 
 @end

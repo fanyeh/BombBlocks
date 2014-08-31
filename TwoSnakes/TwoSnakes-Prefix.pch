@@ -22,20 +22,18 @@
 #define kMaxChainComboLeaderboardId @"mk.twosnakes.maxchaincombo"
 
 
-#define FontColor [UIColor colorWithWhite:0.231 alpha:1.000]
+//#define FontColor [UIColor colorWithWhite:0.231 alpha:1.000]
+#define FontColor [UIColor colorWithWhite:0.573 alpha:0.200]
+
 #define PadBackgroundColor [UIColor colorWithRed:0.090 green:0.086 blue:0.094 alpha:1.000]
 #define GameTextColor [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000]
 #define SnakeColor [UIColor colorWithRed:0.431 green:0.780 blue:0.110 alpha:1.000]
-
+#define GamepadColor [UIColor colorWithWhite:0.020 alpha:1.000];
 
 #define RedDotColor [UIColor colorWithRed:0.745 green:0.086 blue:0.494 alpha:1.000]
-#define BlueDotColor [UIColor colorWithRed:0.000 green:0.314 blue:0.576 alpha:1.000]
+#define BlueDotColor [UIColor colorWithRed:0.000 green:0.361 blue:0.682 alpha:1.000]
 #define YellowDotColor [UIColor colorWithRed:0.925 green:0.702 blue:0.169 alpha:1.000]
 #define GreenDotColor [UIColor colorWithRed:0.000 green:0.369 blue:0.216 alpha:1.000]
-//#define PurpleDotColor [UIColor colorWithRed:0.376 green:0.282 blue:0.651 alpha:1.000]
+#define GreyDotColor [UIColor colorWithRed:0.275 green:0.443 blue:0.549 alpha:1.000]
 
-//#define RedDotColor [UIColor colorWithRed:0.929 green:0.110 blue:0.141 alpha:1.000]
-//#define BlueDotColor [UIColor colorWithRed:0.000 green:0.447 blue:0.745 alpha:1.000]
-//#define YellowDotColor [UIColor colorWithRed:0.769 green:0.725 blue:0.255 alpha:1.000]
-//#define GreenDotColor [UIColor colorWithRed:0.043 green:0.580 blue:0.267 alpha:1.000]
-#define PurpleDotColor [UIColor colorWithRed:0.400 green:0.176 blue:1.000 alpha:1.000]
+#define OrangeDotColor [UIColor colorWithRed:0.949 green:0.427 blue:0.149 alpha:1.000]

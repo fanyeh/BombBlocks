@@ -8,14 +8,9 @@
 
 #import "GamePad.h"
 #import "GameAsset.h"
+#import "SnakeNode.h"
 
 @implementation GamePad
-{
-    NSMutableArray *gameAssets;
-    CGFloat moveSize;
-    int column;
-    int row;
-}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -30,142 +25,202 @@
 
 - (id)initGamePad
 {
-    column = 5;
-    row = 7;
-    moveSize = 57;
-
-    CGRect frame = CGRectMake(0, 0, moveSize*column+2, moveSize*row+2);
+    CGFloat nodeHeight = 62;//85;
+    CGFloat nodeWidth = 62;//65;
+    int column = 5;
+    int row = 5;
+    CGFloat gapBetweenCard = 5;
+    CGFloat gapFromBoundary = 5;
+    CGRect frame = CGRectMake(0, 0, nodeWidth*column+gapFromBoundary*2-gapBetweenCard, nodeHeight*row+gapFromBoundary*2-gapBetweenCard);
 
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-       [self createClassicGameAssetColumn:column andRow:row];
+        _emptyNodeArray = [[NSMutableArray alloc]init];
 
+        //self.layer.cornerRadius = 15;
+        //self.layer.masksToBounds = YES;
+        int randomX = arc4random() % column;
+        int randomY = arc4random() % row;
+        int tag = 0;
+        for (int i = 0 ; i < column; i ++ ) {
+            
+            for (int j = 0 ; j < row ; j++) {
+                
+                CGFloat assetPosX = gapFromBoundary+nodeWidth*i;
+                CGFloat assetPosY = gapFromBoundary+nodeHeight*j;
+                SnakeNode *emptyNode = [[SnakeNode alloc]initWithEmptyFrame:CGRectMake(assetPosX, assetPosY, nodeWidth - 5, nodeHeight - 5)];
+                [emptyNode setNodeIndexRow:j andCol:i];
+                emptyNode.tag = tag;
+
+                [self addSubview:emptyNode];
+                [_emptyNodeArray addObject:emptyNode];
+                
+                if (i == randomX && j == randomY) {
+                    _initialNode = emptyNode;
+                }
+                
+                tag++;
+            }
+        }
     }
     return self;
 }
 
-- (void)createClassicGameAssetColumn:(int)cols andRow:(int)rows
+-(void)showEmptyNodeBorder:(SnakeNode *)node
 {
-//    _assetArray = [[NSMutableArray alloc]init];
-    _indexpathArray = [[NSMutableArray alloc]init];
-
-//    CGFloat assetPosX;
-//    CGFloat assetPosY;
+    UIColor *color;
     
-    for (int i = 0 ; i < cols; i ++ ) {
-        for (int j = 0 ; j < rows ; j++) {
-            
-//            GameAsset *asset = [[GameAsset alloc]init];
-//
-//            assetPosX = i * moveSize+2;
-//            assetPosY = j * moveSize+2;
+    switch (node.assetType) {
+        case kAssetTypeGreen:
+            color = GreenDotColor;
+            break;
+        case kAssetTypeBlue:
+            color = BlueDotColor;
+            break;
+        case kAssetTypeRed:
+            color = RedDotColor;
+            break;
+        case kAssetTypeYellow:
+            color = YellowDotColor;
+            break;
+        case kAssetTypeGrey:
+            color = GreyDotColor;
+            break;
+        case kAssetTypeOrange:
+            color = OrangeDotColor;
+            break;
+    }
+    
+    for (SnakeNode *emptyNode in _emptyNodeArray) {
 
-//            if (i%2==1 && j%2==1)
-//                [self randomColor:asset];
-//            else
-//                [asset setAssetType:kAssetTypeEmpty];
-            
-//            [asset setAssetType:kAssetTypeEmpty];
-//            [asset setPosition:CGPointMake(assetPosX, assetPosY)];
-//            [self addSubview:asset];
-//            [self sendSubviewToBack:asset];
-//            [_assetArray addObject:asset];
-            
-//            if (i == 2 && j == 3) {
-//                NSLog(@"center frame %@", NSStringFromCGRect(asset.frame));
-//            }
-            
-            NSIndexPath *assetPath = [NSIndexPath indexPathForRow:j inSection:i];
-            [_indexpathArray addObject:assetPath];
-            
+        if (emptyNode.nodeRow == node.nodeRow && emptyNode.nodeColumn == node.nodeColumn) {
+
+            emptyNode.layer.borderColor = color.CGColor;
+        }
+    }
+}
+
+-(void)resetEmptyNodeBorder
+{
+    for (SnakeNode *emptyNode in _emptyNodeArray) {
+        
+        emptyNode.layer.borderColor = FontColor.CGColor;
+    }
+}
+
+-(void)createBombWithReminder:(NSInteger)reminder body:(NSMutableArray *)snakeBody complete:(void(^)(void))completBlock
+
+{
+    NSMutableArray *vacantNode = [[NSMutableArray alloc]init];
+    for (SnakeNode *emptyNode in _emptyNodeArray) {
+        
+        if (!emptyNode.hasBomb) {
+            BOOL hasNode = NO;
+            for (SnakeNode *bodyNode in snakeBody) {
+                if (emptyNode.nodeRow == bodyNode.nodeRow && emptyNode.nodeColumn == bodyNode.nodeColumn) {
+                    hasNode = YES;
+                    break;
+                }
+            }
+            if (!hasNode)
+                [vacantNode addObject:emptyNode];
         }
     }
     
-    // Create Asset neighbors
-//    for (GameAsset *a in _assetArray) {
-//        
-//        for (GameAsset *b in _assetArray) {
-//            
-//            CGRect upper = CGRectOffset(a.frame, 0, -moveSize);
-//            CGRect down = CGRectOffset(a.frame, 0, moveSize);
-//            CGRect left = CGRectOffset(a.frame, -moveSize, 0);
-//            CGRect right = CGRectOffset(a.frame, moveSize, 0);
-//            
-//            if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:upper]]) {
-//                [a.neighbors addObject:b];
-//            }
-//            
-//            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:down]]) {
-//                [a.neighbors addObject:b];
-//            }
-//            
-//            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:left]]) {
-//                [a.neighbors addObject:b];
-//            }
-//            
-//            else if ([[NSValue valueWithCGRect:b.frame] isEqualToValue:[NSValue valueWithCGRect:right]]) {
-//                [a.neighbors addObject:b];
-//            }
-//            
-//        }
-//    }
-}
-
-
-- (BOOL)compareFromFrame:(CGRect)fromFrame toFrame:(CGRect)toFrame
-{
-    if ([[NSValue valueWithCGRect:fromFrame] isEqualToValue:[NSValue valueWithCGRect:toFrame]])
-        return YES;
-    else
-        return NO;
-}
-
-- (void)changeAssetType:(GameAsset *)asset
-{
-    if ([_assetArray indexOfObject:asset]) {
-        
-        GameAsset *changeAsset = [_assetArray objectAtIndex:[_assetArray indexOfObject:asset]];
-        CGPoint pos = changeAsset.frame.origin;
-        [self randomColor:changeAsset];
-        [changeAsset setPosition:pos];
-    }
-}
-
-- (void)resetClassicGamePad
-{
-    for (GameAsset *a in _assetArray) {
-        
-        if (a.gameAssetType != kAssetTypeEmpty)
-            [self randomColor:a];
-    }
-}
-
-- (void)randomColor:(GameAsset *)asset
-{
-    int randomAsset = arc4random()%5;
+    int rand = arc4random() % [vacantNode count];
     
-    switch (randomAsset) {
-        case 0:
-            [asset setAssetType:kAssetTypeBlue];
-            break;
-        case 1:
-            [asset setAssetType:kAssetTypeRed];
-            break;
-        case 2:
-            [asset setAssetType:kAssetTypeYellow];
-            break;
-        case 3:
-            [asset setAssetType:kAssetTypeGreen];
-            break;
+    SnakeNode *bombNode = [vacantNode objectAtIndex:rand];
+    [bombNode setBombWithReminder:reminder complete:completBlock];
+}
+
+-(void)reset
+{
+    for (SnakeNode *emptyNode in _emptyNodeArray) {
+        
+        [emptyNode removeBomb];
     }
 }
 
-- (void)hideAllAssets
+- (void)bombExplosionWithPosX:(float)posX andPosY:(float)posY bomb:(SnakeNode *)bomb
 {
-    for (GameAsset *v in _assetArray) {
-        v.alpha = 0;
+    UIView *beamView1;
+    UIView *beamView2;
+    CGFloat beamSize = 10;
+    
+    if (bomb.bombType == kBombTypeExplodeVertical) {
+
+        beamView1 = [[UIView alloc]initWithFrame:CGRectMake(posX-beamSize/2,posY-beamSize/2,beamSize,0)];
+        beamView2 = [[UIView alloc]initWithFrame:CGRectMake(posX-beamSize/2,posY-beamSize/2,beamSize,0)];
+
+        
+    } else if (bomb.bombType == kBombTypeExplodeHorizontal) {
+        
+        beamView1 = [[UIView alloc]initWithFrame:CGRectMake(posX-beamSize/2,posY-beamSize/2,0,beamSize)];
+        beamView2 = [[UIView alloc]initWithFrame:CGRectMake(posX-beamSize/2,posY-beamSize/2,0,beamSize)];
     }
+    
+    [self addSubview:beamView1];
+    [self addSubview:beamView2];
+
+    beamView1.backgroundColor = bomb.nodeColor;
+    beamView2.backgroundColor = bomb.nodeColor;
+
+    beamView1.alpha = 0.8;
+    beamView2.alpha = 0.8;
+    
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        
+        if (bomb.bombType == kBombTypeExplodeVertical) {
+
+            beamView1.frame = CGRectMake(posX-1/2,posY-1/2,1,-350);
+            beamView2.frame = CGRectMake(posX-1/2,posY-1/2,1,350);
+            
+        } else if (bomb.bombType == kBombTypeExplodeHorizontal) {
+
+            beamView1.frame = CGRectMake(posX-1/2,posY-1/2,-350,1);
+            beamView2.frame = CGRectMake(posX-1/2,posY-1/2,350,1);
+        }
+        
+        beamView1.alpha = 0.3;
+        beamView2.alpha = 0.3;
+
+    } completion:^(BOOL finished) {
+        
+        [beamView1 removeFromSuperview];
+        [beamView2 removeFromSuperview];
+
+    }];
+}
+
+- (void)bombExplosionSquare:(float)posX andPosY:(float)posY bomb:(SnakeNode *)bomb
+{
+    CGFloat beamSize1 = 67*2+31;
+    UIView *beamView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, beamSize1, beamSize1)];
+    beamView.center = CGPointMake(posX, posY);
+    //beamView.backgroundColor = bomb.nodeColor;
+    beamView.layer.borderWidth = 5;
+    beamView.layer.borderColor = bomb.nodeColor.CGColor;
+    beamView.layer.cornerRadius = beamSize1/2;
+    beamView.alpha = 1;
+
+    [self addSubview:beamView];
+
+    CGAffineTransform t = beamView.transform;
+
+    beamView.transform = CGAffineTransformScale(t, 0.3, 0.3);
+
+    [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        
+        beamView.alpha = 0.6;
+
+        beamView.transform = t;
+
+    } completion:^(BOOL finished) {
+        
+        [beamView removeFromSuperview];
+
+    }];
 }
 
 @end

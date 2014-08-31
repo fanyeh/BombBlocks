@@ -9,25 +9,30 @@
 #import <UIKit/UIKit.h>
 
 typedef enum {
-
-    kAssetTypeEmpty = 0,
     kAssetTypeYellow,
     kAssetTypeRed,
     kAssetTypeBlue,
     kAssetTypeGreen,
-    kAssetTypePurple
-    
+    kAssetTypeGrey,
+        kAssetTypeOrange
 } AssetType;
+
+typedef enum {
+//    kBombTypeSwapTime = 0,
+//    kBombTypeFreezeTime,
+    kBombTypeExplodeBlock = 0,
+    kBombTypeExplodeVertical,
+    kBombTypeExplodeHorizontal,
+    kBombTypeSquareExplode
+} BombType;
+
+typedef struct {
+    BombType bombType;
+} Bomb;
+
 
 @interface GameAsset : UIView
 
 @property (nonatomic) AssetType gameAssetType;
-@property (strong,nonatomic) NSIndexPath *indexPath;
-@property (strong,nonatomic) UIImageView *assetImageView;
-@property (strong,nonatomic) NSMutableArray *neighbors;
-@property (strong,nonatomic) GameAsset *pathParent;
-
-- (void)setPosition:(CGPoint)position;
-- (void)setAssetType:(AssetType)type;
 
 @end
