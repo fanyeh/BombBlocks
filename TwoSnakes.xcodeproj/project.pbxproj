@@ -20,7 +20,6 @@
 		4C50EEA319A1DBF300C5DA41 /* bomb_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C50EE9F19A1DBF300C5DA41 /* bomb_red@2x.png */; };
 		4C50EEA419A1DBF300C5DA41 /* bomb_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C50EEA019A1DBF300C5DA41 /* bomb_yellow@2x.png */; };
 		4C5A68941999C0E10013A253 /* nextArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5A68931999C0E10013A253 /* nextArrow@2x.png */; };
-		4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C67DD3E1919E45E00666A2D /* SnakeButton.m */; };
 		4C6C2BC319B20EBD00ABE726 /* explodeHorizontal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6C2BC019B20EBD00ABE726 /* explodeHorizontal@2x.png */; };
 		4C6C2BC419B20EBD00ABE726 /* explodeVertical@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6C2BC119B20EBD00ABE726 /* explodeVertical@2x.png */; };
 		4C6C2BC519B20EBD00ABE726 /* squareExplode@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6C2BC219B20EBD00ABE726 /* squareExplode@2x.png */; };
@@ -45,7 +44,6 @@
 		4C8541BE1946D82100810CE4 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8541BD1946D82100810CE4 /* icon.png */; };
 		4C85859A1925A1990096F75B /* MenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8585981925A1990096F75B /* MenuController.m */; };
 		4C85859B1925A1990096F75B /* MenuController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C8585991925A1990096F75B /* MenuController.xib */; };
-		4C8585AB1925EA7B0096F75B /* CircleLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8585AA1925EA7B0096F75B /* CircleLabel.m */; };
 		4C8585B31925FF200096F75B /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C8585B11925FF200096F75B /* Reachability.m */; };
 		4C87C37A19A6F51B007EA190 /* freezeTime@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C87C37719A6F51B007EA190 /* freezeTime@2x.png */; };
 		4C87C37D19A6F82F007EA190 /* explode@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C87C37C19A6F82F007EA190 /* explode@2x.png */; };
@@ -55,6 +53,8 @@
 		4CA0A9DE1997C2C00020D1F9 /* YellowParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0A9DD1997C2C00020D1F9 /* YellowParticle.sks */; };
 		4CA0E59319764CD2008B2E71 /* BlueParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E59119764CD2008B2E71 /* BlueParticle.sks */; };
 		4CA0E5E31977A405008B2E71 /* SnakeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA0E5E21977A405008B2E71 /* SnakeNode.m */; };
+		4CA26E1419B43E92002A40AA /* setting70@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA26E1319B43E92002A40AA /* setting70@2x.png */; };
+		4CA26E1619B45622002A40AA /* playButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA26E1519B45622002A40AA /* playButton@2x.png */; };
 		4CA469F0199B9C4700ED0AB8 /* Background2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA469EF199B9C4700ED0AB8 /* Background2@2x.png */; };
 		4CA469F5199B9E4600ED0AB8 /* go_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA469F1199B9E4600ED0AB8 /* go_blue@2x.png */; };
 		4CA469F6199B9E4600ED0AB8 /* go_green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA469F2199B9E4600ED0AB8 /* go_green@2x.png */; };
@@ -94,6 +94,7 @@
 		4CC2CE0519AAE10900C6A46F /* gamecenter@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC2CE0419AAE10900C6A46F /* gamecenter@2x.png */; };
 		4CC2CE1519AAEF6900C6A46F /* replayButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC2CE1419AAEF6900C6A46F /* replayButton@2x.png */; };
 		4CC2CE1919AB0F8700C6A46F /* pauseButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC2CE1819AB0F8700C6A46F /* pauseButton@2x.png */; };
+		4CD0E0A219B42268002D9FBC /* ScoreObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD0E0A119B42268002D9FBC /* ScoreObject.m */; };
 		4CD7D1281994872100E1A03C /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD7D1271994872100E1A03C /* CoreMotion.framework */; };
 		4CDBB71D1920A00900D8A9B4 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CDBB71C1920A00900D8A9B4 /* Social.framework */; };
 		4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDBB71F1920A22900D8A9B4 /* GCHelper.m */; };
@@ -124,8 +125,6 @@
 		4C50EE9F19A1DBF300C5DA41 /* bomb_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bomb_red@2x.png"; sourceTree = "<group>"; };
 		4C50EEA019A1DBF300C5DA41 /* bomb_yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bomb_yellow@2x.png"; sourceTree = "<group>"; };
 		4C5A68931999C0E10013A253 /* nextArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nextArrow@2x.png"; sourceTree = "<group>"; };
-		4C67DD3D1919E45E00666A2D /* SnakeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeButton.h; sourceTree = "<group>"; };
-		4C67DD3E1919E45E00666A2D /* SnakeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeButton.m; sourceTree = "<group>"; };
 		4C6C2BC019B20EBD00ABE726 /* explodeHorizontal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "explodeHorizontal@2x.png"; sourceTree = "<group>"; };
 		4C6C2BC119B20EBD00ABE726 /* explodeVertical@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "explodeVertical@2x.png"; sourceTree = "<group>"; };
 		4C6C2BC219B20EBD00ABE726 /* squareExplode@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "squareExplode@2x.png"; sourceTree = "<group>"; };
@@ -166,8 +165,6 @@
 		4C8585971925A1990096F75B /* MenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuController.h; sourceTree = "<group>"; };
 		4C8585981925A1990096F75B /* MenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuController.m; sourceTree = "<group>"; };
 		4C8585991925A1990096F75B /* MenuController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuController.xib; sourceTree = "<group>"; };
-		4C8585A91925EA7B0096F75B /* CircleLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleLabel.h; sourceTree = "<group>"; };
-		4C8585AA1925EA7B0096F75B /* CircleLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleLabel.m; sourceTree = "<group>"; };
 		4C8585B11925FF200096F75B /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		4C8585B21925FF200096F75B /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		4C87C37719A6F51B007EA190 /* freezeTime@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "freezeTime@2x.png"; sourceTree = "<group>"; };
@@ -180,6 +177,8 @@
 		4CA0E59119764CD2008B2E71 /* BlueParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BlueParticle.sks; sourceTree = "<group>"; };
 		4CA0E5E11977A405008B2E71 /* SnakeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnakeNode.h; sourceTree = "<group>"; };
 		4CA0E5E21977A405008B2E71 /* SnakeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnakeNode.m; sourceTree = "<group>"; };
+		4CA26E1319B43E92002A40AA /* setting70@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "setting70@2x.png"; sourceTree = "<group>"; };
+		4CA26E1519B45622002A40AA /* playButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playButton@2x.png"; sourceTree = "<group>"; };
 		4CA469EF199B9C4700ED0AB8 /* Background2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Background2@2x.png"; sourceTree = "<group>"; };
 		4CA469F1199B9E4600ED0AB8 /* go_blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_blue@2x.png"; sourceTree = "<group>"; };
 		4CA469F2199B9E4600ED0AB8 /* go_green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_green@2x.png"; sourceTree = "<group>"; };
@@ -224,6 +223,8 @@
 		4CC2CE0419AAE10900C6A46F /* gamecenter@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamecenter@2x.png"; sourceTree = "<group>"; };
 		4CC2CE1419AAEF6900C6A46F /* replayButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "replayButton@2x.png"; sourceTree = "<group>"; };
 		4CC2CE1819AB0F8700C6A46F /* pauseButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pauseButton@2x.png"; sourceTree = "<group>"; };
+		4CD0E0A019B42268002D9FBC /* ScoreObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScoreObject.h; sourceTree = "<group>"; };
+		4CD0E0A119B42268002D9FBC /* ScoreObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScoreObject.m; sourceTree = "<group>"; };
 		4CD7D1271994872100E1A03C /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		4CDBB71C1920A00900D8A9B4 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		4CDBB71E1920A22900D8A9B4 /* GCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCHelper.h; sourceTree = "<group>"; };
@@ -389,10 +390,6 @@
 				4C70B6D6197F8C650024F9DF /* Particles */,
 				4C7F13551911F36D00565A01 /* Snake.h */,
 				4C7F13561911F36D00565A01 /* Snake.m */,
-				4C8585A91925EA7B0096F75B /* CircleLabel.h */,
-				4C8585AA1925EA7B0096F75B /* CircleLabel.m */,
-				4C67DD3D1919E45E00666A2D /* SnakeButton.h */,
-				4C67DD3E1919E45E00666A2D /* SnakeButton.m */,
 				4C78A07F192DDABB003F9ABE /* GameAsset.h */,
 				4C78A080192DDABB003F9ABE /* GameAsset.m */,
 				4CDBB71E1920A22900D8A9B4 /* GCHelper.h */,
@@ -412,6 +409,8 @@
 				4CA0E5E21977A405008B2E71 /* SnakeNode.m */,
 				4C87C38819A7192F007EA190 /* CustomLabel.h */,
 				4C87C38919A7192F007EA190 /* CustomLabel.m */,
+				4CD0E0A019B42268002D9FBC /* ScoreObject.h */,
+				4CD0E0A119B42268002D9FBC /* ScoreObject.m */,
 			);
 			name = "Game Scene";
 			sourceTree = "<group>";
@@ -475,6 +474,8 @@
 		4CB108AD190FF6440085C747 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4CA26E1519B45622002A40AA /* playButton@2x.png */,
+				4CA26E1319B43E92002A40AA /* setting70@2x.png */,
 				4CC294FD19B3162B00032D7A /* gamecenter2@2x.png */,
 				4CC294F719B3124800032D7A /* facebook40@2x.png */,
 				4CC294F219B3111200032D7A /* twitter40@2x.png */,
@@ -617,6 +618,7 @@
 				4CA469F0199B9C4700ED0AB8 /* Background2@2x.png in Resources */,
 				4C50EEA119A1DBF300C5DA41 /* bomb_blue@2x.png in Resources */,
 				4C50EEA319A1DBF300C5DA41 /* bomb_red@2x.png in Resources */,
+				4CA26E1619B45622002A40AA /* playButton@2x.png in Resources */,
 				4CC2CE1919AB0F8700C6A46F /* pauseButton@2x.png in Resources */,
 				4CA0A9DE1997C2C00020D1F9 /* YellowParticle.sks in Resources */,
 				4CA47C0819AE121000E832DF /* yellow_2@2x.png in Resources */,
@@ -627,6 +629,7 @@
 				4CB108B1190FF6440085C747 /* InfoPlist.strings in Resources */,
 				4C87C37A19A6F51B007EA190 /* freezeTime@2x.png in Resources */,
 				4C6C2BD719B2143200ABE726 /* go_grey@2x.png in Resources */,
+				4CA26E1419B43E92002A40AA /* setting70@2x.png in Resources */,
 				4C6C2BCF19B20FA800ABE726 /* particle_grey.png in Resources */,
 				4CC2950419B3586500032D7A /* orange@2x.png in Resources */,
 				4C8541A51946A8B300810CE4 /* README.txt in Resources */,
@@ -666,12 +669,11 @@
 				4C8585B31925FF200096F75B /* Reachability.m in Sources */,
 				4C7F13571911F36D00565A01 /* Snake.m in Sources */,
 				4CB108B7190FF6440085C747 /* MKAppDelegate.m in Sources */,
+				4CD0E0A219B42268002D9FBC /* ScoreObject.m in Sources */,
 				4C87C38A19A7192F007EA190 /* CustomLabel.m in Sources */,
 				4C85859A1925A1990096F75B /* MenuController.m in Sources */,
 				4CAA5DF21929AB9100049F52 /* SocialShare.m in Sources */,
-				4C8585AB1925EA7B0096F75B /* CircleLabel.m in Sources */,
 				4CE343B31957D6C00032E674 /* ParticleView.m in Sources */,
-				4C67DD3F1919E45E00666A2D /* SnakeButton.m in Sources */,
 				4C78A081192DDABB003F9ABE /* GameAsset.m in Sources */,
 				4CB108B3190FF6440085C747 /* main.m in Sources */,
 				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,

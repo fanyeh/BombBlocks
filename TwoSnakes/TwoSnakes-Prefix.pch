@@ -35,5 +35,4 @@
 #define YellowDotColor [UIColor colorWithRed:0.925 green:0.702 blue:0.169 alpha:1.000]
 #define GreenDotColor [UIColor colorWithRed:0.000 green:0.369 blue:0.216 alpha:1.000]
 #define GreyDotColor [UIColor colorWithRed:0.275 green:0.443 blue:0.549 alpha:1.000]
-
 #define OrangeDotColor [UIColor colorWithRed:0.949 green:0.427 blue:0.149 alpha:1.000]

@@ -38,8 +38,8 @@
     if (self) {
         _gamePad = gamePad;
          chain = 2;
-        _xOffset = (headFrame.size.width+5)/1;
-        _yOffset = (headFrame.size.height+5)/1;
+        _xOffset = (headFrame.size.width+2)/1;
+        _yOffset = (headFrame.size.height+2)/1;
         _snakeBody = [[NSMutableArray alloc]init];
         [self newSnake];
         
@@ -177,14 +177,24 @@
     
     // Animation to populate new body
     CGAffineTransform t = snakeBody.transform;
-    snakeBody.transform = CGAffineTransformScale(t, 0.5, 0.5);
-    [UIView animateWithDuration:0.3 animations:^{
+    CGAffineTransform t2 = CGAffineTransformScale(t, 1.2, 1.2);
+
+    snakeBody.transform = CGAffineTransformScale(t, 0.3, 0.3);
+    [UIView animateWithDuration:0.15 animations:^{
         
-        snakeBody.transform = t;
+        snakeBody.transform = t2;
         
     } completion:^(BOOL finished) {
         
-        [self cancelPattern:completBlock];
+        [UIView animateWithDuration:0.15 animations:^{
+            
+            snakeBody.transform = t;
+            
+        } completion:^(BOOL finished) {
+            
+            [self cancelPattern:completBlock];
+            
+        }];
         
     }];
 }
@@ -383,7 +393,11 @@
             // Show scores
             for (SnakeNode *n in allPatterns) {
                 
-                n.scoreAdder = ([allPatterns count]-2) * 5 + 5;
+                if (n.hasBomb)
+                    n.scoreAdder = 50;
+                else
+                    n.scoreAdder = ([allPatterns count]-2) * 5 + 5;
+                
                 [n scoreLabelAnimation];
                 [_delegate updateScore:n.scoreAdder];
                 
@@ -437,13 +451,12 @@
     if ([bombArray count] > 0) {
         SnakeNode *bomb = [bombArray firstObject];
         totalBombs++;
-        [_delegate updateScore:100];
+        [_delegate updateScore:bomb.scoreAdder];
         [bombArray removeObject:bomb];
         [self explodeByBomb:bomb complete:completBlock];
     }
     else
         [self cancelPattern:completBlock];
-        //completBlock();
 }
 
 - (void)explodeByBomb:(SnakeNode *)bomb complete:(void(^)(void))completBlock
@@ -519,15 +532,26 @@
 
 - (void)removeBombNode:(SnakeNode *)bombNode
 {
-    if (bombNode.bombType == kBombTypeExplodeBlock)
-        [self explodeBody:bombNode];
-    else if (bombNode.bombType == kBombTypeSquareExplode)
-        [self explodeBombSqaureAnimation:bombNode];
-    else
-        [self explodeBombAnimation:bombNode];
-
-    [bombNode removeBomb];
     [bombArray addObject:bombNode];
+
+    [UIView animateWithDuration: 0.5 animations:^{
+        
+        bombNode.scoreAdder = 50;
+        [bombNode scoreLabelAnimation];
+        //[_delegate updateScore:bombNode.scoreAdder];
+        
+    } completion:^(BOOL finished) {
+        
+        if (bombNode.bombType == kBombTypeExplodeBlock)
+            [self explodeBody:bombNode];
+        else if (bombNode.bombType == kBombTypeSquareExplode)
+            [self explodeBombSqaureAnimation:bombNode];
+        else
+            [self explodeBombAnimation:bombNode];
+        
+        [bombNode removeBomb];
+        
+    }];
 }
 
 -(void)explodeColor:(SnakeNode *)bomb complete:(void(^)(void))completBlock

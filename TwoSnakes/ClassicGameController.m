@@ -14,6 +14,7 @@
 #import "Snake.h"
 #import "MKAppDelegate.h"
 #import "CustomLabel.h"
+#import "ScoreObject.h"
 
 @interface ClassicGameController () <gameoverDelegate>
 {
@@ -33,6 +34,9 @@
     CustomLabel *bombLabel;
     CustomLabel *currentScoreLabel;
     BOOL gameIsOver;
+    NSInteger scoreGap;
+    NSTimer *changeScoreTimer;
+    NSMutableArray *scoreArray;
 }
 @end
 
@@ -83,11 +87,10 @@
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 25 , 250, 65) fontName:@"GeezaPro-Bold" fontSize:65];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 40 , 250, 65) fontName:@"GeezaPro-Bold" fontSize:65];
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
-    
     
     // Setup player snake head
     snake = [[Snake alloc]initWithSnakeNode:gamePad.initialNode gamePad:gamePad];
@@ -124,6 +127,11 @@
     [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
     [gamePad addGestureRecognizer:swipeUp];
     
+    scoreArray = [[NSMutableArray alloc]init];
+    
+    UIButton *settingButton = [[UIButton alloc]initWithFrame:CGRectMake(5, 5, 35, 35)];
+    [settingButton setImage:[UIImage imageNamed:@"setting70.png"] forState:UIControlStateNormal];
+    [self.view addSubview:settingButton];
     //[self showReplayView:0];
 }
 
@@ -131,11 +139,11 @@
 {
     CGFloat pauseLabelWidth = self.view.frame.size.width;
     CGFloat pauseLabelHeight = self.view.frame.size.height;
-    CGFloat socialButtonHeight = 40;
+    CGFloat socialButtonHeight = 35;
     CGFloat socialButtonWidth = socialButtonHeight;
 
     // Social share button
-    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake(220,
+    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake(225,
                                                                         10,
                                                                         socialButtonWidth,
                                                                         socialButtonHeight)];
@@ -150,7 +158,7 @@
                                                                         socialButtonWidth,
                                                                         socialButtonHeight)];
     [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter40.png"] forState:UIControlStateNormal];
-    twitterButton.frame = CGRectOffset(facbookButton.frame, 50, 0);
+    twitterButton.frame = CGRectOffset(facbookButton.frame, 45, 0);
     twitterButton.layer.cornerRadius = socialButtonHeight/2;
     twitterButton.backgroundColor = [UIColor whiteColor];
     twitterButton.layer.masksToBounds = YES;
@@ -160,26 +168,51 @@
     [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter2.png"] forState:UIControlStateNormal];
     [gamecenterButton addTarget:self action:@selector(showGameCenter) forControlEvents:UIControlEventTouchDown];
     
-    CGFloat yoffset = 235;
-    CGFloat labelWidth = 200;
+    CGFloat yoffset = 285;
+    CGFloat labelWidth = 90;
     CGFloat labelHeight = 25;
     CGFloat fontSize = 25;
     
-    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 135, pauseLabelWidth, 65) fontName:@"GeezaPro-Bold" fontSize:65];
+    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 175, pauseLabelWidth, 65) fontName:@"GeezaPro-Bold" fontSize:65];
     
-    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelWidth)/2,yoffset,labelWidth,labelHeight) fontName:@"GeezaPro-Bold" fontSize:fontSize];
-    comLabel.text = NSTextAlignmentLeft;
     
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelWidth)/2,yoffset+60,labelWidth,labelHeight) fontName:@"GeezaPro-Bold" fontSize:fontSize];
-    bombLabel.text = NSTextAlignmentLeft;
+    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset,labelHeight,labelHeight)
+                                                        fontName:@"GeezaPro-Bold"
+                                                        fontSize:fontSize];
+    comboXLabel.text = @"x";
     
-    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 385, pauseLabelWidth, 30) fontName:@"GeezaPro-Bold" fontSize:30];
-    bestScoreLabel.textColor = [UIColor colorWithWhite:0.298 alpha:1.000];
+    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset,labelWidth,labelHeight)
+                                                       fontName:@"GeezaPro-Bold"
+                                                       fontSize:fontSize];
+    comboLabel.text = @"Combo";
+    
+    
+    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset,labelWidth,labelHeight)
+                                        fontName:@"GeezaPro-Bold"
+                                        fontSize:fontSize];
+    
+
+    
+    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+60,labelHeight,labelHeight)
+                                                        fontName:@"GeezaPro-Bold"
+                                                        fontSize:fontSize];
+    bombXLabel.text = @"x";
+    
+    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+60,labelWidth,labelHeight)
+                                                       fontName:@"GeezaPro-Bold"
+                                                       fontSize:fontSize];
+    bLabel.text = @"Bomb";
+    
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+60,labelWidth,labelHeight)
+                                         fontName:@"GeezaPro-Bold"
+                                         fontSize:fontSize];
+    
+    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 110, pauseLabelWidth, 35) fontName:@"GeezaPro-Bold" fontSize:35];
+    bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
 
     replayView = [[UIImageView alloc]initWithFrame:self.view.frame];
     replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
     replayView.image = [UIImage imageNamed:@"Background.png"];
-    //[replayView addSubview:pauseLabel];
     replayView.userInteractionEnabled = YES;
     
     // Social Button
@@ -194,8 +227,14 @@
     [replayView addSubview:bestScoreLabel];
     [replayView addSubview:comLabel];
     [replayView addSubview:bombLabel];
+    [replayView addSubview:comboLabel];
+    [replayView addSubview:comboXLabel];
 
-    UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake(130,pauseLabelHeight-50-50, 50, 50)];
+    [replayView addSubview:bombXLabel];
+    [replayView addSubview:bLabel];
+    
+    
+    UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake((self.view.frame.size.width-60)/2,pauseLabelHeight-60-30, 50, 50)];
     replayBg.image = [UIImage imageNamed:@"replayButton.png"];
     replayBg.userInteractionEnabled = YES;
     [replayView addSubview:replayBg];
@@ -219,6 +258,9 @@
 -(void)swipeDirection:(UISwipeGestureRecognizer *)sender
 {
     if (gamePad.userInteractionEnabled) {
+        
+        if (changeScoreTimer.isValid)
+            [changeScoreTimer invalidate];
         
         SnakeNode *head = [snake.snakeBody firstObject];
         [head.layer removeAllAnimations];
@@ -341,21 +383,24 @@
 {
     nextNode.hidden = YES;
     nextLabel.hidden = YES;
-    comLabel.text = [NSString stringWithFormat:@"Combo    x     %ld",totalCombos];
-    bombLabel.text = [NSString stringWithFormat:@"Bomb      x     %ld",totalBombs];
+    comLabel.text = [NSString stringWithFormat:@"%ld",totalCombos];
+    bombLabel.text = [NSString stringWithFormat:@"%ld",totalBombs];
     
     NSInteger bestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"BestScore"];
     
-    currentScoreLabel.text = [NSString stringWithFormat:@"%ld",score];
+    currentScoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
     
-    if (score > bestScore) {
-        
+    if (score > bestScore)
+    {
         [[NSUserDefaults standardUserDefaults] setInteger:score forKey:@"BestScore"];
         [[GCHelper sharedInstance] submitScore:score leaderboardId:kHighScoreLeaderboardId];
-        bestScoreLabel.text = [NSString stringWithFormat:@"Best %@",[numFormatter stringFromNumber:[NSNumber numberWithInteger:score]]];
-        
-    } else {
+        bestScoreLabel.text = @"New Record";
+        bestScoreLabel.textColor = [UIColor whiteColor];
+    }
+    else
+    {
         bestScoreLabel.text = [NSString stringWithFormat:@"Best %@",[numFormatter stringFromNumber:[NSNumber numberWithInteger:bestScore]]];
+        bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     }
     
     [self.view bringSubviewToFront:replayView];
@@ -369,10 +414,39 @@
 
 -(void)updateScore:(NSInteger)s
 {
-    score += s;
-    scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];// [NSString stringWithFormat:@"%ld",score];
+    ScoreObject *so = [[ScoreObject alloc]initWithScore:s];
+    [scoreArray addObject:so];
+    
+    if (!changeScoreTimer.isValid) {
+        ScoreObject *scoreObject = [scoreArray firstObject];
+        scoreGap = scoreObject.score;
+        changeScoreTimer = [NSTimer scheduledTimerWithTimeInterval:scoreObject.interval target:self selector:@selector(changeScore) userInfo:nil repeats:YES];
+    }
 }
 
+-(void)changeScore
+{
+    scoreGap--;
+    score++;
+    scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
+    
+    if (scoreGap == 0)
+    {
+        [changeScoreTimer invalidate];
+
+        [scoreArray removeObjectAtIndex:0];
+        
+        if ([scoreArray count]>0) {
+            ScoreObject *scoreObject = [scoreArray firstObject];
+            scoreGap = scoreObject.score;
+            changeScoreTimer = [NSTimer scheduledTimerWithTimeInterval:scoreObject.interval
+                                                                target:self
+                                                              selector:@selector(changeScore)
+                                                              userInfo:nil
+                                                               repeats:YES];
+        }
+    }
+}
 
 #pragma mark - Game center
 

@@ -7,10 +7,11 @@
 //
 
 #import "SnakeNode.h"
+#import "CustomLabel.h"
 
 @implementation SnakeNode
 {
-    UILabel *timeLabel;
+    CustomLabel *timeLabel;
 
 }
 
@@ -44,10 +45,8 @@
         _nodeImageView = [[UIImageView alloc]initWithFrame:imageViewRect];
         [self addSubview:_nodeImageView];
         
-        timeLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20)];
+        timeLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontName:@"GeezaPro-Bold" fontSize:17];
         timeLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
-        timeLabel.textColor = [UIColor whiteColor];
-        timeLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:timeLabel];
         timeLabel.alpha = 0;
     }
@@ -59,9 +58,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        self.layer.cornerRadius = 4;//6;
+        self.layer.cornerRadius = 3;//6;
         self.layer.masksToBounds = YES;
-        self.layer.borderWidth = 3;
+        self.layer.borderWidth = 2.5;
         self.layer.borderColor = FontColor.CGColor;
         _hasBomb = NO;
     }
@@ -80,10 +79,8 @@
     
     _nodeImageView = [[UIImageView alloc]initWithFrame:imageViewRect];
     
-    timeLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20)];
+    timeLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontName:@"GeezaPro-Bold" fontSize:17];
     timeLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
-    timeLabel.textColor = [UIColor whiteColor];
-    timeLabel.textAlignment = NSTextAlignmentCenter;
     [self addSubview:timeLabel];
     timeLabel.alpha = 0;
     
@@ -203,6 +200,7 @@
 
 -(void)scoreLabelAnimation
 {
+    [self bringSubviewToFront:timeLabel];
     timeLabel.text = [NSString stringWithFormat:@"+%ld",self.scoreAdder];
     timeLabel.alpha = 1;
     timeLabel.frame = CGRectOffset(timeLabel.frame, 0, -10);

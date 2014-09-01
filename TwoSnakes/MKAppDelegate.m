@@ -28,7 +28,7 @@
     menuController = [[MenuController alloc]init];
     classicController = [[ClassicGameController alloc]init];
     
-    [self.window setRootViewController:classicController];
+    [self.window setRootViewController:menuController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center

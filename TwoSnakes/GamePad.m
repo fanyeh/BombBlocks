@@ -29,17 +29,14 @@
     CGFloat nodeWidth = 62;//65;
     int column = 5;
     int row = 5;
-    CGFloat gapBetweenCard = 5;
-    CGFloat gapFromBoundary = 5;
+    CGFloat gapBetweenCard = 2;
+    CGFloat gapFromBoundary = 3;
     CGRect frame = CGRectMake(0, 0, nodeWidth*column+gapFromBoundary*2-gapBetweenCard, nodeHeight*row+gapFromBoundary*2-gapBetweenCard);
 
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
         _emptyNodeArray = [[NSMutableArray alloc]init];
-
-        //self.layer.cornerRadius = 15;
-        //self.layer.masksToBounds = YES;
         int randomX = arc4random() % column;
         int randomY = arc4random() % row;
         int tag = 0;
@@ -49,7 +46,7 @@
                 
                 CGFloat assetPosX = gapFromBoundary+nodeWidth*i;
                 CGFloat assetPosY = gapFromBoundary+nodeHeight*j;
-                SnakeNode *emptyNode = [[SnakeNode alloc]initWithEmptyFrame:CGRectMake(assetPosX, assetPosY, nodeWidth - 5, nodeHeight - 5)];
+                SnakeNode *emptyNode = [[SnakeNode alloc]initWithEmptyFrame:CGRectMake(assetPosX, assetPosY, nodeWidth - gapBetweenCard, nodeHeight - gapBetweenCard)];
                 [emptyNode setNodeIndexRow:j andCol:i];
                 emptyNode.tag = tag;
 
