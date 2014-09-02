@@ -8,6 +8,7 @@
 
 #import "Snake.h"
 #import "GamePad.h"
+#import <AVFoundation/AVFoundation.h>
 
 @implementation Snake
 {
@@ -19,6 +20,11 @@
     NSInteger totalBombs;
     BOOL isGameover;
     NSMutableArray *bombArray;
+    AVAudioPlayer *audioPlayer;
+    
+    AVAudioPlayer *audioPlayerSquare;
+
+
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -44,6 +50,18 @@
         [self newSnake];
         
         self.tag = 0;
+        
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"explode" ofType:@"mp3"];
+        NSURL* file = [NSURL URLWithString:path];
+        
+        audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:file error:nil];
+        [audioPlayer prepareToPlay];
+        
+        NSString* pathSquare = [[NSBundle mainBundle] pathForResource:@"explodeSquare" ofType:@"mp3"];
+        NSURL* fileSquare = [NSURL URLWithString:pathSquare];
+        
+        audioPlayerSquare = [[AVAudioPlayer alloc] initWithContentsOfURL:fileSquare error:nil];
+        [audioPlayerSquare prepareToPlay];
     }
     return self;
 }
@@ -191,7 +209,7 @@
             snakeBody.transform = t;
             
         } completion:^(BOOL finished) {
-            
+            [_particleView playMoveSound];
             [self cancelPattern:completBlock];
             
         }];
@@ -376,6 +394,8 @@
 {
     [self checkPatterns];
     if ([allPatterns count] > 0) {
+        
+        [_particleView playComboSound];
         
         for (SnakeNode *n in allPatterns) {
             
@@ -1078,15 +1098,17 @@
 
 -(void)explodeBombAnimation:(SnakeNode *)bomb
 {
+    [audioPlayer play];
     CGRect bodyFrame = bomb.frame;
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
-    
     [_gamePad bombExplosionWithPosX:posX andPosY:posY bomb:bomb];
 }
 
 -(void)explodeBombSqaureAnimation:(SnakeNode *)bomb
 {
+    [audioPlayerSquare play];
+
     CGRect bodyFrame = bomb.frame;
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
@@ -1241,7 +1263,6 @@
                 n.nodeImageView.image = [UIImage imageNamed:@"go_orange.png"];
                 break;
         }
-
         
         [flipBodyArray removeLastObject];
         

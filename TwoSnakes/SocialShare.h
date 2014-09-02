@@ -17,5 +17,8 @@ typedef enum {
 @interface SocialShare : NSObject
 
 - (void)showShareSheet:(ShareType)type viewController:(UIViewController *)viewcontroller;
+- (void)setScore:(NSInteger)s;
+
+@property (nonatomic,strong) UIImage *screenshot;
 
 @end

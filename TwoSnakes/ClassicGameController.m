@@ -15,28 +15,34 @@
 #import "MKAppDelegate.h"
 #import "CustomLabel.h"
 #import "ScoreObject.h"
+#import <AVFoundation/AVFoundation.h>
+#import "GameStatsViewController.h"
 
-@interface ClassicGameController () <gameoverDelegate>
+@interface ClassicGameController () <gameoverDelegate,replayDelegate>
 {
     NSNumberFormatter *numFormatter; //Formatter for score
     NSInteger score;
     SnakeNode *nextNode;
     GamePad *gamePad;
     Snake *snake;
-    UIImageView *replayView;
     NSInteger totalCombos;
     NSInteger combosToCreateBomb;
     BOOL swap;
     CustomLabel *nextLabel;
-    CustomLabel *bestScoreLabel;
     CustomLabel *scoreLabel;
-    CustomLabel *comLabel;
-    CustomLabel *bombLabel;
-    CustomLabel *currentScoreLabel;
     BOOL gameIsOver;
     NSInteger scoreGap;
     NSTimer *changeScoreTimer;
     NSMutableArray *scoreArray;
+    AVAudioPlayer *audioPlayer;
+    ParticleView *particle;
+    UIButton *settingButton;
+    UIButton *soundButton;
+    UIButton *musicButton;
+    UIButton *rateButton;
+    UIView *settingBG;
+    BOOL isSetting;
+    CGAffineTransform settingTransform;
 }
 @end
 
@@ -47,6 +53,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+
     }
     return self;
 }
@@ -59,7 +66,6 @@
     UIImageView *bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
     [self.view addSubview:bgImageView];
     
-    [self setupReplayView];
     // Do any additional setup after loading the view.
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
@@ -69,7 +75,6 @@
     // -------------------- Setup game pad -------------------- //
     gamePad = [[GamePad alloc]initGamePad];
     gamePad.center = self.view.center;
-    //gamePad.frame = CGRectOffset(gamePad.frame, 0, 35);
 
     // -------------------- Setup particle views -------------------- //
     // Configure the SKView
@@ -77,7 +82,7 @@
     skView.backgroundColor = [UIColor clearColor];
     
     // Create and configure the scene.
-    ParticleView *particle = [[ParticleView alloc]initWithSize:skView.bounds.size];
+    particle = [[ParticleView alloc]initWithSize:skView.bounds.size];
     particle.scaleMode = SKSceneScaleModeAspectFill;
     [gamePad addSubview:skView];
     [gamePad sendSubviewToBack:skView];
@@ -129,121 +134,84 @@
     
     scoreArray = [[NSMutableArray alloc]init];
     
-    UIButton *settingButton = [[UIButton alloc]initWithFrame:CGRectMake(5, 5, 35, 35)];
+    settingBG = [[UIView alloc]initWithFrame:CGRectMake(320-40, 5, 35, 35)];
+    settingBG.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.400];
+    settingBG.layer.cornerRadius = 35/2;
+    [self.view addSubview:settingBG];
+    
+    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-40, 5, 35, 35)];
     [settingButton setImage:[UIImage imageNamed:@"setting70.png"] forState:UIControlStateNormal];
+    [settingButton addTarget:self action:@selector(settings) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:settingButton];
-    //[self showReplayView:0];
+    
+    soundButton = [[UIButton alloc]initWithFrame:CGRectMake(200, 10, 35, 35)];
+    [soundButton setImage:[UIImage imageNamed:@"sound70.png"] forState:UIControlStateNormal];
+    [soundButton addTarget:self action:@selector(settings) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:soundButton];
+    
+    musicButton = [[UIButton alloc]initWithFrame:CGRectMake(227.5, 55, 35, 35)];
+    [musicButton setImage:[UIImage imageNamed:@"music70.png"] forState:UIControlStateNormal];
+    [musicButton addTarget:self action:@selector(settings) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:musicButton];
+    
+    rateButton = [[UIButton alloc]initWithFrame:CGRectMake(320-45, 85, 35, 35)];
+    [rateButton setImage:[UIImage imageNamed:@"rating70.png"] forState:UIControlStateNormal];
+    [rateButton addTarget:self action:@selector(settings) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:rateButton];
+    
+    settingBG.hidden = YES;
+    soundButton.hidden = YES;
+    musicButton.hidden = YES;
+    rateButton.hidden = YES;
+    settingTransform = settingBG.transform;
+    
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"];
+    NSURL* file = [NSURL URLWithString:path];
+    
+    audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:file error:nil];
+    audioPlayer.numberOfLoops = -1;
+    [audioPlayer prepareToPlay];
+    [audioPlayer play];
 }
 
-- (void)setupReplayView
+-(void)settings
 {
-    CGFloat pauseLabelWidth = self.view.frame.size.width;
-    CGFloat pauseLabelHeight = self.view.frame.size.height;
-    CGFloat socialButtonHeight = 35;
-    CGFloat socialButtonWidth = socialButtonHeight;
-
-    // Social share button
-    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake(225,
-                                                                        10,
-                                                                        socialButtonWidth,
-                                                                        socialButtonHeight)];
-    
-    [facbookButton setBackgroundImage:[UIImage imageNamed:@"facebook40.png"] forState:UIControlStateNormal];
-    facbookButton.layer.cornerRadius = socialButtonHeight/2;
-    facbookButton.layer.masksToBounds = YES;
-    facbookButton.backgroundColor = [UIColor whiteColor];
-
-    UIButton *twitterButton = [[UIButton alloc]initWithFrame:CGRectMake(0,
-                                                                        0,
-                                                                        socialButtonWidth,
-                                                                        socialButtonHeight)];
-    [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter40.png"] forState:UIControlStateNormal];
-    twitterButton.frame = CGRectOffset(facbookButton.frame, 45, 0);
-    twitterButton.layer.cornerRadius = socialButtonHeight/2;
-    twitterButton.backgroundColor = [UIColor whiteColor];
-    twitterButton.layer.masksToBounds = YES;
-    
-    // Game Center Label
-    UIButton *gamecenterButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, socialButtonHeight, socialButtonHeight)];
-    [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter2.png"] forState:UIControlStateNormal];
-    [gamecenterButton addTarget:self action:@selector(showGameCenter) forControlEvents:UIControlEventTouchDown];
-    
-    CGFloat yoffset = 285;
-    CGFloat labelWidth = 90;
-    CGFloat labelHeight = 25;
-    CGFloat fontSize = 25;
-    
-    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 175, pauseLabelWidth, 65) fontName:@"GeezaPro-Bold" fontSize:65];
-    
-    
-    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset,labelHeight,labelHeight)
-                                                        fontName:@"GeezaPro-Bold"
-                                                        fontSize:fontSize];
-    comboXLabel.text = @"x";
-    
-    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset,labelWidth,labelHeight)
-                                                       fontName:@"GeezaPro-Bold"
-                                                       fontSize:fontSize];
-    comboLabel.text = @"Combo";
-    
-    
-    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset,labelWidth,labelHeight)
-                                        fontName:@"GeezaPro-Bold"
-                                        fontSize:fontSize];
-    
-
-    
-    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+60,labelHeight,labelHeight)
-                                                        fontName:@"GeezaPro-Bold"
-                                                        fontSize:fontSize];
-    bombXLabel.text = @"x";
-    
-    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+60,labelWidth,labelHeight)
-                                                       fontName:@"GeezaPro-Bold"
-                                                       fontSize:fontSize];
-    bLabel.text = @"Bomb";
-    
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+60,labelWidth,labelHeight)
-                                         fontName:@"GeezaPro-Bold"
-                                         fontSize:fontSize];
-    
-    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 110, pauseLabelWidth, 35) fontName:@"GeezaPro-Bold" fontSize:35];
-    bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
-
-    replayView = [[UIImageView alloc]initWithFrame:self.view.frame];
-    replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
-    replayView.image = [UIImage imageNamed:@"Background.png"];
-    replayView.userInteractionEnabled = YES;
-    
-    // Social Button
-    [replayView addSubview:facbookButton];
-    [replayView addSubview:twitterButton];
-    
-    // Gamecenter Button
-    [replayView addSubview:gamecenterButton];
-    
-    // Score stats
-    [replayView addSubview:currentScoreLabel];
-    [replayView addSubview:bestScoreLabel];
-    [replayView addSubview:comLabel];
-    [replayView addSubview:bombLabel];
-    [replayView addSubview:comboLabel];
-    [replayView addSubview:comboXLabel];
-
-    [replayView addSubview:bombXLabel];
-    [replayView addSubview:bLabel];
-    
-    
-    UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake((self.view.frame.size.width-60)/2,pauseLabelHeight-60-30, 50, 50)];
-    replayBg.image = [UIImage imageNamed:@"replayButton.png"];
-    replayBg.userInteractionEnabled = YES;
-    [replayView addSubview:replayBg];
-    
-    UITapGestureRecognizer *replayTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(replayGame)];
-    [replayBg addGestureRecognizer:replayTap];
-    
-    [self.view addSubview:replayView];
+    if (!isSetting) {
+        
+        isSetting = YES;
+        settingBG.hidden = NO;
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            settingBG.transform = CGAffineTransformScale(settingTransform, 6.5, 6.5);
+            
+        }completion:^(BOOL finished) {
+            
+            soundButton.hidden = NO;
+            musicButton.hidden = NO;
+            rateButton.hidden = NO;
+            
+        }];
+        
+    } else {
+        
+        isSetting = NO;
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            settingBG.transform = settingTransform;
+            soundButton.hidden = YES;
+            musicButton.hidden = YES;
+            rateButton.hidden = YES;
+            
+        }completion:^(BOOL finished) {
+            
+            settingBG.hidden = YES;
+            
+        }];
+    }
 }
+
 
 #pragma mark - Game Over
 
@@ -258,10 +226,7 @@
 -(void)swipeDirection:(UISwipeGestureRecognizer *)sender
 {
     if (gamePad.userInteractionEnabled) {
-        
-        if (changeScoreTimer.isValid)
-            [changeScoreTimer invalidate];
-        
+                
         SnakeNode *head = [snake.snakeBody firstObject];
         [head.layer removeAllAnimations];
         
@@ -325,8 +290,9 @@
     else {
         
         gamePad.userInteractionEnabled = YES;
-        if([snake checkIsGameover])
+        if([snake checkIsGameover]) {
             [self gameOver];
+        }
     }
 }
 
@@ -369,47 +335,19 @@
     [gamePad reset];
     gameIsOver = NO;
     [snake updateNextNode:nextNode animation:NO];
-    
-    [UIView animateWithDuration:0.5 animations:^{
-        
-        replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
-        
-    }];
 }
 
 #pragma mark - Snake Delegate
 
 -(void)showReplayView:(NSInteger)totalBombs
 {
-    nextNode.hidden = YES;
-    nextLabel.hidden = YES;
-    comLabel.text = [NSString stringWithFormat:@"%ld",totalCombos];
-    bombLabel.text = [NSString stringWithFormat:@"%ld",totalBombs];
-    
-    NSInteger bestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"BestScore"];
-    
-    currentScoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
-    
-    if (score > bestScore)
-    {
-        [[NSUserDefaults standardUserDefaults] setInteger:score forKey:@"BestScore"];
-        [[GCHelper sharedInstance] submitScore:score leaderboardId:kHighScoreLeaderboardId];
-        bestScoreLabel.text = @"New Record";
-        bestScoreLabel.textColor = [UIColor whiteColor];
-    }
-    else
-    {
-        bestScoreLabel.text = [NSString stringWithFormat:@"Best %@",[numFormatter stringFromNumber:[NSNumber numberWithInteger:bestScore]]];
-        bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
-    }
-    
-    [self.view bringSubviewToFront:replayView];
-    
-    [UIView animateWithDuration:0.5 animations:^{
-       
-        replayView.frame = CGRectOffset(replayView.frame, 0, self.view.frame.size.height);
-        
-    }];
+    GameStatsViewController *controller =  [[GameStatsViewController alloc]init];
+    controller.bombs = totalBombs;
+    controller.combos = totalCombos;
+    controller.score = score;
+    controller.gameImage = [self captureView:self.view];
+    controller.delegate = self;
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 -(void)updateScore:(NSInteger)s
@@ -447,12 +385,15 @@
         }
     }
 }
-
-#pragma mark - Game center
-
-- (void)showGameCenter
+- (UIImage *)captureView:(UIView *)view
 {
-    [[GCHelper sharedInstance] showGameCenterViewController:self];
+    CGRect rect = [[UIScreen mainScreen] bounds];
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [view.layer renderInContext:context];
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return img;
 }
 
 #pragma mark - Memory management

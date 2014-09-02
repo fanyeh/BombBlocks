@@ -8,25 +8,31 @@
 
 #import "MenuController.h"
 #import "ClassicGameController.h"
-#import "GADInterstitial.h"
 #import "ParticleView.h"
 #import "CustomLabel.h"
 
 @interface MenuController ()
 {
     ClassicGameController *classicGameController;
-    GADInterstitial *interstitial_;
     ParticleView *particleView;
     CustomLabel *bombLabel;
     CustomLabel *blockLabel;
+    UIImageView *launchBomb;
+    NSMutableArray *playButtonArray;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *blueBomb;
 @property (weak, nonatomic) IBOutlet UIView *yellowBomb;
 @property (weak, nonatomic) IBOutlet UIView *yellowBody;
 @property (weak, nonatomic) IBOutlet UIView *blueBody2;
-@property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UIView *blueBody1;
+@property (weak, nonatomic) IBOutlet UIView *playButtonView;
+@property (weak, nonatomic) IBOutlet UIView *pView;
+@property (weak, nonatomic) IBOutlet UIView *lView;
+@property (weak, nonatomic) IBOutlet UIView *aView;
+@property (weak, nonatomic) IBOutlet UIView *yView;
+
+
 
 @end
 
@@ -45,11 +51,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    
-    interstitial_ = [[GADInterstitial alloc] init];
-    interstitial_.adUnitID = @"ca-app-pub-5576864578595597/8891080263";
-    [interstitial_ loadRequest:[GADRequest request]];
-    
+
     // Configure the SKView
     SKView * skView = [[SKView alloc]initWithFrame:self.view.frame];
     skView.backgroundColor = [UIColor clearColor];
@@ -72,47 +74,88 @@
     
     blockLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontName:nil fontSize:labelSize];
     blockLabel.frame = CGRectOffset(blockLabel.frame, 0, labelSize);
-    blockLabel.text = @"Block";
+    blockLabel.text = @"Blocks";
     blockLabel.hidden= YES;
     [self.view addSubview:blockLabel];
+    
+    launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(200, 568/2-labelSize-labelSize-52*2+10, 52, 52)];
+    launchBomb.image = [UIImage imageNamed:@"bomb_yellow.png"];
+    launchBomb.hidden = YES;
+    
+    UIImageView *bombType = [[UIImageView alloc]initWithFrame:CGRectMake(14, 14, 24, 24)];
+    bombType.image = [UIImage imageNamed:@"explode.png"];
+    [launchBomb addSubview:bombType];
+    
+    [self.view addSubview:launchBomb];
+    
+    UITapGestureRecognizer *playTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(playGame)];
+    [_playButtonView addGestureRecognizer:playTap];
+    
+    playButtonArray = [[NSMutableArray alloc]init];
+    [playButtonArray addObjectsFromArray:@[_pView,_lView,_aView,_yView]];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [self setCombo];
+    [UIView animateWithDuration:1.0 animations:^{
+        
+        _blueBody2.frame = CGRectOffset(_blueBody2.frame, 0, 70);
+        
+    } completion:^(BOOL finished) {
+        
+        _yellowBody.alpha = 1;
+        CGAffineTransform yellowT = _yellowBody.transform;
+        _yellowBody.transform = CGAffineTransformScale(yellowT, 0.3, 0.3);
+        
+        [UIView animateWithDuration:0.15 animations:^{
+            
+            _yellowBody.transform = yellowT;
+            
+        } completion:^(BOOL finished) {
+            
+            [UIView animateWithDuration:1.0 animations:^{
+                
+                _blueBody2.frame = CGRectOffset(_blueBody2.frame, -71, 0);
+                _yellowBody.frame = CGRectOffset(_yellowBody.frame, -71, 0);
+
+            } completion:^(BOOL finished) {
+                
+                _blueBody1.alpha = 1;
+                CGAffineTransform blueT = _yellowBody.transform;
+                _blueBody1.transform = CGAffineTransformScale(blueT, 0.3, 0.3);
+                
+                [UIView animateWithDuration:0.15 animations:^{
+                    
+                    _blueBody1.transform = blueT;
+                    
+                } completion:^(BOOL finished) {
+                    
+                    [self setCombo];
+                    
+                }];
+            }];
+        }];
+    }];
 }
 
 - (void)setCombo
 {
-    [UIView animateWithDuration:0.8 animations:^{
+    [UIView animateWithDuration:1.0 animations:^{
         
-        _blueBody1.frame = CGRectOffset(_blueBody1.frame, 0, 70);
-        _blueBody2.frame = CGRectOffset(_blueBody2.frame, 0, 70);
+        _blueBody1.frame = CGRectOffset(_blueBody1.frame, 0, 69);
+        _blueBody2.frame = CGRectOffset(_blueBody2.frame, 0, 69);
 
     } completion:^(BOOL finished) {
         
         CGAffineTransform t1 = _blueBody1.transform;
         CGAffineTransform t2 = _blueBody2.transform;
         CGAffineTransform t3 = _blueBomb.transform;
-        
-//        _blueBody1.layer.cornerRadius = 3;
-//        _blueBody1.layer.borderWidth = 2.5;
-//        _blueBody1.layer.borderColor = BlueDotColor.CGColor;
-//        
-//        _blueBody2.layer.cornerRadius = 3;
-//        _blueBody2.layer.borderWidth = 2.5;
-//        _blueBody2.layer.borderColor = BlueDotColor.CGColor;
-//        
-//        _blueBomb.layer.cornerRadius = 3;
-//        _blueBomb.layer.borderWidth = 2.5;
-//        _blueBomb.layer.borderColor = BlueDotColor.CGColor;
     
+        _yellowBomb.alpha = 1;
         
         [UIView animateWithDuration:0.3
                               delay:0.0
-                            options:
-         UIViewAnimationOptionCurveEaseInOut
-         
+                            options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
                              
                              _blueBody1.transform = CGAffineTransformScale(t1, 0.5, 0.5);
@@ -125,10 +168,17 @@
                                  _blueBody1.transform = t1;
                                  _blueBody2.transform = t2;
                                  _blueBomb.transform = t3;
+
                              } completion:^(BOOL finished) {
+                                 _blueBody1.hidden = YES;
+                                 _blueBody2.hidden = YES;
+                                 _blueBomb.hidden = YES;
+                                 _yellowBody.hidden = YES;
+
+                                 [self vExplosion];
                                  [self explodeBody:_blueBody1 type:kAssetTypeBlue];
                                  [self explodeBody:_blueBody2 type:kAssetTypeBlue];
-                                 [self vExplosion];
+
                              }];
                          }];
     }];
@@ -146,7 +196,6 @@
     beamView1 = [[UIView alloc]initWithFrame:CGRectMake(posX-beamSize/2,posY-beamSize/2,beamSize,0)];
     beamView2 = [[UIView alloc]initWithFrame:CGRectMake(posX-beamSize/2,posY-beamSize/2,beamSize,0)];
 
-    
     [self.view addSubview:beamView1];
     [self.view addSubview:beamView2];
     
@@ -155,7 +204,6 @@
     
     beamView1.alpha = 0.8;
     beamView2.alpha = 0.8;
-    
 
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         
@@ -165,10 +213,6 @@
         beamView1.alpha = 0.3;
         beamView2.alpha = 0.3;
 
-        _blueBody1.hidden = YES;
-        _blueBody2.hidden = YES;
-        _blueBomb.hidden = YES;
-        _yellowBody.hidden = YES;
         [self explodeBody:_yellowBody type:kAssetTypeYellow];
         
     } completion:^(BOOL finished) {
@@ -177,8 +221,6 @@
 
         [beamView1 removeFromSuperview];
         [beamView2 removeFromSuperview];
-        
-        
     }];
 }
 
@@ -231,27 +273,90 @@
                 [blinkView removeFromSuperview];
                 bombLabel.hidden = NO;
                 blockLabel.hidden = NO;
-                _playButton.hidden = NO;
-                
+                _playButtonView.hidden = NO;
+
                 CGAffineTransform b1 =  bombLabel.transform;
                 CGAffineTransform b2 =  blockLabel.transform;
-                CGAffineTransform p1 =  _playButton.transform;
-                
+
                 bombLabel.transform = CGAffineTransformScale(b1, 0.1, 0.1);
                 blockLabel.transform = CGAffineTransformScale(b2, 0.1, 0.1);
-                _playButton.transform = CGAffineTransformScale(p1, 0.1, 0.1);
                 
                 [UIView animateWithDuration:0.2 animations:^{
                     
                     bombLabel.transform = b1;
                     blockLabel.transform = b2;
-                    _playButton.transform = p1;
+                    
+                } completion:^(BOOL finished) {
+                    
+                    [self launchBombAnimation];
                     
                 }];
             }];
         }];
     }];
 }
+
+- (void)launchBombAnimation
+{
+    launchBomb.hidden = NO;
+    [UIView animateWithDuration:0.15 animations:^{
+        
+        launchBomb.frame = CGRectOffset(launchBomb.frame, 0, 52);
+        
+    } completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:0.15 animations:^{
+            
+            launchBomb.frame = CGRectOffset(launchBomb.frame, 0, -52/2);
+            
+        } completion:^(BOOL finished) {
+            
+            [UIView animateWithDuration:0.15 animations:^{
+                
+                launchBomb.frame = CGRectOffset(launchBomb.frame, 15 , (52/2+5));
+                
+            } completion:^(BOOL finished) {
+                
+                launchBomb.transform = CGAffineTransformRotate(launchBomb.transform, M_PI_4/2);
+                
+                [self playButtonAnimation:playButtonArray];
+                
+            }];
+        }];
+    }];
+}
+
+- (void)playButtonAnimation:(NSMutableArray *)buttons
+{
+    UIView *buttonView = [buttons firstObject];
+    buttonView.hidden = NO;
+    CGAffineTransform t =  buttonView.transform;
+    CGAffineTransform t2 = CGAffineTransformScale(t, 1.2, 1.2);
+    buttonView.transform = CGAffineTransformScale(t, 0.5, 0.5);
+    
+    [UIView animateWithDuration:0.1 animations:^{
+        
+        buttonView.transform = t2;
+        
+    } completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:0.10 animations:^{
+            
+            buttonView.transform = t;
+            
+        } completion:^(BOOL finished) {
+            
+            [playButtonArray removeObjectAtIndex:0];
+            
+            if ([buttons count] > 0) {
+                
+                [self playButtonAnimation:playButtonArray];
+            }
+            
+        }];
+    }];
+}
+
 
 -(void)explodeBody:(UIView *)body type:(AssetType)type
 {
@@ -262,14 +367,9 @@
     [particleView newExplosionWithPosX:posX andPosY:posY assetType:type];
 }
 
-#pragma mark - Show Ad
-- (IBAction)showAd:(id)sender 
-{
-    [interstitial_ presentFromRootViewController:self];
-}
-
 #pragma mark - New Game
-- (IBAction)playGame:(id)sender {
+- (IBAction)playGame
+{
     
     classicGameController =  [[ClassicGameController alloc]init];
     [self presentViewController:classicGameController animated:YES completion:nil];

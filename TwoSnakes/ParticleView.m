@@ -16,11 +16,8 @@
 -(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
-        
-        //self.backgroundColor = [SKColor colorWithCGColor:[UIColor colorWithWhite:0.024 alpha:0.500].CGColor];
-        
         self.backgroundColor = [SKColor colorWithCGColor:[UIColor clearColor].CGColor];
-        
+
     }
     return self;
 }
@@ -64,6 +61,16 @@
     emitter.particleColorSequence = nil;
     [emitter resetSimulation];
     [self addChild:emitter];
+}
+
+- (void)playMoveSound
+{
+    [self runAction:[SKAction playSoundFileNamed:@"move.mp3" waitForCompletion:NO]];
+}
+
+- (void)playComboSound
+{
+    [self runAction:[SKAction playSoundFileNamed:@"combo.mp3" waitForCompletion:NO]];
 }
 
 @end

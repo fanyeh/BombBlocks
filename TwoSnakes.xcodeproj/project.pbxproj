@@ -66,6 +66,16 @@
 		4CA47C0B19AE121000E832DF /* green_2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA47C0719AE121000E832DF /* green_2@2x.png */; };
 		4CAA5DEA1929998000049F52 /* GamePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CAA5DE91929998000049F52 /* GamePad.m */; };
 		4CAA5DF21929AB9100049F52 /* SocialShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CAA5DF11929AB9100049F52 /* SocialShare.m */; };
+		4CAE113519B55EA900D2608E /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 4CAE113119B55EA900D2608E /* CHANGELOG.md */; };
+		4CAE113619B55EA900D2608E /* libChartboost.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CAE113319B55EA900D2608E /* libChartboost.a */; };
+		4CAE113719B55EA900D2608E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4CAE113419B55EA900D2608E /* README.md */; };
+		4CAE113919B55F0E00D2608E /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CAE113819B55F0E00D2608E /* CoreMedia.framework */; };
+		4CAE113B19B55F1900D2608E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CAE113A19B55F1900D2608E /* QuartzCore.framework */; };
+		4CAE113D19B58B3000D2608E /* explode.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4CAE113C19B58B3000D2608E /* explode.mp3 */; };
+		4CAE113F19B5965D00D2608E /* cool-space-flight.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4CAE113E19B5965D00D2608E /* cool-space-flight.mp3 */; };
+		4CAE114519B5AB5500D2608E /* explodeSquare.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4CAE114419B5AB5500D2608E /* explodeSquare.mp3 */; };
+		4CAE114719B5B39F00D2608E /* combo.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4CAE114619B5B39F00D2608E /* combo.mp3 */; };
+		4CAE114919B5B53C00D2608E /* move.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4CAE114819B5B53C00D2608E /* move.mp3 */; };
 		4CB108A5190FF6440085C747 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A4190FF6440085C747 /* Foundation.framework */; };
 		4CB108A7190FF6440085C747 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A6190FF6440085C747 /* CoreGraphics.framework */; };
 		4CB108A9190FF6440085C747 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CB108A8190FF6440085C747 /* UIKit.framework */; };
@@ -95,6 +105,10 @@
 		4CC2CE1519AAEF6900C6A46F /* replayButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC2CE1419AAEF6900C6A46F /* replayButton@2x.png */; };
 		4CC2CE1919AB0F8700C6A46F /* pauseButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC2CE1819AB0F8700C6A46F /* pauseButton@2x.png */; };
 		4CD0E0A219B42268002D9FBC /* ScoreObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD0E0A119B42268002D9FBC /* ScoreObject.m */; };
+		4CD7836519B6123600EFF33F /* sound70@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD7836219B6123600EFF33F /* sound70@2x.png */; };
+		4CD7836619B6123600EFF33F /* rating70@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD7836319B6123600EFF33F /* rating70@2x.png */; };
+		4CD7836719B6123600EFF33F /* music70@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD7836419B6123600EFF33F /* music70@2x.png */; };
+		4CD7836A19B614F500EFF33F /* GameStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CD7836919B614F500EFF33F /* GameStatsViewController.m */; };
 		4CD7D1281994872100E1A03C /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD7D1271994872100E1A03C /* CoreMotion.framework */; };
 		4CDBB71D1920A00900D8A9B4 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CDBB71C1920A00900D8A9B4 /* Social.framework */; };
 		4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CDBB71F1920A22900D8A9B4 /* GCHelper.m */; };
@@ -192,6 +206,22 @@
 		4CAA5DE91929998000049F52 /* GamePad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GamePad.m; sourceTree = "<group>"; };
 		4CAA5DF01929AB9100049F52 /* SocialShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialShare.h; sourceTree = "<group>"; };
 		4CAA5DF11929AB9100049F52 /* SocialShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialShare.m; sourceTree = "<group>"; };
+		4CAE112C19B55EA900D2608E /* CBMoreAppsButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBMoreAppsButton.h; sourceTree = "<group>"; };
+		4CAE112D19B55EA900D2608E /* CBNewsfeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBNewsfeed.h; sourceTree = "<group>"; };
+		4CAE112E19B55EA900D2608E /* CBNewsfeedUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBNewsfeedUI.h; sourceTree = "<group>"; };
+		4CAE112F19B55EA900D2608E /* CBPostInstallAnalyticsTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBPostInstallAnalyticsTracker.h; sourceTree = "<group>"; };
+		4CAE113019B55EA900D2608E /* CBStory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBStory.h; sourceTree = "<group>"; };
+		4CAE113119B55EA900D2608E /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.md; sourceTree = "<group>"; };
+		4CAE113219B55EA900D2608E /* Chartboost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Chartboost.h; sourceTree = "<group>"; };
+		4CAE113319B55EA900D2608E /* libChartboost.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libChartboost.a; sourceTree = "<group>"; };
+		4CAE113419B55EA900D2608E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		4CAE113819B55F0E00D2608E /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		4CAE113A19B55F1900D2608E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		4CAE113C19B58B3000D2608E /* explode.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = explode.mp3; path = ../../explode.mp3; sourceTree = "<group>"; };
+		4CAE113E19B5965D00D2608E /* cool-space-flight.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "cool-space-flight.mp3"; sourceTree = "<group>"; };
+		4CAE114419B5AB5500D2608E /* explodeSquare.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = explodeSquare.mp3; sourceTree = "<group>"; };
+		4CAE114619B5B39F00D2608E /* combo.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = combo.mp3; sourceTree = "<group>"; };
+		4CAE114819B5B53C00D2608E /* move.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = move.mp3; sourceTree = "<group>"; };
 		4CB108A1190FF6440085C747 /* TwoSnakes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwoSnakes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB108A4190FF6440085C747 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4CB108A6190FF6440085C747 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -225,6 +255,11 @@
 		4CC2CE1819AB0F8700C6A46F /* pauseButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pauseButton@2x.png"; sourceTree = "<group>"; };
 		4CD0E0A019B42268002D9FBC /* ScoreObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScoreObject.h; sourceTree = "<group>"; };
 		4CD0E0A119B42268002D9FBC /* ScoreObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScoreObject.m; sourceTree = "<group>"; };
+		4CD7836219B6123600EFF33F /* sound70@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sound70@2x.png"; sourceTree = "<group>"; };
+		4CD7836319B6123600EFF33F /* rating70@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rating70@2x.png"; sourceTree = "<group>"; };
+		4CD7836419B6123600EFF33F /* music70@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "music70@2x.png"; sourceTree = "<group>"; };
+		4CD7836819B614F500EFF33F /* GameStatsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameStatsViewController.h; sourceTree = "<group>"; };
+		4CD7836919B614F500EFF33F /* GameStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameStatsViewController.m; sourceTree = "<group>"; };
 		4CD7D1271994872100E1A03C /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		4CDBB71C1920A00900D8A9B4 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		4CDBB71E1920A22900D8A9B4 /* GCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCHelper.h; sourceTree = "<group>"; };
@@ -238,12 +273,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CAE113B19B55F1900D2608E /* QuartzCore.framework in Frameworks */,
+				4CAE113919B55F0E00D2608E /* CoreMedia.framework in Frameworks */,
 				4CD7D1281994872100E1A03C /* CoreMotion.framework in Frameworks */,
 				4C8541B21946A91D00810CE4 /* SystemConfiguration.framework in Frameworks */,
 				4C8541B01946A91200810CE4 /* StoreKit.framework in Frameworks */,
 				4C8541AE1946A90900810CE4 /* MessageUI.framework in Frameworks */,
 				4C8541AC1946A8F700810CE4 /* AVFoundation.framework in Frameworks */,
 				4C8541AA1946A8E900810CE4 /* AudioToolbox.framework in Frameworks */,
+				4CAE113619B55EA900D2608E /* libChartboost.a in Frameworks */,
 				4C8541A81946A8DE00810CE4 /* AdSupport.framework in Frameworks */,
 				4CDBB71D1920A00900D8A9B4 /* Social.framework in Frameworks */,
 				4CB108A7190FF6440085C747 /* CoreGraphics.framework in Frameworks */,
@@ -320,6 +358,7 @@
 				4C8541A41946A8B300810CE4 /* GADAdMobExtras.h */,
 			);
 			name = AdmobSDK;
+			path = TwoSnakes;
 			sourceTree = "<group>";
 		};
 		4CA0A9BE1997C1690020D1F9 /* Game Over Image */ = {
@@ -411,13 +450,39 @@
 				4C87C38919A7192F007EA190 /* CustomLabel.m */,
 				4CD0E0A019B42268002D9FBC /* ScoreObject.h */,
 				4CD0E0A119B42268002D9FBC /* ScoreObject.m */,
+				4CD7836819B614F500EFF33F /* GameStatsViewController.h */,
+				4CD7836919B614F500EFF33F /* GameStatsViewController.m */,
 			);
 			name = "Game Scene";
+			sourceTree = "<group>";
+		};
+		4CAE112B19B55EA900D2608E /* Chartboost */ = {
+			isa = PBXGroup;
+			children = (
+				4CAE112C19B55EA900D2608E /* CBMoreAppsButton.h */,
+				4CAE112D19B55EA900D2608E /* CBNewsfeed.h */,
+				4CAE112E19B55EA900D2608E /* CBNewsfeedUI.h */,
+				4CAE112F19B55EA900D2608E /* CBPostInstallAnalyticsTracker.h */,
+				4CAE113019B55EA900D2608E /* CBStory.h */,
+				4CAE113119B55EA900D2608E /* CHANGELOG.md */,
+				4CAE113219B55EA900D2608E /* Chartboost.h */,
+				4CAE113319B55EA900D2608E /* libChartboost.a */,
+				4CAE113419B55EA900D2608E /* README.md */,
+			);
+			path = Chartboost;
 			sourceTree = "<group>";
 		};
 		4CB10898190FF6440085C747 = {
 			isa = PBXGroup;
 			children = (
+				4CD7836219B6123600EFF33F /* sound70@2x.png */,
+				4CD7836319B6123600EFF33F /* rating70@2x.png */,
+				4CD7836419B6123600EFF33F /* music70@2x.png */,
+				4CAE114819B5B53C00D2608E /* move.mp3 */,
+				4CAE114619B5B39F00D2608E /* combo.mp3 */,
+				4CAE114419B5AB5500D2608E /* explodeSquare.mp3 */,
+				4CAE113E19B5965D00D2608E /* cool-space-flight.mp3 */,
+				4CAE113C19B58B3000D2608E /* explode.mp3 */,
 				4C50EE9C19A1DBD700C5DA41 /* Bomb Image */,
 				4CA0A9BF1997C1970020D1F9 /* Block Image */,
 				4CA0A9BE1997C1690020D1F9 /* Game Over Image */,
@@ -440,6 +505,10 @@
 		4CB108A3190FF6440085C747 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4C8541961946A6CD00810CE4 /* AdmobSDK */,
+				4CAE113A19B55F1900D2608E /* QuartzCore.framework */,
+				4CAE113819B55F0E00D2608E /* CoreMedia.framework */,
+				4CAE112B19B55EA900D2608E /* Chartboost */,
 				4CD7D1271994872100E1A03C /* CoreMotion.framework */,
 				4C8541B11946A91D00810CE4 /* SystemConfiguration.framework */,
 				4C8541AF1946A91200810CE4 /* StoreKit.framework */,
@@ -460,7 +529,6 @@
 		4CB108AC190FF6440085C747 /* TwoSnakes */ = {
 			isa = PBXGroup;
 			children = (
-				4C8541961946A6CD00810CE4 /* AdmobSDK */,
 				4CB108B5190FF6440085C747 /* MKAppDelegate.h */,
 				4CB108B6190FF6440085C747 /* MKAppDelegate.m */,
 				4CAA5DEB1929A0C800049F52 /* Game Scene */,
@@ -591,20 +659,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C2866E119986F52009651B4 /* red@2x.png in Resources */,
+				4CAE114919B5B53C00D2608E /* move.mp3 in Resources */,
 				4CC2950B19B358B000032D7A /* OrangeParticle.sks in Resources */,
 				4C50EEA419A1DBF300C5DA41 /* bomb_yellow@2x.png in Resources */,
 				4CC2950019B3585100032D7A /* bomb_orange@2x.png in Resources */,
 				4C8541BE1946D82100810CE4 /* icon.png in Resources */,
+				4CAE113D19B58B3000D2608E /* explode.mp3 in Resources */,
 				4CA47C0A19AE121000E832DF /* red_2@2x.png in Resources */,
 				4C87C37F19A6F94E007EA190 /* swapTime@2x.png in Resources */,
 				4C70B6D3197F8C480024F9DF /* GreyParticle.sks in Resources */,
 				4C6C2BCB19B20F5B00ABE726 /* grey@2x.png in Resources */,
 				4C50EEA219A1DBF300C5DA41 /* bomb_green@2x.png in Resources */,
 				4CC2950219B3585C00032D7A /* orange_2@2x.png in Resources */,
+				4CD7836619B6123600EFF33F /* rating70@2x.png in Resources */,
 				4C6C2BC419B20EBD00ABE726 /* explodeVertical@2x.png in Resources */,
+				4CD7836719B6123600EFF33F /* music70@2x.png in Resources */,
 				4C2866DF19986F52009651B4 /* yellow@2x.png in Resources */,
 				4CC294F419B3111200032D7A /* twitter40@2x.png in Resources */,
 				4CC2CE0519AAE10900C6A46F /* gamecenter@2x.png in Resources */,
+				4CAE113519B55EA900D2608E /* CHANGELOG.md in Resources */,
 				4CA469F6199B9E4600ED0AB8 /* go_green@2x.png in Resources */,
 				4C6C2BC519B20EBD00ABE726 /* squareExplode@2x.png in Resources */,
 				4CC2CDFF19AACDDF00C6A46F /* Background@2x.png in Resources */,
@@ -622,6 +695,7 @@
 				4CC2CE1919AB0F8700C6A46F /* pauseButton@2x.png in Resources */,
 				4CA0A9DE1997C2C00020D1F9 /* YellowParticle.sks in Resources */,
 				4CA47C0819AE121000E832DF /* yellow_2@2x.png in Resources */,
+				4CAE113F19B5965D00D2608E /* cool-space-flight.mp3 in Resources */,
 				4CA469F5199B9E4600ED0AB8 /* go_blue@2x.png in Resources */,
 				4CC2CE1519AAEF6900C6A46F /* replayButton@2x.png in Resources */,
 				4CC2950619B3587000032D7A /* go_orange@2x.png in Resources */,
@@ -631,17 +705,21 @@
 				4C6C2BD719B2143200ABE726 /* go_grey@2x.png in Resources */,
 				4CA26E1419B43E92002A40AA /* setting70@2x.png in Resources */,
 				4C6C2BCF19B20FA800ABE726 /* particle_grey.png in Resources */,
+				4CAE113719B55EA900D2608E /* README.md in Resources */,
 				4CC2950419B3586500032D7A /* orange@2x.png in Resources */,
 				4C8541A51946A8B300810CE4 /* README.txt in Resources */,
 				4CC294F819B3124800032D7A /* facebook40@2x.png in Resources */,
+				4CAE114519B5AB5500D2608E /* explodeSquare.mp3 in Resources */,
 				4C2866EA199872AB009651B4 /* particle_red.png in Resources */,
 				4C2866DD19986F52009651B4 /* blue@2x.png in Resources */,
 				4CC294FE19B3162B00032D7A /* gamecenter2@2x.png in Resources */,
+				4CAE114719B5B39F00D2608E /* combo.mp3 in Resources */,
 				4C6C2BC319B20EBD00ABE726 /* explodeHorizontal@2x.png in Resources */,
 				4C70B6D5197F8C5D0024F9DF /* GreenParticle.sks in Resources */,
 				4CB108BC190FF6440085C747 /* Images.xcassets in Resources */,
 				4C87C37D19A6F82F007EA190 /* explode@2x.png in Resources */,
 				4C2866E9199872AB009651B4 /* particle_yellow.png in Resources */,
+				4CD7836519B6123600EFF33F /* sound70@2x.png in Resources */,
 				4C6C2BC919B20F4700ABE726 /* grey_2@2x.png in Resources */,
 				4CA0E59319764CD2008B2E71 /* BlueParticle.sks in Resources */,
 				4C6C2BC719B20F2700ABE726 /* bomb_grey@2x.png in Resources */,
@@ -678,6 +756,7 @@
 				4CB108B3190FF6440085C747 /* main.m in Sources */,
 				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,
 				4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */,
+				4CD7836A19B614F500EFF33F /* GameStatsViewController.m in Sources */,
 				4CAA5DEA1929998000049F52 /* GamePad.m in Sources */,
 				4CA0E5E31977A405008B2E71 /* SnakeNode.m in Sources */,
 				4C78A07A192DA14D003F9ABE /* ClassicGameController.m in Sources */,
@@ -802,6 +881,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/TwoSnakes",
+					"$(PROJECT_DIR)/Chartboost",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -819,6 +899,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/TwoSnakes",
+					"$(PROJECT_DIR)/Chartboost",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -9,8 +9,10 @@
 #import "SocialShare.h"
 #import <Social/Social.h>
 
-
 @implementation SocialShare
+{
+    NSInteger newScore;
+}
 
 -(id)init
 {
@@ -42,7 +44,6 @@
         //  Create an instance of the share Sheet , Service Type 有 Facebook/Twitter/微博 可以選
         SLComposeViewController *shareSheet = [SLComposeViewController composeViewControllerForServiceType: serviceType];
         
-        
         shareSheet.completionHandler = ^(SLComposeViewControllerResult result) {
             switch(result) {
                     //  This means the user cancelled without sending the Tweet
@@ -55,19 +56,20 @@
         };
         
         //  Set the initial body of the share sheet
-        [shareSheet setInitialText:@"I have scored points @ Not A Snake Game!"];
+        [shareSheet setInitialText:[NSString stringWithFormat:@"I have scored %ld points @ Bomb Block!",newScore]];
         
         //  Share Photo
-        // Take screen shot
-        //        if (![shareSheet addImage:[fm loadCollectionImage]]) {
-        //            NSLog(@"Unable to add the image!");
-        //        }
+        [shareSheet addImage:_screenshot];
         
         //  Presents the share Sheet to the user
         [viewcontroller presentViewController:shareSheet animated:NO completion:nil];
     }
 }
 
+- (void)setScore:(NSInteger)s
+{
+    newScore = s;
+}
 
 - (BOOL)checkInternetConnection
 {
