@@ -58,7 +58,7 @@
     CGFloat socialButtonWidth = socialButtonHeight;
     
     // Social share button
-    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake(225,
+    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake((320-35)/2,
                                                                         10,
                                                                         socialButtonWidth,
                                                                         socialButtonHeight)];
@@ -70,22 +70,23 @@
     [facbookButton addTarget:self action:@selector(facebookShare) forControlEvents:UIControlEventTouchDown];
     
     
-    UIButton *twitterButton = [[UIButton alloc]initWithFrame:CGRectMake(0,
-                                                                        0,
-                                                                        socialButtonWidth,
-                                                                        socialButtonHeight)];
+    UIButton *twitterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
     [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter40.png"] forState:UIControlStateNormal];
-    twitterButton.frame = CGRectOffset(facbookButton.frame, 45, 0);
+    twitterButton.frame = CGRectOffset(twitterButton.frame, 60, 0);
     twitterButton.layer.cornerRadius = socialButtonHeight/2;
     twitterButton.backgroundColor = [UIColor whiteColor];
     twitterButton.layer.masksToBounds = YES;
     [twitterButton addTarget:self action:@selector(twitterShare) forControlEvents:UIControlEventTouchDown];
     
-    
     // Game Center Label
-    UIButton *gamecenterButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, socialButtonHeight, socialButtonHeight)];
-    [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter2.png"] forState:UIControlStateNormal];
+    UIButton *gamecenterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
+    gamecenterButton.frame = CGRectOffset(gamecenterButton.frame, -60, 0);
+    [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter70.png"] forState:UIControlStateNormal];\
+    gamecenterButton.layer.cornerRadius = socialButtonHeight/2;
     [gamecenterButton addTarget:self action:@selector(showGameCenter) forControlEvents:UIControlEventTouchDown];
+    
+    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 110, pauseLabelWidth, 35) fontName:@"GeezaPro-Bold" fontSize:35];
+    bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
     CGFloat yoffset = 285;
     CGFloat labelWidth = 90;
@@ -95,6 +96,8 @@
     currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 175, pauseLabelWidth, 65) fontName:@"GeezaPro-Bold" fontSize:65];
     
     
+    
+    // Combo
     CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset,labelHeight,labelHeight)
                                                         fontName:@"GeezaPro-Bold"
                                                         fontSize:fontSize];
@@ -111,7 +114,7 @@
                                         fontSize:fontSize];
     
     
-    
+    // Bomb
     CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+60,labelHeight,labelHeight)
                                                        fontName:@"GeezaPro-Bold"
                                                        fontSize:fontSize];
@@ -125,9 +128,6 @@
     bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+60,labelWidth,labelHeight)
                                          fontName:@"GeezaPro-Bold"
                                          fontSize:fontSize];
-    
-    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 110, pauseLabelWidth, 35) fontName:@"GeezaPro-Bold" fontSize:35];
-    bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
     UIImageView *replayView = [[UIImageView alloc]initWithFrame:self.view.frame];
     //replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
@@ -186,6 +186,12 @@
         bestScoreLabel.text = [NSString stringWithFormat:@"Best %@",[numFormatter stringFromNumber:[NSNumber numberWithInteger:bestScore]]];
         bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     }
+    
+    // Get Rank
+    [[GCHelper sharedInstance] getScoreRankFromLeaderboard:^(NSArray *topScores) {
+        
+        NSLog(@"Top scores %@",topScores);
+    }];
 }
 
 -(void)replayGame

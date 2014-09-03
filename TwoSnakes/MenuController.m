@@ -368,9 +368,8 @@
 }
 
 #pragma mark - New Game
-- (IBAction)playGame
+- (void)playGame
 {
-    
     classicGameController =  [[ClassicGameController alloc]init];
     [self presentViewController:classicGameController animated:YES completion:nil];
 

@@ -34,7 +34,6 @@
     NSInteger scoreGap;
     NSTimer *changeScoreTimer;
     NSMutableArray *scoreArray;
-    AVAudioPlayer *audioPlayer;
     ParticleView *particle;
     UIButton *settingButton;
     UIButton *soundButton;
@@ -42,7 +41,11 @@
     UIButton *rateButton;
     UIView *settingBG;
     BOOL isSetting;
-    CGAffineTransform settingTransform;
+    BOOL musicOn;
+    BOOL soundOn;
+    MKAppDelegate *appDelegate;
+    CustomLabel *soundOnLabel;
+    CustomLabel *musicOnLabel;
 }
 @end
 
@@ -134,81 +137,159 @@
     
     scoreArray = [[NSMutableArray alloc]init];
     
-    settingBG = [[UIView alloc]initWithFrame:CGRectMake(320-40, 5, 35, 35)];
-    settingBG.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.400];
-    settingBG.layer.cornerRadius = 35/2;
-    [self.view addSubview:settingBG];
-    
-    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-40, 5, 35, 35)];
+    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-45, 10, 35, 35)];
     [settingButton setImage:[UIImage imageNamed:@"setting70.png"] forState:UIControlStateNormal];
-    [settingButton addTarget:self action:@selector(settings) forControlEvents:UIControlEventTouchDown];
+    [settingButton addTarget:self action:@selector(settings:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:settingButton];
     
-    soundButton = [[UIButton alloc]initWithFrame:CGRectMake(200, 10, 35, 35)];
-    [soundButton setImage:[UIImage imageNamed:@"sound70.png"] forState:UIControlStateNormal];
-    [soundButton addTarget:self action:@selector(settings) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:soundButton];
+    appDelegate = [[UIApplication sharedApplication] delegate];
     
-    musicButton = [[UIButton alloc]initWithFrame:CGRectMake(227.5, 55, 35, 35)];
-    [musicButton setImage:[UIImage imageNamed:@"music70.png"] forState:UIControlStateNormal];
-    [musicButton addTarget:self action:@selector(settings) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:musicButton];
+    musicOn = [[NSUserDefaults standardUserDefaults] boolForKey:@"music"];
+    soundOn = [[NSUserDefaults standardUserDefaults] boolForKey:@"sound"];
     
-    rateButton = [[UIButton alloc]initWithFrame:CGRectMake(320-45, 85, 35, 35)];
-    [rateButton setImage:[UIImage imageNamed:@"rating70.png"] forState:UIControlStateNormal];
-    [rateButton addTarget:self action:@selector(settings) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:rateButton];
+    if (musicOn)
+        [appDelegate.audioPlayer play];
     
-    settingBG.hidden = YES;
-    soundButton.hidden = YES;
-    musicButton.hidden = YES;
-    rateButton.hidden = YES;
-    settingTransform = settingBG.transform;
-    
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"];
-    NSURL* file = [NSURL URLWithString:path];
-    
-    audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:file error:nil];
-    audioPlayer.numberOfLoops = -1;
-    [audioPlayer prepareToPlay];
-    [audioPlayer play];
+    [self settingPage];
 }
 
--(void)settings
+- (void)settingPage
 {
+    settingBG = [[UIView alloc]initWithFrame:self.view.frame];
+    settingBG.frame = CGRectOffset(settingBG.frame, 0, -568);
+    settingBG.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.800];
+    [self.view addSubview:settingBG];
+    
+    UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, 35, 35)];
+    [backButton setImage:[UIImage imageNamed:@"back70.png"] forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(settings:) forControlEvents:UIControlEventTouchDown];
+    [settingBG addSubview:backButton];
+    
+    CGFloat xCord = 40;
+    CGFloat centerY = (self.view.frame.size.height - 45 ) /2 ;
+    CGFloat yGap = 100;
+    CGFloat fontSize = 25;
+    // Sound
+    soundButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY-yGap, 45, 45)];
+    [soundButton setImage:[UIImage imageNamed:@"soundOn90.png"] forState:UIControlStateNormal];
+    [soundButton addTarget:self action:@selector(turnSound) forControlEvents:UIControlEventTouchDown];
+    [settingBG addSubview:soundButton];
+    
+    CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+75, centerY-yGap, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    soundLabel.text = @"Sound";
+    soundLabel.textAlignment = NSTextAlignmentLeft;
+    [settingBG addSubview:soundLabel];
+    
+    soundOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+20, centerY-yGap, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    [self setSoundOnLabel];
+    [settingBG addSubview:soundOnLabel];
+    
+    // Music
+    musicButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY, 45, 45)];
+    [musicButton setImage:[UIImage imageNamed:@"musicOn90.png"] forState:UIControlStateNormal];
+    [musicButton addTarget:self action:@selector(turnMusic) forControlEvents:UIControlEventTouchDown];
+    [settingBG addSubview:musicButton];
+    
+    CustomLabel *musicLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+75, centerY, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    musicLabel.text = @"Music";
+    musicLabel.textAlignment = NSTextAlignmentLeft;
+    [settingBG addSubview:musicLabel];
+    
+    musicOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+20, centerY, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    [self setMusicOnLabel];
+    [settingBG addSubview:musicOnLabel];
+    
+    // Rating
+    rateButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap, 45, 45)];
+    [rateButton setImage:[UIImage imageNamed:@"rating90.png"] forState:UIControlStateNormal];
+    [rateButton addTarget:self action:@selector(turnSound) forControlEvents:UIControlEventTouchDown];
+    [settingBG addSubview:rateButton];
+    
+    CustomLabel *ratingLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+75, centerY+yGap, 120, 45) fontName:@"Arial" fontSize:fontSize];
+    ratingLabel.text = @"Rate Me";
+    ratingLabel.textAlignment = NSTextAlignmentLeft;
+    [settingBG addSubview:ratingLabel];
+}
+
+-(void)settings:(UIButton *)button
+{
+    [self buttonAnimation:button];
+    [particle playButtonSound];
     if (!isSetting) {
         
         isSetting = YES;
-        settingBG.hidden = NO;
         
         [UIView animateWithDuration:0.5 animations:^{
             
-            settingBG.transform = CGAffineTransformScale(settingTransform, 6.5, 6.5);
-            
-        }completion:^(BOOL finished) {
-            
-            soundButton.hidden = NO;
-            musicButton.hidden = NO;
-            rateButton.hidden = NO;
-            
+            settingBG.frame = CGRectOffset(settingBG.frame, 0, 568);
+            settingButton.alpha = 0;
         }];
         
     } else {
         
         isSetting = NO;
-        
         [UIView animateWithDuration:0.5 animations:^{
             
-            settingBG.transform = settingTransform;
-            soundButton.hidden = YES;
-            musicButton.hidden = YES;
-            rateButton.hidden = YES;
-            
-        }completion:^(BOOL finished) {
-            
-            settingBG.hidden = YES;
-            
+            settingBG.frame = CGRectOffset(settingBG.frame, 0, -568);
+            settingButton.alpha = 1;
+
         }];
+    }
+}
+
+- (void)turnMusic
+{
+    [self buttonAnimation:musicButton];
+    [particle playButtonSound];
+    if (musicOn) {
+        musicOn = NO;
+        [appDelegate.audioPlayer stop];
+    } else {
+        musicOn = YES;
+        [appDelegate.audioPlayer play];
+    }
+    [self setMusicOnLabel];
+    [[NSUserDefaults standardUserDefaults] setBool:musicOn forKey:@"music"];
+}
+
+- (void)turnSound
+{
+    [self buttonAnimation:soundButton];
+    [particle playButtonSound];
+    if (soundOn)
+        soundOn = NO;
+    else
+        soundOn = YES;
+    [self setSoundOnLabel];
+    [[NSUserDefaults standardUserDefaults] setBool:soundOn forKey:@"sound"];
+}
+
+-(void)setSoundOnLabel
+{
+    if (!soundOn) {
+        //soundOnLabel.textColor = [UIColor whiteColor];
+        soundOnLabel.text = @"OFF";
+        [soundButton setImage:[UIImage imageNamed:@"soundOff90.png"] forState:UIControlStateNormal];
+    }
+    else {
+        //soundOnLabel.textColor = RedDotColor;
+        soundOnLabel.text = @"ON";
+        [soundButton setImage:[UIImage imageNamed:@"soundOn90.png"] forState:UIControlStateNormal];
+    }
+}
+
+-(void)setMusicOnLabel
+{
+    if (!musicOn) {
+        //musicOnLabel.textColor = [UIColor whiteColor];
+        musicOnLabel.text = @"OFF";
+        [musicButton setImage:[UIImage imageNamed:@"musicOff90.png"] forState:UIControlStateNormal];
+        [appDelegate.audioPlayer stop];
+    } else {
+        //musicOnLabel.textColor = BlueDotColor;
+        musicOnLabel.text = @"ON";
+        [musicButton setImage:[UIImage imageNamed:@"musicOn90.png"] forState:UIControlStateNormal];
+        [appDelegate.audioPlayer play];
     }
 }
 
@@ -291,6 +372,7 @@
         
         gamePad.userInteractionEnabled = YES;
         if([snake checkIsGameover]) {
+            [particle playGameoverSound];
             [self gameOver];
         }
     }
@@ -394,6 +476,20 @@
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return img;
+}
+
+-(void)buttonAnimation:(UIButton *)button
+{
+    CGAffineTransform t = button.transform;
+    
+    [UIView animateWithDuration:0.15 animations:^{
+        
+        button.transform = CGAffineTransformScale(t, 0.85, 0.85);
+
+    } completion:^(BOOL finished) {
+        
+        button.transform = t;
+    }];
 }
 
 #pragma mark - Memory management

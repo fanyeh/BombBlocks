@@ -34,6 +34,11 @@
     // Connect to game center
     [[GCHelper sharedInstance] authenticateLocalUser:menuController];
     
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"];
+    NSURL* file = [NSURL URLWithString:path];
+    _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:file error:nil];
+    _audioPlayer.numberOfLoops = -1;
+    [_audioPlayer prepareToPlay];    
     return YES;
 }
 

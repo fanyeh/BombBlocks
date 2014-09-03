@@ -15,5 +15,7 @@
 - (void)newExplosionWithPosX:(float)posX andPosY:(float)posY assetType:(AssetType)type;
 - (void)playMoveSound;
 - (void)playComboSound;
+- (void)playButtonSound;
+- (void)playGameoverSound;
 
 @end

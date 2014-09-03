@@ -711,8 +711,8 @@
     NSMutableArray *colPatterns = [self colPatternCheck];
     NSMutableArray *rowPatterns = [self rowPatternCheck];
     NSMutableArray *squarePatterns = [self patternCheck:kPatternTypeSquare];
-    NSMutableArray *diaDownPatterns = [self patternCheck:kPatternTypeDiagonalDown];
-    NSMutableArray *diaUpPatterns = [self patternCheck:kPatternTypeDiagonalUp];
+//    NSMutableArray *diaDownPatterns = [self patternCheck:kPatternTypeDiagonalDown];
+//    NSMutableArray *diaUpPatterns = [self patternCheck:kPatternTypeDiagonalUp];
 
     allPatterns = [NSMutableArray arrayWithArray:colPatterns];
     
@@ -726,15 +726,15 @@
             [allPatterns addObject:element];
     }
     
-    for (id element in diaDownPatterns) {
-        if (![allPatterns containsObject:element])
-            [allPatterns addObject:element];
-    }
-
-    for (id element in diaUpPatterns) {
-        if (![allPatterns containsObject:element])
-            [allPatterns addObject:element];
-    }
+//    for (id element in diaDownPatterns) {
+//        if (![allPatterns containsObject:element])
+//            [allPatterns addObject:element];
+//    }
+//
+//    for (id element in diaUpPatterns) {
+//        if (![allPatterns containsObject:element])
+//            [allPatterns addObject:element];
+//    }
     
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"tag" ascending:YES];
     allPatterns = [NSMutableArray arrayWithArray:[allPatterns sortedArrayUsingDescriptors:@[sortDescriptor]]];
