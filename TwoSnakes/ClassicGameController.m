@@ -17,8 +17,10 @@
 #import "ScoreObject.h"
 #import <AVFoundation/AVFoundation.h>
 #import "GameStatsViewController.h"
+#import <StoreKit/StoreKit.h>
+#import "Reachability.h"
 
-@interface ClassicGameController () <gameoverDelegate,replayDelegate>
+@interface ClassicGameController () <gameoverDelegate,replayDelegate,SKStoreProductViewControllerDelegate>
 {
     NSNumberFormatter *numFormatter; //Formatter for score
     NSInteger score;
@@ -39,6 +41,7 @@
     UIButton *soundButton;
     UIButton *musicButton;
     UIButton *rateButton;
+    UIButton *tutorial;
     UIView *settingBG;
     BOOL isSetting;
     BOOL musicOn;
@@ -166,49 +169,62 @@
     [settingBG addSubview:backButton];
     
     CGFloat xCord = 40;
-    CGFloat centerY = (self.view.frame.size.height - 45 ) /2 ;
     CGFloat yGap = 100;
-    CGFloat fontSize = 25;
+    CGFloat fontSize = 30;
+    
+    CGFloat centerY = (self.view.frame.size.height - 45*4 - (yGap-45)*3)/2 ;
+
     // Sound
-    soundButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY-yGap, 45, 45)];
+    soundButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY, 45, 45)];
     [soundButton setImage:[UIImage imageNamed:@"soundOn90.png"] forState:UIControlStateNormal];
     [soundButton addTarget:self action:@selector(turnSound) forControlEvents:UIControlEventTouchDown];
     [settingBG addSubview:soundButton];
     
-    CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+75, centerY-yGap, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY, 90, 45) fontName:@"Arial" fontSize:fontSize];
     soundLabel.text = @"Sound";
     soundLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:soundLabel];
     
-    soundOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+20, centerY-yGap, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    soundOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY, 90, 45) fontName:@"Arial" fontSize:25];
     [self setSoundOnLabel];
     [settingBG addSubview:soundOnLabel];
     
     // Music
-    musicButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY, 45, 45)];
+    musicButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap, 45, 45)];
     [musicButton setImage:[UIImage imageNamed:@"musicOn90.png"] forState:UIControlStateNormal];
     [musicButton addTarget:self action:@selector(turnMusic) forControlEvents:UIControlEventTouchDown];
     [settingBG addSubview:musicButton];
     
-    CustomLabel *musicLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+75, centerY, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    CustomLabel *musicLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap, 90, 45) fontName:@"Arial" fontSize:fontSize];
     musicLabel.text = @"Music";
     musicLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:musicLabel];
     
-    musicOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+20, centerY, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    musicOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY+yGap, 90, 45) fontName:@"Arial" fontSize:25];
     [self setMusicOnLabel];
     [settingBG addSubview:musicOnLabel];
     
     // Rating
-    rateButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap, 45, 45)];
+    rateButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap*2, 45, 45)];
     [rateButton setImage:[UIImage imageNamed:@"rating90.png"] forState:UIControlStateNormal];
-    [rateButton addTarget:self action:@selector(turnSound) forControlEvents:UIControlEventTouchDown];
+    [rateButton addTarget:self action:@selector(rateThisApp) forControlEvents:UIControlEventTouchDown];
     [settingBG addSubview:rateButton];
     
-    CustomLabel *ratingLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+75, centerY+yGap, 120, 45) fontName:@"Arial" fontSize:fontSize];
+    CustomLabel *ratingLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*2, 120, 45) fontName:@"Arial" fontSize:fontSize];
     ratingLabel.text = @"Rate Me";
     ratingLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:ratingLabel];
+    
+    // Tutorial
+    tutorial = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap*3, 45, 45)];
+    [tutorial setImage:[UIImage imageNamed:@"tutorial90.png"] forState:UIControlStateNormal];
+    [tutorial addTarget:self action:@selector(rateThisApp) forControlEvents:UIControlEventTouchDown];
+    [settingBG addSubview:tutorial];
+    
+    CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*3, 120, 45) fontName:@"Arial" fontSize:fontSize];
+    tutorialLabel.text = @"Tutorial";
+    tutorialLabel.textAlignment = NSTextAlignmentLeft;
+    [settingBG addSubview:tutorialLabel];
 }
 
 -(void)settings:(UIButton *)button
@@ -492,6 +508,30 @@
     }];
 }
 
+-(void)rateThisApp
+{
+    if ([self checkInternetConnection]) {
+        
+        SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
+        storeController.delegate = self;
+        
+        NSDictionary *productParameters = @{ SKStoreProductParameterITunesItemIdentifier :@"853506017"};
+        
+        [storeController loadProductWithParameters:productParameters completionBlock:^(BOOL result, NSError *error) {
+            if (result) {
+                
+                [self presentViewController:storeController animated:YES completion:nil];
+                
+            }
+        }];
+    }
+}
+
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
+{
+    [viewController dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - Memory management
 
 - (void)didReceiveMemoryWarning
@@ -503,6 +543,22 @@
 - (BOOL)prefersStatusBarHidden
 {
     return YES;
+}
+
+- (BOOL)checkInternetConnection
+{
+    Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
+    if (networkStatus == NotReachable) {
+        UIAlertView *noInternetAlert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"No Internet Connection", nil)
+                                                                 message:NSLocalizedString(@"Check your internet connection and try again",nil)
+                                                                delegate:self cancelButtonTitle:NSLocalizedString(@"Close",nil)
+                                                       otherButtonTitles:nil, nil];
+        [noInternetAlert show];
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 @end

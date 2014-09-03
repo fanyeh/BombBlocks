@@ -334,13 +334,13 @@
     CGAffineTransform t2 = CGAffineTransformScale(t, 1.2, 1.2);
     buttonView.transform = CGAffineTransformScale(t, 0.5, 0.5);
     
-    [UIView animateWithDuration:0.1 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         
         buttonView.transform = t2;
         
     } completion:^(BOOL finished) {
         
-        [UIView animateWithDuration:0.10 animations:^{
+        [UIView animateWithDuration:0.1 animations:^{
             
             buttonView.transform = t;
             
