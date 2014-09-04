@@ -35,7 +35,7 @@
     [[GCHelper sharedInstance] authenticateLocalUser:menuController];
     
    // NSString* path = [[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"];
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"goodbye-dream4" ofType:@"mp3"];
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"];
 
     NSURL* file = [NSURL URLWithString:path];
     _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:file error:nil];
@@ -54,8 +54,8 @@
         
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"music"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"sound"];
-        //[_audioPlayer play];
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"tutorial"];
+        
     }
     
     return YES;
@@ -65,8 +65,8 @@
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-//    if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
-//        [_audioPlayer stop];
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
+        [_audioPlayer stop];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -78,14 +78,15 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
+        [_audioPlayer play];
 
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
-        [_audioPlayer play];
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

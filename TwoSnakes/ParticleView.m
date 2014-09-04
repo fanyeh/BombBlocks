@@ -81,6 +81,12 @@
         [self runAction:[SKAction playSoundFileNamed:@"combo.mp3" waitForCompletion:NO]];
 }
 
+- (void)playBreakSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"break.mp3" waitForCompletion:NO]];
+}
+
 - (void)playButtonSound
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])

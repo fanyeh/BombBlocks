@@ -36,6 +36,7 @@
 		4C5C1E1319B8AC73009BF2D3 /* flying-forward.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C5C1E0E19B8AC73009BF2D3 /* flying-forward.mp3 */; };
 		4C5C1E1419B8AC73009BF2D3 /* cool-rain.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C5C1E0F19B8AC73009BF2D3 /* cool-rain.mp3 */; };
 		4C5C1E1819B8AF89009BF2D3 /* introMove.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C5C1E1719B8AF89009BF2D3 /* introMove.mp3 */; };
+		4C5C1E1A19B8B928009BF2D3 /* break.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C5C1E1919B8B928009BF2D3 /* break.mp3 */; };
 		4C6C2BC319B20EBD00ABE726 /* explodeHorizontal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6C2BC019B20EBD00ABE726 /* explodeHorizontal@2x.png */; };
 		4C6C2BC419B20EBD00ABE726 /* explodeVertical@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6C2BC119B20EBD00ABE726 /* explodeVertical@2x.png */; };
 		4C6C2BC519B20EBD00ABE726 /* squareExplode@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6C2BC219B20EBD00ABE726 /* squareExplode@2x.png */; };
@@ -175,6 +176,7 @@
 		4C5C1E0E19B8AC73009BF2D3 /* flying-forward.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "flying-forward.mp3"; sourceTree = "<group>"; };
 		4C5C1E0F19B8AC73009BF2D3 /* cool-rain.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "cool-rain.mp3"; sourceTree = "<group>"; };
 		4C5C1E1719B8AF89009BF2D3 /* introMove.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = introMove.mp3; sourceTree = "<group>"; };
+		4C5C1E1919B8B928009BF2D3 /* break.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = break.mp3; sourceTree = "<group>"; };
 		4C6C2BC019B20EBD00ABE726 /* explodeHorizontal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "explodeHorizontal@2x.png"; sourceTree = "<group>"; };
 		4C6C2BC119B20EBD00ABE726 /* explodeVertical@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "explodeVertical@2x.png"; sourceTree = "<group>"; };
 		4C6C2BC219B20EBD00ABE726 /* squareExplode@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "squareExplode@2x.png"; sourceTree = "<group>"; };
@@ -381,6 +383,7 @@
 		4C5C1E1619B8AD60009BF2D3 /* Effect */ = {
 			isa = PBXGroup;
 			children = (
+				4C5C1E1919B8B928009BF2D3 /* break.mp3 */,
 				4C5C1E1719B8AF89009BF2D3 /* introMove.mp3 */,
 				4C5C1E0319B8A91A009BF2D3 /* explode.mp3 */,
 				4C724D8919B6DA7E003DA879 /* gameover.wav */,
@@ -779,6 +782,7 @@
 				4CA469F7199B9E4600ED0AB8 /* go_red@2x.png in Resources */,
 				4C2866E019986F52009651B4 /* green@2x.png in Resources */,
 				4C5C1E1419B8AC73009BF2D3 /* cool-rain.mp3 in Resources */,
+				4C5C1E1A19B8B928009BF2D3 /* break.mp3 in Resources */,
 				4C5C1DF619B83F56009BF2D3 /* tutorialCreateBomb160@2x.png in Resources */,
 				4CA469F0199B9C4700ED0AB8 /* Background2@2x.png in Resources */,
 				4C50EEA119A1DBF300C5DA41 /* bomb_blue@2x.png in Resources */,

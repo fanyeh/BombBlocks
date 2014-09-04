@@ -10,6 +10,7 @@
 #import "ClassicGameController.h"
 #import "ParticleView.h"
 #import "CustomLabel.h"
+#import "MKAppDelegate.h"
 
 @interface MenuController ()
 {
@@ -158,7 +159,6 @@
     
         _yellowBomb.alpha = 1;
         
-        [particleView playComboSound];
         [UIView animateWithDuration:0.3
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseInOut
@@ -180,6 +180,8 @@
                                  _blueBody2.hidden = YES;
                                  _blueBomb.hidden = YES;
                                  _yellowBody.hidden = YES;
+
+                                 [particleView playBreakSound];
 
                                  [self vExplosion];
                                  [self explodeBody:_blueBody1 type:kAssetTypeBlue];
@@ -328,6 +330,12 @@
                 
                 launchBomb.transform = CGAffineTransformRotate(launchBomb.transform, M_PI_4/2);
                 
+                if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
+                    
+                    MKAppDelegate  *appDelegate = [[UIApplication sharedApplication] delegate];
+                    [appDelegate.audioPlayer play];
+                }
+
                 [self playButtonAnimation:playButtonArray];
                 
             }];
@@ -361,7 +369,6 @@
                 
                 [self playButtonAnimation:playButtonArray];
             }
-            
         }];
     }];
 }

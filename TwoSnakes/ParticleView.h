@@ -20,4 +20,6 @@
 - (void)playGameoverSound;
 - (void)explodeSound;
 - (void)explodeSquareSound;
+- (void)playBreakSound;
+
 @end
