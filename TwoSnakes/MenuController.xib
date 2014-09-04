@@ -28,7 +28,7 @@
                     <rect key="frame" x="200" y="116" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="blue_2.png" id="oGE-R6-x3l">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="blue.png" id="oGE-R6-x3l">
                             <rect key="frame" x="5" y="5" width="52" height="52"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </imageView>
@@ -39,7 +39,7 @@
                     <rect key="frame" x="129" y="46" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="blue_2.png" id="uLV-nk-Vp7">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="blue.png" id="uLV-nk-Vp7">
                             <rect key="frame" x="5" y="5" width="52" height="52"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </imageView>
@@ -50,7 +50,7 @@
                     <rect key="frame" x="200" y="116" width="62" height="62"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="yellow_2.png" id="SOh-KK-d6P">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="yellow.png" id="SOh-KK-d6P">
                             <rect key="frame" x="5" y="5" width="52" height="52"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </imageView>
@@ -174,7 +174,6 @@
     </objects>
     <resources>
         <image name="blue.png" width="46" height="46"/>
-        <image name="blue_2.png" width="46" height="46"/>
         <image name="bomb_blue.png" width="45" height="45"/>
         <image name="bomb_yellow.png" width="45" height="45"/>
         <image name="explodeVertical.png" width="25" height="25"/>
@@ -182,6 +181,5 @@
         <image name="red.png" width="46" height="46"/>
         <image name="squareExplode.png" width="25" height="25"/>
         <image name="yellow.png" width="46" height="46"/>
-        <image name="yellow_2.png" width="46" height="46"/>
     </resources>
 </document>

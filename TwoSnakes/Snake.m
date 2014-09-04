@@ -20,11 +20,6 @@
     NSInteger totalBombs;
     BOOL isGameover;
     NSMutableArray *bombArray;
-    AVAudioPlayer *audioPlayer;
-    
-    AVAudioPlayer *audioPlayerSquare;
-
-
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -50,18 +45,6 @@
         [self newSnake];
         
         self.tag = 0;
-        
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"explode" ofType:@"mp3"];
-        NSURL* file = [NSURL URLWithString:path];
-        
-        audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:file error:nil];
-        [audioPlayer prepareToPlay];
-        
-        NSString* pathSquare = [[NSBundle mainBundle] pathForResource:@"explodeSquare" ofType:@"mp3"];
-        NSURL* fileSquare = [NSURL URLWithString:pathSquare];
-        
-        audioPlayerSquare = [[AVAudioPlayer alloc] initWithContentsOfURL:fileSquare error:nil];
-        [audioPlayerSquare prepareToPlay];
     }
     return self;
 }
@@ -413,8 +396,10 @@
             // Show scores
             for (SnakeNode *n in allPatterns) {
                 
-                if (n.hasBomb)
+                if (n.hasBomb) {
+                    [_delegate hideLastTutorial];
                     n.scoreAdder = 50;
+                }
                 else
                     n.scoreAdder = ([allPatterns count]-2) * 5 + 5;
                 
@@ -1098,22 +1083,20 @@
 
 -(void)explodeBombAnimation:(SnakeNode *)bomb
 {
-    [audioPlayer play];
     CGRect bodyFrame = bomb.frame;
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
     [_gamePad bombExplosionWithPosX:posX andPosY:posY bomb:bomb];
+    [_particleView explodeSound];
 }
 
 -(void)explodeBombSqaureAnimation:(SnakeNode *)bomb
 {
-    [audioPlayerSquare play];
-
     CGRect bodyFrame = bomb.frame;
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
-    
     [_gamePad bombExplosionSquare:posX andPosY:posY bomb:bomb];
+    [_particleView explodeSquareSound];
 }
 
 #pragma mark - Body Animations

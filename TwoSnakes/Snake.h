@@ -29,6 +29,7 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 
 -(void)showReplayView:(NSInteger)totalBombs;
 -(void)updateScore:(NSInteger)s;
+-(void)hideLastTutorial;
 
 @end
 

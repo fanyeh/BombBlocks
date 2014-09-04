@@ -85,17 +85,16 @@
     gamecenterButton.layer.cornerRadius = socialButtonHeight/2;
     [gamecenterButton addTarget:self action:@selector(showGameCenter) forControlEvents:UIControlEventTouchDown];
     
-    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 110, pauseLabelWidth, 35) fontName:@"GeezaPro-Bold" fontSize:35];
+    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 120, pauseLabelWidth, 35) fontName:@"GeezaPro-Bold" fontSize:35];
     bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
-    CGFloat yoffset = 285;
+    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 185, pauseLabelWidth, 65) fontName:@"GeezaPro-Bold" fontSize:65];
+    
+    CGFloat yoffset = 295;
     CGFloat labelWidth = 90;
     CGFloat labelHeight = 25;
     CGFloat fontSize = 25;
-    
-    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 175, pauseLabelWidth, 65) fontName:@"GeezaPro-Bold" fontSize:65];
-    
-    
+        
     
     // Combo
     CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset,labelHeight,labelHeight)
@@ -196,11 +195,8 @@
 
 -(void)replayGame
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-        [_delegate replayGame];
-
-    }];
+    [_delegate replayGame];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Game center

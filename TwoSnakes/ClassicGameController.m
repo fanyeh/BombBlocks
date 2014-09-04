@@ -49,6 +49,12 @@
     MKAppDelegate *appDelegate;
     CustomLabel *soundOnLabel;
     CustomLabel *musicOnLabel;
+    UIView *tutorial1BG;
+    UIView *tutorial2BG;
+    UIView *tutorial3BG;
+    UIView *tutorial4BG;
+
+    NSInteger tutorialMode;
 }
 @end
 
@@ -98,7 +104,7 @@
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 40 , 250, 65) fontName:@"GeezaPro-Bold" fontSize:65];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 30 , 250, 65) fontName:@"GeezaPro-Bold" fontSize:65];
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
@@ -154,6 +160,10 @@
         [appDelegate.audioPlayer play];
     
     [self settingPage];
+    
+    tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
+    if (tutorialMode == 1)
+        [self showTutorial1];
 }
 
 - (void)settingPage
@@ -218,7 +228,7 @@
     // Tutorial
     tutorial = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap*3, 45, 45)];
     [tutorial setImage:[UIImage imageNamed:@"tutorial90.png"] forState:UIControlStateNormal];
-    [tutorial addTarget:self action:@selector(rateThisApp) forControlEvents:UIControlEventTouchDown];
+    [tutorial addTarget:self action:@selector(startTutorial) forControlEvents:UIControlEventTouchDown];
     [settingBG addSubview:tutorial];
     
     CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*3, 120, 45) fontName:@"Arial" fontSize:fontSize];
@@ -309,7 +319,6 @@
     }
 }
 
-
 #pragma mark - Game Over
 
 -(void)gameOver
@@ -323,7 +332,12 @@
 -(void)swipeDirection:(UISwipeGestureRecognizer *)sender
 {
     if (gamePad.userInteractionEnabled) {
-                
+        
+        if (tutorialMode==1) {
+
+            [self showTutorial2];
+        }
+        
         SnakeNode *head = [snake.snakeBody firstObject];
         [head.layer removeAllAnimations];
         
@@ -348,12 +362,21 @@
         [snake moveAllNodesBySwipe:dir complete:^{
             
             if (snake.combos == 0 ) {
+                
                 [snake createBody:^ {
                     [self actionsAfterMove];
                 }];
-            } else
+                
+            } else {
+                
+                if (tutorialMode==2) {
+                    
+                    [self showTutorial3];
+                }
+                
                 [self actionsAfterMove];
-              
+
+            }
         }];
     }
 }
@@ -366,6 +389,9 @@
 
     // Create Bomb
     if (combosToCreateBomb > 2) {
+        
+        if (tutorialMode==3)
+            [self showTutorial4];
         
         combosToCreateBomb = 0;
         
@@ -530,6 +556,162 @@
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
 {
     [viewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Tutorial
+
+-(void)startTutorial
+{
+    [self replayGame];
+    [self settings:tutorial];
+    tutorialMode = 1;
+    [self showTutorial1];
+}
+
+ -(void)showTutorial1
+{
+    tutorial1BG = [[UIView alloc]initWithFrame:CGRectMake(0, -130, 320, 130)];
+    tutorial1BG.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:tutorial1BG];
+    
+    scoreLabel.hidden = YES;
+    settingButton.hidden = YES;
+    
+    // 1. Swipe
+    CustomLabel *swipeText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontName:@"arial" fontSize:30];
+    swipeText.text = @"Swipe to move";
+    [tutorial1BG addSubview:swipeText];
+    
+    UIImageView *swipe = [[UIImageView alloc]initWithFrame:CGRectMake((320-70)/2, 50, 70, 70)];
+    swipe.image = [UIImage imageNamed:@"tutorialSwipe140.png"];
+    [tutorial1BG addSubview:swipe];
+    
+    [self showTutorial:tutorial1BG];
+}
+
+-(void)showTutorial2
+{
+    tutorialMode++;
+    [self hideTutorial:tutorial1BG complete:^{
+        
+        tutorial2BG = [[UIView alloc]initWithFrame:CGRectMake(0, -130, 320, 130)];
+        tutorial2BG.backgroundColor = [UIColor clearColor];
+        [self.view addSubview:tutorial2BG];
+        
+        // 2. Combo
+        CustomLabel *tutComboText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontName:@"arial" fontSize:30];
+        tutComboText.text = @"Move for combo";
+        [tutorial2BG addSubview:tutComboText];
+        
+        UIImageView *tutorialCombo = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50, 320, 70)];
+        tutorialCombo.image = [UIImage imageNamed:@"tutorialCombo140.png"];
+        [tutorial2BG addSubview:tutorialCombo];
+        
+        [self showTutorial:tutorial2BG];
+
+    }];
+}
+
+-(void)showTutorial3
+{
+    tutorialMode++;
+    [self hideTutorial:tutorial2BG complete:^{
+        
+        tutorial3BG = [[UIView alloc]initWithFrame:CGRectMake(0, -130, 320, 130)];
+        tutorial3BG.backgroundColor = [UIColor clearColor];
+        [self.view addSubview:tutorial3BG];
+        
+        // 3. Bomb
+        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontName:@"arial" fontSize:30];
+        tutBombText.text = @"More combo more bomb";
+        [tutorial3BG addSubview:tutBombText];
+        
+        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50, 320, 70)];
+        tutorialBomb.image = [UIImage imageNamed:@"tutorialCreateBomb140.png"];
+        [tutorial3BG addSubview:tutorialBomb];
+        
+        [self showTutorial:tutorial3BG];
+        
+    }];
+}
+
+-(void)showTutorial4
+{
+    tutorialMode++;
+    [self hideTutorial:tutorial3BG complete:^{
+        
+        tutorial4BG = [[UIView alloc]initWithFrame:CGRectMake(0, -130, 320, 130)];
+        tutorial4BG.backgroundColor = [UIColor clearColor];
+        [self.view addSubview:tutorial4BG];
+        
+        // 3. Bomb
+        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontName:@"arial" fontSize:30];
+        tutBombText.text = @"Trigger bomb by combo";
+        [tutorial4BG addSubview:tutBombText];
+        
+        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50, 320, 70)];
+        tutorialBomb.image = [UIImage imageNamed:@"tutorialBomb140.png"];
+        [tutorial4BG addSubview:tutorialBomb];
+        
+        [self showTutorial:tutorial4BG];
+        
+    }];
+}
+
+-(void)hideTutorial:(UIView *)tutorialView  complete:(void(^)(void))completeBlock
+{
+    [UIView animateWithDuration:0.5 animations:^{
+        
+        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, -130);
+        
+    }completion:^(BOOL finished) {
+
+        [tutorialView removeFromSuperview];
+        completeBlock();
+    } ];
+}
+
+-(void)showTutorial:(UIView *)tutorialView
+{
+    [UIView animateWithDuration:0.5 animations:^{
+        
+        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, 130);
+        
+    }];
+}
+
+- (void)hideLastTutorial
+{
+    if (tutorialMode == 4) {
+        
+        [self hideTutorial:tutorial4BG complete:^{
+            
+            scoreLabel.hidden = NO;
+            settingButton.hidden = NO;
+            
+            CGAffineTransform t =  scoreLabel.transform;
+            CGAffineTransform t1 =  settingButton.transform;
+            
+            scoreLabel.transform = CGAffineTransformScale(t1, 0.1, 0.1);
+            settingButton.transform = CGAffineTransformScale(t1, 0.1, 0.1);
+            
+            [UIView animateWithDuration:0.2 animations:^{
+                
+                scoreLabel.transform = CGAffineTransformScale(t1, 1.2, 1.2);
+                settingButton.transform = CGAffineTransformScale(t1, 1.2, 1.2);
+                
+            }completion:^(BOOL finished) {
+                
+                scoreLabel.transform = t;
+                settingButton.transform = t1;
+                tutorialMode = 0;
+                
+                [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"tutorial"];
+
+            }];
+            
+        }];
+    }
 }
 
 #pragma mark - Memory management

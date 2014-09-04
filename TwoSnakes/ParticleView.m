@@ -69,6 +69,12 @@
             [self runAction:[SKAction playSoundFileNamed:@"move.mp3" waitForCompletion:NO]];
 }
 
+- (void)introMoveSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"introMove.mp3" waitForCompletion:NO]];
+}
+
 - (void)playComboSound
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
@@ -85,6 +91,18 @@
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
         [self runAction:[SKAction playSoundFileNamed:@"gameover.wav" waitForCompletion:NO]];
+}
+
+- (void)explodeSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"explode.mp3" waitForCompletion:NO]];
+}
+
+- (void)explodeSquareSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"explodeSquare.mp3" waitForCompletion:NO]];
 }
 
 @end

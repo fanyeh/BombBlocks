@@ -97,6 +97,7 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [particleView introMoveSound];
     [UIView animateWithDuration:1.0 animations:^{
         
         _blueBody2.frame = CGRectOffset(_blueBody2.frame, 0, 70);
@@ -113,6 +114,7 @@
             
         } completion:^(BOOL finished) {
             
+            [particleView introMoveSound];
             [UIView animateWithDuration:1.0 animations:^{
                 
                 _blueBody2.frame = CGRectOffset(_blueBody2.frame, -71, 0);
@@ -140,6 +142,9 @@
 
 - (void)setCombo
 {
+    
+    [particleView introMoveSound];
+
     [UIView animateWithDuration:1.0 animations:^{
         
         _blueBody1.frame = CGRectOffset(_blueBody1.frame, 0, 69);
@@ -153,6 +158,7 @@
     
         _yellowBomb.alpha = 1;
         
+        [particleView playComboSound];
         [UIView animateWithDuration:0.3
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseInOut
@@ -205,6 +211,8 @@
     beamView1.alpha = 0.8;
     beamView2.alpha = 0.8;
 
+    [particleView explodeSound];
+
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         
         beamView1.frame = CGRectMake(posX-1/2,posY-1/2,1,-350);
@@ -241,6 +249,7 @@
     beamView.transform = CGAffineTransformScale(t, 0.3, 0.3);
     
     _yellowBomb.hidden = YES;
+    [particleView explodeSquareSound];
     [self explodeBody:_yellowBomb type:kAssetTypeYellow];
     
     [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
