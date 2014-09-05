@@ -21,7 +21,7 @@
     return self;
 }
 
-- (id)initWithFrame:(CGRect)frame fontName:(NSString *)fontname fontSize:(CGFloat)fontSize
+- (id)initWithFrame:(CGRect)frame fontSize:(CGFloat)fontSize
 {
     self = [self initWithFrame:frame];
     if (self) {

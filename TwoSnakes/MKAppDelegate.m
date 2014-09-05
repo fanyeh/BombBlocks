@@ -33,11 +33,9 @@
     [self.window makeKeyAndVisible];
     // Connect to game center
     [[GCHelper sharedInstance] authenticateLocalUser:menuController];
-    
-   // NSString* path = [[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"];
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"];
 
-    NSURL* file = [NSURL URLWithString:path];
+    // Intro music
+    NSURL* file = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
     _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:file error:nil];
     _audioPlayer.numberOfLoops = -1;
     [_audioPlayer prepareToPlay];
@@ -55,7 +53,6 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"music"];
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"sound"];
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"tutorial"];
-        
     }
     
     return YES;
@@ -66,7 +63,7 @@
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
-        [_audioPlayer stop];
+        [_audioPlayer pause];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application

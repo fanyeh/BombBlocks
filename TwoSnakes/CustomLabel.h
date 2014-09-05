@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface CustomLabel : UILabel
-- (id)initWithFrame:(CGRect)frame fontName:(NSString *)fontname fontSize:(CGFloat)fontSize;
+- (id)initWithFrame:(CGRect)frame fontSize:(CGFloat)fontSize;
 
 @end

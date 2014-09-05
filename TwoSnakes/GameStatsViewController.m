@@ -11,6 +11,7 @@
 #import "SocialShare.h"
 #import "GADInterstitial.h"
 #import "Chartboost.h"
+#import "MKAppDelegate.h"
 
 @interface GameStatsViewController () <ChartboostDelegate,GADInterstitialDelegate>
 {
@@ -21,6 +22,7 @@
     SocialShare *socialShare;
     GADInterstitial *interstitialAd;
     NSNumberFormatter *numFormatter; //Formatter for score
+    MKAppDelegate *appDelegate;
 }
 @end
 
@@ -85,10 +87,10 @@
     gamecenterButton.layer.cornerRadius = socialButtonHeight/2;
     [gamecenterButton addTarget:self action:@selector(showGameCenter) forControlEvents:UIControlEventTouchDown];
     
-    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 120, pauseLabelWidth, 35) fontName:@"GeezaPro-Bold" fontSize:35];
+    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 120, pauseLabelWidth, 35) fontSize:35];
     bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
-    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 185, pauseLabelWidth, 65) fontName:@"GeezaPro-Bold" fontSize:65];
+    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 185, pauseLabelWidth, 65) fontSize:65];
     
     CGFloat yoffset = 295;
     CGFloat labelWidth = 90;
@@ -98,34 +100,34 @@
     
     // Combo
     CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset,labelHeight,labelHeight)
-                                                        fontName:@"GeezaPro-Bold"
+                                
                                                         fontSize:fontSize];
     comboXLabel.text = @"x";
     
     CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset,labelWidth,labelHeight)
-                                                       fontName:@"GeezaPro-Bold"
+                               
                                                        fontSize:fontSize];
     comboLabel.text = @"Combo";
     
     
     comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset,labelWidth,labelHeight)
-                                        fontName:@"GeezaPro-Bold"
+                
                                         fontSize:fontSize];
     
     
     // Bomb
     CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+60,labelHeight,labelHeight)
-                                                       fontName:@"GeezaPro-Bold"
+                               
                                                        fontSize:fontSize];
     bombXLabel.text = @"x";
     
     CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+60,labelWidth,labelHeight)
-                                                   fontName:@"GeezaPro-Bold"
+                           
                                                    fontSize:fontSize];
     bLabel.text = @"Bomb";
     
     bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+60,labelWidth,labelHeight)
-                                         fontName:@"GeezaPro-Bold"
+                 
                                          fontSize:fontSize];
     
     UIImageView *replayView = [[UIImageView alloc]initWithFrame:self.view.frame];
@@ -162,6 +164,47 @@
     [replayBg addGestureRecognizer:replayTap];
     
     [self showReplayView];
+    
+    [self showChartboost];
+    
+    appDelegate = [[UIApplication sharedApplication] delegate];
+
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
+
+        [self doVolumeFade];
+    }
+}
+
+-(void)doVolumeFade
+{
+    if (appDelegate.audioPlayer.volume > 0.1) {
+        
+        appDelegate.audioPlayer.volume -=  0.1;
+        [self performSelector:@selector(doVolumeFade) withObject:nil afterDelay:0.2];
+        
+    } else {
+        // Stop and get the sound ready for playing again
+        [appDelegate.audioPlayer stop];
+        //appDelegate.audioPlayer.currentTime = 0;
+        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]] error:nil];
+        appDelegate.audioPlayer.numberOfLoops = -1;
+        [appDelegate.audioPlayer prepareToPlay];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
+            [appDelegate.audioPlayer play];
+            appDelegate.audioPlayer.volume = 0;
+            [self volumeFadeIn];
+        }
+    }
+}
+
+- (void)volumeFadeIn
+{
+    if (appDelegate.audioPlayer.volume < 1) {
+        
+        appDelegate.audioPlayer.volume +=  0.1;
+        [self performSelector:@selector(volumeFadeIn) withObject:nil afterDelay:0.2];
+    }
 }
 
 -(void)showReplayView

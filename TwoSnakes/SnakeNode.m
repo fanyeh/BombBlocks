@@ -45,7 +45,7 @@
         _nodeImageView = [[UIImageView alloc]initWithFrame:imageViewRect];
         [self addSubview:_nodeImageView];
         
-        timeLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontName:@"GeezaPro-Bold" fontSize:17];
+        timeLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontSize:17];
         timeLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
         [self addSubview:timeLabel];
         timeLabel.alpha = 0;
@@ -79,7 +79,7 @@
     
     _nodeImageView = [[UIImageView alloc]initWithFrame:imageViewRect];
     
-    timeLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontName:@"GeezaPro-Bold" fontSize:17];
+    timeLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontSize:17];
     timeLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
     [self addSubview:timeLabel];
     timeLabel.alpha = 0;

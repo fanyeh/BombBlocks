@@ -55,6 +55,7 @@
     UIView *tutorial4BG;
 
     NSInteger tutorialMode;
+    
 }
 @end
 
@@ -104,7 +105,7 @@
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 30 , 250, 65) fontName:@"GeezaPro-Bold" fontSize:65];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 30 , 250, 65) fontSize:65];
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
@@ -122,7 +123,7 @@
     [snake updateNextNode:nextNode animation:YES];
     [self.view addSubview:nextNode];
     
-    nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(120, self.view.frame.size.height - 50, 80, 15) fontName:@"GeezaPro-Bold" fontSize:15];
+    nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(120, self.view.frame.size.height - 50, 80, 15) fontSize:15];
     nextLabel.text = @"Next";
     nextLabel.textColor = [UIColor whiteColor];
     [self.view addSubview:nextLabel];
@@ -190,12 +191,12 @@
     [soundButton addTarget:self action:@selector(turnSound) forControlEvents:UIControlEventTouchDown];
     [settingBG addSubview:soundButton];
     
-    CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY, 90, 45) fontSize:fontSize];
     soundLabel.text = @"Sound";
     soundLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:soundLabel];
     
-    soundOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY, 90, 45) fontName:@"Arial" fontSize:25];
+    soundOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY, 90, 45) fontSize:25];
     [self setSoundOnLabel];
     [settingBG addSubview:soundOnLabel];
     
@@ -205,12 +206,12 @@
     [musicButton addTarget:self action:@selector(turnMusic) forControlEvents:UIControlEventTouchDown];
     [settingBG addSubview:musicButton];
     
-    CustomLabel *musicLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap, 90, 45) fontName:@"Arial" fontSize:fontSize];
+    CustomLabel *musicLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap, 90, 45) fontSize:fontSize];
     musicLabel.text = @"Music";
     musicLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:musicLabel];
     
-    musicOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY+yGap, 90, 45) fontName:@"Arial" fontSize:25];
+    musicOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY+yGap, 90, 45) fontSize:25];
     [self setMusicOnLabel];
     [settingBG addSubview:musicOnLabel];
     
@@ -220,7 +221,7 @@
     [rateButton addTarget:self action:@selector(rateThisApp) forControlEvents:UIControlEventTouchDown];
     [settingBG addSubview:rateButton];
     
-    CustomLabel *ratingLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*2, 120, 45) fontName:@"Arial" fontSize:fontSize];
+    CustomLabel *ratingLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*2, 120, 45) fontSize:fontSize];
     ratingLabel.text = @"Rate Me";
     ratingLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:ratingLabel];
@@ -231,7 +232,7 @@
     [tutorial addTarget:self action:@selector(startTutorial) forControlEvents:UIControlEventTouchDown];
     [settingBG addSubview:tutorial];
     
-    CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*3, 120, 45) fontName:@"Arial" fontSize:fontSize];
+    CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*3, 120, 45) fontSize:fontSize];
     tutorialLabel.text = @"Tutorial";
     tutorialLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:tutorialLabel];
@@ -578,7 +579,7 @@
     settingButton.hidden = YES;
     
     // 1. Swipe
-    CustomLabel *swipeText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontName:@"arial" fontSize:30];
+    CustomLabel *swipeText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontSize:30];
     swipeText.text = @"Swipe to move";
     [tutorial1BG addSubview:swipeText];
     
@@ -599,7 +600,7 @@
         [self.view addSubview:tutorial2BG];
         
         // 2. Combo
-        CustomLabel *tutComboText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontName:@"arial" fontSize:30];
+        CustomLabel *tutComboText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontSize:30];
         tutComboText.text = @"Move for combo";
         [tutorial2BG addSubview:tutComboText];
         
@@ -622,7 +623,7 @@
         [self.view addSubview:tutorial3BG];
         
         // 3. Bomb
-        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontName:@"arial" fontSize:30];
+        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontSize:30];
         tutBombText.text = @"More combo more bomb";
         [tutorial3BG addSubview:tutBombText];
         
@@ -645,7 +646,7 @@
         [self.view addSubview:tutorial4BG];
         
         // 3. Bomb
-        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontName:@"arial" fontSize:30];
+        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontSize:30];
         tutBombText.text = @"Trigger bomb by combo";
         [tutorial4BG addSubview:tutBombText];
         

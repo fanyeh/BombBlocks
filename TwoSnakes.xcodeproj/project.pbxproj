@@ -45,6 +45,7 @@
 		4C6C2BCB19B20F5B00ABE726 /* grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6C2BCA19B20F5B00ABE726 /* grey@2x.png */; };
 		4C6C2BCF19B20FA800ABE726 /* particle_grey.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6C2BCE19B20FA800ABE726 /* particle_grey.png */; };
 		4C6C2BD719B2143200ABE726 /* go_grey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6C2BD619B2143200ABE726 /* go_grey@2x.png */; };
+		4C6F0C6D19B9572400CEC808 /* AVAudioPlayer+VolumeFade.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C6F0C6C19B9572400CEC808 /* AVAudioPlayer+VolumeFade.m */; };
 		4C70B6D3197F8C480024F9DF /* GreyParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6D2197F8C480024F9DF /* GreyParticle.sks */; };
 		4C70B6D5197F8C5D0024F9DF /* GreenParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C70B6D4197F8C5D0024F9DF /* GreenParticle.sks */; };
 		4C724D7719B6AF7D003DA879 /* musicOff90@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C724D7419B6AF7D003DA879 /* musicOff90@2x.png */; };
@@ -185,6 +186,8 @@
 		4C6C2BCA19B20F5B00ABE726 /* grey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grey@2x.png"; sourceTree = "<group>"; };
 		4C6C2BCE19B20FA800ABE726 /* particle_grey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particle_grey.png; sourceTree = "<group>"; };
 		4C6C2BD619B2143200ABE726 /* go_grey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_grey@2x.png"; sourceTree = "<group>"; };
+		4C6F0C6B19B9572400CEC808 /* AVAudioPlayer+VolumeFade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVAudioPlayer+VolumeFade.h"; sourceTree = "<group>"; };
+		4C6F0C6C19B9572400CEC808 /* AVAudioPlayer+VolumeFade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVAudioPlayer+VolumeFade.m"; sourceTree = "<group>"; };
 		4C70B6D2197F8C480024F9DF /* GreyParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GreyParticle.sks; sourceTree = "<group>"; };
 		4C70B6D4197F8C5D0024F9DF /* GreenParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GreenParticle.sks; sourceTree = "<group>"; };
 		4C724D7419B6AF7D003DA879 /* musicOff90@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "musicOff90@2x.png"; sourceTree = "<group>"; };
@@ -395,6 +398,35 @@
 			name = Effect;
 			sourceTree = "<group>";
 		};
+		4C6F0C6E19B9638700CEC808 /* Tutorial Image */ = {
+			isa = PBXGroup;
+			children = (
+				4C5C1DEB19B8054B009BF2D3 /* swipeGesture160@2x.png */,
+				4C5C1E0919B8AC10009BF2D3 /* tutorialCombo140@2x.png */,
+				4C5C1DFF19B84F21009BF2D3 /* tutorialBomb140@2x.png */,
+				4C5C1DFD19B84D4E009BF2D3 /* tutorialSwipe140@2x.png */,
+				4C5C1DF719B84C6B009BF2D3 /* tutorialCreateBomb140@2x.png */,
+				4C5C1DF519B83F56009BF2D3 /* tutorialCreateBomb160@2x.png */,
+				4C5C1DF119B8110B009BF2D3 /* tutorialBomb160@2x.png */,
+				4C5C1DEF19B80EFB009BF2D3 /* tutorialCombo160@2x.png */,
+			);
+			name = "Tutorial Image";
+			sourceTree = "<group>";
+		};
+		4C6F0C6F19B963A800CEC808 /* Setting Image */ = {
+			isa = PBXGroup;
+			children = (
+				4C5C1DE719B74FBE009BF2D3 /* tutorial90@2x.png */,
+				4C724D8419B6BC4B003DA879 /* back70@2x.png */,
+				4C724D7A19B6B3DD003DA879 /* rating90@2x.png */,
+				4C724D7B19B6B3DD003DA879 /* soundOn90@2x.png */,
+				4C724D7C19B6B3DD003DA879 /* musicOn90@2x.png */,
+				4C724D7419B6AF7D003DA879 /* musicOff90@2x.png */,
+				4C724D7519B6AF7D003DA879 /* soundOff90@2x.png */,
+			);
+			name = "Setting Image";
+			sourceTree = "<group>";
+		};
 		4C70B6D6197F8C650024F9DF /* Particles */ = {
 			isa = PBXGroup;
 			children = (
@@ -405,8 +437,10 @@
 				4CA0A9D91997C2A70020D1F9 /* RedParticle.sks */,
 				4CA0A9DD1997C2C00020D1F9 /* YellowParticle.sks */,
 				4CC2950919B358B000032D7A /* OrangeParticle.sks */,
+				4C6F0C6B19B9572400CEC808 /* AVAudioPlayer+VolumeFade.h */,
 			);
 			name = Particles;
+			path = TwoSnakes;
 			sourceTree = "<group>";
 		};
 		4C724D8819B6DA61003DA879 /* Sound */ = {
@@ -505,7 +539,7 @@
 		4CAA5DEB1929A0C800049F52 /* Game Scene */ = {
 			isa = PBXGroup;
 			children = (
-				4C70B6D6197F8C650024F9DF /* Particles */,
+				4C6F0C6C19B9572400CEC808 /* AVAudioPlayer+VolumeFade.m */,
 				4C7F13551911F36D00565A01 /* Snake.h */,
 				4C7F13561911F36D00565A01 /* Snake.m */,
 				4C78A07F192DDABB003F9ABE /* GameAsset.h */,
@@ -533,6 +567,7 @@
 				4CD7836919B614F500EFF33F /* GameStatsViewController.m */,
 			);
 			name = "Game Scene";
+			path = TwoSnakes;
 			sourceTree = "<group>";
 		};
 		4CAE112B19B55EA900D2608E /* Chartboost */ = {
@@ -554,26 +589,15 @@
 		4CB10898190FF6440085C747 = {
 			isa = PBXGroup;
 			children = (
-				4C5C1E0919B8AC10009BF2D3 /* tutorialCombo140@2x.png */,
-				4C5C1DFF19B84F21009BF2D3 /* tutorialBomb140@2x.png */,
-				4C5C1DFD19B84D4E009BF2D3 /* tutorialSwipe140@2x.png */,
-				4C5C1DF719B84C6B009BF2D3 /* tutorialCreateBomb140@2x.png */,
-				4C5C1DF519B83F56009BF2D3 /* tutorialCreateBomb160@2x.png */,
-				4C5C1DF119B8110B009BF2D3 /* tutorialBomb160@2x.png */,
-				4C5C1DEF19B80EFB009BF2D3 /* tutorialCombo160@2x.png */,
-				4C5C1DEB19B8054B009BF2D3 /* swipeGesture160@2x.png */,
-				4C5C1DE719B74FBE009BF2D3 /* tutorial90@2x.png */,
-				4C724D8419B6BC4B003DA879 /* back70@2x.png */,
-				4C724D7A19B6B3DD003DA879 /* rating90@2x.png */,
-				4C724D7B19B6B3DD003DA879 /* soundOn90@2x.png */,
-				4C724D7C19B6B3DD003DA879 /* musicOn90@2x.png */,
-				4C724D7419B6AF7D003DA879 /* musicOff90@2x.png */,
-				4C724D7519B6AF7D003DA879 /* soundOff90@2x.png */,
+				4CB108AC190FF6440085C747 /* TwoSnakes */,
+				4C6F0C6F19B963A800CEC808 /* Setting Image */,
+				4C6F0C6E19B9638700CEC808 /* Tutorial Image */,
 				4C724D8819B6DA61003DA879 /* Sound */,
 				4C50EE9C19A1DBD700C5DA41 /* Bomb Image */,
 				4CA0A9BF1997C1970020D1F9 /* Block Image */,
 				4CA0A9BE1997C1690020D1F9 /* Game Over Image */,
-				4CB108AC190FF6440085C747 /* TwoSnakes */,
+				4C70B6D6197F8C650024F9DF /* Particles */,
+				4CAA5DEB1929A0C800049F52 /* Game Scene */,
 				4CB108C9190FF6440085C747 /* TwoSnakesTests */,
 				4CB108A3190FF6440085C747 /* Frameworks */,
 				4CB108A2190FF6440085C747 /* Products */,
@@ -618,7 +642,6 @@
 			children = (
 				4CB108B5190FF6440085C747 /* MKAppDelegate.h */,
 				4CB108B6190FF6440085C747 /* MKAppDelegate.m */,
-				4CAA5DEB1929A0C800049F52 /* Game Scene */,
 				4CB108BB190FF6440085C747 /* Images.xcassets */,
 				4CB108B8190FF6440085C747 /* TwoSnakes.xcdatamodeld */,
 				4CB108AD190FF6440085C747 /* Supporting Files */,
@@ -867,6 +890,7 @@
 				4CD7836A19B614F500EFF33F /* GameStatsViewController.m in Sources */,
 				4CAA5DEA1929998000049F52 /* GamePad.m in Sources */,
 				4CA0E5E31977A405008B2E71 /* SnakeNode.m in Sources */,
+				4C6F0C6D19B9572400CEC808 /* AVAudioPlayer+VolumeFade.m in Sources */,
 				4C78A07A192DA14D003F9ABE /* ClassicGameController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -20,6 +20,7 @@
     CustomLabel *blockLabel;
     UIImageView *launchBomb;
     NSMutableArray *playButtonArray;
+    MKAppDelegate  *appDelegate;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *blueBomb;
@@ -68,12 +69,12 @@
     [self.view sendSubviewToBack:skView];
     
     CGFloat labelSize = 65;
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 568/2-labelSize-labelSize, 320, labelSize) fontName:nil fontSize:labelSize];
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 568/2-labelSize-labelSize, 320, labelSize) fontSize:labelSize];
     bombLabel.text = @"Bomb";
     bombLabel.hidden = YES;
     [self.view addSubview:bombLabel];
     
-    blockLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontName:nil fontSize:labelSize];
+    blockLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontSize:labelSize];
     blockLabel.frame = CGRectOffset(blockLabel.frame, 0, labelSize);
     blockLabel.text = @"Blocks";
     blockLabel.hidden= YES;
@@ -94,6 +95,8 @@
     
     playButtonArray = [[NSMutableArray alloc]init];
     [playButtonArray addObjectsFromArray:@[_pView,_lView,_aView,_yView]];
+    
+    appDelegate = [[UIApplication sharedApplication] delegate];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -332,8 +335,10 @@
                 
                 if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
                     
-                    MKAppDelegate  *appDelegate = [[UIApplication sharedApplication] delegate];
                     [appDelegate.audioPlayer play];
+                    appDelegate.audioPlayer.volume = 0;
+
+                    [self firstLauchMusicPlay];
                 }
 
                 [self playButtonAnimation:playButtonArray];
@@ -381,6 +386,16 @@
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y-bodyFrame.size.height/2;
     [particleView newExplosionWithPosX:posX andPosY:posY assetType:type];
+}
+
+- (void)firstLauchMusicPlay
+{
+    if (appDelegate.audioPlayer.volume < 1) {
+        
+        appDelegate.audioPlayer.volume +=  0.1;
+
+        [self performSelector:@selector(firstLauchMusicPlay) withObject:nil afterDelay:0.2];
+    }
 }
 
 #pragma mark - New Game

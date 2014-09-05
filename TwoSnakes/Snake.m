@@ -9,6 +9,8 @@
 #import "Snake.h"
 #import "GamePad.h"
 #import <AVFoundation/AVFoundation.h>
+#import "AVAudioPlayer+VolumeFade.h"
+#import "MKAppDelegate.h"
 
 @implementation Snake
 {
@@ -20,6 +22,8 @@
     NSInteger totalBombs;
     BOOL isGameover;
     NSMutableArray *bombArray;
+    NSURL *currentSongURL;
+    MKAppDelegate *appDelegate;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -37,13 +41,15 @@
     initNode = node;
     self = [super initWithFrame:headFrame gameAssetType:kAssetTypeBlue];
     if (self) {
+        
+        appDelegate = [[UIApplication sharedApplication] delegate];
         _gamePad = gamePad;
          chain = 2;
         _xOffset = (headFrame.size.width+2)/1;
         _yOffset = (headFrame.size.height+2)/1;
         _snakeBody = [[NSMutableArray alloc]init];
+        _reminder = 3;
         [self newSnake];
-        
         self.tag = 0;
     }
     return self;
@@ -65,6 +71,8 @@
     totalBombs = 0;
     _reminder = 3;
     NSInteger count = [_snakeBody count] - 1;
+    currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
+    [self doVolumeFade];
     
     for (int i = 0 ; i < count;i++ ) {
         SnakeNode *n = [_snakeBody lastObject];
@@ -200,28 +208,43 @@
     }];
 }
 
+-(void)levelChecker
+{
+    if (totalBombs == 200)
+        _reminder = 12;
+    else if (totalBombs == 150) {
+        _reminder = 11;
+        currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"cool-rain" ofType:@"mp3"]];
+        [self doVolumeFade];
+    }
+    else if (totalBombs == 110)
+        _reminder = 10;
+    else if (totalBombs == 80) {
+        _reminder = 9;
+        currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"cool-business-model" ofType:@"mp3"]];
+        [self doVolumeFade];
+    }
+    else if (totalBombs == 55)
+        _reminder = 8;
+    else if (totalBombs == 35) {
+        _reminder = 7;
+        currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"]];
+        [self doVolumeFade];
+    }
+    else if (totalBombs == 20)
+        _reminder = 6;
+    else if (totalBombs == 10) {
+        _reminder = 5;
+        currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"flying-forward" ofType:@"mp3"]];
+        [self doVolumeFade];
+    }
+    else if (totalBombs == 5) {
+        _reminder = 4;
+    }
+}
+
 -(void)updateNextNode:(SnakeNode *)node animation:(BOOL)animation
 {
-    if (totalBombs > 200)
-        _reminder = 12;
-    else if (totalBombs > 150)
-        _reminder = 11;
-    else if (totalBombs > 110)
-        _reminder = 10;
-    else if (totalBombs > 80)
-        _reminder = 9;
-    else if (totalBombs > 55)
-        _reminder = 8;
-    else if (totalBombs > 35)
-        _reminder = 7;
-    else if (totalBombs > 20)
-        _reminder = 6;
-    else if (totalBombs > 10)
-        _reminder = 5;
-    else if (totalBombs > 5)
-        _reminder = 4;
-    else
-        _reminder = 3;
     
     int randomAsset = arc4random() % _reminder;
     node.level = ceil(randomAsset / 4) + 1;
@@ -302,6 +325,38 @@
         [UIView animateWithDuration:0.3 animations:^{
             node.transform = t;
         }];
+    }
+}
+
+-(void)doVolumeFade
+{
+    if (appDelegate.audioPlayer.volume > 0.1) {
+        
+        appDelegate.audioPlayer.volume -=  0.05 ;
+        [self performSelector:@selector(doVolumeFade) withObject:nil afterDelay:0.2];
+        
+    } else {
+        // Stop and get the sound ready for playing again
+        [appDelegate.audioPlayer stop];
+        //appDelegate.audioPlayer.currentTime = 0;
+        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:currentSongURL error:nil];
+        appDelegate.audioPlayer.numberOfLoops = -1;
+        [appDelegate.audioPlayer prepareToPlay];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
+            [appDelegate.audioPlayer play];
+            appDelegate.audioPlayer.volume = 0;
+            [self volumeFadeIn];
+        }
+    }
+}
+
+- (void)volumeFadeIn
+{
+    if (appDelegate.audioPlayer.volume < 1) {
+        
+        appDelegate.audioPlayer.volume +=  0.05;
+        [self performSelector:@selector(volumeFadeIn) withObject:nil afterDelay:0.2];
     }
 }
 
@@ -458,6 +513,7 @@
         totalBombs++;
         [_delegate updateScore:bomb.scoreAdder];
         [bombArray removeObject:bomb];
+        [self levelChecker];
         [self explodeByBomb:bomb complete:completBlock];
     }
     else
