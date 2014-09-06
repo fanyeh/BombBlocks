@@ -18,8 +18,7 @@
     #import "Reachability.h"
 #endif
 
-#define kHighScoreLeaderboardId @"mk.twosnakes.highscores"
-#define kMaxChainComboLeaderboardId @"mk.twosnakes.maxchaincombo"
+#define kHighScoreLeaderboardId @"mk.bombboomblocks.highscores"
 
 
 //#define FontColor [UIColor colorWithWhite:0.231 alpha:1.000]

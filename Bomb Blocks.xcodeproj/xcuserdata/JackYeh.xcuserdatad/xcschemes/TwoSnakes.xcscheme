@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4CB108A0190FF6440085C747"
                BuildableName = "TwoSnakes.app"
-               BlueprintName = "TwoSnakes"
-               ReferencedContainer = "container:TwoSnakes.xcodeproj">
+               BlueprintName = "Bomb Blocks"
+               ReferencedContainer = "container:Bomb Blocks.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,8 +34,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4CB108C0190FF6440085C747"
                BuildableName = "TwoSnakesTests.xctest"
-               BlueprintName = "TwoSnakesTests"
-               ReferencedContainer = "container:TwoSnakes.xcodeproj">
+               BlueprintName = "Bomb BlocksTests"
+               ReferencedContainer = "container:Bomb Blocks.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -44,8 +44,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4CB108A0190FF6440085C747"
             BuildableName = "TwoSnakes.app"
-            BlueprintName = "TwoSnakes"
-            ReferencedContainer = "container:TwoSnakes.xcodeproj">
+            BlueprintName = "Bomb Blocks"
+            ReferencedContainer = "container:Bomb Blocks.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -63,8 +63,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4CB108A0190FF6440085C747"
             BuildableName = "TwoSnakes.app"
-            BlueprintName = "TwoSnakes"
-            ReferencedContainer = "container:TwoSnakes.xcodeproj">
+            BlueprintName = "Bomb Blocks"
+            ReferencedContainer = "container:Bomb Blocks.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -81,8 +81,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4CB108A0190FF6440085C747"
             BuildableName = "TwoSnakes.app"
-            BlueprintName = "TwoSnakes"
-            ReferencedContainer = "container:TwoSnakes.xcodeproj">
+            BlueprintName = "Bomb Blocks"
+            ReferencedContainer = "container:Bomb Blocks.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

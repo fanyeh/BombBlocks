@@ -271,22 +271,22 @@
 		4CAE114419B5AB5500D2608E /* explodeSquare.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = explodeSquare.mp3; sourceTree = "<group>"; };
 		4CAE114619B5B39F00D2608E /* combo.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = combo.mp3; sourceTree = "<group>"; };
 		4CAE114819B5B53C00D2608E /* move.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = move.mp3; sourceTree = "<group>"; };
-		4CB108A1190FF6440085C747 /* TwoSnakes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TwoSnakes.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CB108A1190FF6440085C747 /* Bomb Blocks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bomb Blocks.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB108A4190FF6440085C747 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4CB108A6190FF6440085C747 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		4CB108A8190FF6440085C747 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4CB108AA190FF6440085C747 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		4CB108AE190FF6440085C747 /* TwoSnakes-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwoSnakes-Info.plist"; sourceTree = "<group>"; };
+		4CB108AE190FF6440085C747 /* Bomb Blocks-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bomb Blocks-Info.plist"; sourceTree = "<group>"; };
 		4CB108B0190FF6440085C747 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4CB108B2190FF6440085C747 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		4CB108B4190FF6440085C747 /* TwoSnakes-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TwoSnakes-Prefix.pch"; sourceTree = "<group>"; };
+		4CB108B4190FF6440085C747 /* Bomb Blocks-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bomb Blocks-Prefix.pch"; sourceTree = "<group>"; };
 		4CB108B5190FF6440085C747 /* MKAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKAppDelegate.h; sourceTree = "<group>"; };
 		4CB108B6190FF6440085C747 /* MKAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKAppDelegate.m; sourceTree = "<group>"; };
 		4CB108B9190FF6440085C747 /* TwoSnakes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TwoSnakes.xcdatamodel; sourceTree = "<group>"; };
 		4CB108BB190FF6440085C747 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		4CB108C1190FF6440085C747 /* TwoSnakesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TwoSnakesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CB108C1190FF6440085C747 /* Bomb BlocksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bomb BlocksTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB108C2190FF6440085C747 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		4CB108CB190FF6440085C747 /* TwoSnakesTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TwoSnakesTests-Info.plist"; sourceTree = "<group>"; };
+		4CB108CB190FF6440085C747 /* Bomb BlocksTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bomb BlocksTests-Info.plist"; sourceTree = "<group>"; };
 		4CB108CD190FF6440085C747 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4CB108CF190FF6440085C747 /* TwoSnakesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TwoSnakesTests.m; sourceTree = "<group>"; };
 		4CC294F219B3111200032D7A /* twitter40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter40@2x.png"; sourceTree = "<group>"; };
@@ -589,7 +589,7 @@
 		4CB10898190FF6440085C747 = {
 			isa = PBXGroup;
 			children = (
-				4CB108AC190FF6440085C747 /* TwoSnakes */,
+				4CB108AC190FF6440085C747 /* Bomb Blocks */,
 				4C6F0C6F19B963A800CEC808 /* Setting Image */,
 				4C6F0C6E19B9638700CEC808 /* Tutorial Image */,
 				4C724D8819B6DA61003DA879 /* Sound */,
@@ -607,8 +607,8 @@
 		4CB108A2190FF6440085C747 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4CB108A1190FF6440085C747 /* TwoSnakes.app */,
-				4CB108C1190FF6440085C747 /* TwoSnakesTests.xctest */,
+				4CB108A1190FF6440085C747 /* Bomb Blocks.app */,
+				4CB108C1190FF6440085C747 /* Bomb BlocksTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -637,7 +637,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4CB108AC190FF6440085C747 /* TwoSnakes */ = {
+		4CB108AC190FF6440085C747 /* Bomb Blocks */ = {
 			isa = PBXGroup;
 			children = (
 				4CB108B5190FF6440085C747 /* MKAppDelegate.h */,
@@ -646,6 +646,7 @@
 				4CB108B8190FF6440085C747 /* TwoSnakes.xcdatamodeld */,
 				4CB108AD190FF6440085C747 /* Supporting Files */,
 			);
+			name = "Bomb Blocks";
 			path = TwoSnakes;
 			sourceTree = "<group>";
 		};
@@ -666,10 +667,10 @@
 				4C8541BD1946D82100810CE4 /* icon.png */,
 				4C8585B11925FF200096F75B /* Reachability.m */,
 				4C8585B21925FF200096F75B /* Reachability.h */,
-				4CB108AE190FF6440085C747 /* TwoSnakes-Info.plist */,
+				4CB108AE190FF6440085C747 /* Bomb Blocks-Info.plist */,
 				4CB108AF190FF6440085C747 /* InfoPlist.strings */,
 				4CB108B2190FF6440085C747 /* main.m */,
-				4CB108B4190FF6440085C747 /* TwoSnakes-Prefix.pch */,
+				4CB108B4190FF6440085C747 /* Bomb Blocks-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -686,7 +687,7 @@
 		4CB108CA190FF6440085C747 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4CB108CB190FF6440085C747 /* TwoSnakesTests-Info.plist */,
+				4CB108CB190FF6440085C747 /* Bomb BlocksTests-Info.plist */,
 				4CB108CC190FF6440085C747 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -695,9 +696,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4CB108A0190FF6440085C747 /* TwoSnakes */ = {
+		4CB108A0190FF6440085C747 /* Bomb Blocks */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4CB108D3190FF6450085C747 /* Build configuration list for PBXNativeTarget "TwoSnakes" */;
+			buildConfigurationList = 4CB108D3190FF6450085C747 /* Build configuration list for PBXNativeTarget "Bomb Blocks" */;
 			buildPhases = (
 				4CB1089D190FF6440085C747 /* Sources */,
 				4CB1089E190FF6440085C747 /* Frameworks */,
@@ -707,14 +708,14 @@
 			);
 			dependencies = (
 			);
-			name = TwoSnakes;
+			name = "Bomb Blocks";
 			productName = TwoSnakes;
-			productReference = 4CB108A1190FF6440085C747 /* TwoSnakes.app */;
+			productReference = 4CB108A1190FF6440085C747 /* Bomb Blocks.app */;
 			productType = "com.apple.product-type.application";
 		};
-		4CB108C0190FF6440085C747 /* TwoSnakesTests */ = {
+		4CB108C0190FF6440085C747 /* Bomb BlocksTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4CB108D6190FF6450085C747 /* Build configuration list for PBXNativeTarget "TwoSnakesTests" */;
+			buildConfigurationList = 4CB108D6190FF6450085C747 /* Build configuration list for PBXNativeTarget "Bomb BlocksTests" */;
 			buildPhases = (
 				4CB108BD190FF6440085C747 /* Sources */,
 				4CB108BE190FF6440085C747 /* Frameworks */,
@@ -725,9 +726,9 @@
 			dependencies = (
 				4CB108C8190FF6440085C747 /* PBXTargetDependency */,
 			);
-			name = TwoSnakesTests;
+			name = "Bomb BlocksTests";
 			productName = TwoSnakesTests;
-			productReference = 4CB108C1190FF6440085C747 /* TwoSnakesTests.xctest */;
+			productReference = 4CB108C1190FF6440085C747 /* Bomb BlocksTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -745,7 +746,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 4CB1089C190FF6440085C747 /* Build configuration list for PBXProject "TwoSnakes" */;
+			buildConfigurationList = 4CB1089C190FF6440085C747 /* Build configuration list for PBXProject "Bomb Blocks" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -757,8 +758,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4CB108A0190FF6440085C747 /* TwoSnakes */,
-				4CB108C0190FF6440085C747 /* TwoSnakesTests */,
+				4CB108A0190FF6440085C747 /* Bomb Blocks */,
+				4CB108C0190FF6440085C747 /* Bomb BlocksTests */,
 			);
 		};
 /* End PBXProject section */
@@ -908,7 +909,7 @@
 /* Begin PBXTargetDependency section */
 		4CB108C8190FF6440085C747 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 4CB108A0190FF6440085C747 /* TwoSnakes */;
+			target = 4CB108A0190FF6440085C747 /* Bomb Blocks */;
 			targetProxy = 4CB108C7190FF6440085C747 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1008,8 +1009,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "TwoSnakes/TwoSnakes-Prefix.pch";
-				INFOPLIST_FILE = "TwoSnakes/TwoSnakes-Info.plist";
+				GCC_PREFIX_HEADER = "TwoSnakes/Bomb Blocks-Prefix.pch";
+				INFOPLIST_FILE = "TwoSnakes/Bomb Blocks-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/TwoSnakes",
@@ -1026,8 +1027,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "TwoSnakes/TwoSnakes-Prefix.pch";
-				INFOPLIST_FILE = "TwoSnakes/TwoSnakes-Info.plist";
+				GCC_PREFIX_HEADER = "TwoSnakes/Bomb Blocks-Prefix.pch";
+				INFOPLIST_FILE = "TwoSnakes/Bomb Blocks-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/TwoSnakes",
@@ -1054,8 +1055,8 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "TwoSnakesTests/TwoSnakesTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				INFOPLIST_FILE = "TwoSnakesTests/Bomb BlocksTests-Info.plist";
+				PRODUCT_NAME = "Bomb BlocksTests";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -1072,8 +1073,8 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TwoSnakes/TwoSnakes-Prefix.pch";
-				INFOPLIST_FILE = "TwoSnakesTests/TwoSnakesTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				INFOPLIST_FILE = "TwoSnakesTests/Bomb BlocksTests-Info.plist";
+				PRODUCT_NAME = "Bomb BlocksTests";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -1082,7 +1083,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4CB1089C190FF6440085C747 /* Build configuration list for PBXProject "TwoSnakes" */ = {
+		4CB1089C190FF6440085C747 /* Build configuration list for PBXProject "Bomb Blocks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4CB108D1190FF6450085C747 /* Debug */,
@@ -1091,7 +1092,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4CB108D3190FF6450085C747 /* Build configuration list for PBXNativeTarget "TwoSnakes" */ = {
+		4CB108D3190FF6450085C747 /* Build configuration list for PBXNativeTarget "Bomb Blocks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4CB108D4190FF6450085C747 /* Debug */,
@@ -1100,7 +1101,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4CB108D6190FF6450085C747 /* Build configuration list for PBXNativeTarget "TwoSnakesTests" */ = {
+		4CB108D6190FF6450085C747 /* Build configuration list for PBXNativeTarget "Bomb BlocksTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4CB108D7190FF6450085C747 /* Debug */,
