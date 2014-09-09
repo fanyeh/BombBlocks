@@ -9,11 +9,13 @@
 #import "MKAppDelegate.h"
 #import "MenuController.h"
 #import "ClassicGameController.h"
+#import "GameStatsViewController.h"
 
 @implementation MKAppDelegate
 {
     MenuController *menuController;
     ClassicGameController *classicController;
+    GameStatsViewController *statsController;
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -27,6 +29,7 @@
     
     menuController = [[MenuController alloc]init];
     classicController = [[ClassicGameController alloc]init];
+    statsController = [[GameStatsViewController alloc]init];
     
     [self.window setRootViewController:menuController];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -35,7 +38,10 @@
     [[GCHelper sharedInstance] authenticateLocalUser:menuController];
 
     // Intro music
-    NSURL* file = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
+    NSURL *file  = [NSURL fileURLWithPath:[[NSBundle mainBundle]
+                            pathForResource:@"goodbye-dream"
+                            ofType:@"mp3"]];
+    
     _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:file error:nil];
     _audioPlayer.numberOfLoops = -1;
     [_audioPlayer prepareToPlay];

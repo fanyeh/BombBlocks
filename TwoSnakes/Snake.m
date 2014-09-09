@@ -11,6 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "AVAudioPlayer+VolumeFade.h"
 #import "MKAppDelegate.h"
+#import "CustomLabel.h"
 
 @implementation Snake
 {
@@ -71,7 +72,7 @@
     totalBombs = 0;
     _reminder = 3;
     NSInteger count = [_snakeBody count] - 1;
-    currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
+    currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
     [self doVolumeFade];
     
     for (int i = 0 ; i < count;i++ ) {
@@ -210,36 +211,51 @@
 
 -(void)levelChecker
 {
-    if (totalBombs == 200)
+    if (totalBombs == 200) {
         _reminder = 12;
+        [_delegate showLevel:_reminder-2];
+    }
     else if (totalBombs == 150) {
         _reminder = 11;
-        currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"cool-rain" ofType:@"mp3"]];
+        currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-rain" ofType:@"mp3"]];
         [self doVolumeFade];
     }
-    else if (totalBombs == 110)
+    else if (totalBombs == 110) {
         _reminder = 10;
+        [_delegate showLevel:_reminder-2];
+
+    }
     else if (totalBombs == 80) {
         _reminder = 9;
-        currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"cool-business-model" ofType:@"mp3"]];
+        currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-business-model" ofType:@"mp3"]];
         [self doVolumeFade];
     }
-    else if (totalBombs == 55)
+    else if (totalBombs == 55) {
+        [_delegate showLevel:_reminder-2];
         _reminder = 8;
+    }
     else if (totalBombs == 35) {
         _reminder = 7;
-        currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"]];
+        currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"]];
         [self doVolumeFade];
+        [_delegate showLevel:_reminder-2];
+
     }
-    else if (totalBombs == 20)
+    else if (totalBombs == 20) {
         _reminder = 6;
+        [_delegate showLevel:_reminder-2];
+
+    }
     else if (totalBombs == 10) {
         _reminder = 5;
-        currentSongURL = [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"flying-forward" ofType:@"mp3"]];
+        currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"flying-forward" ofType:@"mp3"]];
         [self doVolumeFade];
+        [_delegate showLevel:_reminder-2];
+
     }
     else if (totalBombs == 5) {
         _reminder = 4;
+        [_delegate showLevel:_reminder-2];
     }
 }
 
@@ -615,6 +631,8 @@
     }];
 }
 
+#pragma mark - Bomb Types
+
 -(void)explodeColor:(SnakeNode *)bomb complete:(void(^)(void))completBlock
 {
     NSMutableArray *removedNode = [[NSMutableArray alloc]init];
@@ -623,8 +641,8 @@
             if (node.assetType ==  bomb.assetType) {
                 [self showScoreLabel:node];
                 [removedNode addObject:node];
-                //[_gamePad showEmptyNodeBorder:node];
                 [self shrinkAnimation:node showExplode:NO];
+                [_particleView explodeColorSound];
             }
         }
     } completion:^(BOOL finished) {

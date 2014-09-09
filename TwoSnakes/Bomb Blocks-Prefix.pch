@@ -21,8 +21,7 @@
 #define kHighScoreLeaderboardId @"mk.bombboomblocks.highscores"
 
 
-//#define FontColor [UIColor colorWithWhite:0.231 alpha:1.000]
-#define FontColor [UIColor colorWithWhite:0.573 alpha:0.200]
+#define FontColor [UIColor colorWithWhite:0.114 alpha:1.000]
 
 #define PadBackgroundColor [UIColor colorWithRed:0.090 green:0.086 blue:0.094 alpha:1.000]
 #define GameTextColor [UIColor colorWithRed:0.435 green:0.529 blue:0.529 alpha:1.000]

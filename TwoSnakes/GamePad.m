@@ -39,7 +39,7 @@
         _emptyNodeArray = [[NSMutableArray alloc]init];
         int randomX = arc4random() % column;
         int randomY = arc4random() % row;
-        int tag = 0;
+        //int tag = 0;
         for (int i = 0 ; i < column; i ++ ) {
             
             for (int j = 0 ; j < row ; j++) {
@@ -48,7 +48,7 @@
                 CGFloat assetPosY = gapFromBoundary+nodeHeight*j;
                 SnakeNode *emptyNode = [[SnakeNode alloc]initWithEmptyFrame:CGRectMake(assetPosX, assetPosY, nodeWidth - gapBetweenCard, nodeHeight - gapBetweenCard)];
                 [emptyNode setNodeIndexRow:j andCol:i];
-                emptyNode.tag = tag;
+                //emptyNode.tag = tag;
 
                 [self addSubview:emptyNode];
                 [_emptyNodeArray addObject:emptyNode];
@@ -57,7 +57,7 @@
                     _initialNode = emptyNode;
                 }
                 
-                tag++;
+                //tag++;
             }
         }
     }

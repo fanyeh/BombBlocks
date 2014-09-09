@@ -105,10 +105,22 @@
         [self runAction:[SKAction playSoundFileNamed:@"explode.mp3" waitForCompletion:NO]];
 }
 
+- (void)explodeColorSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"explodeColor.mp3" waitForCompletion:NO]];
+}
+
 - (void)explodeSquareSound
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
         [self runAction:[SKAction playSoundFileNamed:@"explodeSquare.mp3" waitForCompletion:NO]];
+}
+
+- (void)playGameSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"playButtonSound.mp3" waitForCompletion:NO]];
 }
 
 @end

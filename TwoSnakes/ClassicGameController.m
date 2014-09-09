@@ -55,6 +55,10 @@
     UIView *tutorial4BG;
 
     NSInteger tutorialMode;
+    UIImage *screenShot;
+    
+    CustomLabel *levelLabel;
+    
     
 }
 @end
@@ -118,12 +122,12 @@
     
     // Next Node
     CGFloat nextNodeSize = 40;
-    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, self.view.frame.size.height - 90 , nextNodeSize, nextNodeSize)];
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, self.view.frame.size.height - 100 , nextNodeSize, nextNodeSize)];
     snake.nextNode = nextNode;
     [snake updateNextNode:nextNode animation:YES];
     [self.view addSubview:nextNode];
     
-    nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(120, self.view.frame.size.height - 50, 80, 15) fontSize:15];
+    nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(120, self.view.frame.size.height - 55, 80, 17) fontSize:17];
     nextLabel.text = @"Next";
     nextLabel.textColor = [UIColor whiteColor];
     [self.view addSubview:nextLabel];
@@ -147,7 +151,7 @@
     
     scoreArray = [[NSMutableArray alloc]init];
     
-    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-45, 10, 35, 35)];
+    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-35, 568-35, 30, 30)];
     [settingButton setImage:[UIImage imageNamed:@"setting70.png"] forState:UIControlStateNormal];
     [settingButton addTarget:self action:@selector(settings:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:settingButton];
@@ -165,6 +169,27 @@
     tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
     if (tutorialMode == 1)
         [self showTutorial1];
+    
+    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 180, 150,40) fontSize:40];
+    levelLabel.text = @"Level 10";
+    levelLabel.hidden = YES;
+    [self.view addSubview:levelLabel];
+    
+}
+
+-(void)showLevel:(NSInteger)level
+{
+    levelLabel.text = [NSString stringWithFormat:@"Level %ld",level];
+    CGRect originalFrame = levelLabel.frame;
+    levelLabel.hidden = NO;
+    [UIView animateWithDuration:2.0 animations:^{
+        levelLabel.frame = CGRectOffset(levelLabel.frame, 0, -40);
+        levelLabel.alpha = 0;
+    } completion:^(BOOL finished) {
+        levelLabel.hidden = YES;
+        levelLabel.alpha = 1;
+        levelLabel.frame = originalFrame;
+    }];
 }
 
 - (void)settingPage
@@ -325,6 +350,7 @@
 -(void)gameOver
 {
     gamePad.userInteractionEnabled = NO;
+    screenShot = [self captureView:self.view];
     [snake setGameoverImage];
     gameIsOver = YES;
 }
@@ -338,7 +364,6 @@
 
             [self showTutorial2];
         }
-        
         SnakeNode *head = [snake.snakeBody firstObject];
         [head.layer removeAllAnimations];
         
@@ -470,7 +495,8 @@
     controller.bombs = totalBombs;
     controller.combos = totalCombos;
     controller.score = score;
-    controller.gameImage = [self captureView:self.view];
+    controller.level = snake.reminder - 2;
+    controller.gameImage = screenShot;
     controller.delegate = self;
     [self presentViewController:controller animated:YES completion:nil];
 }
@@ -512,12 +538,14 @@
 }
 - (UIImage *)captureView:(UIView *)view
 {
+    settingButton.hidden = YES;
     CGRect rect = [[UIScreen mainScreen] bounds];
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     [view.layer renderInContext:context];
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    settingButton.hidden = NO;
     return img;
 }
 
@@ -721,6 +749,8 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    [particle removeAllChildren];
+    [particle removeAllActions];
 }
 
 - (BOOL)prefersStatusBarHidden

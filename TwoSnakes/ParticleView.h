@@ -21,5 +21,7 @@
 - (void)explodeSound;
 - (void)explodeSquareSound;
 - (void)playBreakSound;
+- (void)explodeColorSound;
+- (void)playGameSound;
 
 @end

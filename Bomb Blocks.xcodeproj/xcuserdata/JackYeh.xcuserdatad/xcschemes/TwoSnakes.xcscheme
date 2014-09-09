@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4CB108A0190FF6440085C747"
-               BuildableName = "TwoSnakes.app"
+               BuildableName = "Bomb Blocks.app"
                BlueprintName = "Bomb Blocks"
                ReferencedContainer = "container:Bomb Blocks.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4CB108C0190FF6440085C747"
-               BuildableName = "TwoSnakesTests.xctest"
+               BuildableName = "Bomb BlocksTests.xctest"
                BlueprintName = "Bomb BlocksTests"
                ReferencedContainer = "container:Bomb Blocks.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4CB108A0190FF6440085C747"
-            BuildableName = "TwoSnakes.app"
+            BuildableName = "Bomb Blocks.app"
             BlueprintName = "Bomb Blocks"
             ReferencedContainer = "container:Bomb Blocks.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4CB108A0190FF6440085C747"
-            BuildableName = "TwoSnakes.app"
+            BuildableName = "Bomb Blocks.app"
             BlueprintName = "Bomb Blocks"
             ReferencedContainer = "container:Bomb Blocks.xcodeproj">
          </BuildableReference>
@@ -80,7 +80,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4CB108A0190FF6440085C747"
-            BuildableName = "TwoSnakes.app"
+            BuildableName = "Bomb Blocks.app"
             BlueprintName = "Bomb Blocks"
             ReferencedContainer = "container:Bomb Blocks.xcodeproj">
          </BuildableReference>

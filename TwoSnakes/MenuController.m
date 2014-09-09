@@ -18,6 +18,7 @@
     ParticleView *particleView;
     CustomLabel *bombLabel;
     CustomLabel *blockLabel;
+    CustomLabel *boomLabel;
     UIImageView *launchBomb;
     NSMutableArray *playButtonArray;
     MKAppDelegate  *appDelegate;
@@ -69,18 +70,52 @@
     [self.view sendSubviewToBack:skView];
     
     CGFloat labelSize = 65;
+
     bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 568/2-labelSize-labelSize, 320, labelSize) fontSize:labelSize];
-    bombLabel.text = @"Bomb";
+    bombLabel.text = NSLocalizedString(@"Bomb", nil);
     bombLabel.hidden = YES;
-    [self.view addSubview:bombLabel];
     
-    blockLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontSize:labelSize];
+    boomLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontSize:labelSize];
+    boomLabel.frame = CGRectOffset(boomLabel.frame, 0, labelSize);
+    boomLabel.text = NSLocalizedString(@"Boom",nil);
+    boomLabel.hidden= YES;
+    
+    blockLabel = [[CustomLabel alloc]initWithFrame:boomLabel.frame fontSize:labelSize];
     blockLabel.frame = CGRectOffset(blockLabel.frame, 0, labelSize);
-    blockLabel.text = @"Blocks";
+    blockLabel.text = NSLocalizedString(@"Blocks",nil);
     blockLabel.hidden= YES;
-    [self.view addSubview:blockLabel];
     
-    launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(200, 568/2-labelSize-labelSize-52*2+10, 52, 52)];
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([language isEqualToString:@"zh-Hans"] || [language isEqualToString:@"zh-Hant"]) {
+        [self.view addSubview:bombLabel];
+        [self.view addSubview:boomLabel];
+        [self.view addSubview:blockLabel];
+        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(170, 568/2-labelSize-labelSize-52*2+10, 52, 52)];
+
+    } else {
+        [self.view addSubview:bombLabel];
+        [self.view addSubview:boomLabel];
+        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(200, 568/2-labelSize-labelSize-52*2+10, 52, 52)];
+    }
+    
+//    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 568/2-labelSize-labelSize, 320, labelSize) fontSize:labelSize];
+//    bombLabel.text = @"Bomb";
+//    bombLabel.hidden = YES;
+//    [self.view addSubview:bombLabel];
+//    
+//    boomLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontSize:labelSize];
+//    boomLabel.frame = CGRectOffset(boomLabel.frame, 0, labelSize);
+//    boomLabel.text = @"Blocks";
+//    boomLabel.hidden= YES;
+//    [self.view addSubview:boomLabel];
+//    
+//    blockLabel = [[CustomLabel alloc]initWithFrame:boomLabel.frame fontSize:labelSize];
+//    blockLabel.frame = CGRectOffset(blockLabel.frame, 0, labelSize);
+//    blockLabel.text = @"Blocks";
+//    blockLabel.hidden= YES;
+//    [self.view addSubview:blockLabel];
+//    launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(200, 568/2-labelSize-labelSize-52*2+10, 52, 52)];
+
     launchBomb.image = [UIImage imageNamed:@"bomb_yellow.png"];
     launchBomb.hidden = YES;
     
@@ -286,19 +321,23 @@
             } completion:^(BOOL finished) {
                 [blinkView removeFromSuperview];
                 bombLabel.hidden = NO;
+                boomLabel.hidden = NO;
                 blockLabel.hidden = NO;
                 _playButtonView.hidden = NO;
 
                 CGAffineTransform b1 =  bombLabel.transform;
                 CGAffineTransform b2 =  blockLabel.transform;
+                CGAffineTransform b3 =  boomLabel.transform;
 
                 bombLabel.transform = CGAffineTransformScale(b1, 0.1, 0.1);
                 blockLabel.transform = CGAffineTransformScale(b2, 0.1, 0.1);
-                
+                boomLabel.transform = CGAffineTransformScale(b3, 0.1, 0.1);
+
                 [UIView animateWithDuration:0.2 animations:^{
                     
                     bombLabel.transform = b1;
                     blockLabel.transform = b2;
+                    boomLabel.transform = b3;
                     
                 } completion:^(BOOL finished) {
                     
@@ -401,9 +440,21 @@
 #pragma mark - New Game
 - (void)playGame
 {
-    classicGameController =  [[ClassicGameController alloc]init];
-    [self presentViewController:classicGameController animated:YES completion:nil];
+    [particleView playGameSound];
+    
+    CGAffineTransform t = _playButtonView.transform;
+    _playButtonView.transform = CGAffineTransformScale(t, 0.9, 0.9);
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        
+        _playButtonView.transform = CGAffineTransformScale(t, 1.1, 1.1);
 
+    } completion:^(BOOL finished) {
+        
+        _playButtonView.transform = t;
+        classicGameController =  [[ClassicGameController alloc]init];
+        [self presentViewController:classicGameController animated:YES completion:nil];
+    }];
 }
 
 - (void)didReceiveMemoryWarning

@@ -92,43 +92,39 @@
     
     currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 185, pauseLabelWidth, 65) fontSize:65];
     
-    CGFloat yoffset = 295;
+    
+    
+    
+    
+    
+    CGFloat yoffset = 285;
     CGFloat labelWidth = 90;
     CGFloat labelHeight = 25;
     CGFloat fontSize = 25;
-        
+    
+    // Level
+    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelWidth)/2,yoffset,labelWidth,labelHeight) fontSize:fontSize];
+    levelLabel.text = [NSString stringWithFormat:@"Level %ld",_level];
     
     // Combo
-    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset,labelHeight,labelHeight)
-                                
-                                                        fontSize:fontSize];
+    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+60,labelHeight,labelHeight) fontSize:fontSize];
     comboXLabel.text = @"x";
     
-    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset,labelWidth,labelHeight)
-                               
-                                                       fontSize:fontSize];
+    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset+60,labelWidth,labelHeight) fontSize:fontSize];
     comboLabel.text = @"Combo";
     
     
-    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset,labelWidth,labelHeight)
-                
-                                        fontSize:fontSize];
+    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset+60,labelWidth,labelHeight) fontSize:fontSize];
     
     
     // Bomb
-    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+60,labelHeight,labelHeight)
-                               
-                                                       fontSize:fontSize];
+    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+120,labelHeight,labelHeight) fontSize:fontSize];
     bombXLabel.text = @"x";
     
-    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+60,labelWidth,labelHeight)
-                           
-                                                   fontSize:fontSize];
+    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+120,labelWidth,labelHeight) fontSize:fontSize];
     bLabel.text = @"Bomb";
     
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+60,labelWidth,labelHeight)
-                 
-                                         fontSize:fontSize];
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+120,labelWidth,labelHeight) fontSize:fontSize];
     
     UIImageView *replayView = [[UIImageView alloc]initWithFrame:self.view.frame];
     //replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
@@ -154,6 +150,8 @@
     
     [self.view addSubview:bombXLabel];
     [self.view addSubview:bLabel];
+    
+    [self.view addSubview:levelLabel];
     
     UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake((self.view.frame.size.width-60)/2,pauseLabelHeight-60-30, 50, 50)];
     replayBg.image = [UIImage imageNamed:@"replayButton.png"];
@@ -186,7 +184,7 @@
         // Stop and get the sound ready for playing again
         [appDelegate.audioPlayer stop];
         //appDelegate.audioPlayer.currentTime = 0;
-        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]] error:nil];
+        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]] error:nil];
         appDelegate.audioPlayer.numberOfLoops = -1;
         [appDelegate.audioPlayer prepareToPlay];
         

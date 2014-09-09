@@ -55,11 +55,19 @@
             }
         };
         
+        NSNumberFormatter *numFormatter = [[NSNumberFormatter alloc] init];
+        [numFormatter setGroupingSeparator:@","];
+        [numFormatter setGroupingSize:3];
+        [numFormatter setUsesGroupingSeparator:YES];
+        
         //  Set the initial body of the share sheet
-        [shareSheet setInitialText:[NSString stringWithFormat:@"I have scored %ld points @ Bomb Block!",newScore]];
+        [shareSheet setInitialText:[NSString stringWithFormat:@"I have scored %@ points @ Bomb Boom Blocks!",[numFormatter stringFromNumber:[NSNumber numberWithInteger:newScore]]]];
         
         //  Share Photo
         [shareSheet addImage:_screenshot];
+        
+        NSURL *appURL = [NSURL URLWithString:@"https://itunes.com.tw"];
+        [shareSheet addURL:appURL];
         
         //  Presents the share Sheet to the user
         [viewcontroller presentViewController:shareSheet animated:NO completion:nil];
