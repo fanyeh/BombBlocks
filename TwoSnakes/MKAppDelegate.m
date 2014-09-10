@@ -31,11 +31,11 @@
     classicController = [[ClassicGameController alloc]init];
     statsController = [[GameStatsViewController alloc]init];
     
-    [self.window setRootViewController:menuController];
+    [self.window setRootViewController:statsController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center
-    [[GCHelper sharedInstance] authenticateLocalUser:menuController];
+    //[[GCHelper sharedInstance] authenticateLocalUser:menuController];
 
     // Intro music
     NSURL *file  = [NSURL fileURLWithPath:[[NSBundle mainBundle]

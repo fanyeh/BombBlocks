@@ -31,7 +31,7 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 -(void)updateScore:(NSInteger)s;
 -(void)hideLastTutorial;
 -(void)showLevel:(NSInteger)level;
-
+-(void)showBombChain:(NSInteger)bombChain;
 
 @end
 

@@ -35,6 +35,10 @@
 @property (weak, nonatomic) IBOutlet UIView *aView;
 @property (weak, nonatomic) IBOutlet UIView *yView;
 
+@property (weak, nonatomic) IBOutlet UILabel *pLabel;
+@property (weak, nonatomic) IBOutlet UILabel *lLabel;
+@property (weak, nonatomic) IBOutlet UILabel *aLabel;
+@property (weak, nonatomic) IBOutlet UILabel *yLabel;
 
 
 @end
@@ -71,17 +75,17 @@
     
     CGFloat labelSize = 65;
 
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 568/2-labelSize-labelSize, 320, labelSize) fontSize:labelSize];
-    bombLabel.text = NSLocalizedString(@"Bomb", nil);
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 568/2-labelSize-labelSize-10, 320, labelSize) fontSize:labelSize];
+    bombLabel.text = NSLocalizedString(@"bomb", nil);
     bombLabel.hidden = YES;
     
     boomLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontSize:labelSize];
-    boomLabel.frame = CGRectOffset(boomLabel.frame, 0, labelSize);
+    boomLabel.frame = CGRectOffset(boomLabel.frame, 0, labelSize+10);
     boomLabel.text = NSLocalizedString(@"Boom",nil);
     boomLabel.hidden= YES;
     
     blockLabel = [[CustomLabel alloc]initWithFrame:boomLabel.frame fontSize:labelSize];
-    blockLabel.frame = CGRectOffset(blockLabel.frame, 0, labelSize);
+    blockLabel.frame = CGRectOffset(blockLabel.frame, 0, labelSize+10);
     blockLabel.text = NSLocalizedString(@"Blocks",nil);
     blockLabel.hidden= YES;
     
@@ -90,7 +94,12 @@
         [self.view addSubview:bombLabel];
         [self.view addSubview:boomLabel];
         [self.view addSubview:blockLabel];
-        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(170, 568/2-labelSize-labelSize-52*2+10, 52, 52)];
+        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(170, 568/2-labelSize-labelSize-52*2, 52, 52)];
+        
+        _pLabel.text = NSLocalizedString(@"P", nil);
+        _lLabel.text = NSLocalizedString(@"L", nil);
+        _aLabel.text = NSLocalizedString(@"A", nil);
+        _yLabel.text = NSLocalizedString(@"Y", nil);
 
     } else {
         [self.view addSubview:bombLabel];

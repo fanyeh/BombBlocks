@@ -18,6 +18,7 @@
     CustomLabel *bestScoreLabel;
     CustomLabel *comLabel;
     CustomLabel *bombLabel;
+    CustomLabel *chainLabel;
     CustomLabel *currentScoreLabel;
     SocialShare *socialShare;
     GADInterstitial *interstitialAd;
@@ -74,7 +75,7 @@
     
     UIButton *twitterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
     [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter40.png"] forState:UIControlStateNormal];
-    twitterButton.frame = CGRectOffset(twitterButton.frame, 60, 0);
+    twitterButton.frame = CGRectOffset(twitterButton.frame, 80, 0);
     twitterButton.layer.cornerRadius = socialButtonHeight/2;
     twitterButton.backgroundColor = [UIColor whiteColor];
     twitterButton.layer.masksToBounds = YES;
@@ -82,52 +83,60 @@
     
     // Game Center Label
     UIButton *gamecenterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
-    gamecenterButton.frame = CGRectOffset(gamecenterButton.frame, -60, 0);
+    gamecenterButton.frame = CGRectOffset(gamecenterButton.frame, -80, 0);
     [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter70.png"] forState:UIControlStateNormal];\
     gamecenterButton.layer.cornerRadius = socialButtonHeight/2;
     [gamecenterButton addTarget:self action:@selector(showGameCenter) forControlEvents:UIControlEventTouchDown];
     
-    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 120, pauseLabelWidth, 35) fontSize:35];
+    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 90, pauseLabelWidth, 35) fontSize:35];
     bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
-    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 185, pauseLabelWidth, 65) fontSize:65];
-    
-    
-    
-    
-    
-    
-    CGFloat yoffset = 285;
+    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 150, pauseLabelWidth, 65) fontSize:65];
+
+    CGFloat yoffset = 240;
     CGFloat labelWidth = 90;
     CGFloat labelHeight = 25;
     CGFloat fontSize = 25;
     
     // Level
-    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelWidth)/2,yoffset,labelWidth,labelHeight) fontSize:fontSize];
-    levelLabel.text = [NSString stringWithFormat:@"Level %ld",_level];
+    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2- 30 - labelWidth,yoffset,labelWidth,labelHeight) fontSize:fontSize];
+    levelLabel.text = NSLocalizedString(@"Level", nil);
+    levelLabel.textAlignment = NSTextAlignmentLeft;
     
     // Combo
-    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+60,labelHeight,labelHeight) fontSize:fontSize];
+    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+75,labelHeight,labelHeight) fontSize:fontSize];
     comboXLabel.text = @"x";
     
-    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset+60,labelWidth,labelHeight) fontSize:fontSize];
+    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset+75,labelWidth,labelHeight) fontSize:fontSize];
     comboLabel.text = @"Combo";
+    comboLabel.textAlignment = NSTextAlignmentLeft;
+
     
-    
-    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset+60,labelWidth,labelHeight) fontSize:fontSize];
-    
+    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset+75,labelWidth-20,labelHeight) fontSize:fontSize];
     
     // Bomb
-    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+120,labelHeight,labelHeight) fontSize:fontSize];
+    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+125,labelHeight,labelHeight) fontSize:fontSize];
     bombXLabel.text = @"x";
     
-    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+120,labelWidth,labelHeight) fontSize:fontSize];
-    bLabel.text = @"Bomb";
+    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+125,labelWidth,labelHeight) fontSize:fontSize];
+    bLabel.text = NSLocalizedString(@"Bomb",nil);
+    bLabel.textAlignment = NSTextAlignmentLeft;
+
     
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+120,labelWidth,labelHeight) fontSize:fontSize];
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+125,labelWidth-20,labelHeight) fontSize:fontSize];
+    
+    // Chain
+    CustomLabel *chainXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+175,labelHeight,labelHeight) fontSize:fontSize];
+    chainXLabel.text = @"x";
+    
+    CustomLabel *cLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+175,labelWidth,labelHeight) fontSize:fontSize];
+    cLabel.text = NSLocalizedString(@"chain",nil);
+    cLabel.textAlignment = NSTextAlignmentLeft;
+    
+    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+175,labelWidth-20,labelHeight) fontSize:fontSize];
+    
     
     UIImageView *replayView = [[UIImageView alloc]initWithFrame:self.view.frame];
-    //replayView.frame = CGRectOffset(replayView.frame, 0, -self.view.frame.size.height);
     replayView.image = [UIImage imageNamed:@"Background.png"];
     replayView.userInteractionEnabled = YES;
     [self.view addSubview:replayView];
@@ -145,13 +154,45 @@
     [self.view addSubview:bestScoreLabel];
     [self.view addSubview:comLabel];
     [self.view addSubview:bombLabel];
+
     [self.view addSubview:comboLabel];
     [self.view addSubview:comboXLabel];
+
     
     [self.view addSubview:bombXLabel];
     [self.view addSubview:bLabel];
     
+    [self.view addSubview:chainXLabel];
+    [self.view addSubview:cLabel];
+    [self.view addSubview:chainLabel];
+
     [self.view addSubview:levelLabel];
+    
+    CGFloat xoffset = 35;
+    CGFloat offset = levelLabel.frame.origin.y+labelHeight+10;
+    for (NSInteger i = 0; i < 10; i++) {
+        
+        CustomLabel *subLevelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xoffset,
+                                                                                  offset,
+                                                                                  fontSize,
+                                                                                  fontSize)
+                                                              fontSize:fontSize];
+        
+        subLevelLabel.text = [NSString stringWithFormat:@"%ld",i+1];
+        
+        if (i+1 <= _level)
+            subLevelLabel.textColor =[UIColor whiteColor];
+        else
+            subLevelLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
+        
+        [self.view addSubview:subLevelLabel];
+        xoffset += fontSize;
+        
+//        if (i==4) {
+//            offset += 40;
+//            xoffset = levelLabel.frame.origin.x + labelWidth + 10;
+//        }
+    }
     
     UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake((self.view.frame.size.width-60)/2,pauseLabelHeight-60-30, 50, 50)];
     replayBg.image = [UIImage imageNamed:@"replayButton.png"];
@@ -163,7 +204,7 @@
     
     [self showReplayView];
     
-    [self showChartboost];
+    //[self showChartboost];
     
     appDelegate = [[UIApplication sharedApplication] delegate];
 
@@ -184,7 +225,7 @@
         // Stop and get the sound ready for playing again
         [appDelegate.audioPlayer stop];
         //appDelegate.audioPlayer.currentTime = 0;
-        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]] error:nil];
+        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"easy-living" ofType:@"mp3"]] error:nil];
         appDelegate.audioPlayer.numberOfLoops = -1;
         [appDelegate.audioPlayer prepareToPlay];
         
@@ -209,6 +250,7 @@
 {
     comLabel.text = [NSString stringWithFormat:@"%ld",_combos];
     bombLabel.text = [NSString stringWithFormat:@"%ld",_bombs];
+    chainLabel.text = [NSString stringWithFormat:@"%ld",_maxBombChain];
     
     NSInteger bestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"BestScore"];
     
@@ -223,7 +265,7 @@
     }
     else
     {
-        bestScoreLabel.text = [NSString stringWithFormat:@"Best %@",[numFormatter stringFromNumber:[NSNumber numberWithInteger:bestScore]]];
+        bestScoreLabel.text = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Best",nil),[numFormatter stringFromNumber:[NSNumber numberWithInteger:bestScore]]];
         bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     }
     

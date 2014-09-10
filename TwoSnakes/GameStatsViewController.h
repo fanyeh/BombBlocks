@@ -21,6 +21,7 @@
 @property (nonatomic,assign) NSInteger bombs;
 @property (nonatomic,assign) NSInteger score;
 @property (nonatomic,assign) NSInteger level;
+@property (nonatomic,assign) NSInteger maxBombChain;
 @property (nonatomic,strong) UIImage *gameImage;
 @property (weak,nonatomic) id<replayDelegate>delegate;
 

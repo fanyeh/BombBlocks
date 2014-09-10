@@ -5,6 +5,25 @@
   Created by Jack Yeh on 2014/9/9.
   Copyright (c) 2014年 MarriageKiller. All rights reserved.
 */
-"Bomb" = "块";
+"bomb" = "块";
 "Boom" = "爆";
 "Blocks" = "了";
+
+"P" = "开";
+"L" = "始";
+"A" = "游";
+"Y" = "戏";
+
+"Sound" = "音效";
+"Music" = "音乐";
+"Rate Me" = "给我评价";
+"Tutorial" = "教学";
+"Level" = "关卡";
+"Bomb" = "炸弹";
+"Combo" = "Combo";
+"Best" = "最高分";
+"New Record" = "新纪录";
+
+"Chain" = "连锁炸弹";
+"chain" = "连锁";
+

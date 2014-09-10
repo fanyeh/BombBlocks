@@ -5,6 +5,22 @@
   Created by Jack Yeh on 2014/9/9.
   Copyright (c) 2014年 MarriageKiller. All rights reserved.
 */
-"Bomb" = "Bomb";
+"bomb" = "Bomb";
 "Boom" = "Blocks";
 "Blocks" = "Blocks";
+"P" = "P";
+"L" = "L";
+"A" = "A";
+"Y" = "Y";
+
+"Sound" = "Sound";
+"Music" = "Music";
+"Rate Me" = "Rate Me";
+"Tutorial" = "Tutorial";
+"Level" = "Level";
+"Bomb" = "Bomb";
+"Combo" = "Combo";
+"Best" = "Best";
+"New Record" = "New Record";
+"Chain" = "Chain";
+"chain" = "Chain";

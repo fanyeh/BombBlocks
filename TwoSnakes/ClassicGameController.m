@@ -58,8 +58,10 @@
     UIImage *screenShot;
     
     CustomLabel *levelLabel;
+    CustomLabel *chainLabel;
     
-    
+    NSInteger maxBombChain;
+
 }
 @end
 
@@ -171,14 +173,24 @@
         [self showTutorial1];
     
     levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 180, 150,40) fontSize:40];
-    levelLabel.text = @"Level 10";
     levelLabel.hidden = YES;
     [self.view addSubview:levelLabel];
+    
+    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-300)/2, 180, 300,40) fontSize:40];
+    chainLabel.hidden = YES;
+    [self.view addSubview:chainLabel];
     
 }
 
 -(void)showLevel:(NSInteger)level
 {
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([language isEqualToString:@"zh-Hans"])
+        levelLabel.text = [NSString stringWithFormat:@"第 %ld 关",level];
+    else if ([language isEqualToString:@"zh-Hant"])
+        levelLabel.text = [NSString stringWithFormat:@"第 %ld 關",level];
+    else
+        
     levelLabel.text = [NSString stringWithFormat:@"Level %ld",level];
     CGRect originalFrame = levelLabel.frame;
     levelLabel.hidden = NO;
@@ -190,6 +202,24 @@
         levelLabel.alpha = 1;
         levelLabel.frame = originalFrame;
     }];
+}
+
+-(void)showBombChain:(NSInteger)bombChain
+{
+    chainLabel.text = [NSString stringWithFormat:@"%@ x %ld", NSLocalizedString(@"Chain", nil) ,bombChain];
+    CGRect originalFrame = chainLabel.frame;
+    chainLabel.hidden = NO;
+    [UIView animateWithDuration:2.0 animations:^{
+        chainLabel.frame = CGRectOffset(chainLabel.frame, 0, -40);
+        chainLabel.alpha = 0;
+    } completion:^(BOOL finished) {
+        chainLabel.hidden = YES;
+        chainLabel.alpha = 1;
+        chainLabel.frame = originalFrame;
+    }];
+    
+    if (bombChain > maxBombChain)
+        maxBombChain = bombChain;
 }
 
 - (void)settingPage
@@ -217,7 +247,7 @@
     [settingBG addSubview:soundButton];
     
     CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY, 90, 45) fontSize:fontSize];
-    soundLabel.text = @"Sound";
+    soundLabel.text = NSLocalizedString(@"Sound",nil);
     soundLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:soundLabel];
     
@@ -232,7 +262,7 @@
     [settingBG addSubview:musicButton];
     
     CustomLabel *musicLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap, 90, 45) fontSize:fontSize];
-    musicLabel.text = @"Music";
+    musicLabel.text = NSLocalizedString(@"Music",nil);
     musicLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:musicLabel];
     
@@ -247,7 +277,7 @@
     [settingBG addSubview:rateButton];
     
     CustomLabel *ratingLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*2, 120, 45) fontSize:fontSize];
-    ratingLabel.text = @"Rate Me";
+    ratingLabel.text = NSLocalizedString(@"Rate Me",nil);
     ratingLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:ratingLabel];
     
@@ -258,7 +288,7 @@
     [settingBG addSubview:tutorial];
     
     CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*3, 120, 45) fontSize:fontSize];
-    tutorialLabel.text = @"Tutorial";
+    tutorialLabel.text = NSLocalizedString(@"Tutorial",nil);
     tutorialLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:tutorialLabel];
 }
@@ -498,6 +528,7 @@
     controller.level = snake.reminder - 2;
     controller.gameImage = screenShot;
     controller.delegate = self;
+    controller.maxBombChain = maxBombChain;
     [self presentViewController:controller animated:YES completion:nil];
 }
 
@@ -763,7 +794,7 @@
     Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
     NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
     if (networkStatus == NotReachable) {
-        UIAlertView *noInternetAlert = [[UIAlertView alloc]initWithTitle: NSLocalizedString(@"No Internet Connection", nil)
+        UIAlertView *noInternetAlert = [[UIAlertView alloc]initWithTitle:NSLocalizedString(@"No Internet Connection", nil)
                                                                  message:NSLocalizedString(@"Check your internet connection and try again",nil)
                                                                 delegate:self cancelButtonTitle:NSLocalizedString(@"Close",nil)
                                                        otherButtonTitles:nil, nil];

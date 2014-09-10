@@ -25,6 +25,14 @@
     NSMutableArray *bombArray;
     NSURL *currentSongURL;
     MKAppDelegate *appDelegate;
+    
+    NSMutableArray *rowPatterns;
+    NSMutableArray *colPatterns;
+    NSMutableArray *squarePatterns;
+    NSMutableArray *diaUpPatterns;
+    NSMutableArray *diaDownPatterns;
+    
+    NSInteger bombChain;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -52,6 +60,8 @@
         _reminder = 3;
         [self newSnake];
         self.tag = 0;
+        totalBombs = 0;
+        _combos = 0;
     }
     return self;
 }
@@ -61,8 +71,6 @@
     [_snakeBody addObject:self];
     [self setNodeIndexRow:initNode.nodeRow andCol:initNode.nodeColumn];
     [self updateNextNode:self  animation:YES];
-    _combos = 0;
-    totalBombs = 0;
 }
 
 #pragma mark - Reset Snake
@@ -70,6 +78,7 @@
 - (void)resetSnake
 {
     totalBombs = 0;
+    _combos = 0;
     _reminder = 3;
     NSInteger count = [_snakeBody count] - 1;
     currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
@@ -180,8 +189,6 @@
     [_snakeBody insertObject:snakeBody atIndex:0];
     [_gamePad addSubview:snakeBody];
     
-    //[self updateNodeAsset:snakeBody];
-    
     // Move next nodes
     [self updateNextNode:_nextNode animation:YES];
     
@@ -211,49 +218,48 @@
 
 -(void)levelChecker
 {
-    if (totalBombs == 200) {
+    if (totalBombs == 170) {
         _reminder = 12;
         [_delegate showLevel:_reminder-2];
     }
-    else if (totalBombs == 150) {
+    else if (totalBombs == 140) {
         _reminder = 11;
         currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-rain" ofType:@"mp3"]];
         [self doVolumeFade];
     }
-    else if (totalBombs == 110) {
+    else if (totalBombs == 115) {
         _reminder = 10;
         [_delegate showLevel:_reminder-2];
-
     }
-    else if (totalBombs == 80) {
+    else if (totalBombs == 90) {
         _reminder = 9;
         currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-business-model" ofType:@"mp3"]];
         [self doVolumeFade];
     }
-    else if (totalBombs == 55) {
-        [_delegate showLevel:_reminder-2];
+    else if (totalBombs == 70) {
         _reminder = 8;
+        [_delegate showLevel:_reminder-2];
     }
-    else if (totalBombs == 35) {
+    else if (totalBombs == 50) {
         _reminder = 7;
         currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"]];
         [self doVolumeFade];
         [_delegate showLevel:_reminder-2];
 
     }
-    else if (totalBombs == 20) {
+    else if (totalBombs == 35) {
         _reminder = 6;
         [_delegate showLevel:_reminder-2];
 
     }
-    else if (totalBombs == 10) {
+    else if (totalBombs == 20) {
         _reminder = 5;
         currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"flying-forward" ofType:@"mp3"]];
         [self doVolumeFade];
         [_delegate showLevel:_reminder-2];
 
     }
-    else if (totalBombs == 5) {
+    else if (totalBombs == 10) {
         _reminder = 4;
         [_delegate showLevel:_reminder-2];
     }
@@ -447,6 +453,7 @@
 -(void)cancelPattern:(void(^)(void))completBlock
 {
     [self checkPatterns];
+    bombChain = 0;
     if ([allPatterns count] > 0) {
         
         [_particleView playComboSound];
@@ -456,10 +463,10 @@
             [_gamePad showEmptyNodeBorder:n];
             
             // Bomb explode animation
-            if (n.bombType == kBombTypeExplodeBlock)
-                [self shrinkAnimation:n showExplode:NO];
-            else
+            if (n.hasBomb)
                 [self shrinkAnimation:n showExplode:YES];
+            else
+                [self shrinkAnimation:n showExplode:NO];
         }
         
         [UIView animateWithDuration: 0.5 animations:^{
@@ -468,17 +475,16 @@
             for (SnakeNode *n in allPatterns) {
                 
                 if (n.hasBomb) {
+                    bombChain++;
                     [_delegate hideLastTutorial];
                     n.scoreAdder = 50;
                 }
-                else
+                else {
                     n.scoreAdder = ([allPatterns count]-2) * 5 + 5;
-                
+                    [_delegate updateScore:n.scoreAdder];
+                }
                 [n scoreLabelAnimation];
-                [_delegate updateScore:n.scoreAdder];
-                
             }
-            
         } completion:^(BOOL finished) {
             
             [_gamePad resetEmptyNodeBorder];
@@ -496,7 +502,6 @@
                     [n removeFromSuperview];
                 } else
                     [self explodeBody:n];
-
             }
             
             // Remove all combos from snake body
@@ -517,7 +522,7 @@
     }
     else  {
         if ([_snakeBody count] == 0)
-            [self resetSnake];
+            [self newSnake];
         completBlock();
     }
 }
@@ -526,14 +531,19 @@
 {
     if ([bombArray count] > 0) {
         SnakeNode *bomb = [bombArray firstObject];
-        totalBombs++;
         [_delegate updateScore:bomb.scoreAdder];
         [bombArray removeObject:bomb];
-        [self levelChecker];
         [self explodeByBomb:bomb complete:completBlock];
     }
-    else
-        [self cancelPattern:completBlock];
+    else  {
+        if (bombChain > 1)
+            [_delegate showBombChain:bombChain];
+        if ([_snakeBody count] == 0)
+            [self newSnake];
+        completBlock();
+    }
+//    else
+//        [self cancelPattern:completBlock];
 }
 
 - (void)explodeByBomb:(SnakeNode *)bomb complete:(void(^)(void))completBlock
@@ -562,7 +572,7 @@
     [_delegate updateScore:node.scoreAdder];
 }
 
-- (void)completeExplode:(void(^)(void))completBlock removeNodes:(NSMutableArray *)removeNodes
+- (void)completeExplode:(NSMutableArray *)removeNodes
 {
     [_gamePad resetEmptyNodeBorder];
     
@@ -577,7 +587,7 @@
             [self reduceLevel:node];
         }
     }
-    [self triggerBomb:completBlock];
+//    [self triggerBomb:completBlock];
 }
 
 - (void)reduceLevel:(SnakeNode *)node
@@ -607,7 +617,7 @@
     }
 }
 
-- (void)removeBombNode:(SnakeNode *)bombNode
+- (void)removeBombNode:(SnakeNode *)bombNode complete:(void(^)(void))completBlock
 {
     [bombArray addObject:bombNode];
 
@@ -615,7 +625,6 @@
         
         bombNode.scoreAdder = 50;
         [bombNode scoreLabelAnimation];
-        //[_delegate updateScore:bombNode.scoreAdder];
         
     } completion:^(BOOL finished) {
         
@@ -628,7 +637,29 @@
         
         [bombNode removeBomb];
         
+        if (completBlock !=nil )
+            [self triggerBomb:completBlock];
+        
     }];
+}
+
+-(void)explodeNextBomb:(NSMutableArray *)triggerBombNodes removeBody:(NSMutableArray *)removedNodes complete:(void(^)(void))completBlock
+{
+    [self completeExplode:removedNodes];
+
+    if ([triggerBombNodes count] > 0) {
+        for (SnakeNode *bombNode in triggerBombNodes){
+            
+            bombChain++;
+            
+            if ([bombNode isEqual:[triggerBombNodes lastObject]])
+                [self removeBombNode:bombNode complete:completBlock];
+            else
+                [self removeBombNode:bombNode complete:nil];
+        }
+    }
+    else
+        [self triggerBomb:completBlock];
 }
 
 #pragma mark - Bomb Types
@@ -636,6 +667,16 @@
 -(void)explodeColor:(SnakeNode *)bomb complete:(void(^)(void))completBlock
 {
     NSMutableArray *removedNode = [[NSMutableArray alloc]init];
+    
+    NSMutableArray *triggerBombNodes = [[NSMutableArray alloc]init];
+    
+    for (SnakeNode *bombNode in _gamePad.emptyNodeArray) {
+        
+        if (bombNode.hasBomb && bombNode.assetType == bomb.assetType) {
+            [triggerBombNodes addObject:bombNode];
+        }
+    }
+
     [UIView animateWithDuration: 0.3 animations:^{
         for (SnakeNode *node in _snakeBody) {
             if (node.assetType ==  bomb.assetType) {
@@ -646,55 +687,65 @@
             }
         }
     } completion:^(BOOL finished) {
-        for (SnakeNode *bombNode in _gamePad.emptyNodeArray) {
-            
-            if (bombNode.hasBomb && bombNode.assetType == bomb.assetType)
-                [self removeBombNode:bombNode];
-            
-        }
-        [self completeExplode:completBlock removeNodes:removedNode];
+        
+        [self explodeNextBomb:triggerBombNodes removeBody:removedNode complete:completBlock];
+        
     }];
 }
 
 -(void)explodeRow:(SnakeNode *)bomb complete:(void(^)(void))completBlock
 {
     NSMutableArray *removedNode = [[NSMutableArray alloc]init];
+    NSMutableArray *triggerBombNodes = [[NSMutableArray alloc]init];
+    
+    for (SnakeNode *bombNode in _gamePad.emptyNodeArray) {
+        
+        if (bombNode.hasBomb && bombNode.nodeRow == bomb.nodeRow) {
+            [triggerBombNodes addObject:bombNode];
+        }
+    }
+
     [UIView animateWithDuration: 0.1 animations:^{
+        
         for (SnakeNode *node in _snakeBody) {
             if (node.nodeRow ==  bomb.nodeRow) {
                 [self showScoreLabel:node];
                 [removedNode addObject:node];
             }
         }
+        
     } completion:^(BOOL finished) {
-        for (SnakeNode *bombNode in _gamePad.emptyNodeArray) {
-            
-            if (bombNode.hasBomb && bombNode.nodeRow == bomb.nodeRow)
-                [self removeBombNode:bombNode];
-            
-        }
-        [self completeExplode:completBlock removeNodes:removedNode];
+        
+        [self explodeNextBomb:triggerBombNodes removeBody:removedNode complete:completBlock];
+        
     }];
 }
 
 -(void)explodeCol:(SnakeNode *)bomb complete:(void(^)(void))completBlock
 {
     NSMutableArray *removedNode = [[NSMutableArray alloc]init];
+    NSMutableArray *triggerBombNodes = [[NSMutableArray alloc]init];
+
+    for (SnakeNode *bombNode in _gamePad.emptyNodeArray) {
+        
+        if (bombNode.hasBomb && bombNode.nodeColumn == bomb.nodeColumn) {
+            [triggerBombNodes addObject:bombNode];
+        }
+    }
+    
     [UIView animateWithDuration: 0.1 animations:^{
+        
         for (SnakeNode *node in _snakeBody) {
             if (node.nodeColumn ==  bomb.nodeColumn) {
                 [self showScoreLabel:node];
                 [removedNode addObject:node];
             }
         }
+        
     } completion:^(BOOL finished) {
-        for (SnakeNode *bombNode in _gamePad.emptyNodeArray) {
-            
-            if (bombNode.hasBomb && bombNode.nodeColumn == bomb.nodeColumn)
-                [self removeBombNode:bombNode];
+        
+        [self explodeNextBomb:triggerBombNodes removeBody:removedNode complete:completBlock];
 
-        }
-        [self completeExplode:completBlock removeNodes:removedNode];
     }];
 }
 
@@ -702,7 +753,17 @@
 -(void)explodeSquare:(SnakeNode *)bomb complete:(void(^)(void))completBlock
 {
     NSMutableArray *removedNode = [[NSMutableArray alloc]init];
+    NSMutableArray *triggerBombNodes = [[NSMutableArray alloc]init];
+    
+    for (SnakeNode *bombNode in _gamePad.emptyNodeArray) {
+        
+        if ([self checkWithinSquare:bombNode bomb:bomb] && bombNode.hasBomb) {
+            [triggerBombNodes addObject:bombNode];
+        }
+    }
+    
     [UIView animateWithDuration: 0.1 animations:^{
+        
         for (SnakeNode *node in _snakeBody) {
             
             if ([self checkWithinSquare:node bomb:bomb]) {
@@ -710,15 +771,11 @@
                 [removedNode addObject:node];
             }
         }
+        
     } completion:^(BOOL finished) {
-        for (SnakeNode *bombNode in _gamePad.emptyNodeArray) {
+        
+        [self explodeNextBomb:triggerBombNodes removeBody:removedNode complete:completBlock];
 
-            if ([self checkWithinSquare:bombNode bomb:bomb] && bombNode.hasBomb)
-                
-                [self removeBombNode:bombNode];
-            
-        }
-        [self completeExplode:completBlock removeNodes:removedNode];
     }];
 }
 
@@ -767,15 +824,21 @@
 
 -(void)checkPatterns
 {
-    NSMutableArray *colPatterns = [self colPatternCheck];
-    NSMutableArray *rowPatterns = [self rowPatternCheck];
-    NSMutableArray *squarePatterns = [self patternCheck:kPatternTypeSquare];
-//    NSMutableArray *diaDownPatterns = [self patternCheck:kPatternTypeDiagonalDown];
-//    NSMutableArray *diaUpPatterns = [self patternCheck:kPatternTypeDiagonalUp];
+    rowPatterns = [[NSMutableArray alloc]init];
+    colPatterns = [[NSMutableArray alloc]init];
+    squarePatterns = [[NSMutableArray alloc]init];
+    diaUpPatterns = [[NSMutableArray alloc]init];
+    diaDownPatterns = [[NSMutableArray alloc]init];
 
-    allPatterns = [NSMutableArray arrayWithArray:colPatterns];
+    [self colPatternCheck];
+    [self rowPatternCheck];
+    [self squarePatternCheck];
+    [self diagonalDownPatternCheck];
+    [self diagonalUpPatternCheck];
+
+    allPatterns = [NSMutableArray arrayWithArray:rowPatterns];
     
-    for (id element in rowPatterns) {
+    for (id element in colPatterns) {
         if (![allPatterns containsObject:element])
             [allPatterns addObject:element];
     }
@@ -785,44 +848,26 @@
             [allPatterns addObject:element];
     }
     
-//    for (id element in diaDownPatterns) {
-//        if (![allPatterns containsObject:element])
-//            [allPatterns addObject:element];
-//    }
-//
-//    for (id element in diaUpPatterns) {
-//        if (![allPatterns containsObject:element])
-//            [allPatterns addObject:element];
-//    }
-    
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"tag" ascending:YES];
-    allPatterns = [NSMutableArray arrayWithArray:[allPatterns sortedArrayUsingDescriptors:@[sortDescriptor]]];
-}
+    for (id element in diaDownPatterns) {
+        if (![allPatterns containsObject:element])
+            [allPatterns addObject:element];
+    }
 
--(NSMutableArray *)patternCheck:(PatternType)patternType
-{
-    switch (patternType)
-    {
-        case kPatternTypeSquare:
-            return [self squarePatternCheck];
-        case kPatternTypeRow:
-            return [self colPatternCheck];
-        case kPatternTypeCol:
-            return [self rowPatternCheck];
-        case kPatternTypeDiagonalDown:
-            return [self diagonalDownPatternCheck];
-        case kPatternTypeDiagonalUp:
-            return [self diagonalUpPatternCheck];
-        default:
-            return nil;
+    for (id element in diaUpPatterns) {
+        if (![allPatterns containsObject:element])
+            [allPatterns addObject:element];
     }
 }
 
--(NSMutableArray *)squarePatternCheck
+-(void)squarePatternCheck
 {
     NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+    
+    NSMutableArray *bodyArray = [NSMutableArray arrayWithArray:_snakeBody];
+    
+    [bodyArray removeObjectsInArray:squarePatterns];
 
-    for (SnakeNode *node in _snakeBody) {
+    for (SnakeNode *node in bodyArray) {
         
         NSInteger r = [node nodeRow];
         NSInteger c = [node nodeColumn];
@@ -838,7 +883,9 @@
         
         if (node2 && node3 && node4) {
             patternArray = [[NSMutableArray alloc]initWithArray: @[node,node2,node3,node4]];
-            return patternArray;
+            [squarePatterns addObjectsFromArray:patternArray];
+            [self squarePatternCheck];
+            break;
         }
         else
         {
@@ -851,19 +898,24 @@
                 
                 if (node2 && node3) {
                     patternArray = [[NSMutableArray alloc]initWithArray: @[node,node2,node3,node4]];
-                    return patternArray;
+                    [squarePatterns addObjectsFromArray:patternArray];
+                    [self squarePatternCheck];
+                    break;
                 }
             }
         }
     }
-    return nil;
 }
 
--(NSMutableArray *)colPatternCheck
+-(void)colPatternCheck
 {
     NSMutableArray *patternArray = [[NSMutableArray alloc]init];
+    
+    NSMutableArray *bodyArray = [NSMutableArray arrayWithArray:_snakeBody];
+    
+    [bodyArray removeObjectsInArray:colPatterns];
 
-    for (SnakeNode *node in _snakeBody) {
+    for (SnakeNode *node in bodyArray) {
         
         [patternArray removeAllObjects];
         [patternArray addObject:node];
@@ -911,17 +963,24 @@
     
         if (count >= chain) {
             _combos++;
-            return patternArray;
+            for (SnakeNode *patternNode in patternArray) {
+                [colPatterns addObject:patternNode];
+            }
+            [self colPatternCheck];
+            break;
         }
     }
-    return nil;
 }
 
--(NSMutableArray *)rowPatternCheck
+-(void)rowPatternCheck
 {
     NSMutableArray *patternArray = [[NSMutableArray alloc]init];
 
-    for (SnakeNode *node in _snakeBody) {
+    NSMutableArray *bodyArray = [NSMutableArray arrayWithArray:_snakeBody];
+    
+    [bodyArray removeObjectsInArray:rowPatterns];
+
+    for (SnakeNode *node in bodyArray) {
         
         [patternArray removeAllObjects];
         [patternArray addObject:node];
@@ -970,19 +1029,25 @@
         }
         
         if (count >= chain) {
-
-            
             _combos++;
-            return patternArray;
+            for (SnakeNode *patternNode in patternArray) {
+                [rowPatterns addObject:patternNode];
+            }
+            [self rowPatternCheck];
+            break;
         }
     }
-    return nil;
 }
 
--(NSMutableArray *)diagonalDownPatternCheck
+-(void)diagonalDownPatternCheck
 {
     NSMutableArray *patternArray = [[NSMutableArray alloc]init];
-    for (SnakeNode *node in _snakeBody) {
+    
+    NSMutableArray *bodyArray = [NSMutableArray arrayWithArray:_snakeBody];
+    
+    [bodyArray removeObjectsInArray:diaDownPatterns];
+    
+    for (SnakeNode *node in bodyArray) {
         
         [patternArray removeAllObjects];
         [patternArray addObject:node];
@@ -1035,20 +1100,27 @@
         }
         
         if (count >= chain) {
-            
 
-            
             _combos++;
-            return patternArray;
+            
+            for (SnakeNode *patternNode in patternArray) {
+                [diaDownPatterns addObject:patternNode];
+            }
+            [self diagonalDownPatternCheck];
+            break;
         }
     }
-    return nil;
 }
 
--(NSMutableArray *)diagonalUpPatternCheck
+-(void)diagonalUpPatternCheck
 {
     NSMutableArray *patternArray = [[NSMutableArray alloc]init];
-    for (SnakeNode *node in _snakeBody) {
+    
+    NSMutableArray *bodyArray = [NSMutableArray arrayWithArray:_snakeBody];
+    
+    [bodyArray removeObjectsInArray:diaUpPatterns];
+    
+    for (SnakeNode *node in bodyArray) {
         
         [patternArray removeAllObjects];
         [patternArray addObject:node];
@@ -1102,10 +1174,12 @@
         
         if (count >= chain) {
             _combos++;
-            return patternArray;
+            for (SnakeNode *patternNode in patternArray) {
+                [diaUpPatterns addObject:patternNode];
+            }
+            [self diagonalUpPatternCheck];
         }
     }
-    return nil;
 }
 
 - (SnakeNode *)hasPatternRow:(NSInteger)row col:(NSInteger)col assetType:(AssetType)type
@@ -1129,6 +1203,11 @@
 
 -(void)explodeBody:(SnakeNode *)removeBody
 {
+    if (removeBody.hasBomb) {
+        totalBombs++;
+        [self levelChecker];
+    }
+    
     if (removeBody.level == 2)
         
         if (removeBody.assetType == kAssetTypeBlue) {
@@ -1157,6 +1236,8 @@
 
 -(void)explodeBombAnimation:(SnakeNode *)bomb
 {
+    totalBombs++;
+    [self levelChecker];
     CGRect bodyFrame = bomb.frame;
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
@@ -1166,6 +1247,8 @@
 
 -(void)explodeBombSqaureAnimation:(SnakeNode *)bomb
 {
+    totalBombs++;
+    [self levelChecker];
     CGRect bodyFrame = bomb.frame;
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
@@ -1219,7 +1302,10 @@
                          node.nodeImageView.transform = t;
                          
                          if (showExplode) {
-                             if( node.bombType == kBombTypeSquareExplode)
+                             
+                             if (node.bombType == kBombTypeExplodeBlock)
+                                 [self explodeBody:node];
+                             else if( node.bombType == kBombTypeSquareExplode)
                                  [self explodeBombSqaureAnimation:node];
                              else
                                  [self explodeBombAnimation:node];
