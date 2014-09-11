@@ -46,14 +46,14 @@
             emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"YellowParticle"ofType:@"sks"]];
             color = YellowDotColor;
             break;
-        case kAssetTypeGrey:
-            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"GreyParticle"ofType:@"sks"]];
-            color = GreyDotColor;
-            break;
-        case kAssetTypeOrange:
-            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"OrangeParticle"ofType:@"sks"]];
-            color = OrangeDotColor;
-            break;
+//        case kAssetTypeGrey:
+//            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"GreyParticle"ofType:@"sks"]];
+//            color = GreyDotColor;
+//            break;
+//        case kAssetTypeOrange:
+//            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"OrangeParticle"ofType:@"sks"]];
+//            color = OrangeDotColor;
+//            break;
     }
     emitter.position = CGPointMake(posX, posY);
     emitter.particleColor =  color;
@@ -66,7 +66,7 @@
 - (void)playMoveSound
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-            [self runAction:[SKAction playSoundFileNamed:@"move.mp3" waitForCompletion:NO]];
+            [self runAction:[SKAction playSoundFileNamed:@"introMove.mp3" waitForCompletion:NO]];
 }
 
 - (void)introMoveSound

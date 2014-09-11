@@ -81,12 +81,12 @@
         case kAssetTypeYellow:
             color = YellowDotColor;
             break;
-        case kAssetTypeGrey:
-            color = GreyDotColor;
-            break;
-        case kAssetTypeOrange:
-            color = OrangeDotColor;
-            break;
+//        case kAssetTypeGrey:
+//            color = GreyDotColor;
+//            break;
+//        case kAssetTypeOrange:
+//            color = OrangeDotColor;
+//            break;
     }
     
     for (SnakeNode *emptyNode in _emptyNodeArray) {

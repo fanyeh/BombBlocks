@@ -31,7 +31,7 @@
     classicController = [[ClassicGameController alloc]init];
     statsController = [[GameStatsViewController alloc]init];
     
-    [self.window setRootViewController:statsController];
+    [self.window setRootViewController:classicController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center

@@ -180,6 +180,10 @@
     SnakeNode *bodyNode = [vacantNode objectAtIndex:arc4random() % [vacantNode count]];
     
     SnakeNode *snakeBody = [[SnakeNode alloc]initWithFrame:bodyNode.frame gameAssetType:_nextNode.assetType];
+    if (_nextNode.hasCount) {
+        
+        [snakeBody addCountLabel];
+    }
     [snakeBody setNodeIndexRow:bodyNode.nodeRow andCol:bodyNode.nodeColumn];
     snakeBody.direction = [self snakeHead].direction;
     snakeBody.tag = [_snakeBody count];
@@ -208,8 +212,9 @@
             snakeBody.transform = t;
             
         } completion:^(BOOL finished) {
-            [_particleView playMoveSound];
-            [self cancelPattern:completBlock];
+            
+            completBlock();
+            //[self cancelPattern:completBlock];
             
         }];
         
@@ -267,14 +272,16 @@
 
 -(void)updateNextNode:(SnakeNode *)node animation:(BOOL)animation
 {
+    if (node.hasCount)
+        [node removeCountLabel];
     
-    int randomAsset = arc4random() % _reminder;
+    //int randomAsset = arc4random() % _reminder;
+    int randomAsset = arc4random() % 12;
+
     node.level = ceil(randomAsset / 4) + 1;
     
-    if (randomAsset == 8 || randomAsset == 10)
+    if (randomAsset > 7 )
         node.level = 1;
-    else if (randomAsset == 9 || randomAsset == 11)
-        node.level = 2;
     
     switch (randomAsset) {
         case 0:
@@ -318,24 +325,28 @@
             node.nodeColor = YellowDotColor;
             break;
         case 8:
-            node.assetType = kAssetTypeGrey;
-            node.nodeImageView.image = [UIImage imageNamed:@"grey.png"];
-            node.nodeColor = GreyDotColor;
+            node.assetType = kAssetTypeBlue;
+            node.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
+            node.nodeColor = BlueDotColor;
+            node.hasCount = YES;
             break;
         case 9:
-            node.assetType = kAssetTypeGrey;
-            node.nodeImageView.image = [UIImage imageNamed:@"grey_2.png"];
-            node.nodeColor = GreyDotColor;
+            node.assetType = kAssetTypeRed;
+            node.nodeImageView.image = [UIImage imageNamed:@"red.png"];
+            node.nodeColor = RedDotColor;
+            node.hasCount = YES;
             break;
         case 10:
-            node.assetType = kAssetTypeOrange;
-            node.nodeImageView.image = [UIImage imageNamed:@"orange.png"];
-            node.nodeColor = OrangeDotColor;
+            node.assetType = kAssetTypeGreen;
+            node.nodeImageView.image = [UIImage imageNamed:@"green.png"];
+            node.nodeColor = GreenDotColor;
+            node.hasCount = YES;
             break;
         case 11:
-            node.assetType = kAssetTypeOrange;
-            node.nodeImageView.image = [UIImage imageNamed:@"orange_2.png"];
-            node.nodeColor = OrangeDotColor;
+            node.assetType = kAssetTypeYellow;
+            node.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
+            node.nodeColor = YellowDotColor;
+            node.hasCount = YES;
             break;
     }
     
@@ -441,7 +452,8 @@
         
     } completion:^(BOOL finished) {
         
-        [self cancelPattern:completBlock];
+        completBlock();
+        //[self cancelPattern:completBlock];
 
     }];
 }
@@ -475,16 +487,22 @@
             for (SnakeNode *n in allPatterns) {
                 
                 if (n.hasBomb) {
+                    
                     bombChain++;
                     [_delegate hideLastTutorial];
                     n.scoreAdder = 50;
+                    [n scoreLabelAnimation];
+                    
                 }
-                else {
+                else if (n.level < 3) {
+                    
                     n.scoreAdder = ([allPatterns count]-2) * 5 + 5;
                     [_delegate updateScore:n.scoreAdder];
+                    [n scoreLabelAnimation];
+                    
                 }
-                [n scoreLabelAnimation];
             }
+            
         } completion:^(BOOL finished) {
             
             [_gamePad resetEmptyNodeBorder];
@@ -500,16 +518,16 @@
                 else if (n.level == 1) {
                     [self explodeBody:n];
                     [n removeFromSuperview];
-                } else
+                }else
                     [self explodeBody:n];
             }
             
             // Remove all combos from snake body
             for (SnakeNode *n in allPatterns)
             {
-                if (n.level == 2 && !n.hasBomb)
+                if (n.level > 1 && !n.hasBomb)
                     [self reduceLevel:n];
-                else
+               else
                     [_snakeBody removeObject:n];
             }
             
@@ -542,8 +560,7 @@
             [self newSnake];
         completBlock();
     }
-//    else
-//        [self cancelPattern:completBlock];
+
 }
 
 - (void)explodeByBomb:(SnakeNode *)bomb complete:(void(^)(void))completBlock
@@ -587,33 +604,50 @@
             [self reduceLevel:node];
         }
     }
-//    [self triggerBomb:completBlock];
 }
 
 - (void)reduceLevel:(SnakeNode *)node
 {
-    node.level = 1;
-    [node hideScoreLabel];
-    [node.nodeImageView.layer removeAllAnimations];
-    switch (node.assetType) {
-        case kAssetTypeBlue:
-            node.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
-            break;
-        case kAssetTypeGreen:
-            node.nodeImageView.image = [UIImage imageNamed:@"green.png"];
-            break;
-        case kAssetTypeRed:
-            node.nodeImageView.image = [UIImage imageNamed:@"red.png"];
-            break;
-        case kAssetTypeYellow:
-            node.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
-            break;
-        case kAssetTypeGrey:
-            node.nodeImageView.image = [UIImage imageNamed:@"grey.png"];
-            break;
-        case kAssetTypeOrange:
-            node.nodeImageView.image = [UIImage imageNamed:@"orange.png"];
-            break;
+    if (node.level == 2) {
+        
+        node.level = 1;
+        [node hideScoreLabel];
+        [node.nodeImageView.layer removeAllAnimations];
+        switch (node.assetType) {
+            case kAssetTypeBlue:
+                node.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
+                break;
+            case kAssetTypeGreen:
+                node.nodeImageView.image = [UIImage imageNamed:@"green.png"];
+                break;
+            case kAssetTypeRed:
+                node.nodeImageView.image = [UIImage imageNamed:@"red.png"];
+                break;
+            case kAssetTypeYellow:
+                node.nodeImageView.image = [UIImage imageNamed:@"yellow.png"];
+                break;
+        }
+        
+    }  else if (node.level == 3) {
+        
+        node.level = 2;
+        [node hideScoreLabel];
+        [node.nodeImageView.layer removeAllAnimations];
+        switch (node.assetType) {
+            case kAssetTypeBlue:
+                node.nodeImageView.image = [UIImage imageNamed:@"blue_2.png"];
+                break;
+            case kAssetTypeGreen:
+                node.nodeImageView.image = [UIImage imageNamed:@"green_2.png"];
+                break;
+            case kAssetTypeRed:
+                node.nodeImageView.image = [UIImage imageNamed:@"red_2.png"];
+                break;
+            case kAssetTypeYellow:
+                node.nodeImageView.image = [UIImage imageNamed:@"yellow_2.png"];
+                break;
+        }
+        
     }
 }
 
@@ -677,7 +711,7 @@
         }
     }
 
-    [UIView animateWithDuration: 0.3 animations:^{
+    [UIView animateWithDuration: 0.5 animations:^{
         for (SnakeNode *node in _snakeBody) {
             if (node.assetType ==  bomb.assetType) {
                 [self showScoreLabel:node];
@@ -1283,14 +1317,15 @@
 
 - (void)shrinkAnimation:(SnakeNode *)node showExplode:(BOOL)showExplode
 {
+    [node.nodeImageView.layer removeAllAnimations];
     CGAffineTransform t = node.nodeImageView.transform;
+    
     [UIView animateWithDuration:0.25
                           delay:0.0
                         options:
      UIViewAnimationOptionCurveEaseInOut |
      UIViewAnimationOptionRepeat |
-     UIViewAnimationOptionAutoreverse |
-     UIViewAnimationOptionAllowUserInteraction
+     UIViewAnimationOptionAutoreverse
      
                      animations:^{
                          
@@ -1399,12 +1434,12 @@
             case kAssetTypeYellow:
                 n.nodeImageView.image = [UIImage imageNamed:@"go_yellow.png"];
                 break;
-            case kAssetTypeGrey:
-                n.nodeImageView.image = [UIImage imageNamed:@"go_grey.png"];
-                break;
-            case kAssetTypeOrange:
-                n.nodeImageView.image = [UIImage imageNamed:@"go_orange.png"];
-                break;
+//            case kAssetTypeGrey:
+//                n.nodeImageView.image = [UIImage imageNamed:@"go_grey.png"];
+//                break;
+//            case kAssetTypeOrange:
+//                n.nodeImageView.image = [UIImage imageNamed:@"go_orange.png"];
+//                break;
         }
         
         [flipBodyArray removeLastObject];

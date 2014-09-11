@@ -61,6 +61,13 @@
     CustomLabel *chainLabel;
     
     NSInteger maxBombChain;
+    
+    UIView *scanner;
+    UIView *scannerMask;
+    
+    NSTimer *scanTimer;
+    
+    BOOL scanFromRight;
 
 }
 @end
@@ -94,7 +101,7 @@
     // -------------------- Setup game pad -------------------- //
     gamePad = [[GamePad alloc]initGamePad];
     gamePad.center = self.view.center;
-
+    
     // -------------------- Setup particle views -------------------- //
     // Configure the SKView
     SKView * skView = [[SKView alloc]initWithFrame:CGRectMake(0, 0, gamePad.frame.size.width, gamePad.frame.size.height)];
@@ -179,6 +186,27 @@
     chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-300)/2, 180, 300,40) fontSize:40];
     chainLabel.hidden = YES;
     [self.view addSubview:chainLabel];
+    
+    // Scanner
+    scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
+                                                      gamePad.frame.origin.y - 5,
+                                                      3,
+                                                      314+20)];
+    scannerMask.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.500];
+    [self.view addSubview:scannerMask];
+
+    
+    scanner = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
+                                                    gamePad.frame.origin.y - 5,
+                                                    3,
+                                                314+20)];
+    scanner.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:scanner];
+    
+    scanFromRight = YES;
+    
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
+
     
 }
 
@@ -291,6 +319,7 @@
     tutorialLabel.text = NSLocalizedString(@"Tutorial",nil);
     tutorialLabel.textAlignment = NSTextAlignmentLeft;
     [settingBG addSubview:tutorialLabel];
+    
 }
 
 -(void)settings:(UIButton *)button
@@ -349,12 +378,10 @@
 -(void)setSoundOnLabel
 {
     if (!soundOn) {
-        //soundOnLabel.textColor = [UIColor whiteColor];
         soundOnLabel.text = @"OFF";
         [soundButton setImage:[UIImage imageNamed:@"soundOff90.png"] forState:UIControlStateNormal];
     }
     else {
-        //soundOnLabel.textColor = RedDotColor;
         soundOnLabel.text = @"ON";
         [soundButton setImage:[UIImage imageNamed:@"soundOn90.png"] forState:UIControlStateNormal];
     }
@@ -363,12 +390,10 @@
 -(void)setMusicOnLabel
 {
     if (!musicOn) {
-        //musicOnLabel.textColor = [UIColor whiteColor];
         musicOnLabel.text = @"OFF";
         [musicButton setImage:[UIImage imageNamed:@"musicOff90.png"] forState:UIControlStateNormal];
         [appDelegate.audioPlayer stop];
     } else {
-        //musicOnLabel.textColor = BlueDotColor;
         musicOnLabel.text = @"ON";
         [musicButton setImage:[UIImage imageNamed:@"musicOn90.png"] forState:UIControlStateNormal];
         [appDelegate.audioPlayer play];
@@ -386,18 +411,93 @@
 }
 
 #pragma mark - Move
+
+-(void)scannerAnimation
+{
+    gamePad.userInteractionEnabled = NO;
+    
+    [UIView animateWithDuration:1.5 animations:^{
+        if (scanFromRight) {
+            
+            scanner.frame = CGRectOffset(scanner.frame, 311, 0);
+            
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
+                                           scannerMask.frame.origin.y,
+                                           311,
+                                           314+20);
+        } else {
+            
+            scanner.frame = CGRectOffset(scanner.frame, -311, 0);
+            
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
+                                           scannerMask.frame.origin.y,
+                                           -311,
+                                           314+20);
+        }
+
+    }completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            scannerMask.alpha = 0.8;
+            
+        } completion:^(BOOL finished) {
+            
+            if (scanFromRight) {
+                
+                scannerMask.frame = CGRectOffset(scannerMask.frame, 311, 0);
+                scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
+                                               scannerMask.frame.origin.y,
+                                               3,
+                                               314+20);
+                scanFromRight = NO;
+                
+            } else {
+                
+                scannerMask.frame = CGRectOffset(scannerMask.frame, -311, 0);
+                scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
+                                               scannerMask.frame.origin.y,
+                                               3,
+                                               314+20);
+                scanFromRight = YES;
+            }
+            
+            [snake cancelPattern:^{
+                
+                if([snake checkIsGameover])
+                    [self gameOver];
+                else {
+                    
+                    if (snake.combos == 0 )
+                    {
+                        [snake createBody:^ {
+
+                            [self actionsAfterMove];
+                            
+                        }];
+                    }
+                    else
+                    {
+                        if (tutorialMode==2)
+                            [self showTutorial3];
+                        
+                        [self actionsAfterMove];
+                    }
+
+                }
+                
+            }];
+
+        }];
+    }];
+}
+
 -(void)swipeDirection:(UISwipeGestureRecognizer *)sender
 {
-    if (gamePad.userInteractionEnabled) {
+    if (gamePad.userInteractionEnabled && ![snake checkIsGameover]) {
         
-        if (tutorialMode==1) {
-
+        if (tutorialMode==1)
             [self showTutorial2];
-        }
-        SnakeNode *head = [snake.snakeBody firstObject];
-        [head.layer removeAllAnimations];
-        
-        gamePad.userInteractionEnabled = NO;
         
         MoveDirection dir;
         switch (sender.direction) {
@@ -415,24 +515,19 @@
                 break;
         }
         
+        [particle playMoveSound];
+
         [snake moveAllNodesBySwipe:dir complete:^{
             
-            if (snake.combos == 0 ) {
-                
-                [snake createBody:^ {
-                    [self actionsAfterMove];
-                }];
-                
-            } else {
-                
-                if (tutorialMode==2) {
-                    
-                    [self showTutorial3];
-                }
-                
-                [self actionsAfterMove];
-
+            // Reduce count check
+            for (SnakeNode *node in snake.snakeBody) {
+                if (node.hasCount)
+                    [node reduceCount];
             }
+
+            [snake createBody:^ {
+                
+            }];
         }];
     }
 }
@@ -442,7 +537,7 @@
     totalCombos += snake.combos;
     combosToCreateBomb += snake.combos;
     snake.combos = 0;
-
+    
     // Create Bomb
     if (combosToCreateBomb > 2) {
         
@@ -450,30 +545,15 @@
             [self showTutorial4];
         
         combosToCreateBomb = 0;
-        
-        gamePad.userInteractionEnabled = NO;
-        
         [gamePad createBombWithReminder:snake.reminder body:[snake snakeBody] complete:^{
             
-            [snake cancelPattern:^{
-                
-                if([snake checkIsGameover])
-                    [self gameOver];
-                else
-                    gamePad.userInteractionEnabled = YES;
-                
-            }];
+            gamePad.userInteractionEnabled = YES;
 
         }];
     }
-    else {
-        
+    else
         gamePad.userInteractionEnabled = YES;
-        if([snake checkIsGameover]) {
-            [particle playGameoverSound];
-            [self gameOver];
-        }
-    }
+
 }
 
 - (BOOL)moveDirecton:(UISwipeGestureRecognizerDirection)swipeDirection

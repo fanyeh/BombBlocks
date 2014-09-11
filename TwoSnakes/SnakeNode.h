@@ -32,6 +32,9 @@ struct NodeIndex {
 - (void)scoreLabelAnimation;
 - (void)removeBomb;
 - (void)hideScoreLabel;
+- (void)addCountLabel;
+- (void)reduceCount;
+-(void)removeCountLabel;
 
 @property (nonatomic,assign) AssetType assetType;
 @property (nonatomic,assign) BombType bombType;
@@ -43,7 +46,9 @@ struct NodeIndex {
 @property (nonatomic,assign) NSInteger nodeColumn;
 @property (nonatomic,assign) NSInteger nodeRow;
 @property (nonatomic,assign) BOOL hasBomb;
+@property (nonatomic,assign) BOOL hasCount;
 @property (nonatomic,assign) NSInteger scoreAdder;
 @property (nonatomic,assign) NSInteger level;
+@property (nonatomic,assign) NSInteger count;
 
 @end

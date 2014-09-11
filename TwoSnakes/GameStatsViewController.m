@@ -91,7 +91,7 @@
     bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 90, pauseLabelWidth, 35) fontSize:35];
     bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
-    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 150, pauseLabelWidth, 65) fontSize:65];
+    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 145, pauseLabelWidth, 65) fontSize:65];
 
     CGFloat yoffset = 240;
     CGFloat labelWidth = 90;
@@ -99,7 +99,7 @@
     CGFloat fontSize = 25;
     
     // Level
-    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2- 30 - labelWidth,yoffset,labelWidth,labelHeight) fontSize:fontSize];
+    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2- 30 - labelWidth,yoffset-10,labelWidth,labelHeight) fontSize:fontSize];
     levelLabel.text = NSLocalizedString(@"Level", nil);
     levelLabel.textAlignment = NSTextAlignmentLeft;
     

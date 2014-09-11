@@ -11,8 +11,8 @@
 
 @implementation SnakeNode
 {
-    CustomLabel *timeLabel;
-
+    CustomLabel *scoreLabel;
+    CustomLabel *countLabel;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -45,10 +45,11 @@
         _nodeImageView = [[UIImageView alloc]initWithFrame:imageViewRect];
         [self addSubview:_nodeImageView];
         
-        timeLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontSize:17];
-        timeLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
-        [self addSubview:timeLabel];
-        timeLabel.alpha = 0;
+        scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontSize:17];
+        scoreLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
+        [self addSubview:scoreLabel];
+        scoreLabel.alpha = 0;
+        _hasCount = NO;
     }
     return self;
 }
@@ -79,18 +80,18 @@
     
     _nodeImageView = [[UIImageView alloc]initWithFrame:imageViewRect];
     
-    timeLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontSize:17];
-    timeLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
-    [self addSubview:timeLabel];
-    timeLabel.alpha = 0;
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontSize:17];
+    scoreLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
+    [self addSubview:scoreLabel];
+    scoreLabel.alpha = 0;
     
     int randAsset;// = arc4random()%6;
     
-    if (reminder > 10)
-        randAsset = arc4random()%6;
-    else if (reminder > 8)
-        randAsset = arc4random()%5;
-    else if (reminder > 3)
+//    if (reminder > 10)
+//        randAsset = arc4random()%6;
+//    else if (reminder > 8)
+//        randAsset = arc4random()%5;
+    if (reminder > 3)
         randAsset = arc4random()%4;
     else
         randAsset = arc4random()%3;
@@ -119,16 +120,16 @@
             _assetType = kAssetTypeYellow;
             _nodeColor = YellowDotColor;
             break;
-        case 4:
-            _nodeImageView.image = [UIImage imageNamed:@"bomb_grey.png"];
-            _assetType = kAssetTypeGrey;
-            _nodeColor = YellowDotColor;
-            break;
-        case 5:
-            _nodeImageView.image = [UIImage imageNamed:@"bomb_orange.png"];
-            _assetType = kAssetTypeOrange;
-            _nodeColor = OrangeDotColor;
-            break;
+//        case 4:
+//            _nodeImageView.image = [UIImage imageNamed:@"bomb_grey.png"];
+//            _assetType = kAssetTypeGrey;
+//            _nodeColor = YellowDotColor;
+//            break;
+//        case 5:
+//            _nodeImageView.image = [UIImage imageNamed:@"bomb_orange.png"];
+//            _assetType = kAssetTypeOrange;
+//            _nodeColor = OrangeDotColor;
+//            break;
     }
     
     int randBomb;
@@ -187,7 +188,7 @@
 {
     _hasBomb = NO;
     [_nodeImageView removeFromSuperview];
-    [timeLabel removeFromSuperview];
+    [scoreLabel removeFromSuperview];
 }
 
 - (void)setNodeIndexRow:(NSInteger)row andCol:(NSInteger)col
@@ -200,16 +201,90 @@
 
 -(void)scoreLabelAnimation
 {
-    [self bringSubviewToFront:timeLabel];
-    timeLabel.text = [NSString stringWithFormat:@"+%ld",self.scoreAdder];
-    timeLabel.alpha = 1;
-    timeLabel.frame = CGRectOffset(timeLabel.frame, 0, -10);
+    [self bringSubviewToFront:scoreLabel];
+    scoreLabel.text = [NSString stringWithFormat:@"+%ld",self.scoreAdder];
+    scoreLabel.alpha = 1;
+    scoreLabel.frame = CGRectOffset(scoreLabel.frame, 0, -10);
 }
 
 -(void)hideScoreLabel
 {
-    timeLabel.alpha = 0;
-    timeLabel.frame = CGRectOffset(timeLabel.frame, 0, 10);
+    scoreLabel.alpha = 0;
+    scoreLabel.frame = CGRectOffset(scoreLabel.frame, 0, 10);
+}
+
+-(void)addCountLabel
+{
+    _hasCount = YES;
+    _count = 9;
+    CGFloat size = 16;
+    CGFloat pos = (self.frame.size.width-size-1);
+    countLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(pos,3,size,size) fontSize:size];
+    countLabel.text = [NSString stringWithFormat:@"%ld",_count];
+    [self addSubview:countLabel];
+}
+
+-(void)removeCountLabel
+{
+    _hasCount = NO;
+    [countLabel removeFromSuperview];
+}
+
+-(void)reduceCount
+{
+    _count --;
+    if (_count > 0)
+        countLabel.text = [NSString stringWithFormat:@"%ld",_count];
+    else {
+        _level = 3;
+        _hasCount = NO;
+
+        
+        [UIView animateWithDuration:0.2 animations:^{
+            
+            _nodeImageView.alpha = 0;
+            countLabel.alpha = 0;
+            
+        } completion:^(BOOL finished) {
+            
+            [countLabel removeFromSuperview];
+            switch (_assetType) {
+                case kAssetTypeBlue:
+                    _nodeImageView.image = [UIImage imageNamed:@"blue_3.png"];
+                    break;
+                case kAssetTypeRed:
+                    _nodeImageView.image = [UIImage imageNamed:@"red_3.png"];
+                    break;
+                case kAssetTypeGreen:
+                    _nodeImageView.image = [UIImage imageNamed:@"green_3.png"];
+                    break;
+                case kAssetTypeYellow:
+                    _nodeImageView.image = [UIImage imageNamed:@"yellow_3.png"];
+                    break;
+            }
+            _nodeImageView.alpha = 1;
+
+            CGAffineTransform t = _nodeImageView.transform;
+            CGAffineTransform t2 = CGAffineTransformScale(t, 1.2, 1.2);
+            _nodeImageView.transform = CGAffineTransformScale(t, 0.3, 0.3);
+            
+            [UIView animateWithDuration:0.15 animations:^{
+                
+                _nodeImageView.transform = t2;
+                
+            } completion:^(BOOL finished) {
+                
+                [UIView animateWithDuration:0.15 animations:^{
+                    
+                    _nodeImageView.transform = t;
+                    
+                }];
+                
+            }];
+
+        }];
+
+    }
 }
 
 @end

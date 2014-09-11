@@ -12,14 +12,10 @@ typedef enum {
     kAssetTypeYellow,
     kAssetTypeRed,
     kAssetTypeBlue,
-    kAssetTypeGreen,
-    kAssetTypeGrey,
-        kAssetTypeOrange
+    kAssetTypeGreen
 } AssetType;
 
 typedef enum {
-//    kBombTypeSwapTime = 0,
-//    kBombTypeFreezeTime,
     kBombTypeExplodeBlock = 0,
     kBombTypeExplodeVertical,
     kBombTypeExplodeHorizontal,
