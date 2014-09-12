@@ -280,7 +280,6 @@
         [node removeCountLabel];
     
     int randomAsset = arc4random() % _reminder;
-//    int randomAsset = arc4random() % 12;
 
     node.level = ceil(randomAsset / 4) + 1;
     

@@ -123,9 +123,14 @@
     
     // Next Node
     CGFloat nextNodeSize = 40;
-    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, self.view.frame.size.height - 100 , nextNodeSize, nextNodeSize)];
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, self.view.frame.size.height - 110 , nextNodeSize, nextNodeSize)];
     snake.nextNode = nextNode;
     [snake updateNextNode:nextNode animation:YES];
+    [self.view addSubview:nextNode];
+    
+    CustomLabel *nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-60)/2, nextNode.frame.origin.y + nextNodeSize, 60, 15) fontSize:15];
+    nextLabel.text = @"Next";
+    [self.view addSubview:nextLabel];
 
     scoreArray = [[NSMutableArray alloc]init];
 
@@ -166,14 +171,14 @@
     scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
     
     // Setting Button
-    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-35, 5, 30, 30)];
+    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-35, self.view.frame.size.height-35, 30, 30)];
     [settingButton setImage:[UIImage imageNamed:@"setting70.png"] forState:UIControlStateNormal];
     [settingButton addTarget:self action:@selector(showSetting:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:settingButton];
     
     // Pause Button
-    pauseButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-40)/2,self.view.frame.size.height-40-30, 40, 40)];
-    [pauseButton setImage:[UIImage imageNamed:@"pauseButton120.png"] forState:UIControlStateNormal];
+    pauseButton = [[UIButton alloc]initWithFrame:CGRectMake(5,self.view.frame.size.height-35, 30, 30)];
+    [pauseButton setImage:[UIImage imageNamed:@"pauseButton60.png"] forState:UIControlStateNormal];
     [pauseButton addTarget:self action:@selector(pauseGame) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:pauseButton];
     
@@ -310,6 +315,8 @@
 
     } completion:^(BOOL finished) {
         
+        [particle removeAllChildren];
+        [particle removeAllActions];
         [self performScanning];
         gamePad.userInteractionEnabled = NO;
 

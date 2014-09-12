@@ -169,7 +169,7 @@
     [self.view addSubview:levelLabel];
     
     CGFloat xoffset = 35;
-    CGFloat offset = levelLabel.frame.origin.y+labelHeight+10;
+    CGFloat offset = levelLabel.frame.origin.y+labelHeight+15;
     for (NSInteger i = 0; i < 10; i++) {
         
         CustomLabel *subLevelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xoffset,
@@ -187,11 +187,6 @@
         
         [self.view addSubview:subLevelLabel];
         xoffset += fontSize;
-        
-//        if (i==4) {
-//            offset += 40;
-//            xoffset = levelLabel.frame.origin.x + labelWidth + 10;
-//        }
     }
     
     UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake((self.view.frame.size.width-40)/2,pauseLabelHeight-40-30, 40, 40)];
