@@ -7,18 +7,19 @@
 //
 
 #import "ClassicGameController.h"
+#import "GameStatsViewController.h"
 #import "MenuController.h"
 #import "GameAsset.h"
 #import "ParticleView.h"
 #import "GamePad.h"
 #import "Snake.h"
-#import "MKAppDelegate.h"
 #import "CustomLabel.h"
 #import "ScoreObject.h"
 #import <AVFoundation/AVFoundation.h>
-#import "GameStatsViewController.h"
 #import <StoreKit/StoreKit.h>
 #import "Reachability.h"
+#import "MKAppDelegate.h"
+#import "GameSettingViewController.h"
 
 @interface ClassicGameController () <gameoverDelegate,replayDelegate,SKStoreProductViewControllerDelegate>
 {
@@ -30,7 +31,6 @@
     NSInteger totalCombos;
     NSInteger combosToCreateBomb;
     BOOL swap;
-    CustomLabel *nextLabel;
     CustomLabel *scoreLabel;
     BOOL gameIsOver;
     NSInteger scoreGap;
@@ -38,36 +38,26 @@
     NSMutableArray *scoreArray;
     ParticleView *particle;
     UIButton *settingButton;
-    UIButton *soundButton;
-    UIButton *musicButton;
-    UIButton *rateButton;
-    UIButton *tutorial;
-    UIView *settingBG;
-    BOOL isSetting;
-    BOOL musicOn;
-    BOOL soundOn;
     MKAppDelegate *appDelegate;
-    CustomLabel *soundOnLabel;
-    CustomLabel *musicOnLabel;
     UIView *tutorial1BG;
     UIView *tutorial2BG;
     UIView *tutorial3BG;
     UIView *tutorial4BG;
-
     NSInteger tutorialMode;
     UIImage *screenShot;
-    
     CustomLabel *levelLabel;
     CustomLabel *chainLabel;
-    
     NSInteger maxBombChain;
-    
-    UIView *scanner;
+    UIImageView *scanner;
     UIView *scannerMask;
-    
     NSTimer *scanTimer;
-    
     BOOL scanFromRight;
+    NSTimeInterval scanTimeInterval;
+    UIButton *pauseButton;
+    UIView *pauseView;
+
+    UIButton *playButton;
+
 
 }
 @end
@@ -89,6 +79,8 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor colorWithWhite:0.063 alpha:1.000];
+    
+    // BG image
     UIImageView *bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
     [self.view addSubview:bgImageView];
     
@@ -118,7 +110,7 @@
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 30 , 250, 65) fontSize:65];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 15 , 250, 65) fontSize:65];
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
@@ -134,13 +126,67 @@
     nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, self.view.frame.size.height - 100 , nextNodeSize, nextNodeSize)];
     snake.nextNode = nextNode;
     [snake updateNextNode:nextNode animation:YES];
-    [self.view addSubview:nextNode];
-    
-    nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(120, self.view.frame.size.height - 55, 80, 17) fontSize:17];
-    nextLabel.text = @"Next";
-    nextLabel.textColor = [UIColor whiteColor];
-    [self.view addSubview:nextLabel];
 
+    scoreArray = [[NSMutableArray alloc]init];
+
+    // App delegate
+    appDelegate = [[UIApplication sharedApplication] delegate];
+
+    // Turn music
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
+        [appDelegate.audioPlayer play];
+    
+    tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
+    if (tutorialMode == 1)
+        [self showTutorial1];
+    
+    // Effects
+    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 88.5, 150,30) fontSize:30];
+    levelLabel.alpha = 0;
+    [self.view addSubview:levelLabel];
+    
+    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-300)/2, 180, 300,40) fontSize:40];
+    chainLabel.hidden = YES;
+    chainLabel.center = self.view.center;
+    [self.view addSubview:chainLabel];
+    
+    // Scanner
+    scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,3,314)];
+    scannerMask.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.600];
+    scannerMask.alpha = 0;
+    [self.view addSubview:scannerMask];
+
+    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-3,gamePad.frame.origin.y-17.5,9,349)];
+    scanner.image = [UIImage imageNamed:@"scanner.png"];
+    scanner.alpha = 0;
+    [self.view addSubview:scanner];
+    
+    scanFromRight = YES;
+    scanTimeInterval = 6;
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
+    
+    // Setting Button
+    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-35, 5, 30, 30)];
+    [settingButton setImage:[UIImage imageNamed:@"setting70.png"] forState:UIControlStateNormal];
+    [settingButton addTarget:self action:@selector(showSetting:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:settingButton];
+    
+    // Pause Button
+    pauseButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-40)/2,self.view.frame.size.height-40-30, 40, 40)];
+    [pauseButton setImage:[UIImage imageNamed:@"pauseButton120.png"] forState:UIControlStateNormal];
+    [pauseButton addTarget:self action:@selector(pauseGame) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:pauseButton];
+    
+    pauseView = [[UIView alloc]initWithFrame:self.view.frame];
+    pauseView.frame = CGRectOffset(pauseView.frame, 0, -self.view.frame.size.height);
+    pauseView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.600];
+    [self.view addSubview:pauseView];
+    
+    playButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-60)/2,(self.view.frame.size.height-60)/2, 60, 60)];
+    [playButton setImage:[UIImage imageNamed:@"playButton120.png"] forState:UIControlStateNormal];
+    [playButton addTarget:self action:@selector(playGame) forControlEvents:UIControlEventTouchDown];
+    [pauseView addSubview:playButton];
+    
     // Setup swipe gestures
     UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDirection:)];
     [swipeRight setDirection:UISwipeGestureRecognizerDirectionRight];
@@ -157,59 +203,10 @@
     UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDirection:)];
     [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
     [gamePad addGestureRecognizer:swipeUp];
-    
-    scoreArray = [[NSMutableArray alloc]init];
-    
-    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-35, 568-35, 30, 30)];
-    [settingButton setImage:[UIImage imageNamed:@"setting70.png"] forState:UIControlStateNormal];
-    [settingButton addTarget:self action:@selector(settings:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:settingButton];
-    
-    appDelegate = [[UIApplication sharedApplication] delegate];
-    
-    musicOn = [[NSUserDefaults standardUserDefaults] boolForKey:@"music"];
-    soundOn = [[NSUserDefaults standardUserDefaults] boolForKey:@"sound"];
-    
-    if (musicOn)
-        [appDelegate.audioPlayer play];
-    
-    [self settingPage];
-    
-    tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
-    if (tutorialMode == 1)
-        [self showTutorial1];
-    
-    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 180, 150,40) fontSize:40];
-    levelLabel.hidden = YES;
-    [self.view addSubview:levelLabel];
-    
-    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-300)/2, 180, 300,40) fontSize:40];
-    chainLabel.hidden = YES;
-    [self.view addSubview:chainLabel];
-    
-    // Scanner
-    scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
-                                                      gamePad.frame.origin.y - 5,
-                                                      3,
-                                                      314+20)];
-    scannerMask.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.500];
-    [self.view addSubview:scannerMask];
-
-    
-    scanner = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
-                                                    gamePad.frame.origin.y - 5,
-                                                    3,
-                                                314+20)];
-    scanner.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:scanner];
-    
-    scanFromRight = YES;
-    
-    scanTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
-
-    
 }
 
+
+#pragma mark - Effects
 -(void)showLevel:(NSInteger)level
 {
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
@@ -220,15 +217,17 @@
     else
         
     levelLabel.text = [NSString stringWithFormat:@"Level %ld",level];
-    CGRect originalFrame = levelLabel.frame;
-    levelLabel.hidden = NO;
-    [UIView animateWithDuration:2.0 animations:^{
-        levelLabel.frame = CGRectOffset(levelLabel.frame, 0, -40);
-        levelLabel.alpha = 0;
-    } completion:^(BOOL finished) {
-        levelLabel.hidden = YES;
+    [UIView animateWithDuration:1.0 animations:^{
+        
         levelLabel.alpha = 1;
-        levelLabel.frame = originalFrame;
+        
+    } completion:^(BOOL finished) {
+
+        [UIView animateWithDuration:1.0 animations:^{
+            
+            levelLabel.alpha = 0;
+        }];
+        
     }];
 }
 
@@ -250,247 +249,142 @@
         maxBombChain = bombChain;
 }
 
-- (void)settingPage
-{
-    settingBG = [[UIView alloc]initWithFrame:self.view.frame];
-    settingBG.frame = CGRectOffset(settingBG.frame, 0, -568);
-    settingBG.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.800];
-    [self.view addSubview:settingBG];
-    
-    UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, 35, 35)];
-    [backButton setImage:[UIImage imageNamed:@"back70.png"] forState:UIControlStateNormal];
-    [backButton addTarget:self action:@selector(settings:) forControlEvents:UIControlEventTouchDown];
-    [settingBG addSubview:backButton];
-    
-    CGFloat xCord = 40;
-    CGFloat yGap = 100;
-    CGFloat fontSize = 30;
-    
-    CGFloat centerY = (self.view.frame.size.height - 45*4 - (yGap-45)*3)/2 ;
+#pragma mark - Controls
 
-    // Sound
-    soundButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY, 45, 45)];
-    [soundButton setImage:[UIImage imageNamed:@"soundOn90.png"] forState:UIControlStateNormal];
-    [soundButton addTarget:self action:@selector(turnSound) forControlEvents:UIControlEventTouchDown];
-    [settingBG addSubview:soundButton];
+-(void)pauseGame
+{
+    [self buttonAnimation:pauseButton];
+    gamePad.userInteractionEnabled = NO;
+    [scanTimer invalidate];
     
-    CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY, 90, 45) fontSize:fontSize];
-    soundLabel.text = NSLocalizedString(@"Sound",nil);
-    soundLabel.textAlignment = NSTextAlignmentLeft;
-    [settingBG addSubview:soundLabel];
-    
-    soundOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY, 90, 45) fontSize:25];
-    [self setSoundOnLabel];
-    [settingBG addSubview:soundOnLabel];
-    
-    // Music
-    musicButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap, 45, 45)];
-    [musicButton setImage:[UIImage imageNamed:@"musicOn90.png"] forState:UIControlStateNormal];
-    [musicButton addTarget:self action:@selector(turnMusic) forControlEvents:UIControlEventTouchDown];
-    [settingBG addSubview:musicButton];
-    
-    CustomLabel *musicLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap, 90, 45) fontSize:fontSize];
-    musicLabel.text = NSLocalizedString(@"Music",nil);
-    musicLabel.textAlignment = NSTextAlignmentLeft;
-    [settingBG addSubview:musicLabel];
-    
-    musicOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY+yGap, 90, 45) fontSize:25];
-    [self setMusicOnLabel];
-    [settingBG addSubview:musicOnLabel];
-    
-    // Rating
-    rateButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap*2, 45, 45)];
-    [rateButton setImage:[UIImage imageNamed:@"rating90.png"] forState:UIControlStateNormal];
-    [rateButton addTarget:self action:@selector(rateThisApp) forControlEvents:UIControlEventTouchDown];
-    [settingBG addSubview:rateButton];
-    
-    CustomLabel *ratingLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*2, 120, 45) fontSize:fontSize];
-    ratingLabel.text = NSLocalizedString(@"Rate Me",nil);
-    ratingLabel.textAlignment = NSTextAlignmentLeft;
-    [settingBG addSubview:ratingLabel];
-    
-    // Tutorial
-    tutorial = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap*3, 45, 45)];
-    [tutorial setImage:[UIImage imageNamed:@"tutorial90.png"] forState:UIControlStateNormal];
-    [tutorial addTarget:self action:@selector(startTutorial) forControlEvents:UIControlEventTouchDown];
-    [settingBG addSubview:tutorial];
-    
-    CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*3, 120, 45) fontSize:fontSize];
-    tutorialLabel.text = NSLocalizedString(@"Tutorial",nil);
-    tutorialLabel.textAlignment = NSTextAlignmentLeft;
-    [settingBG addSubview:tutorialLabel];
-    
+    [UIView animateWithDuration:0.5 animations:^{
+        pauseView.frame = CGRectOffset(pauseView.frame, 0, 568);
+    }];
 }
 
--(void)settings:(UIButton *)button
+-(void)playGame
+{
+    [self buttonAnimation:pauseButton];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        pauseView.frame = CGRectOffset(pauseView.frame, 0, -568);
+    } completion:^(BOOL finished) {
+        gamePad.userInteractionEnabled = YES;
+        scanTimer = [NSTimer scheduledTimerWithTimeInterval:6 target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
+    }];
+}
+
+-(void)showSetting:(UIButton *)button
 {
     [self buttonAnimation:button];
     [particle playButtonSound];
-    if (!isSetting) {
+    
+    GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
+    [self presentViewController:controller animated:YES completion:nil];
+
+}
+
+-(void)buttonAnimation:(UIButton *)button
+{
+    CGAffineTransform t = button.transform;
+    
+    [UIView animateWithDuration:0.15 animations:^{
         
-        isSetting = YES;
+        button.transform = CGAffineTransformScale(t, 0.85, 0.85);
         
-        [UIView animateWithDuration:0.5 animations:^{
-            
-            settingBG.frame = CGRectOffset(settingBG.frame, 0, 568);
-            settingButton.alpha = 0;
-        }];
+    } completion:^(BOOL finished) {
         
-    } else {
-        
-        isSetting = NO;
-        [UIView animateWithDuration:0.5 animations:^{
-            
-            settingBG.frame = CGRectOffset(settingBG.frame, 0, -568);
-            settingButton.alpha = 1;
-
-        }];
-    }
+        button.transform = t;
+    }];
 }
 
-- (void)turnMusic
-{
-    [self buttonAnimation:musicButton];
-    [particle playButtonSound];
-    if (musicOn) {
-        musicOn = NO;
-        [appDelegate.audioPlayer stop];
-    } else {
-        musicOn = YES;
-        [appDelegate.audioPlayer play];
-    }
-    [self setMusicOnLabel];
-    [[NSUserDefaults standardUserDefaults] setBool:musicOn forKey:@"music"];
-}
-
-- (void)turnSound
-{
-    [self buttonAnimation:soundButton];
-    [particle playButtonSound];
-    if (soundOn)
-        soundOn = NO;
-    else
-        soundOn = YES;
-    [self setSoundOnLabel];
-    [[NSUserDefaults standardUserDefaults] setBool:soundOn forKey:@"sound"];
-}
-
--(void)setSoundOnLabel
-{
-    if (!soundOn) {
-        soundOnLabel.text = @"OFF";
-        [soundButton setImage:[UIImage imageNamed:@"soundOff90.png"] forState:UIControlStateNormal];
-    }
-    else {
-        soundOnLabel.text = @"ON";
-        [soundButton setImage:[UIImage imageNamed:@"soundOn90.png"] forState:UIControlStateNormal];
-    }
-}
-
--(void)setMusicOnLabel
-{
-    if (!musicOn) {
-        musicOnLabel.text = @"OFF";
-        [musicButton setImage:[UIImage imageNamed:@"musicOff90.png"] forState:UIControlStateNormal];
-        [appDelegate.audioPlayer stop];
-    } else {
-        musicOnLabel.text = @"ON";
-        [musicButton setImage:[UIImage imageNamed:@"musicOn90.png"] forState:UIControlStateNormal];
-        [appDelegate.audioPlayer play];
-    }
-}
-
-#pragma mark - Game Over
-
--(void)gameOver
-{
-    gamePad.userInteractionEnabled = NO;
-    screenShot = [self captureView:self.view];
-    [snake setGameoverImage];
-    gameIsOver = YES;
-}
-
-#pragma mark - Move
+#pragma mark - Scan
 
 -(void)scannerAnimation
 {
-    gamePad.userInteractionEnabled = NO;
-    
-    [UIView animateWithDuration:1.5 animations:^{
-        if (scanFromRight) {
-            
-            scanner.frame = CGRectOffset(scanner.frame, 311, 0);
-            
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
-                                           scannerMask.frame.origin.y,
-                                           311,
-                                           314+20);
-        } else {
-            
-            scanner.frame = CGRectOffset(scanner.frame, -311, 0);
-            
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
-                                           scannerMask.frame.origin.y,
-                                           -311,
-                                           314+20);
-        }
-
-    }completion:^(BOOL finished) {
+    // Show Scanner
+    [UIView animateWithDuration:0.5 animations:^{
         
-        [UIView animateWithDuration:0.5 animations:^{
-            
-            scannerMask.alpha = 0.8;
-            
-        } completion:^(BOOL finished) {
-            
-            if (scanFromRight) {
-                
-                scannerMask.frame = CGRectOffset(scannerMask.frame, 311, 0);
-                scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
-                                               scannerMask.frame.origin.y,
-                                               3,
-                                               314+20);
-                scanFromRight = NO;
-                
-            } else {
-                
-                scannerMask.frame = CGRectOffset(scannerMask.frame, -311, 0);
-                scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
-                                               scannerMask.frame.origin.y,
-                                               3,
-                                               314+20);
-                scanFromRight = YES;
-            }
-            
-            [snake cancelPattern:^{
-                
-                if([snake checkIsGameover])
-                    [self gameOver];
-                else {
-                    
-                    if (snake.combos == 0 )
-                    {
-                        [snake createBody:^ {
+        scannerMask.alpha = 1;
+        scanner.alpha = 1;
 
-                            [self actionsAfterMove];
-                            
-                        }];
-                    }
-                    else
-                    {
-                        if (tutorialMode==2)
-                            [self showTutorial3];
-                        
-                        [self actionsAfterMove];
-                    }
+    } completion:^(BOOL finished) {
+        
+        [self performScanning];
+        gamePad.userInteractionEnabled = NO;
 
-                }
-                
-            }];
-
-        }];
     }];
 }
+
+-(void)performScanning
+{
+    // Scanning animation
+    [particle scanSound];
+    [UIView animateWithDuration:1 animations:^{
+        
+        if (scanFromRight) {
+            scanner.frame = CGRectOffset(scanner.frame, 311, 0);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,311,314);
+        } else {
+            scanner.frame = CGRectOffset(scanner.frame, -311, 0);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,-311,314);
+        }
+        
+    }completion:^(BOOL finished) {
+        
+        // Check block combos and bomb trigger
+        [snake cancelPattern:^{
+            
+            if([snake checkIsGameover])
+                [self gameOver];
+            else {
+                if (snake.combos == 0 ) {
+                    
+                    [snake createBody:^ {
+                        
+                        [self actionsAfterMove];
+                        
+                    }];
+                    
+                } else {
+                    
+                    if (tutorialMode==2)
+                        [self showTutorial3];
+                    
+                    [self actionsAfterMove];
+                    
+                }
+            }
+        }];
+        
+        // Hide Scanner
+        [self hideScanner];
+    }];
+
+}
+
+-(void)hideScanner
+{
+    [UIView animateWithDuration:0.5 animations:^{
+        
+        scannerMask.alpha = 0;
+        scanner.alpha = 0;
+
+        
+    } completion:^(BOOL finished) {
+        
+        if (scanFromRight) {
+            scannerMask.frame = CGRectOffset(scannerMask.frame, 311, 0);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,3,314);
+            scanFromRight = NO;
+        } else {
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,3,314);
+            scanFromRight = YES;
+        }
+    }];
+}
+
+#pragma mark - Move
 
 -(void)swipeDirection:(UISwipeGestureRecognizer *)sender
 {
@@ -581,22 +475,6 @@
     return YES;
 }
 
-#pragma mark - Replay
-
-- (void)replayGame
-{
-    nextNode.hidden = NO;
-    nextLabel.hidden = NO;
-    gamePad.userInteractionEnabled = YES;
-    scoreLabel.text = @"0";
-    score = 0;
-    totalCombos = 0;
-    [snake resetSnake];
-    [gamePad reset];
-    gameIsOver = NO;
-    [snake updateNextNode:nextNode animation:NO];
-}
-
 #pragma mark - Snake Delegate
 
 -(void)showReplayView:(NSInteger)totalBombs
@@ -660,42 +538,11 @@
     return img;
 }
 
--(void)buttonAnimation:(UIButton *)button
+-(void)updateScanTimeInterval
 {
-    CGAffineTransform t = button.transform;
-    
-    [UIView animateWithDuration:0.15 animations:^{
-        
-        button.transform = CGAffineTransformScale(t, 0.85, 0.85);
-
-    } completion:^(BOOL finished) {
-        
-        button.transform = t;
-    }];
-}
-
--(void)rateThisApp
-{
-    if ([self checkInternetConnection]) {
-        
-        SKStoreProductViewController *storeController = [[SKStoreProductViewController alloc] init];
-        storeController.delegate = self;
-        
-        NSDictionary *productParameters = @{ SKStoreProductParameterITunesItemIdentifier :@"916465725"};
-        
-        [storeController loadProductWithParameters:productParameters completionBlock:^(BOOL result, NSError *error) {
-            if (result) {
-                
-                [self presentViewController:storeController animated:YES completion:nil];
-                
-            }
-        }];
-    }
-}
-
-- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController
-{
-    [viewController dismissViewControllerAnimated:YES completion:nil];
+    [scanTimer invalidate];
+    scanTimeInterval -= 0.5;
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
 }
 
 #pragma mark - Tutorial
@@ -703,7 +550,6 @@
 -(void)startTutorial
 {
     [self replayGame];
-    [self settings:tutorial];
     tutorialMode = 1;
     [self showTutorial1];
 }
@@ -854,6 +700,34 @@
     }
 }
 
+#pragma mark - Game Over
+
+-(void)gameOver
+{
+    gamePad.userInteractionEnabled = NO;
+    [scanTimer invalidate];
+    screenShot = [self captureView:self.view];
+    [snake setGameoverImage];
+    gameIsOver = YES;
+}
+
+#pragma mark - Replay
+
+- (void)replayGame
+{
+    nextNode.hidden = NO;
+    gamePad.userInteractionEnabled = YES;
+    scoreLabel.text = @"0";
+    score = 0;
+    totalCombos = 0;
+    [snake resetSnake];
+    [gamePad reset];
+    gameIsOver = NO;
+    [snake updateNextNode:nextNode animation:NO];
+    scanTimeInterval = 6;
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
+}
+
 #pragma mark - Memory management
 
 - (void)didReceiveMemoryWarning
@@ -867,22 +741,6 @@
 - (BOOL)prefersStatusBarHidden
 {
     return YES;
-}
-
-- (BOOL)checkInternetConnection
-{
-    Reachability *networkReachability = [Reachability reachabilityForInternetConnection];
-    NetworkStatus networkStatus = [networkReachability currentReachabilityStatus];
-    if (networkStatus == NotReachable) {
-        UIAlertView *noInternetAlert = [[UIAlertView alloc]initWithTitle:NSLocalizedString(@"No Internet Connection", nil)
-                                                                 message:NSLocalizedString(@"Check your internet connection and try again",nil)
-                                                                delegate:self cancelButtonTitle:NSLocalizedString(@"Close",nil)
-                                                       otherButtonTitles:nil, nil];
-        [noInternetAlert show];
-        return NO;
-    } else {
-        return YES;
-    }
 }
 
 @end

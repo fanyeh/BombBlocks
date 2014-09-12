@@ -223,48 +223,52 @@
 
 -(void)levelChecker
 {
-    if (totalBombs == 170) {
+    if (totalBombs == 125) {
         _reminder = 12;
         [_delegate showLevel:_reminder-2];
     }
-    else if (totalBombs == 140) {
+    else if (totalBombs == 100) {
         _reminder = 11;
         currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-rain" ofType:@"mp3"]];
         [self doVolumeFade];
+        [_delegate showLevel:_reminder-2];
+        [_delegate updateScanTimeInterval];
     }
-    else if (totalBombs == 115) {
+    else if (totalBombs == 80) {
         _reminder = 10;
         [_delegate showLevel:_reminder-2];
     }
-    else if (totalBombs == 90) {
+    else if (totalBombs == 60) {
         _reminder = 9;
         currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-business-model" ofType:@"mp3"]];
         [self doVolumeFade];
+        [_delegate showLevel:_reminder-2];
+        [_delegate updateScanTimeInterval];
     }
-    else if (totalBombs == 70) {
+    else if (totalBombs == 45) {
         _reminder = 8;
         [_delegate showLevel:_reminder-2];
     }
-    else if (totalBombs == 50) {
+    else if (totalBombs == 30) {
         _reminder = 7;
         currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"]];
         [self doVolumeFade];
         [_delegate showLevel:_reminder-2];
-
+        [_delegate updateScanTimeInterval];
     }
-    else if (totalBombs == 35) {
+    else if (totalBombs == 20) {
         _reminder = 6;
         [_delegate showLevel:_reminder-2];
 
     }
-    else if (totalBombs == 20) {
+    else if (totalBombs == 10) {
         _reminder = 5;
         currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"flying-forward" ofType:@"mp3"]];
         [self doVolumeFade];
         [_delegate showLevel:_reminder-2];
-
+        [_delegate updateScanTimeInterval];
     }
-    else if (totalBombs == 10) {
+    else if (totalBombs == 5) {
         _reminder = 4;
         [_delegate showLevel:_reminder-2];
     }
@@ -275,8 +279,8 @@
     if (node.hasCount)
         [node removeCountLabel];
     
-    //int randomAsset = arc4random() % _reminder;
-    int randomAsset = arc4random() % 12;
+    int randomAsset = arc4random() % _reminder;
+//    int randomAsset = arc4random() % 12;
 
     node.level = ceil(randomAsset / 4) + 1;
     
@@ -867,8 +871,8 @@
     [self colPatternCheck];
     [self rowPatternCheck];
     [self squarePatternCheck];
-    [self diagonalDownPatternCheck];
-    [self diagonalUpPatternCheck];
+//    [self diagonalDownPatternCheck];
+//    [self diagonalUpPatternCheck];
 
     allPatterns = [NSMutableArray arrayWithArray:rowPatterns];
     
@@ -882,15 +886,15 @@
             [allPatterns addObject:element];
     }
     
-    for (id element in diaDownPatterns) {
-        if (![allPatterns containsObject:element])
-            [allPatterns addObject:element];
-    }
-
-    for (id element in diaUpPatterns) {
-        if (![allPatterns containsObject:element])
-            [allPatterns addObject:element];
-    }
+//    for (id element in diaDownPatterns) {
+//        if (![allPatterns containsObject:element])
+//            [allPatterns addObject:element];
+//    }
+//
+//    for (id element in diaUpPatterns) {
+//        if (![allPatterns containsObject:element])
+//            [allPatterns addObject:element];
+//    }
 }
 
 -(void)squarePatternCheck
@@ -1434,12 +1438,6 @@
             case kAssetTypeYellow:
                 n.nodeImageView.image = [UIImage imageNamed:@"go_yellow.png"];
                 break;
-//            case kAssetTypeGrey:
-//                n.nodeImageView.image = [UIImage imageNamed:@"go_grey.png"];
-//                break;
-//            case kAssetTypeOrange:
-//                n.nodeImageView.image = [UIImage imageNamed:@"go_orange.png"];
-//                break;
         }
         
         [flipBodyArray removeLastObject];

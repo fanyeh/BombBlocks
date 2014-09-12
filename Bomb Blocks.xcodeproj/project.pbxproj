@@ -74,6 +74,11 @@
 		4C967D6319BECB5A00B2A44F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4C967D6519BECB5A00B2A44F /* Localizable.strings */; };
 		4C967D6D19BEDE8500B2A44F /* introBomb102@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C967D6C19BEDE8500B2A44F /* introBomb102@2x.png */; };
 		4C967D6F19BEDEF800B2A44F /* BBBIcon120@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C967D6E19BEDEF800B2A44F /* BBBIcon120@2x.png */; };
+		4C9A5F3919C2957A00735153 /* pauseButton120@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9A5F3819C2957A00735153 /* pauseButton120@2x.png */; };
+		4C9A5F3C19C2971D00735153 /* GameSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C9A5F3B19C2971D00735153 /* GameSettingViewController.m */; };
+		4C9A5F4419C2BD7F00735153 /* scanSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C9A5F4319C2BD7F00735153 /* scanSound.mp3 */; };
+		4C9A5F4619C2C36B00735153 /* playButton120@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9A5F4519C2C36B00735153 /* playButton120@2x.png */; };
+		4C9A5F4819C2CA4200735153 /* scanner@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9A5F4719C2CA4200735153 /* scanner@2x.png */; };
 		4CA0A9DB1997C2A70020D1F9 /* RedParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0A9D91997C2A70020D1F9 /* RedParticle.sks */; };
 		4CA0A9DE1997C2C00020D1F9 /* YellowParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0A9DD1997C2C00020D1F9 /* YellowParticle.sks */; };
 		4CA0E59319764CD2008B2E71 /* BlueParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0E59119764CD2008B2E71 /* BlueParticle.sks */; };
@@ -241,6 +246,12 @@
 		4C967D6719BECB6100B2A44F /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		4C967D6C19BEDE8500B2A44F /* introBomb102@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "introBomb102@2x.png"; sourceTree = "<group>"; };
 		4C967D6E19BEDEF800B2A44F /* BBBIcon120@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BBBIcon120@2x.png"; sourceTree = "<group>"; };
+		4C9A5F3819C2957A00735153 /* pauseButton120@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pauseButton120@2x.png"; sourceTree = "<group>"; };
+		4C9A5F3A19C2971D00735153 /* GameSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameSettingViewController.h; sourceTree = "<group>"; };
+		4C9A5F3B19C2971D00735153 /* GameSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSettingViewController.m; sourceTree = "<group>"; };
+		4C9A5F4319C2BD7F00735153 /* scanSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = scanSound.mp3; sourceTree = "<group>"; };
+		4C9A5F4519C2C36B00735153 /* playButton120@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playButton120@2x.png"; sourceTree = "<group>"; };
+		4C9A5F4719C2CA4200735153 /* scanner@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scanner@2x.png"; sourceTree = "<group>"; };
 		4CA0A9D91997C2A70020D1F9 /* RedParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = RedParticle.sks; sourceTree = "<group>"; };
 		4CA0A9DD1997C2C00020D1F9 /* YellowParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = YellowParticle.sks; sourceTree = "<group>"; };
 		4CA0E59119764CD2008B2E71 /* BlueParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BlueParticle.sks; sourceTree = "<group>"; };
@@ -394,6 +405,7 @@
 		4C5C1E1619B8AD60009BF2D3 /* Effect */ = {
 			isa = PBXGroup;
 			children = (
+				4C9A5F4319C2BD7F00735153 /* scanSound.mp3 */,
 				4CF8D50019C18C3000BC62CF /* swipe.wav */,
 				4C967D5A19BEBF3400B2A44F /* playButtonSound.mp3 */,
 				4C967D5819BEB09D00B2A44F /* explodeColor.mp3 */,
@@ -427,6 +439,8 @@
 		4C6F0C6F19B963A800CEC808 /* Setting Image */ = {
 			isa = PBXGroup;
 			children = (
+				4C9A5F4519C2C36B00735153 /* playButton120@2x.png */,
+				4C9A5F3819C2957A00735153 /* pauseButton120@2x.png */,
 				4C967D5219BEA80A00B2A44F /* setting70@2x.png */,
 				4C5C1DE719B74FBE009BF2D3 /* tutorial90@2x.png */,
 				4C724D8419B6BC4B003DA879 /* back70@2x.png */,
@@ -573,6 +587,8 @@
 				4CD0E0A119B42268002D9FBC /* ScoreObject.m */,
 				4CD7836819B614F500EFF33F /* GameStatsViewController.h */,
 				4CD7836919B614F500EFF33F /* GameStatsViewController.m */,
+				4C9A5F3A19C2971D00735153 /* GameSettingViewController.h */,
+				4C9A5F3B19C2971D00735153 /* GameSettingViewController.m */,
 			);
 			name = "Game Scene";
 			path = TwoSnakes;
@@ -662,6 +678,7 @@
 		4CB108AD190FF6440085C747 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4C9A5F4719C2CA4200735153 /* scanner@2x.png */,
 				4C967D6C19BEDE8500B2A44F /* introBomb102@2x.png */,
 				4C724D8D19B6E522003DA879 /* gamecenter70@2x.png */,
 				4CA26E1519B45622002A40AA /* playButton@2x.png */,
@@ -808,6 +825,7 @@
 				4CAE113519B55EA900D2608E /* CHANGELOG.md in Resources */,
 				4C5C1E0019B84F21009BF2D3 /* tutorialBomb140@2x.png in Resources */,
 				4CA469F6199B9E4600ED0AB8 /* go_green@2x.png in Resources */,
+				4C9A5F4419C2BD7F00735153 /* scanSound.mp3 in Resources */,
 				4C6C2BC519B20EBD00ABE726 /* squareExplode@2x.png in Resources */,
 				4CC2CDFF19AACDDF00C6A46F /* Background@2x.png in Resources */,
 				4C724D8E19B6E522003DA879 /* gamecenter70@2x.png in Resources */,
@@ -832,6 +850,7 @@
 				4C50EEA319A1DBF300C5DA41 /* bomb_red@2x.png in Resources */,
 				4CF8D4E819C1719A00BC62CF /* blue@2x.png in Resources */,
 				4CA26E1619B45622002A40AA /* playButton@2x.png in Resources */,
+				4C9A5F4819C2CA4200735153 /* scanner@2x.png in Resources */,
 				4CA0A9DE1997C2C00020D1F9 /* YellowParticle.sks in Resources */,
 				4C5C1E1819B8AF89009BF2D3 /* introMove.mp3 in Resources */,
 				4CA469F5199B9E4600ED0AB8 /* go_blue@2x.png in Resources */,
@@ -841,6 +860,7 @@
 				4CF8D4FC19C1851D00BC62CF /* red_2@2x.png in Resources */,
 				4CC2950619B3587000032D7A /* go_orange@2x.png in Resources */,
 				4CC2950819B3587D00032D7A /* particle_orange@.png in Resources */,
+				4C9A5F4619C2C36B00735153 /* playButton120@2x.png in Resources */,
 				4CB108B1190FF6440085C747 /* InfoPlist.strings in Resources */,
 				4C87C37A19A6F51B007EA190 /* freezeTime@2x.png in Resources */,
 				4C6C2BD719B2143200ABE726 /* go_grey@2x.png in Resources */,
@@ -867,6 +887,7 @@
 				4CF8D4FA19C1851D00BC62CF /* yellow_2@2x.png in Resources */,
 				4CB108BC190FF6440085C747 /* Images.xcassets in Resources */,
 				4C967D4D19BE911C00B2A44F /* cool-space-flight.mp3 in Resources */,
+				4C9A5F3919C2957A00735153 /* pauseButton120@2x.png in Resources */,
 				4C5C1E0A19B8AC10009BF2D3 /* tutorialCombo140@2x.png in Resources */,
 				4C87C37D19A6F82F007EA190 /* explode@2x.png in Resources */,
 				4C2866E9199872AB009651B4 /* particle_yellow.png in Resources */,
@@ -913,6 +934,7 @@
 				4CAA5DEA1929998000049F52 /* GamePad.m in Sources */,
 				4CA0E5E31977A405008B2E71 /* SnakeNode.m in Sources */,
 				4C78A07A192DA14D003F9ABE /* ClassicGameController.m in Sources */,
+				4C9A5F3C19C2971D00735153 /* GameSettingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

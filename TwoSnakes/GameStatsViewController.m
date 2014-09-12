@@ -194,7 +194,7 @@
 //        }
     }
     
-    UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake((self.view.frame.size.width-60)/2,pauseLabelHeight-60-30, 50, 50)];
+    UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake((self.view.frame.size.width-40)/2,pauseLabelHeight-40-30, 40, 40)];
     replayBg.image = [UIImage imageNamed:@"replayButton.png"];
     replayBg.userInteractionEnabled = YES;
     [self.view addSubview:replayBg];

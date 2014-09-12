@@ -9,5 +9,6 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 @interface ClassicGameController : UIViewController
+-(void)startTutorial;
 
 @end

@@ -123,4 +123,10 @@
         [self runAction:[SKAction playSoundFileNamed:@"playButtonSound.mp3" waitForCompletion:NO]];
 }
 
+- (void)scanSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"scanSound.mp3" waitForCompletion:NO]];
+}
+
 @end
