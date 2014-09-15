@@ -88,10 +88,10 @@
     gamecenterButton.layer.cornerRadius = socialButtonHeight/2;
     [gamecenterButton addTarget:self action:@selector(showGameCenter) forControlEvents:UIControlEventTouchDown];
     
-    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 90, pauseLabelWidth, 35) fontSize:35];
+    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 85, pauseLabelWidth, 35) fontSize:35];
     bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
-    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 145, pauseLabelWidth, 65) fontSize:65];
+    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 140, pauseLabelWidth, 65) fontSize:65];
 
     CGFloat yoffset = 240;
     CGFloat labelWidth = 90;
@@ -104,36 +104,36 @@
     levelLabel.textAlignment = NSTextAlignmentLeft;
     
     // Combo
-    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+75,labelHeight,labelHeight) fontSize:fontSize];
+    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+80,labelHeight,labelHeight) fontSize:fontSize];
     comboXLabel.text = @"x";
     
-    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset+75,labelWidth,labelHeight) fontSize:fontSize];
+    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset+80,labelWidth,labelHeight) fontSize:fontSize];
     comboLabel.text = @"Combo";
     comboLabel.textAlignment = NSTextAlignmentLeft;
 
     
-    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset+75,labelWidth-20,labelHeight) fontSize:fontSize];
+    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset+80,labelWidth-20,labelHeight) fontSize:fontSize];
     
     // Bomb
-    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+125,labelHeight,labelHeight) fontSize:fontSize];
+    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+135,labelHeight,labelHeight) fontSize:fontSize];
     bombXLabel.text = @"x";
     
-    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+125,labelWidth,labelHeight) fontSize:fontSize];
+    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+135,labelWidth,labelHeight) fontSize:fontSize];
     bLabel.text = NSLocalizedString(@"Bomb",nil);
     bLabel.textAlignment = NSTextAlignmentLeft;
 
     
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+125,labelWidth-20,labelHeight) fontSize:fontSize];
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+135,labelWidth-20,labelHeight) fontSize:fontSize];
     
     // Chain
-    CustomLabel *chainXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+175,labelHeight,labelHeight) fontSize:fontSize];
+    CustomLabel *chainXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+190,labelHeight,labelHeight) fontSize:fontSize];
     chainXLabel.text = @"x";
     
-    CustomLabel *cLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+175,labelWidth,labelHeight) fontSize:fontSize];
+    CustomLabel *cLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+190,labelWidth,labelHeight) fontSize:fontSize];
     cLabel.text = NSLocalizedString(@"chain",nil);
     cLabel.textAlignment = NSTextAlignmentLeft;
     
-    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+175,labelWidth-20,labelHeight) fontSize:fontSize];
+    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+190,labelWidth-20,labelHeight) fontSize:fontSize];
     
     
     UIImageView *replayView = [[UIImageView alloc]initWithFrame:self.view.frame];
@@ -265,10 +265,10 @@
     }
     
     // Get Rank
-    [[GCHelper sharedInstance] getScoreRankFromLeaderboard:^(NSArray *topScores) {
-        
-        NSLog(@"Top scores %@",topScores);
-    }];
+//    [[GCHelper sharedInstance] getScoreRankFromLeaderboard:^(NSArray *topScores) {
+//        
+//        NSLog(@"Top scores %@",topScores);
+//    }];
 }
 
 -(void)replayGame

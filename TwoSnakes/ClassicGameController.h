@@ -10,5 +10,11 @@
 
 @interface ClassicGameController : UIViewController
 -(void)startTutorial;
+-(void)hideLevelLabel;
+-(void)hideScoreLabel;
+-(void)gameOver;
+-(void)disableLevelCheck;
+-(void)setScanSpeed:(NSTimeInterval)interval;
+-(void)replayGame;
 
 @end

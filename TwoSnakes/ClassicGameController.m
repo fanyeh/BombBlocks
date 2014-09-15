@@ -55,10 +55,7 @@
     NSTimeInterval scanTimeInterval;
     UIButton *pauseButton;
     UIView *pauseView;
-
     UIButton *playButton;
-
-
 }
 @end
 
@@ -110,7 +107,7 @@
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 15 , 250, 65) fontSize:65];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 40 , 250, 65) fontSize:65];
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
@@ -146,8 +143,9 @@
         [self showTutorial1];
     
     // Effects
-    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 88.5, 150,30) fontSize:30];
-    levelLabel.alpha = 0;
+    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 10, 150,30) fontSize:30];
+    //levelLabel.alpha = 0;
+    //levelLabel.text = @"Level 1";
     [self.view addSubview:levelLabel];
     
     chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-300)/2, 180, 300,40) fontSize:40];
@@ -161,8 +159,8 @@
     scannerMask.alpha = 0;
     [self.view addSubview:scannerMask];
 
-    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-3,gamePad.frame.origin.y-17.5,9,349)];
-    scanner.image = [UIImage imageNamed:@"scanner.png"];
+    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-3,gamePad.frame.origin.y-8.5,9,331)];
+    scanner.image = [UIImage imageNamed:@"scanner331.png"];
     scanner.alpha = 0;
     [self.view addSubview:scanner];
     
@@ -252,6 +250,29 @@
     
     if (bombChain > maxBombChain)
         maxBombChain = bombChain;
+}
+
+-(void)hideLevelLabel
+{
+    levelLabel.hidden = YES;
+}
+
+-(void)hideScoreLabel
+{
+    scoreLabel.hidden = YES;
+}
+
+-(void)disableLevelCheck
+{
+    snake.checkLevel = NO;
+    snake.reminder = 4;
+}
+
+-(void)setScanSpeed:(NSTimeInterval)interval
+{
+    [scanTimer invalidate];
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:interval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
+    scanTimeInterval = interval;
 }
 
 #pragma mark - Controls
@@ -457,30 +478,30 @@
 
 }
 
-- (BOOL)moveDirecton:(UISwipeGestureRecognizerDirection)swipeDirection
-{
-    MoveDirection headDirection = [snake headDirection];
-    
-    switch (headDirection) {
-        case kMoveDirectionUp:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
-                return NO;
-            break;
-        case kMoveDirectionDown:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
-                return NO;
-            break;
-        case kMoveDirectionLeft:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionRight)
-                return NO;
-            break;
-        case kMoveDirectionRight:
-            if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
-                return NO;
-            break;
-    }
-    return YES;
-}
+//- (BOOL)moveDirecton:(UISwipeGestureRecognizerDirection)swipeDirection
+//{
+//    MoveDirection headDirection = [snake headDirection];
+//    
+//    switch (headDirection) {
+//        case kMoveDirectionUp:
+//            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
+//                return NO;
+//            break;
+//        case kMoveDirectionDown:
+//            if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
+//                return NO;
+//            break;
+//        case kMoveDirectionLeft:
+//            if (swipeDirection == UISwipeGestureRecognizerDirectionRight)
+//                return NO;
+//            break;
+//        case kMoveDirectionRight:
+//            if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
+//                return NO;
+//            break;
+//    }
+//    return YES;
+//}
 
 #pragma mark - Snake Delegate
 

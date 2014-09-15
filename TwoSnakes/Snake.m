@@ -223,55 +223,57 @@
 
 -(void)levelChecker
 {
-    if (totalBombs == 125) {
-        _reminder = 12;
-        [_delegate showLevel:_reminder-2];
-    }
-    else if (totalBombs == 100) {
-        _reminder = 11;
-        currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-rain" ofType:@"mp3"]];
-        [self doVolumeFade];
-        [_delegate showLevel:_reminder-2];
-        [_delegate updateScanTimeInterval];
-    }
-    else if (totalBombs == 80) {
-        _reminder = 10;
-        [_delegate showLevel:_reminder-2];
-    }
-    else if (totalBombs == 60) {
-        _reminder = 9;
-        currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-business-model" ofType:@"mp3"]];
-        [self doVolumeFade];
-        [_delegate showLevel:_reminder-2];
-        [_delegate updateScanTimeInterval];
-    }
-    else if (totalBombs == 45) {
-        _reminder = 8;
-        [_delegate showLevel:_reminder-2];
-    }
-    else if (totalBombs == 30) {
-        _reminder = 7;
-        currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"]];
-        [self doVolumeFade];
-        [_delegate showLevel:_reminder-2];
-        [_delegate updateScanTimeInterval];
-    }
-    else if (totalBombs == 20) {
-        _reminder = 6;
-        [_delegate showLevel:_reminder-2];
+    if (_checkLevel) {
+        if (totalBombs == 125) {
+            _reminder = 12;
+            [_delegate showLevel:_reminder-2];
+        }
+        else if (totalBombs == 100) {
+            _reminder = 11;
+            currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-rain" ofType:@"mp3"]];
+            [self doVolumeFade];
+            [_delegate showLevel:_reminder-2];
+            [_delegate updateScanTimeInterval];
+        }
+        else if (totalBombs == 80) {
+            _reminder = 10;
+            [_delegate showLevel:_reminder-2];
+        }
+        else if (totalBombs == 60) {
+            _reminder = 9;
+            currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-business-model" ofType:@"mp3"]];
+            [self doVolumeFade];
+            [_delegate showLevel:_reminder-2];
+            [_delegate updateScanTimeInterval];
+        }
+        else if (totalBombs == 45) {
+            _reminder = 8;
+            [_delegate showLevel:_reminder-2];
+        }
+        else if (totalBombs == 30) {
+            _reminder = 7;
+            currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-space-flight" ofType:@"mp3"]];
+            [self doVolumeFade];
+            [_delegate showLevel:_reminder-2];
+            [_delegate updateScanTimeInterval];
+        }
+        else if (totalBombs == 20) {
+            _reminder = 6;
+            [_delegate showLevel:_reminder-2];
 
-    }
-    else if (totalBombs == 10) {
-        _reminder = 5;
-        currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"flying-forward" ofType:@"mp3"]];
-        [self doVolumeFade];
-        [_delegate showLevel:_reminder-2];
-        [_delegate updateScanTimeInterval];
-    }
-    else if (totalBombs == 5) {
-        _reminder = 4;
-        [_delegate showLevel:_reminder-2];
-    }
+        }
+        else if (totalBombs == 10) {
+            _reminder = 5;
+            currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"flying-forward" ofType:@"mp3"]];
+            [self doVolumeFade];
+            [_delegate showLevel:_reminder-2];
+            [_delegate updateScanTimeInterval];
+        }
+        else if (totalBombs == 5) {
+            _reminder = 4;
+            [_delegate showLevel:_reminder-2];
+        }
+    } 
 }
 
 -(void)updateNextNode:(SnakeNode *)node animation:(BOOL)animation

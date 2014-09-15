@@ -50,6 +50,7 @@ typedef void (^completeComboCallback)(AssetType type , BOOL hasCombo);
 @property (weak,nonatomic) id<gameoverDelegate>delegate;
 @property (strong,nonatomic) SnakeNode *nextNode;
 @property (nonatomic,assign) NSInteger reminder;
+@property (nonatomic,assign) BOOL checkLevel;
 
 - (id)initWithSnakeNode:(SnakeNode *)node gamePad:(GamePad *)gamePad;
 - (MoveDirection)headDirection;

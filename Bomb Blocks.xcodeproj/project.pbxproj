@@ -78,7 +78,6 @@
 		4C9A5F3C19C2971D00735153 /* GameSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C9A5F3B19C2971D00735153 /* GameSettingViewController.m */; };
 		4C9A5F4419C2BD7F00735153 /* scanSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4C9A5F4319C2BD7F00735153 /* scanSound.mp3 */; };
 		4C9A5F4619C2C36B00735153 /* playButton120@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9A5F4519C2C36B00735153 /* playButton120@2x.png */; };
-		4C9A5F4819C2CA4200735153 /* scanner@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9A5F4719C2CA4200735153 /* scanner@2x.png */; };
 		4C9A5F4C19C33F9E00735153 /* pauseButton60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9A5F4B19C33F9E00735153 /* pauseButton60@2x.png */; };
 		4CA0A9DB1997C2A70020D1F9 /* RedParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0A9D91997C2A70020D1F9 /* RedParticle.sks */; };
 		4CA0A9DE1997C2C00020D1F9 /* YellowParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CA0A9DD1997C2C00020D1F9 /* YellowParticle.sks */; };
@@ -89,6 +88,9 @@
 		4CA469F6199B9E4600ED0AB8 /* go_green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA469F2199B9E4600ED0AB8 /* go_green@2x.png */; };
 		4CA469F7199B9E4600ED0AB8 /* go_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA469F3199B9E4600ED0AB8 /* go_red@2x.png */; };
 		4CA469F8199B9E4600ED0AB8 /* go_yellow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA469F4199B9E4600ED0AB8 /* go_yellow@2x.png */; };
+		4CA82C1C19C6BCA40069CF54 /* FastHandGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA82C1B19C6BCA40069CF54 /* FastHandGameViewController.m */; };
+		4CA82C3619C71F960069CF54 /* scanner331@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA82C3519C71F960069CF54 /* scanner331@2x.png */; };
+		4CA82C3819C7225F0069CF54 /* clock100@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA82C3719C7225F0069CF54 /* clock100@2x.png */; };
 		4CAA5DEA1929998000049F52 /* GamePad.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CAA5DE91929998000049F52 /* GamePad.m */; };
 		4CAA5DF21929AB9100049F52 /* SocialShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CAA5DF11929AB9100049F52 /* SocialShare.m */; };
 		4CAE113519B55EA900D2608E /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = 4CAE113119B55EA900D2608E /* CHANGELOG.md */; };
@@ -252,7 +254,6 @@
 		4C9A5F3B19C2971D00735153 /* GameSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSettingViewController.m; sourceTree = "<group>"; };
 		4C9A5F4319C2BD7F00735153 /* scanSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = scanSound.mp3; sourceTree = "<group>"; };
 		4C9A5F4519C2C36B00735153 /* playButton120@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playButton120@2x.png"; sourceTree = "<group>"; };
-		4C9A5F4719C2CA4200735153 /* scanner@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scanner@2x.png"; sourceTree = "<group>"; };
 		4C9A5F4B19C33F9E00735153 /* pauseButton60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pauseButton60@2x.png"; sourceTree = "<group>"; };
 		4CA0A9D91997C2A70020D1F9 /* RedParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = RedParticle.sks; sourceTree = "<group>"; };
 		4CA0A9DD1997C2C00020D1F9 /* YellowParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = YellowParticle.sks; sourceTree = "<group>"; };
@@ -264,6 +265,10 @@
 		4CA469F2199B9E4600ED0AB8 /* go_green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_green@2x.png"; sourceTree = "<group>"; };
 		4CA469F3199B9E4600ED0AB8 /* go_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_red@2x.png"; sourceTree = "<group>"; };
 		4CA469F4199B9E4600ED0AB8 /* go_yellow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "go_yellow@2x.png"; sourceTree = "<group>"; };
+		4CA82C1A19C6BCA40069CF54 /* FastHandGameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastHandGameViewController.h; sourceTree = "<group>"; };
+		4CA82C1B19C6BCA40069CF54 /* FastHandGameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FastHandGameViewController.m; sourceTree = "<group>"; };
+		4CA82C3519C71F960069CF54 /* scanner331@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scanner331@2x.png"; sourceTree = "<group>"; };
+		4CA82C3719C7225F0069CF54 /* clock100@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "clock100@2x.png"; sourceTree = "<group>"; };
 		4CAA5DE81929998000049F52 /* GamePad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GamePad.h; sourceTree = "<group>"; };
 		4CAA5DE91929998000049F52 /* GamePad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GamePad.m; sourceTree = "<group>"; };
 		4CAA5DF01929AB9100049F52 /* SocialShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialShare.h; sourceTree = "<group>"; };
@@ -580,6 +585,8 @@
 				4CAA5DE91929998000049F52 /* GamePad.m */,
 				4C78A078192DA14D003F9ABE /* ClassicGameController.h */,
 				4C78A079192DA14D003F9ABE /* ClassicGameController.m */,
+				4CA82C1A19C6BCA40069CF54 /* FastHandGameViewController.h */,
+				4CA82C1B19C6BCA40069CF54 /* FastHandGameViewController.m */,
 				4CE343B11957D6C00032E674 /* ParticleView.h */,
 				4CE343B21957D6C00032E674 /* ParticleView.m */,
 				4CA0E5E11977A405008B2E71 /* SnakeNode.h */,
@@ -616,6 +623,7 @@
 		4CB10898190FF6440085C747 = {
 			isa = PBXGroup;
 			children = (
+				4CA82C3719C7225F0069CF54 /* clock100@2x.png */,
 				4C967D6E19BEDEF800B2A44F /* BBBIcon120@2x.png */,
 				4CB108AC190FF6440085C747 /* Bomb Blocks */,
 				4C6F0C6F19B963A800CEC808 /* Setting Image */,
@@ -681,7 +689,7 @@
 		4CB108AD190FF6440085C747 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4C9A5F4719C2CA4200735153 /* scanner@2x.png */,
+				4CA82C3519C71F960069CF54 /* scanner331@2x.png */,
 				4C967D6C19BEDE8500B2A44F /* introBomb102@2x.png */,
 				4C724D8D19B6E522003DA879 /* gamecenter70@2x.png */,
 				4CA26E1519B45622002A40AA /* playButton@2x.png */,
@@ -843,6 +851,7 @@
 				4C967D5919BEB09D00B2A44F /* explodeColor.mp3 in Resources */,
 				4CA469F7199B9E4600ED0AB8 /* go_red@2x.png in Resources */,
 				4C967D4C19BE911C00B2A44F /* easy-living.mp3 in Resources */,
+				4CA82C3619C71F960069CF54 /* scanner331@2x.png in Resources */,
 				4C5C1E1A19B8B928009BF2D3 /* break.mp3 in Resources */,
 				4C5C1DF619B83F56009BF2D3 /* tutorialCreateBomb160@2x.png in Resources */,
 				4C967D4F19BE911C00B2A44F /* goodbye-dream.mp3 in Resources */,
@@ -853,7 +862,6 @@
 				4C50EEA319A1DBF300C5DA41 /* bomb_red@2x.png in Resources */,
 				4CF8D4E819C1719A00BC62CF /* blue@2x.png in Resources */,
 				4CA26E1619B45622002A40AA /* playButton@2x.png in Resources */,
-				4C9A5F4819C2CA4200735153 /* scanner@2x.png in Resources */,
 				4CA0A9DE1997C2C00020D1F9 /* YellowParticle.sks in Resources */,
 				4C5C1E1819B8AF89009BF2D3 /* introMove.mp3 in Resources */,
 				4CA469F5199B9E4600ED0AB8 /* go_blue@2x.png in Resources */,
@@ -882,6 +890,7 @@
 				4C724D7D19B6B3DD003DA879 /* rating90@2x.png in Resources */,
 				4CAE114719B5B39F00D2608E /* combo.mp3 in Resources */,
 				4C6C2BC319B20EBD00ABE726 /* explodeHorizontal@2x.png in Resources */,
+				4CA82C3819C7225F0069CF54 /* clock100@2x.png in Resources */,
 				4CF8D50119C18C3000BC62CF /* swipe.wav in Resources */,
 				4CF8D4DB19C155F400BC62CF /* yellow_3@2x.png in Resources */,
 				4C967D5319BEA80A00B2A44F /* setting70@2x.png in Resources */,
@@ -931,6 +940,7 @@
 				4CAA5DF21929AB9100049F52 /* SocialShare.m in Sources */,
 				4CE343B31957D6C00032E674 /* ParticleView.m in Sources */,
 				4C78A081192DDABB003F9ABE /* GameAsset.m in Sources */,
+				4CA82C1C19C6BCA40069CF54 /* FastHandGameViewController.m in Sources */,
 				4CB108B3190FF6440085C747 /* main.m in Sources */,
 				4CB108BA190FF6440085C747 /* TwoSnakes.xcdatamodeld in Sources */,
 				4CDBB7201920A22900D8A9B4 /* GCHelper.m in Sources */,
