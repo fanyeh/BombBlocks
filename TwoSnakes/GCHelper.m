@@ -8,7 +8,7 @@
 
 #import "GCHelper.h"
 
-@implementation GCHelper 
+@implementation GCHelper
 
 #pragma mark Initialization
 
@@ -272,6 +272,8 @@ static GCHelper *sharedHelper = nil;
 //    if ([GKLocalPlayer localPlayer].authenticated == NO) {
 //        [self authenticateLocalUser:viewcontroller];
 //    } else {
+    
+    
         GKGameCenterViewController *gameCenterViewController= [[GKGameCenterViewController alloc] init];
         gameCenterViewController.gameCenterDelegate = self;
         gameCenterViewController.viewState = GKGameCenterViewControllerStateDefault;
@@ -350,6 +352,15 @@ static GCHelper *sharedHelper = nil;
             }
         }
     
+    }];
+}
+
+- (void) loadLeaderboardSetInfo
+{
+    [GKLeaderboardSet loadLeaderboardSetsWithCompletionHandler:^(NSArray *leaderboardSets, NSError *error) {
+        
+        self.leaderboardSets = leaderboardSets;
+        
     }];
 }
 

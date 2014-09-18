@@ -24,5 +24,7 @@
 - (void)explodeColorSound;
 - (void)playGameSound;
 - (void)scanSound;
+- (void)tickSound;
+- (void)sirenSound;
 
 @end

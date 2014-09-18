@@ -46,14 +46,6 @@
             emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"YellowParticle"ofType:@"sks"]];
             color = YellowDotColor;
             break;
-//        case kAssetTypeGrey:
-//            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"GreyParticle"ofType:@"sks"]];
-//            color = GreyDotColor;
-//            break;
-//        case kAssetTypeOrange:
-//            emitter = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"OrangeParticle"ofType:@"sks"]];
-//            color = OrangeDotColor;
-//            break;
     }
     emitter.position = CGPointMake(posX, posY);
     emitter.particleColor =  color;
@@ -127,6 +119,19 @@
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
         [self runAction:[SKAction playSoundFileNamed:@"scanSound.mp3" waitForCompletion:NO]];
+}
+
+- (void)tickSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"tickSound.mp3" waitForCompletion:NO]];
+}
+
+
+- (void)sirenSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"sirenSound.mp3" waitForCompletion:NO]];
 }
 
 @end

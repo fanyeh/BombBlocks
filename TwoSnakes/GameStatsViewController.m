@@ -24,6 +24,8 @@
     GADInterstitial *interstitialAd;
     NSNumberFormatter *numFormatter; //Formatter for score
     MKAppDelegate *appDelegate;
+    NSMutableArray *levelArray;
+    
 }
 @end
 
@@ -92,52 +94,108 @@
     bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
     currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 140, pauseLabelWidth, 65) fontSize:65];
+    
+    
+    CGFloat yoffset;
+    CGFloat yGap;
 
-    CGFloat yoffset = 240;
+    if (_timeMode) {
+        yoffset = 170;
+        yGap = 70;
+    }
+    else {
+        yoffset = 240;
+        yGap = 55;
+    }
+    
+    CGFloat labelYOffset = yoffset+80;
     CGFloat labelWidth = 90;
     CGFloat labelHeight = 25;
     CGFloat fontSize = 25;
     
     // Level
-    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2- 30 - labelWidth,yoffset-10,labelWidth,labelHeight) fontSize:fontSize];
+    levelArray = [[NSMutableArray alloc]init];
+    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2- 30 - labelWidth,
+                                                                           yoffset-10,
+                                                                           labelWidth,
+                                                                           labelHeight)
+                                                       fontSize:fontSize];
+    
     levelLabel.text = NSLocalizedString(@"Level", nil);
     levelLabel.textAlignment = NSTextAlignmentLeft;
     
-    // Combo
-    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+80,labelHeight,labelHeight) fontSize:fontSize];
+    [levelArray addObject:levelLabel];
+    
+    // ------------------- Combo ------------------- //
+    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,
+                                                                            labelYOffset,
+                                                                            labelHeight,
+                                                                            labelHeight)
+                                                        fontSize:fontSize];
     comboXLabel.text = @"x";
     
-    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 30 - labelWidth,yoffset+80,labelWidth,labelHeight) fontSize:fontSize];
+    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 20 - labelWidth,
+                                                                           labelYOffset,
+                                                                           labelWidth,
+                                                                           labelHeight)
+                                                       fontSize:fontSize];
     comboLabel.text = @"Combo";
     comboLabel.textAlignment = NSTextAlignmentLeft;
 
     
-    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,yoffset+80,labelWidth-20,labelHeight) fontSize:fontSize];
+    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,
+                                                            labelYOffset,
+                                                            labelWidth-20,
+                                                            labelHeight) fontSize:fontSize];
     
-    // Bomb
-    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+135,labelHeight,labelHeight) fontSize:fontSize];
+    // ------------------- Bomb -------------------------- //
+    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,
+                                                                           labelYOffset+yGap,
+                                                                           labelHeight,
+                                                                           labelHeight)
+                                                       fontSize:fontSize];
     bombXLabel.text = @"x";
     
-    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+135,labelWidth,labelHeight) fontSize:fontSize];
+    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 20 - labelWidth,
+                                                                       labelYOffset+yGap,
+                                                                       labelWidth,
+                                                                       labelHeight)
+                                                   fontSize:fontSize];
     bLabel.text = NSLocalizedString(@"Bomb",nil);
     bLabel.textAlignment = NSTextAlignmentLeft;
 
     
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+135,labelWidth-20,labelHeight) fontSize:fontSize];
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,
+                                                             labelYOffset+yGap,
+                                                             labelWidth-20,
+                                                             labelHeight)
+                                         fontSize:fontSize];
     
-    // Chain
-    CustomLabel *chainXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,yoffset+190,labelHeight,labelHeight) fontSize:fontSize];
+    // ------------------- Chain ------------------- //
+    CustomLabel *chainXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,
+                                                                            labelYOffset+yGap*2,
+                                                                            labelHeight,
+                                                                            labelHeight)
+                                                        fontSize:fontSize];
     chainXLabel.text = @"x";
     
-    CustomLabel *cLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 30 - labelWidth,yoffset+190,labelWidth,labelHeight) fontSize:fontSize];
+    CustomLabel *cLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 20 - labelWidth,
+                                                                       labelYOffset+yGap*2,
+                                                                       labelWidth,
+                                                                       labelHeight)
+                                                   fontSize:fontSize];
     cLabel.text = NSLocalizedString(@"chain",nil);
     cLabel.textAlignment = NSTextAlignmentLeft;
     
-    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,yoffset+190,labelWidth-20,labelHeight) fontSize:fontSize];
+    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,
+                                                              labelYOffset+yGap*2,
+                                                              labelWidth-20,
+                                                              labelHeight)
+                                          fontSize:fontSize];
     
     
     UIImageView *replayView = [[UIImageView alloc]initWithFrame:self.view.frame];
-    replayView.image = [UIImage imageNamed:@"Background.png"];
+    replayView.image = _bgImage;
     replayView.userInteractionEnabled = YES;
     [self.view addSubview:replayView];
 
@@ -187,6 +245,9 @@
         
         [self.view addSubview:subLevelLabel];
         xoffset += fontSize;
+        
+        [levelArray addObject:subLevelLabel];
+
     }
     
     UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake((self.view.frame.size.width-40)/2,pauseLabelHeight-40-30, 40, 40)];
@@ -206,6 +267,17 @@
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
 
         [self doVolumeFade];
+    }
+    
+    if (_timeMode)
+        [self hideLevel];
+}
+
+-(void)hideLevel
+{
+    for (CustomLabel *c in levelArray) {
+        
+        c.hidden = YES;
     }
 }
 
@@ -246,22 +318,36 @@
     comLabel.text = [NSString stringWithFormat:@"%ld",_combos];
     bombLabel.text = [NSString stringWithFormat:@"%ld",_bombs];
     chainLabel.text = [NSString stringWithFormat:@"%ld",_maxBombChain];
-    
-    NSInteger bestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"BestScore"];
-    
     currentScoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:_score]];
+
+    NSInteger bestScore;
     
-    if (_score > bestScore)
-    {
-        [[NSUserDefaults standardUserDefaults] setInteger:_score forKey:@"BestScore"];
-        [[GCHelper sharedInstance] submitScore:_score leaderboardId:kHighScoreLeaderboardId];
-        bestScoreLabel.text = @"New Record";
-        bestScoreLabel.textColor = [UIColor whiteColor];
+    if (_timeMode) {
+        bestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"TimeBestScore"];
+        if (_score > bestScore)
+        {
+            [[NSUserDefaults standardUserDefaults] setInteger:_score forKey:@"TimeBestScore"];
+            [[GCHelper sharedInstance] submitScore:_score leaderboardId:kFastHandHighScoreLeaderboardId];
+            bestScoreLabel.text = @"New Record";
+            bestScoreLabel.textColor = [UIColor whiteColor];
+        } else {
+            bestScoreLabel.text = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Best",nil),[numFormatter stringFromNumber:[NSNumber numberWithInteger:bestScore]]];
+            bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
+        }
     }
-    else
-    {
-        bestScoreLabel.text = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Best",nil),[numFormatter stringFromNumber:[NSNumber numberWithInteger:bestScore]]];
-        bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
+    else {
+        bestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"ClassicBestScore"];
+        if (_score > bestScore)
+        {
+            [[NSUserDefaults standardUserDefaults] setInteger:_score forKey:@"ClassicBestScore"];
+            [[GCHelper sharedInstance] submitScore:_score leaderboardId:kHighScoreLeaderboardId];
+            bestScoreLabel.text = @"New Record";
+            bestScoreLabel.textColor = [UIColor whiteColor];
+        } else {
+            bestScoreLabel.text = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Best",nil),[numFormatter stringFromNumber:[NSNumber numberWithInteger:bestScore]]];
+            bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
+        }
+
     }
     
     // Get Rank

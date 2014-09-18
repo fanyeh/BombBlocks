@@ -19,7 +19,7 @@
 #endif
 
 #define kHighScoreLeaderboardId @"mk.bombboomblocks.highscores"
-
+#define kFastHandHighScoreLeaderboardId @"bbb.timemode.score"
 
 #define FontColor [UIColor colorWithWhite:0.114 alpha:1.000]
 
@@ -28,7 +28,7 @@
 #define SnakeColor [UIColor colorWithRed:0.431 green:0.780 blue:0.110 alpha:1.000]
 #define GamepadColor [UIColor colorWithWhite:0.020 alpha:1.000];
 
-#define RedDotColor [UIColor colorWithRed:0.745 green:0.086 blue:0.494 alpha:1.000]
+#define RedDotColor [UIColor colorWithRed:0.745 green:0.085 blue:0.496 alpha:1.000]
 #define BlueDotColor [UIColor colorWithRed:0.000 green:0.361 blue:0.682 alpha:1.000]
 #define YellowDotColor [UIColor colorWithRed:0.925 green:0.702 blue:0.169 alpha:1.000]
 #define GreenDotColor [UIColor colorWithRed:0.000 green:0.369 blue:0.216 alpha:1.000]

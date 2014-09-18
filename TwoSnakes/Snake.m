@@ -62,6 +62,7 @@
         self.tag = 0;
         totalBombs = 0;
         _combos = 0;
+        _checkLevel = YES;
     }
     return self;
 }
@@ -872,8 +873,8 @@
     [self colPatternCheck];
     [self rowPatternCheck];
     [self squarePatternCheck];
-//    [self diagonalDownPatternCheck];
-//    [self diagonalUpPatternCheck];
+    [self diagonalDownPatternCheck];
+    [self diagonalUpPatternCheck];
 
     allPatterns = [NSMutableArray arrayWithArray:rowPatterns];
     
@@ -887,15 +888,15 @@
             [allPatterns addObject:element];
     }
     
-//    for (id element in diaDownPatterns) {
-//        if (![allPatterns containsObject:element])
-//            [allPatterns addObject:element];
-//    }
-//
-//    for (id element in diaUpPatterns) {
-//        if (![allPatterns containsObject:element])
-//            [allPatterns addObject:element];
-//    }
+    for (id element in diaDownPatterns) {
+        if (![allPatterns containsObject:element])
+            [allPatterns addObject:element];
+    }
+
+    for (id element in diaUpPatterns) {
+        if (![allPatterns containsObject:element])
+            [allPatterns addObject:element];
+    }
 }
 
 -(void)squarePatternCheck

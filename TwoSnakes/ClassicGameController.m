@@ -36,7 +36,6 @@
     NSInteger scoreGap;
     NSTimer *changeScoreTimer;
     NSMutableArray *scoreArray;
-    ParticleView *particle;
     UIButton *settingButton;
     MKAppDelegate *appDelegate;
     UIView *tutorial1BG;
@@ -56,6 +55,8 @@
     UIButton *pauseButton;
     UIView *pauseView;
     UIButton *playButton;
+    UIImageView *bgImageView;
+    UIButton *homeButton;
 }
 @end
 
@@ -78,7 +79,7 @@
     self.view.backgroundColor = [UIColor colorWithWhite:0.063 alpha:1.000];
     
     // BG image
-    UIImageView *bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
+    bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
     [self.view addSubview:bgImageView];
     
     // Do any additional setup after loading the view.
@@ -97,17 +98,17 @@
     skView.backgroundColor = [UIColor clearColor];
     
     // Create and configure the scene.
-    particle = [[ParticleView alloc]initWithSize:skView.bounds.size];
-    particle.scaleMode = SKSceneScaleModeAspectFill;
+    _particleView = [[ParticleView alloc]initWithSize:skView.bounds.size];
+    _particleView.scaleMode = SKSceneScaleModeAspectFill;
     [gamePad addSubview:skView];
     [gamePad sendSubviewToBack:skView];
 
     // Present the scene.
-    [skView presentScene:particle];
+    [skView presentScene:_particleView];
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 40 , 250, 65) fontSize:65];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 10 , 250, 65) fontSize:65];
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
@@ -116,7 +117,7 @@
     snake = [[Snake alloc]initWithSnakeNode:gamePad.initialNode gamePad:gamePad];
     snake.delegate = self;
     [gamePad addSubview:snake];
-    snake.particleView = particle;
+    snake.particleView = _particleView;
     
     // Next Node
     CGFloat nextNodeSize = 40;
@@ -143,9 +144,9 @@
         [self showTutorial1];
     
     // Effects
-    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 10, 150,30) fontSize:30];
-    //levelLabel.alpha = 0;
-    //levelLabel.text = @"Level 1";
+    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 85, 150,30) fontSize:30];
+    levelLabel.text = @"Level 1";
+    levelLabel.alpha = 0;
     [self.view addSubview:levelLabel];
     
     chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-300)/2, 180, 300,40) fontSize:40];
@@ -155,7 +156,7 @@
     
     // Scanner
     scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,3,314)];
-    scannerMask.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.600];
+    scannerMask.backgroundColor = [UIColor colorWithRed:0.000 green:0.098 blue:0.185 alpha:0.400];
     scannerMask.alpha = 0;
     [self.view addSubview:scannerMask];
 
@@ -169,26 +170,36 @@
     scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
     
     // Setting Button
-    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(320-35, self.view.frame.size.height-35, 30, 30)];
-    [settingButton setImage:[UIImage imageNamed:@"setting70.png"] forState:UIControlStateNormal];
+    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(45, self.view.frame.size.height-35, 30, 30)];
+    [settingButton setImage:[UIImage imageNamed:@"setting60.png"] forState:UIControlStateNormal];
     [settingButton addTarget:self action:@selector(showSetting:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:settingButton];
     
+    // Home Button
+    homeButton = [[UIButton alloc]initWithFrame:CGRectMake(5, self.view.frame.size.height-35, 30, 30)];
+    [homeButton setImage:[UIImage imageNamed:@"home60.png"] forState:UIControlStateNormal];
+    [homeButton addTarget:self action:@selector(backToHome:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:homeButton];
+    
     // Pause Button
-    pauseButton = [[UIButton alloc]initWithFrame:CGRectMake(5,self.view.frame.size.height-35, 30, 30)];
+    pauseButton = [[UIButton alloc]initWithFrame:CGRectMake(320-35,self.view.frame.size.height-35, 30, 30)];
     [pauseButton setImage:[UIImage imageNamed:@"pauseButton60.png"] forState:UIControlStateNormal];
     [pauseButton addTarget:self action:@selector(pauseGame) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:pauseButton];
     
     pauseView = [[UIView alloc]initWithFrame:self.view.frame];
     pauseView.frame = CGRectOffset(pauseView.frame, 0, -self.view.frame.size.height);
-    pauseView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.600];
+    pauseView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.800];
     [self.view addSubview:pauseView];
     
-    playButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-60)/2,(self.view.frame.size.height-60)/2, 60, 60)];
+    playButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-60)/2,(self.view.frame.size.height-60)/2-20, 60, 60)];
     [playButton setImage:[UIImage imageNamed:@"playButton120.png"] forState:UIControlStateNormal];
     [playButton addTarget:self action:@selector(playGame) forControlEvents:UIControlEventTouchDown];
     [pauseView addSubview:playButton];
+    
+    CustomLabel *continueLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(60, (self.view.frame.size.height-60)/2+60, 200, 30) fontSize:30];
+    continueLabel.text = NSLocalizedString(@"Continue", nil);
+    [pauseView addSubview:continueLabel];
     
     // Setup swipe gestures
     UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDirection:)];
@@ -206,8 +217,28 @@
     UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDirection:)];
     [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
     [gamePad addGestureRecognizer:swipeUp];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(pauseGameFromBackground) name:@"resignActive" object:nil];
+    
+    _gameIsPaused = NO;
 }
 
+-(void)pauseLayer:(CALayer*)layer
+{
+    CFTimeInterval pausedTime = [layer convertTime:CACurrentMediaTime() fromLayer:nil];
+    layer.speed = 0.0;
+    layer.timeOffset = pausedTime;
+}
+
+-(void)resumeLayer:(CALayer*)layer
+{
+    CFTimeInterval pausedTime = [layer timeOffset];
+    layer.speed = 1.0;
+    layer.timeOffset = 0.0;
+    layer.beginTime = 0.0;
+    CFTimeInterval timeSincePause = [layer convertTime:CACurrentMediaTime() fromLayer:nil] - pausedTime;
+    layer.beginTime = timeSincePause;
+}
 
 #pragma mark - Effects
 -(void)showLevel:(NSInteger)level
@@ -220,13 +251,13 @@
     else
         
     levelLabel.text = [NSString stringWithFormat:@"Level %ld",level];
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:1.5 animations:^{
         
         levelLabel.alpha = 1;
         
     } completion:^(BOOL finished) {
 
-        [UIView animateWithDuration:1.0 animations:^{
+        [UIView animateWithDuration:1.5 animations:^{
             
             levelLabel.alpha = 0;
         }];
@@ -275,39 +306,83 @@
     scanTimeInterval = interval;
 }
 
+-(void)setBgImage:(UIImage *)image
+{
+    bgImageView.image = image;
+}
+
 #pragma mark - Controls
 
 -(void)pauseGame
 {
-    [self buttonAnimation:pauseButton];
-    gamePad.userInteractionEnabled = NO;
-    [scanTimer invalidate];
-    
-    [UIView animateWithDuration:0.5 animations:^{
-        pauseView.frame = CGRectOffset(pauseView.frame, 0, 568);
-    }];
+    if(_gameIsPaused) {
+        _gameIsPaused = NO;
+    } else {
+        _gameIsPaused = YES;
+        
+        [self buttonAnimation:pauseButton];
+        gamePad.userInteractionEnabled = NO;
+        [scanTimer invalidate];
+        
+        [self pauseLayer:scanner.layer];
+        [self pauseLayer:scannerMask.layer];
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            pauseView.frame = CGRectOffset(pauseView.frame, 0, 568);
+            
+        }];
+    }
+}
+
+-(void)pauseGameFromBackground
+{
+    if (!_gameIsPaused)
+        [self pauseGame];
 }
 
 -(void)playGame
 {
+    _gameIsPaused = NO;
     [self buttonAnimation:pauseButton];
     
     [UIView animateWithDuration:0.5 animations:^{
         pauseView.frame = CGRectOffset(pauseView.frame, 0, -568);
     } completion:^(BOOL finished) {
         gamePad.userInteractionEnabled = YES;
-        scanTimer = [NSTimer scheduledTimerWithTimeInterval:6 target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
+        
+        [self resumeLayer:scanner.layer];
+        [self resumeLayer:scannerMask.layer];
+        
+        [self performSelector:@selector(startScan) withObject:nil afterDelay:2.0];
+//        scanTimer = [NSTimer scheduledTimerWithTimeInterval:6 target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
     }];
+}
+
+-(void)startScan
+{
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:6 target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
 }
 
 -(void)showSetting:(UIButton *)button
 {
+    [self pauseGame];
+    
     [self buttonAnimation:button];
-    [particle playButtonSound];
+    [_particleView playButtonSound];
     
     GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
     [self presentViewController:controller animated:YES completion:nil];
 
+}
+
+-(void)backToHome:(UIButton *)button
+{
+    [self buttonAnimation:button];
+    [_particleView playButtonSound];
+    pauseView.hidden = YES;
+    [scanTimer invalidate];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)buttonAnimation:(UIButton *)button
@@ -336,8 +411,8 @@
 
     } completion:^(BOOL finished) {
         
-        [particle removeAllChildren];
-        [particle removeAllActions];
+        [_particleView removeAllChildren];
+        [_particleView removeAllActions];
         [self performScanning];
         gamePad.userInteractionEnabled = NO;
 
@@ -347,7 +422,7 @@
 -(void)performScanning
 {
     // Scanning animation
-    [particle scanSound];
+    [_particleView scanSound];
     [UIView animateWithDuration:1 animations:^{
         
         if (scanFromRight) {
@@ -437,7 +512,7 @@
                 break;
         }
         
-        [particle playMoveSound];
+        [_particleView playMoveSound];
 
         [snake moveAllNodesBySwipe:dir complete:^{
             
@@ -478,31 +553,6 @@
 
 }
 
-//- (BOOL)moveDirecton:(UISwipeGestureRecognizerDirection)swipeDirection
-//{
-//    MoveDirection headDirection = [snake headDirection];
-//    
-//    switch (headDirection) {
-//        case kMoveDirectionUp:
-//            if (swipeDirection == UISwipeGestureRecognizerDirectionDown)
-//                return NO;
-//            break;
-//        case kMoveDirectionDown:
-//            if (swipeDirection == UISwipeGestureRecognizerDirectionUp)
-//                return NO;
-//            break;
-//        case kMoveDirectionLeft:
-//            if (swipeDirection == UISwipeGestureRecognizerDirectionRight)
-//                return NO;
-//            break;
-//        case kMoveDirectionRight:
-//            if (swipeDirection == UISwipeGestureRecognizerDirectionLeft)
-//                return NO;
-//            break;
-//    }
-//    return YES;
-//}
-
 #pragma mark - Snake Delegate
 
 -(void)showReplayView:(NSInteger)totalBombs
@@ -515,6 +565,13 @@
     controller.gameImage = screenShot;
     controller.delegate = self;
     controller.maxBombChain = maxBombChain;
+    controller.bgImage = bgImageView.image;
+    
+    if (levelLabel.hidden)
+        controller.timeMode = YES;
+    else
+        controller.timeMode = NO;
+    
     [self presentViewController:controller animated:YES completion:nil];
 }
 
@@ -762,8 +819,8 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-    [particle removeAllChildren];
-    [particle removeAllActions];
+    [_particleView removeAllChildren];
+    [_particleView removeAllActions];
 }
 
 - (BOOL)prefersStatusBarHidden

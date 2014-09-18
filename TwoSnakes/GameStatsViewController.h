@@ -22,7 +22,10 @@
 @property (nonatomic,assign) NSInteger score;
 @property (nonatomic,assign) NSInteger level;
 @property (nonatomic,assign) NSInteger maxBombChain;
+@property (nonatomic,assign) BOOL timeMode;
 @property (nonatomic,strong) UIImage *gameImage;
+@property (nonatomic,strong) UIImage *bgImage;
+
 @property (weak,nonatomic) id<replayDelegate>delegate;
 
 @end

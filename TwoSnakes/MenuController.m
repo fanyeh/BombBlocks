@@ -11,17 +11,19 @@
 #import "ParticleView.h"
 #import "CustomLabel.h"
 #import "MKAppDelegate.h"
+#import "FastHandGameViewController.h"
 
 @interface MenuController ()
 {
-    ClassicGameController *classicGameController;
+//    ClassicGameController *classicGameController;
+//    FastHandGameViewController *fastHandGameController;
     ParticleView *particleView;
     CustomLabel *bombLabel;
     CustomLabel *blockLabel;
     CustomLabel *boomLabel;
     UIImageView *launchBomb;
-    NSMutableArray *playButtonArray;
     MKAppDelegate  *appDelegate;
+    BOOL loadAnim;
 }
 
 @property (weak, nonatomic) IBOutlet UIView *blueBomb;
@@ -29,16 +31,10 @@
 @property (weak, nonatomic) IBOutlet UIView *yellowBody;
 @property (weak, nonatomic) IBOutlet UIView *blueBody2;
 @property (weak, nonatomic) IBOutlet UIView *blueBody1;
-@property (weak, nonatomic) IBOutlet UIView *playButtonView;
-@property (weak, nonatomic) IBOutlet UIView *pView;
-@property (weak, nonatomic) IBOutlet UIView *lView;
-@property (weak, nonatomic) IBOutlet UIView *aView;
-@property (weak, nonatomic) IBOutlet UIView *yView;
-
-@property (weak, nonatomic) IBOutlet UILabel *pLabel;
-@property (weak, nonatomic) IBOutlet UILabel *lLabel;
-@property (weak, nonatomic) IBOutlet UILabel *aLabel;
-@property (weak, nonatomic) IBOutlet UILabel *yLabel;
+@property (weak, nonatomic) IBOutlet UIView *classicView;
+@property (weak, nonatomic) IBOutlet UIView *fastHandView;
+@property (weak, nonatomic) IBOutlet UILabel *classicLabel;
+@property (weak, nonatomic) IBOutlet UILabel *fastHandLabel;
 
 
 @end
@@ -89,6 +85,10 @@
     blockLabel.text = NSLocalizedString(@"Blocks",nil);
     blockLabel.hidden= YES;
     
+    _fastHandLabel.text = NSLocalizedString(@"Fast Hand",nil);
+    _classicLabel.text = NSLocalizedString(@"Classic",nil);
+    
+
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([language isEqualToString:@"zh-Hans"] || [language isEqualToString:@"zh-Hant"]) {
         [self.view addSubview:bombLabel];
@@ -96,10 +96,7 @@
         [self.view addSubview:blockLabel];
         launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(170, 568/2-labelSize-labelSize-52*2, 52, 52)];
         
-        _pLabel.text = NSLocalizedString(@"P", nil);
-        _lLabel.text = NSLocalizedString(@"L", nil);
-        _aLabel.text = NSLocalizedString(@"A", nil);
-        _yLabel.text = NSLocalizedString(@"Y", nil);
+
 
     } else {
         [self.view addSubview:bombLabel];
@@ -134,58 +131,69 @@
     
     [self.view addSubview:launchBomb];
     
-    UITapGestureRecognizer *playTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(playGame)];
-    [_playButtonView addGestureRecognizer:playTap];
+    UITapGestureRecognizer *playClassic = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(playClassicGame)];
+    [_classicView addGestureRecognizer:playClassic];
     
-    playButtonArray = [[NSMutableArray alloc]init];
-    [playButtonArray addObjectsFromArray:@[_pView,_lView,_aView,_yView]];
+    UITapGestureRecognizer *playFastHand= [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(playfastHandGame)];
+    [_fastHandView addGestureRecognizer:playFastHand];
     
     appDelegate = [[UIApplication sharedApplication] delegate];
+    
+    loadAnim = YES;
+    
+//    _classicView.layer.cornerRadius = 35;
+//    _fastHandView.layer.cornerRadius = 35;
+
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [particleView introMoveSound];
-    [UIView animateWithDuration:1.0 animations:^{
+    if (loadAnim) {
         
-        _blueBody2.frame = CGRectOffset(_blueBody2.frame, 0, 70);
-        
-    } completion:^(BOOL finished) {
-        
-        _yellowBody.alpha = 1;
-        CGAffineTransform yellowT = _yellowBody.transform;
-        _yellowBody.transform = CGAffineTransformScale(yellowT, 0.3, 0.3);
-        
-        [UIView animateWithDuration:0.15 animations:^{
+        [particleView introMoveSound];
+        [UIView animateWithDuration:1.0 animations:^{
             
-            _yellowBody.transform = yellowT;
+            _blueBody2.frame = CGRectOffset(_blueBody2.frame, 0, 70);
             
         } completion:^(BOOL finished) {
             
-            [particleView introMoveSound];
-            [UIView animateWithDuration:1.0 animations:^{
+            _yellowBody.alpha = 1;
+            CGAffineTransform yellowT = _yellowBody.transform;
+            _yellowBody.transform = CGAffineTransformScale(yellowT, 0.3, 0.3);
+            
+            [UIView animateWithDuration:0.15 animations:^{
                 
-                _blueBody2.frame = CGRectOffset(_blueBody2.frame, -71, 0);
-                _yellowBody.frame = CGRectOffset(_yellowBody.frame, -71, 0);
-
+                _yellowBody.transform = yellowT;
+                
             } completion:^(BOOL finished) {
                 
-                _blueBody1.alpha = 1;
-                CGAffineTransform blueT = _yellowBody.transform;
-                _blueBody1.transform = CGAffineTransformScale(blueT, 0.3, 0.3);
-                
-                [UIView animateWithDuration:0.15 animations:^{
+                [particleView introMoveSound];
+                [UIView animateWithDuration:1.0 animations:^{
                     
-                    _blueBody1.transform = blueT;
-                    
+                    _blueBody2.frame = CGRectOffset(_blueBody2.frame, -71, 0);
+                    _yellowBody.frame = CGRectOffset(_yellowBody.frame, -71, 0);
+
                 } completion:^(BOOL finished) {
                     
-                    [self setCombo];
+                    _blueBody1.alpha = 1;
+                    CGAffineTransform blueT = _yellowBody.transform;
+                    _blueBody1.transform = CGAffineTransformScale(blueT, 0.3, 0.3);
                     
+                    [UIView animateWithDuration:0.15 animations:^{
+                        
+                        _blueBody1.transform = blueT;
+                        
+                    } completion:^(BOOL finished) {
+                        
+                        [self setCombo];
+                        
+                    }];
                 }];
             }];
         }];
-    }];
+        
+        loadAnim = NO;
+    }
 }
 
 - (void)setCombo
@@ -332,7 +340,7 @@
                 bombLabel.hidden = NO;
                 boomLabel.hidden = NO;
                 blockLabel.hidden = NO;
-                _playButtonView.hidden = NO;
+                //_playButtonView.hidden = NO;
 
                 CGAffineTransform b1 =  bombLabel.transform;
                 CGAffineTransform b2 =  blockLabel.transform;
@@ -389,39 +397,24 @@
                     [self firstLauchMusicPlay];
                 }
 
-                [self playButtonAnimation:playButtonArray];
-                
+                [self gameButtonAnimation];
             }];
         }];
     }];
 }
 
-- (void)playButtonAnimation:(NSMutableArray *)buttons
+- (void)gameButtonAnimation
 {
-    UIView *buttonView = [buttons firstObject];
-    buttonView.hidden = NO;
-    CGAffineTransform t =  buttonView.transform;
-    CGAffineTransform t2 = CGAffineTransformScale(t, 1.2, 1.2);
-    buttonView.transform = CGAffineTransformScale(t, 0.5, 0.5);
-    
-    [UIView animateWithDuration:0.2 animations:^{
+    [UIView animateWithDuration:0.5 animations:^{
         
-        buttonView.transform = t2;
-        
+        _classicView.frame = CGRectOffset(_classicView.frame, -235, 0);
+
     } completion:^(BOOL finished) {
         
-        [UIView animateWithDuration:0.1 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             
-            buttonView.transform = t;
+            _fastHandView.frame = CGRectOffset(_fastHandView.frame, 235, 0);
             
-        } completion:^(BOOL finished) {
-            
-            [playButtonArray removeObjectAtIndex:0];
-            
-            if ([buttons count] > 0) {
-                
-                [self playButtonAnimation:playButtonArray];
-            }
         }];
     }];
 }
@@ -447,22 +440,41 @@
 }
 
 #pragma mark - New Game
-- (void)playGame
+- (void)playClassicGame
 {
     [particleView playGameSound];
     
-    CGAffineTransform t = _playButtonView.transform;
-    _playButtonView.transform = CGAffineTransformScale(t, 0.9, 0.9);
+    CGAffineTransform t = _classicView.transform;
+    _classicView.transform = CGAffineTransformScale(t, 0.9, 0.9);
     
     [UIView animateWithDuration:0.2 animations:^{
         
-        _playButtonView.transform = CGAffineTransformScale(t, 1.1, 1.1);
+        _classicView.transform = CGAffineTransformScale(t, 1.1, 1.1);
 
     } completion:^(BOOL finished) {
         
-        _playButtonView.transform = t;
-        classicGameController =  [[ClassicGameController alloc]init];
+        _classicView.transform = t;
+        ClassicGameController *classicGameController =  [[ClassicGameController alloc]init];
         [self presentViewController:classicGameController animated:YES completion:nil];
+    }];
+}
+
+- (void)playfastHandGame
+{
+    [particleView playGameSound];
+    
+    CGAffineTransform t = _fastHandView.transform;
+    _fastHandView.transform = CGAffineTransformScale(t, 0.9, 0.9);
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        
+        _fastHandView.transform = CGAffineTransformScale(t, 1.1, 1.1);
+        
+    } completion:^(BOOL finished) {
+        
+        _fastHandView.transform = t;
+        FastHandGameViewController *fastHandGameController =  [[FastHandGameViewController alloc]init];
+        [self presentViewController:fastHandGameController animated:YES completion:nil];
     }];
 }
 

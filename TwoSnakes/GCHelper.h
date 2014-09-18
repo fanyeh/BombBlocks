@@ -31,6 +31,7 @@
 @property (retain) GKInvite *pendingInvite;
 @property (retain) NSArray *pendingPlayersToInvite;
 @property (strong,nonatomic) NSError *lastError;
+@property (nonatomic,strong) NSArray *leaderboardSets;
 
 + (GCHelper *)sharedInstance;
 - (void)findMatchWithMinPlayers:(int)minPlayers maxPlayers:(int)maxPlayers
