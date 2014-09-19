@@ -26,5 +26,6 @@
 - (void)scanSound;
 - (void)tickSound;
 - (void)sirenSound;
+- (void)menuBombDropSound;
 
 @end

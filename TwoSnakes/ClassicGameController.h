@@ -28,5 +28,6 @@
 -(void)backToHome:(UIButton *)button;
 -(void)pauseLayer:(CALayer*)layer;
 -(void)resumeLayer:(CALayer*)layer;
+-(void)stopMusic;
 
 @end

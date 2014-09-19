@@ -1463,7 +1463,7 @@
     anim.delegate = self;
     [anim setToValue:[NSNumber numberWithFloat:0]]; // satrt angle
     [anim setFromValue:[NSNumber numberWithDouble:M_PI]]; // rotation angle
-    [anim setDuration:0.125]; // rotate speed
+    [anim setDuration:0.1]; // rotate speed
     [anim setRepeatCount:0];
     [anim setAutoreverses:NO];
     

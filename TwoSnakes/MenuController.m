@@ -74,12 +74,13 @@
     bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 568/2-labelSize-labelSize-10, 320, labelSize) fontSize:labelSize];
     bombLabel.text = NSLocalizedString(@"bomb", nil);
     bombLabel.hidden = YES;
-    
+
     boomLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontSize:labelSize];
     boomLabel.frame = CGRectOffset(boomLabel.frame, 0, labelSize+10);
+//    boomLabel.textColor = RedDotColor;
     boomLabel.text = NSLocalizedString(@"Boom",nil);
     boomLabel.hidden= YES;
-    
+
     blockLabel = [[CustomLabel alloc]initWithFrame:boomLabel.frame fontSize:labelSize];
     blockLabel.frame = CGRectOffset(blockLabel.frame, 0, labelSize+10);
     blockLabel.text = NSLocalizedString(@"Blocks",nil);
@@ -95,32 +96,12 @@
         [self.view addSubview:boomLabel];
         [self.view addSubview:blockLabel];
         launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(170, 568/2-labelSize-labelSize-52*2, 52, 52)];
-        
-
 
     } else {
         [self.view addSubview:bombLabel];
         [self.view addSubview:boomLabel];
         launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(200, 568/2-labelSize-labelSize-52*2+10, 52, 52)];
     }
-    
-//    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 568/2-labelSize-labelSize, 320, labelSize) fontSize:labelSize];
-//    bombLabel.text = @"Bomb";
-//    bombLabel.hidden = YES;
-//    [self.view addSubview:bombLabel];
-//    
-//    boomLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontSize:labelSize];
-//    boomLabel.frame = CGRectOffset(boomLabel.frame, 0, labelSize);
-//    boomLabel.text = @"Blocks";
-//    boomLabel.hidden= YES;
-//    [self.view addSubview:boomLabel];
-//    
-//    blockLabel = [[CustomLabel alloc]initWithFrame:boomLabel.frame fontSize:labelSize];
-//    blockLabel.frame = CGRectOffset(blockLabel.frame, 0, labelSize);
-//    blockLabel.text = @"Blocks";
-//    blockLabel.hidden= YES;
-//    [self.view addSubview:blockLabel];
-//    launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(200, 568/2-labelSize-labelSize-52*2+10, 52, 52)];
 
     launchBomb.image = [UIImage imageNamed:@"bomb_yellow.png"];
     launchBomb.hidden = YES;
@@ -133,17 +114,15 @@
     
     UITapGestureRecognizer *playClassic = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(playClassicGame)];
     [_classicView addGestureRecognizer:playClassic];
+    _classicView.layer.cornerRadius = 15;
     
     UITapGestureRecognizer *playFastHand= [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(playfastHandGame)];
     [_fastHandView addGestureRecognizer:playFastHand];
-    
+    _fastHandView.layer.cornerRadius = 15;
+
     appDelegate = [[UIApplication sharedApplication] delegate];
     
     loadAnim = YES;
-    
-//    _classicView.layer.cornerRadius = 35;
-//    _fastHandView.layer.cornerRadius = 35;
-
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -375,6 +354,7 @@
         
     } completion:^(BOOL finished) {
         
+        [particleView menuBombDropSound];
         [UIView animateWithDuration:0.15 animations:^{
             
             launchBomb.frame = CGRectOffset(launchBomb.frame, 0, -52/2);
@@ -387,6 +367,7 @@
                 
             } completion:^(BOOL finished) {
                 
+                [particleView menuBombDropSound];
                 launchBomb.transform = CGAffineTransformRotate(launchBomb.transform, M_PI_4/2);
                 
                 if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {

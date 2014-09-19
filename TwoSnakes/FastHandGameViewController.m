@@ -83,7 +83,9 @@
     [pinView.layer addAnimation:anim forKey:nil];
     
     redView =  [[UIView alloc]initWithFrame:self.view.frame];
-    redView.backgroundColor = [UIColor clearColor];
+    redView.backgroundColor = [UIColor colorWithRed:0.434 green:0.005 blue:0.010 alpha:0.400];
+    redView.alpha = 0;
+//    redView.backgroundColor = [UIColor clearColor];
     redView.userInteractionEnabled = NO;
     [self.view addSubview:redView];
 }
@@ -93,9 +95,23 @@
     count--;
     countDownLabel.text = [NSString stringWithFormat:@"%ld",count];
     if (count < 10) {
+        [self stopMusic];
         countDownLabel.textColor = [UIColor redColor];
-        redView.backgroundColor = [UIColor colorWithRed:0.434 green:0.005 blue:0.010 alpha:0.400];
-        [self.particleView sirenSound];
+        
+        if (count%2 == 1) {
+            [self.particleView sirenSound];
+            [UIView animateWithDuration:0.5 animations:^{
+                
+                redView.alpha = 1;
+
+            } completion:^(BOOL finished) {
+                
+                [UIView animateWithDuration:0.5 animations:^{
+                    redView.alpha = 0;
+                    
+                } ];
+            }];
+        }
 
     } else
         [self.particleView tickSound];

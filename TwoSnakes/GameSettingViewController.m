@@ -48,10 +48,8 @@
     // Do any additional setup after loading the view.
     UIImageView *bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
     [self.view addSubview:bgImageView];
-    
     musicOn = [[NSUserDefaults standardUserDefaults] boolForKey:@"music"];
     soundOn = [[NSUserDefaults standardUserDefaults] boolForKey:@"sound"];
-    
     particle = [[ParticleView alloc]init];
     [self settingPage];
 }
@@ -122,11 +120,14 @@
     tutorialLabel.textAlignment = NSTextAlignmentLeft;
     [self.view  addSubview:tutorialLabel];
     
+    appDelegate = [[UIApplication sharedApplication] delegate];
+
 }
 
 -(void)backToGame:(UIButton *)sender
 {
     [self buttonAnimation:sender];
+    [_delegate continueGame];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -145,10 +146,12 @@
     if (musicOn) {
         musicOn = NO;
         [appDelegate.audioPlayer stop];
-    } else {
+    }
+    else {
         musicOn = YES;
         [appDelegate.audioPlayer play];
     }
+
     [self setMusicOnLabel];
     [[NSUserDefaults standardUserDefaults] setBool:musicOn forKey:@"music"];
 }
@@ -182,11 +185,9 @@
     if (!musicOn) {
         musicOnLabel.text = @"OFF";
         [musicButton setImage:[UIImage imageNamed:@"musicOff90.png"] forState:UIControlStateNormal];
-        [appDelegate.audioPlayer stop];
     } else {
         musicOnLabel.text = @"ON";
         [musicButton setImage:[UIImage imageNamed:@"musicOn90.png"] forState:UIControlStateNormal];
-        [appDelegate.audioPlayer play];
     }
 }
 
@@ -216,6 +217,7 @@
 
 -(void)buttonAnimation:(UIButton *)button
 {
+    [particle playButtonSound];
     CGAffineTransform t = button.transform;
     
     [UIView animateWithDuration:0.15 animations:^{

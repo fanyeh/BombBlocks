@@ -21,7 +21,7 @@
 #import "MKAppDelegate.h"
 #import "GameSettingViewController.h"
 
-@interface ClassicGameController () <gameoverDelegate,replayDelegate,SKStoreProductViewControllerDelegate>
+@interface ClassicGameController () <gameoverDelegate,replayDelegate,SKStoreProductViewControllerDelegate,continueDelegate>
 {
     NSNumberFormatter *numFormatter; //Formatter for score
     NSInteger score;
@@ -34,7 +34,6 @@
     CustomLabel *scoreLabel;
     BOOL gameIsOver;
     NSInteger scoreGap;
-    NSTimer *changeScoreTimer;
     NSMutableArray *scoreArray;
     UIButton *settingButton;
     MKAppDelegate *appDelegate;
@@ -49,7 +48,6 @@
     NSInteger maxBombChain;
     UIImageView *scanner;
     UIView *scannerMask;
-    NSTimer *scanTimer;
     BOOL scanFromRight;
     NSTimeInterval scanTimeInterval;
     UIButton *pauseButton;
@@ -57,6 +55,9 @@
     UIButton *playButton;
     UIImageView *bgImageView;
     UIButton *homeButton;
+    
+    NSTimer *scanTimer;
+    NSTimer *changeScoreTimer;
 }
 @end
 
@@ -127,7 +128,7 @@
     [self.view addSubview:nextNode];
     
     CustomLabel *nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-60)/2, nextNode.frame.origin.y + nextNodeSize, 60, 15) fontSize:15];
-    nextLabel.text = @"Next";
+    nextLabel.text = NSLocalizedString(@"Next", nil) ;
     [self.view addSubview:nextLabel];
 
     scoreArray = [[NSMutableArray alloc]init];
@@ -223,6 +224,11 @@
     _gameIsPaused = NO;
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    pauseView.hidden = NO;
+}
+
 -(void)pauseLayer:(CALayer*)layer
 {
     CFTimeInterval pausedTime = [layer convertTime:CACurrentMediaTime() fromLayer:nil];
@@ -279,6 +285,8 @@
         chainLabel.frame = originalFrame;
     }];
     
+    [self updateScore:bombChain*250];
+    
     if (bombChain > maxBombChain)
         maxBombChain = bombChain;
 }
@@ -313,6 +321,15 @@
 
 #pragma mark - Controls
 
+-(void)continueGame
+{
+    _gameIsPaused = NO;
+    gamePad.userInteractionEnabled = YES;
+    [self resumeLayer:scanner.layer];
+    [self resumeLayer:scannerMask.layer];
+    [self performSelector:@selector(startScan) withObject:nil afterDelay:2.0];
+}
+
 -(void)pauseGame
 {
     if(_gameIsPaused) {
@@ -337,15 +354,26 @@
 
 -(void)pauseGameFromBackground
 {
-    if (!_gameIsPaused)
-        [self pauseGame];
+    if (!_gameIsPaused) {
+        
+        if(_gameIsPaused) {
+            _gameIsPaused = NO;
+        } else {
+            _gameIsPaused = YES;
+            [self buttonAnimation:pauseButton];
+            gamePad.userInteractionEnabled = NO;
+            [scanTimer invalidate];
+            [self pauseLayer:scanner.layer];
+            [self pauseLayer:scannerMask.layer];
+            pauseView.frame = CGRectOffset(pauseView.frame, 0, 568);
+        }
+    }
 }
 
 -(void)playGame
 {
     _gameIsPaused = NO;
     [self buttonAnimation:pauseButton];
-    
     [UIView animateWithDuration:0.5 animations:^{
         pauseView.frame = CGRectOffset(pauseView.frame, 0, -568);
     } completion:^(BOOL finished) {
@@ -355,7 +383,6 @@
         [self resumeLayer:scannerMask.layer];
         
         [self performSelector:@selector(startScan) withObject:nil afterDelay:2.0];
-//        scanTimer = [NSTimer scheduledTimerWithTimeInterval:6 target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
     }];
 }
 
@@ -366,27 +393,35 @@
 
 -(void)showSetting:(UIButton *)button
 {
-    [self pauseGame];
+    pauseView.hidden = YES;
     
+    if(_gameIsPaused) {
+        _gameIsPaused = NO;
+    } else {
+        _gameIsPaused = YES;
+        gamePad.userInteractionEnabled = NO;
+        [scanTimer invalidate];
+        [self pauseLayer:scanner.layer];
+        [self pauseLayer:scannerMask.layer];
+    }
     [self buttonAnimation:button];
-    [_particleView playButtonSound];
-    
     GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
+    controller.delegate = self;
     [self presentViewController:controller animated:YES completion:nil];
-
 }
 
 -(void)backToHome:(UIButton *)button
 {
     [self buttonAnimation:button];
-    [_particleView playButtonSound];
     pauseView.hidden = YES;
     [scanTimer invalidate];
+    [changeScoreTimer invalidate];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)buttonAnimation:(UIButton *)button
 {
+    [_particleView playButtonSound];
     CGAffineTransform t = button.transform;
     
     [UIView animateWithDuration:0.15 animations:^{
@@ -785,6 +820,11 @@
     }
 }
 
+- (void)stopMusic
+{
+    [appDelegate.audioPlayer stop];
+}
+
 #pragma mark - Game Over
 
 -(void)gameOver
@@ -794,6 +834,19 @@
     screenShot = [self captureView:self.view];
     [snake setGameoverImage];
     gameIsOver = YES;
+    
+    [appDelegate.audioPlayer stop];
+    
+    [_particleView playGameoverSound];
+    
+    chainLabel.text = @"Game Over";
+    chainLabel.hidden = NO;
+    [UIView animateWithDuration:2.0 animations:^{
+        chainLabel.alpha = 0;
+    } completion:^(BOOL finished) {
+        chainLabel.hidden = YES;
+        chainLabel.alpha = 1;
+    }];
 }
 
 #pragma mark - Replay

@@ -127,11 +127,16 @@
         [self runAction:[SKAction playSoundFileNamed:@"tickSound.mp3" waitForCompletion:NO]];
 }
 
-
 - (void)sirenSound
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
         [self runAction:[SKAction playSoundFileNamed:@"sirenSound.mp3" waitForCompletion:NO]];
+}
+
+- (void)menuBombDropSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"menuBombDropSound.mp3" waitForCompletion:NO]];
 }
 
 @end

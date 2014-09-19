@@ -8,6 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol continueDelegate <NSObject>
+@required
+
+-(void)continueGame;
+
+@end
+
 @interface GameSettingViewController : UIViewController
+{
+    __weak id<continueDelegate>_delegate;
+}
+@property (weak,nonatomic) id<continueDelegate>delegate;
 
 @end

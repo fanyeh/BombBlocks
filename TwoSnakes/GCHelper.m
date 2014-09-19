@@ -276,7 +276,7 @@ static GCHelper *sharedHelper = nil;
     
         GKGameCenterViewController *gameCenterViewController= [[GKGameCenterViewController alloc] init];
         gameCenterViewController.gameCenterDelegate = self;
-        gameCenterViewController.viewState = GKGameCenterViewControllerStateDefault;
+        gameCenterViewController.viewState = GKGameCenterViewControllerStateLeaderboards;
         [viewcontroller presentViewController: gameCenterViewController
                                      animated:YES
                                    completion:nil];
