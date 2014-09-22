@@ -25,8 +25,8 @@
 
 - (id)initGamePad
 {
-    CGFloat nodeHeight = 60;
-    CGFloat nodeWidth = 60;
+    CGFloat nodeHeight = [UIScreen mainScreen].bounds.size.width * 0.1875;
+    CGFloat nodeWidth = [UIScreen mainScreen].bounds.size.width * 0.1875;
     int column = 5;
     int row = 5;
     CGFloat gapBetweenCard = 2;

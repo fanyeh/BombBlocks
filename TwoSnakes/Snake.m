@@ -93,9 +93,7 @@
     SnakeNode *headNode = [_snakeBody firstObject];
     int newInitNodeIndex = arc4random() % [_gamePad.emptyNodeArray count];
     SnakeNode *newInitNode = [_gamePad.emptyNodeArray objectAtIndex:newInitNodeIndex];
-    
-    
-    
+
     headNode.frame = newInitNode.frame;
     [headNode setNodeIndexRow:newInitNode.nodeRow andCol:newInitNode.nodeColumn];
     [self updateNextNode:headNode animation:NO];
@@ -1344,17 +1342,17 @@
     pathLayer.path = path.CGPath;
     pathLayer.strokeColor = bomb.nodeColor.CGColor;
     pathLayer.fillColor = nil;
-    pathLayer.lineWidth = 2.5f;
+    pathLayer.lineWidth = 4.0f;
     pathLayer.lineJoin = kCALineJoinBevel;
-    pathLayer.opacity = 0.8;
+    pathLayer.opacity = 0.7;
     pathLayer.name = @"beam";
     
     [_gamePad.layer addSublayer:pathLayer];
 
     CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
     pathAnimation.delegate = _gamePad;
-    pathAnimation.duration = 0.3;
-    pathAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
+    pathAnimation.duration = 0.4;
+    pathAnimation.fromValue = [NSNumber numberWithFloat:0.1f];
     pathAnimation.toValue = [NSNumber numberWithFloat:1.0f];
     [pathLayer addAnimation:pathAnimation forKey:@"strokeEnd"];
 }

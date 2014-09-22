@@ -142,7 +142,7 @@
                                                                               bombHeight)];
     // Set bomb type
     switch (randBomb) {
-        case 4:
+        case 0:
             _bombType = kBombTypeExplodeHorizontal;
             bombImage = [UIImage imageNamed:@"explodeHorizontal.png"];
             break;
@@ -158,7 +158,7 @@
             _bombType = kBombTypeSquareExplode;
             bombImage = [UIImage imageNamed:@"squareExplode.png"];
             break;
-        case 0:
+        case 4:
             _bombType = kBombTypeExplodeBlock;
             bombImage = [UIImage imageNamed:@"explode.png"];
             break;

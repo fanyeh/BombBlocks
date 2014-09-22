@@ -70,14 +70,16 @@
     [self.view sendSubviewToBack:skView];
     
     CGFloat labelSize = 65;
+    CGFloat screenWidth =  [UIScreen mainScreen].bounds.size.width;
+    CGFloat screenHeight=  [UIScreen mainScreen].bounds.size.height;
 
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 568/2-labelSize-labelSize-10, 320, labelSize) fontSize:labelSize];
+
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, screenHeight/2-labelSize-labelSize-10, screenWidth, labelSize) fontSize:labelSize];
     bombLabel.text = NSLocalizedString(@"bomb", nil);
     bombLabel.hidden = YES;
 
     boomLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontSize:labelSize];
     boomLabel.frame = CGRectOffset(boomLabel.frame, 0, labelSize+10);
-//    boomLabel.textColor = RedDotColor;
     boomLabel.text = NSLocalizedString(@"Boom",nil);
     boomLabel.hidden= YES;
 
@@ -88,19 +90,18 @@
     
     _fastHandLabel.text = NSLocalizedString(@"Fast Hand",nil);
     _classicLabel.text = NSLocalizedString(@"Classic",nil);
-    
 
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([language isEqualToString:@"zh-Hans"] || [language isEqualToString:@"zh-Hant"]) {
         [self.view addSubview:bombLabel];
         [self.view addSubview:boomLabel];
         [self.view addSubview:blockLabel];
-        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(170, 568/2-labelSize-labelSize-52*2, 52, 52)];
+        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(170, screenHeight/2-labelSize-labelSize-52*2, 52, 52)];
 
     } else {
         [self.view addSubview:bombLabel];
         [self.view addSubview:boomLabel];
-        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(200, 568/2-labelSize-labelSize-52*2+10, 52, 52)];
+        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(200, screenHeight/2-labelSize-labelSize-52*2+10, 52, 52)];
     }
 
     launchBomb.image = [UIImage imageNamed:@"bomb_yellow.png"];

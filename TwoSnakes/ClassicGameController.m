@@ -78,6 +78,8 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor colorWithWhite:0.063 alpha:1.000];
+    CGFloat screenWidth =  [UIScreen mainScreen].bounds.size.width;
+    CGFloat screenHeight=  [UIScreen mainScreen].bounds.size.height;
     
     // BG image
     bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
@@ -109,7 +111,7 @@
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 20 , 250, 60) fontSize:60];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth - 250)/2, 20 , 250, 60) fontSize:60];
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
@@ -122,12 +124,12 @@
     
     // Next Node
     CGFloat nextNodeSize = 40;
-    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, self.view.frame.size.height - 110 , nextNodeSize, nextNodeSize)];
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, screenHeight - screenHeight*0.193 , nextNodeSize, nextNodeSize)];
     snake.nextNode = nextNode;
     [snake updateNextNode:nextNode animation:YES];
     [self.view addSubview:nextNode];
     
-    CustomLabel *nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-60)/2, nextNode.frame.origin.y + nextNodeSize, 60, 15) fontSize:15];
+    CustomLabel *nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-60)/2, nextNode.frame.origin.y + nextNodeSize, 60, 15) fontSize:15];
     nextLabel.text = NSLocalizedString(@"Next", nil) ;
     [self.view addSubview:nextLabel];
 
@@ -145,7 +147,7 @@
         [self showTutorial1];
     
     // Effects
-    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 93, 150,20) fontSize:20];
+    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-150)/2, 93, 150,20) fontSize:20];
     
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([language isEqualToString:@"zh-Hans"])
@@ -157,7 +159,7 @@
 
     [self.view addSubview:levelLabel];
     
-    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-300)/2, 180, 300,40) fontSize:40];
+    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-300)/2, 180, 300,40) fontSize:40];
     chainLabel.hidden = YES;
     chainLabel.center = self.view.center;
     [self.view addSubview:chainLabel];
