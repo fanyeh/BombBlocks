@@ -25,8 +25,8 @@
 
 - (id)initGamePad
 {
-    CGFloat nodeHeight = 62;//85;
-    CGFloat nodeWidth = 62;//65;
+    CGFloat nodeHeight = 60;
+    CGFloat nodeWidth = 60;
     int column = 5;
     int row = 5;
     CGFloat gapBetweenCard = 2;
@@ -36,10 +36,10 @@
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
+
         _emptyNodeArray = [[NSMutableArray alloc]init];
         int randomX = arc4random() % column;
         int randomY = arc4random() % row;
-        //int tag = 0;
         for (int i = 0 ; i < column; i ++ ) {
             
             for (int j = 0 ; j < row ; j++) {
@@ -48,7 +48,6 @@
                 CGFloat assetPosY = gapFromBoundary+nodeHeight*j;
                 SnakeNode *emptyNode = [[SnakeNode alloc]initWithEmptyFrame:CGRectMake(assetPosX, assetPosY, nodeWidth - gapBetweenCard, nodeHeight - gapBetweenCard)];
                 [emptyNode setNodeIndexRow:j andCol:i];
-                //emptyNode.tag = tag;
 
                 [self addSubview:emptyNode];
                 [_emptyNodeArray addObject:emptyNode];
@@ -56,8 +55,6 @@
                 if (i == randomX && j == randomY) {
                     _initialNode = emptyNode;
                 }
-                
-                //tag++;
             }
         }
     }
@@ -81,12 +78,6 @@
         case kAssetTypeYellow:
             color = YellowDotColor;
             break;
-//        case kAssetTypeGrey:
-//            color = GreyDotColor;
-//            break;
-//        case kAssetTypeOrange:
-//            color = OrangeDotColor;
-//            break;
     }
     
     for (SnakeNode *emptyNode in _emptyNodeArray) {
@@ -218,6 +209,16 @@
         [beamView removeFromSuperview];
 
     }];
+}
+
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
+{
+    for (CALayer *layer in self.layer.sublayers) {
+        if ([layer.name isEqualToString:@"beam"]) {
+            [layer removeFromSuperlayer];
+            break;
+        }
+    }
 }
 
 @end

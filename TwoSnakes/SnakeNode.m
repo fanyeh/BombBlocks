@@ -120,26 +120,18 @@
             _assetType = kAssetTypeYellow;
             _nodeColor = YellowDotColor;
             break;
-//        case 4:
-//            _nodeImageView.image = [UIImage imageNamed:@"bomb_grey.png"];
-//            _assetType = kAssetTypeGrey;
-//            _nodeColor = YellowDotColor;
-//            break;
-//        case 5:
-//            _nodeImageView.image = [UIImage imageNamed:@"bomb_orange.png"];
-//            _assetType = kAssetTypeOrange;
-//            _nodeColor = OrangeDotColor;
-//            break;
     }
     
+    // Determine bomb type
     int randBomb;
-    
     if (reminder < 5)
         randBomb = arc4random()%2;
     else if (reminder == 5)
         randBomb = arc4random()%3;
-    else if (reminder > 5)
+    else if (reminder == 6)
         randBomb = arc4random()%4;
+    else if (reminder > 6)
+        randBomb = arc4random()%5;
     
     CGFloat bombWidth = 25;
     CGFloat bombHeight = 25;
@@ -150,7 +142,7 @@
                                                                               bombHeight)];
     // Set bomb type
     switch (randBomb) {
-        case 0:
+        case 4:
             _bombType = kBombTypeExplodeHorizontal;
             bombImage = [UIImage imageNamed:@"explodeHorizontal.png"];
             break;
@@ -159,10 +151,14 @@
             bombImage = [UIImage imageNamed:@"explodeVertical.png"];
             break;
         case 2:
+            _bombType = kBombTypeRandom;
+            bombImage = [UIImage imageNamed:@"randomBomb.png"];
+            break;
+        case 3:
             _bombType = kBombTypeSquareExplode;
             bombImage = [UIImage imageNamed:@"squareExplode.png"];
             break;
-        case 3:
+        case 0:
             _bombType = kBombTypeExplodeBlock;
             bombImage = [UIImage imageNamed:@"explode.png"];
             break;

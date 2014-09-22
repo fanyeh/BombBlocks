@@ -585,6 +585,9 @@
         case kBombTypeSquareExplode:
             [self explodeSquare:bomb complete:completBlock];
             break;
+        case kBombTypeRandom:
+            [self explodeRandom:bomb complete:completBlock];
+            break;
     }
 }
 
@@ -713,6 +716,9 @@
     for (SnakeNode *bombNode in _gamePad.emptyNodeArray) {
         
         if (bombNode.hasBomb && bombNode.assetType == bomb.assetType) {
+            
+            [self explodeColorAnimation:bomb target:bombNode];
+
             [triggerBombNodes addObject:bombNode];
         }
     }
@@ -720,6 +726,9 @@
     [UIView animateWithDuration: 0.5 animations:^{
         for (SnakeNode *node in _snakeBody) {
             if (node.assetType ==  bomb.assetType) {
+                
+                [self explodeColorAnimation:bomb target:node];
+                
                 [self showScoreLabel:node];
                 [removedNode addObject:node];
                 [self shrinkAnimation:node showExplode:NO];
@@ -789,7 +798,6 @@
     }];
 }
 
-             
 -(void)explodeSquare:(SnakeNode *)bomb complete:(void(^)(void))completBlock
 {
     NSMutableArray *removedNode = [[NSMutableArray alloc]init];
@@ -816,6 +824,34 @@
         
         [self explodeNextBomb:triggerBombNodes removeBody:removedNode complete:completBlock];
 
+    }];
+}
+
+-(void)explodeRandom:(SnakeNode *)bomb complete:(void(^)(void))completBlock
+{
+    NSMutableArray *emptyNodes = [[NSMutableArray alloc]init];
+    
+    for (SnakeNode *node in _gamePad.emptyNodeArray) {
+        if (!node.hasBomb)
+            [emptyNodes addObject:node];
+    }
+
+    [_particleView randomBombSound];
+
+    [UIView animateWithDuration:0.3 animations:^{
+        
+        // Swap block to new position
+        for (SnakeNode *node in _snakeBody) {
+            
+            SnakeNode *newPosNode = [emptyNodes objectAtIndex:arc4random()%emptyNodes.count];
+            [node setNodeIndexRow:newPosNode.nodeRow andCol:newPosNode.nodeColumn];
+            node.frame = newPosNode.frame;
+            [emptyNodes removeObject:newPosNode];
+        }
+        
+    } completion:^(BOOL finished) {
+        
+        [self triggerBomb:completBlock];
     }];
 }
 
@@ -1296,6 +1332,33 @@
     [_particleView explodeSquareSound];
 }
 
+-(void)explodeColorAnimation:(SnakeNode *)bomb target:(SnakeNode *)targetNode
+{
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    [path moveToPoint:bomb.center];
+    [path addLineToPoint:targetNode.center];
+
+    CAShapeLayer *pathLayer = [[CAShapeLayer alloc]init];
+
+    pathLayer.frame = bomb.bounds;
+    pathLayer.path = path.CGPath;
+    pathLayer.strokeColor = bomb.nodeColor.CGColor;
+    pathLayer.fillColor = nil;
+    pathLayer.lineWidth = 2.5f;
+    pathLayer.lineJoin = kCALineJoinBevel;
+    pathLayer.opacity = 0.8;
+    pathLayer.name = @"beam";
+    
+    [_gamePad.layer addSublayer:pathLayer];
+
+    CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    pathAnimation.delegate = _gamePad;
+    pathAnimation.duration = 0.3;
+    pathAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
+    pathAnimation.toValue = [NSNumber numberWithFloat:1.0f];
+    [pathLayer addAnimation:pathAnimation forKey:@"strokeEnd"];
+}
+
 #pragma mark - Body Animations
 
 - (void)blinkAnimation:(SnakeNode *)node
@@ -1348,7 +1411,7 @@
                                  [self explodeBody:node];
                              else if( node.bombType == kBombTypeSquareExplode)
                                  [self explodeBombSqaureAnimation:node];
-                             else
+                             else if( node.bombType == kBombTypeExplodeHorizontal || node.bombType == kBombTypeExplodeVertical)
                                  [self explodeBombAnimation:node];
                          }
                      }];

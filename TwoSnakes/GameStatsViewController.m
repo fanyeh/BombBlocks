@@ -12,6 +12,7 @@
 #import "GADInterstitial.h"
 #import "Chartboost.h"
 #import "MKAppDelegate.h"
+#import "ParticleView.h"
 
 @interface GameStatsViewController () <ChartboostDelegate,GADInterstitialDelegate>
 {
@@ -25,6 +26,7 @@
     NSNumberFormatter *numFormatter; //Formatter for score
     MKAppDelegate *appDelegate;
     NSMutableArray *levelArray;
+    ParticleView *particleView;
     
 }
 @end
@@ -72,7 +74,7 @@
     facbookButton.layer.cornerRadius = socialButtonHeight/2;
     facbookButton.layer.masksToBounds = YES;
     facbookButton.backgroundColor = [UIColor whiteColor];
-    [facbookButton addTarget:self action:@selector(facebookShare) forControlEvents:UIControlEventTouchDown];
+    [facbookButton addTarget:self action:@selector(facebookShare:) forControlEvents:UIControlEventTouchDown];
     
     
     UIButton *twitterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
@@ -81,14 +83,14 @@
     twitterButton.layer.cornerRadius = socialButtonHeight/2;
     twitterButton.backgroundColor = [UIColor whiteColor];
     twitterButton.layer.masksToBounds = YES;
-    [twitterButton addTarget:self action:@selector(twitterShare) forControlEvents:UIControlEventTouchDown];
+    [twitterButton addTarget:self action:@selector(twitterShare:) forControlEvents:UIControlEventTouchDown];
     
     // Game Center Label
     UIButton *gamecenterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
     gamecenterButton.frame = CGRectOffset(gamecenterButton.frame, -80, 0);
     [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter70.png"] forState:UIControlStateNormal];\
     gamecenterButton.layer.cornerRadius = socialButtonHeight/2;
-    [gamecenterButton addTarget:self action:@selector(showGameCenter) forControlEvents:UIControlEventTouchDown];
+    [gamecenterButton addTarget:self action:@selector(showGameCenter:) forControlEvents:UIControlEventTouchDown];
     
     bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 85, pauseLabelWidth, 35) fontSize:35];
     bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
@@ -250,13 +252,10 @@
 
     }
     
-    UIImageView *replayBg = [[UIImageView alloc]initWithFrame:CGRectMake((self.view.frame.size.width-40)/2,pauseLabelHeight-40-30, 40, 40)];
-    replayBg.image = [UIImage imageNamed:@"replayButton.png"];
-    replayBg.userInteractionEnabled = YES;
+    UIButton *replayBg = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-40)/2,pauseLabelHeight-40-30, 40, 40)];
+    [replayBg setImage:[UIImage imageNamed:@"replayButton.png"] forState:UIControlStateNormal];
+    [replayBg addTarget:self action:@selector(replayGame:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:replayBg];
-    
-    UITapGestureRecognizer *replayTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(replayGame)];
-    [replayBg addGestureRecognizer:replayTap];
     
     [self showReplayView];
     
@@ -357,27 +356,31 @@
 //    }];
 }
 
--(void)replayGame
+-(void)replayGame:(UIButton *)button
 {
+    [self buttonAnimation:button];
     [_delegate replayGame];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Game center
 
-- (void)showGameCenter
+- (void)showGameCenter:(UIButton *)button
 {
+    [self buttonAnimation:button];
     [[GCHelper sharedInstance] showGameCenterViewController:self];
 }
 
-- (void)facebookShare
+- (void)facebookShare:(UIButton *)button
 {
+    [self buttonAnimation:button];
     [socialShare setScore:_score];
     [socialShare showShareSheet:kShareTypeFacebook viewController:self];
 }
 
-- (void)twitterShare
+- (void)twitterShare:(UIButton *)button
 {
+    [self buttonAnimation:button];
     [socialShare setScore:_score];
     [socialShare showShareSheet:kShareTypeTwitter viewController:self];
 }
@@ -443,6 +446,21 @@
     }
     
     [self showAdmob];
+}
+
+-(void)buttonAnimation:(UIButton *)button
+{
+    [particleView playButtonSound];
+    CGAffineTransform t = button.transform;
+    
+    [UIView animateWithDuration:0.15 animations:^{
+        
+        button.transform = CGAffineTransformScale(t, 0.85, 0.85);
+        
+    } completion:^(BOOL finished) {
+        
+        button.transform = t;
+    }];
 }
 
 

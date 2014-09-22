@@ -109,7 +109,7 @@
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 10 , 250, 65) fontSize:65];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 250)/2, 20 , 250, 60) fontSize:60];
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
@@ -145,9 +145,16 @@
         [self showTutorial1];
     
     // Effects
-    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 85, 150,30) fontSize:30];
-    levelLabel.text = @"Level 1";
-    levelLabel.alpha = 0;
+    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-150)/2, 93, 150,20) fontSize:20];
+    
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([language isEqualToString:@"zh-Hans"])
+        levelLabel.text = @"第 1 关";
+    else if ([language isEqualToString:@"zh-Hant"])
+        levelLabel.text = @"第 1 關";
+    else
+        levelLabel.text = @"Stage 1";
+
     [self.view addSubview:levelLabel];
     
     chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-300)/2, 180, 300,40) fontSize:40];
@@ -255,18 +262,13 @@
     else if ([language isEqualToString:@"zh-Hant"])
         levelLabel.text = [NSString stringWithFormat:@"第 %ld 關",level];
     else
-        
-    levelLabel.text = [NSString stringWithFormat:@"Level %ld",level];
-    [UIView animateWithDuration:1.5 animations:^{
+        levelLabel.text = [NSString stringWithFormat:@"Stage %ld",level];
+    
+    levelLabel.alpha = 0;
+
+    [UIView animateWithDuration:2 animations:^{
         
         levelLabel.alpha = 1;
-        
-    } completion:^(BOOL finished) {
-
-        [UIView animateWithDuration:1.5 animations:^{
-            
-            levelLabel.alpha = 0;
-        }];
         
     }];
 }
@@ -831,6 +833,7 @@
 {
     gamePad.userInteractionEnabled = NO;
     [scanTimer invalidate];
+    [changeScoreTimer invalidate];
     screenShot = [self captureView:self.view];
     [snake setGameoverImage];
     gameIsOver = YES;
@@ -841,7 +844,7 @@
     
     chainLabel.text = @"Game Over";
     chainLabel.hidden = NO;
-    [UIView animateWithDuration:2.0 animations:^{
+    [UIView animateWithDuration:3.0 animations:^{
         chainLabel.alpha = 0;
     } completion:^(BOOL finished) {
         chainLabel.hidden = YES;

@@ -21,4 +21,5 @@
 
 @property (strong,nonatomic) NSMutableArray *emptyNodeArray;
 @property (strong,nonatomic) SnakeNode  *initialNode;
+
 @end

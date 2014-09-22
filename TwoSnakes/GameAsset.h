@@ -19,7 +19,8 @@ typedef enum {
     kBombTypeExplodeBlock = 0,
     kBombTypeExplodeVertical,
     kBombTypeExplodeHorizontal,
-    kBombTypeSquareExplode
+    kBombTypeSquareExplode,
+    kBombTypeRandom
 } BombType;
 
 typedef struct {

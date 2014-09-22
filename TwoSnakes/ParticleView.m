@@ -139,4 +139,10 @@
         [self runAction:[SKAction playSoundFileNamed:@"menuBombDropSound.mp3" waitForCompletion:NO]];
 }
 
+- (void)randomBombSound
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+        [self runAction:[SKAction playSoundFileNamed:@"randomBombSound.mp3" waitForCompletion:NO]];
+}
+
 @end
