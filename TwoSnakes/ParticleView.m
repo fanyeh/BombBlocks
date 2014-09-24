@@ -14,10 +14,19 @@
 }
 
 -(id)initWithSize:(CGSize)size {
+    
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         self.backgroundColor = [SKColor colorWithCGColor:[UIColor clearColor].CGColor];
 
+    }
+    return self;
+}
+
+-(id)init
+{
+    if (self = [super init]) {
+        
     }
     return self;
 }

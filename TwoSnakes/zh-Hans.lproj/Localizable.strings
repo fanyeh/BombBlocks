@@ -9,10 +9,7 @@
 "Boom" = "爆";
 "Blocks" = "了";
 
-"P" = "开";
-"L" = "始";
-"A" = "游";
-"Y" = "戏";
+
 
 "Sound" = "音效";
 "Music" = "音乐";
@@ -32,3 +29,11 @@
 "Continue" = "继续玩";
 
 "Next" = "下一块";
+
+"Play" = "开始游戏";
+
+// Tutorial
+"Swipe to move blocks" = "滑动您的手指来移动方块";
+"Line up blocks to cancel blocks" = "将相同方块排列一起来消除它们";
+"Cancel more blocks to pop bombs" = "消除更多的方块来产生炸弹";
+"Line up with blocks to trigger bomb" ="将方块与炸弹排在一起引爆";

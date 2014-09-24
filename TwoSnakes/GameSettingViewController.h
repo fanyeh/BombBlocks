@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ParticleView.h"
 
 @protocol continueDelegate <NSObject>
 @required
@@ -20,5 +21,7 @@
     __weak id<continueDelegate>_delegate;
 }
 @property (weak,nonatomic) id<continueDelegate>delegate;
+@property (nonatomic,strong) UIImage *bgImage;
+@property (nonatomic,strong) ParticleView *particleView;
 
 @end

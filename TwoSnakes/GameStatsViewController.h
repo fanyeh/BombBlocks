@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ParticleView.h"
 
 @protocol replayDelegate <NSObject>
 @required
@@ -25,6 +26,7 @@
 @property (nonatomic,assign) BOOL timeMode;
 @property (nonatomic,strong) UIImage *gameImage;
 @property (nonatomic,strong) UIImage *bgImage;
+@property (nonatomic,strong) ParticleView *particleView;
 
 @property (weak,nonatomic) id<replayDelegate>delegate;
 

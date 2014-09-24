@@ -25,8 +25,8 @@
 
 - (id)initGamePad
 {
-    CGFloat nodeHeight = [UIScreen mainScreen].bounds.size.width * 0.1875;
-    CGFloat nodeWidth = [UIScreen mainScreen].bounds.size.width * 0.1875;
+    CGFloat nodeHeight =  screenWidth * 0.1875;
+    CGFloat nodeWidth = screenWidth * 0.1875;
     int column = 5;
     int row = 5;
     CGFloat gapBetweenCard = 2;
@@ -98,7 +98,6 @@
 }
 
 -(void)createBombWithReminder:(NSInteger)reminder body:(NSMutableArray *)snakeBody complete:(void(^)(void))completBlock
-
 {
     NSMutableArray *vacantNode = [[NSMutableArray alloc]init];
     for (SnakeNode *emptyNode in _emptyNodeArray) {

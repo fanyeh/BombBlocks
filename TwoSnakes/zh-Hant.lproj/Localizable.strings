@@ -11,10 +11,7 @@
 "Boom" = "爆";
 "Blocks" = "了";
 
-"P" = "開";
-"L" = "始";
-"A" = "遊";
-"Y" = "戲";
+
 
 "Sound" = "音效";
 "Music" = "音樂";
@@ -34,3 +31,11 @@
 "Continue" = "繼續玩";
 
 "Next" = "下一塊";
+
+"Play" = "開始遊戲";
+
+// Tutorial
+"Swipe to move blocks" = "滑動您的手指來移動方塊";
+"Line up blocks to cancel blocks" = "將相同方塊排列一起來消除它們";
+"Cancel more blocks to pop bombs" = "消除更多的方塊來產生炸彈";
+"Line up with blocks to trigger bomb" ="將方塊與炸彈排在一起引爆";

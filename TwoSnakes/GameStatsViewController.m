@@ -12,7 +12,6 @@
 #import "GADInterstitial.h"
 #import "Chartboost.h"
 #import "MKAppDelegate.h"
-#import "ParticleView.h"
 
 @interface GameStatsViewController () <ChartboostDelegate,GADInterstitialDelegate>
 {
@@ -26,8 +25,6 @@
     NSNumberFormatter *numFormatter; //Formatter for score
     MKAppDelegate *appDelegate;
     NSMutableArray *levelArray;
-    ParticleView *particleView;
-    
 }
 @end
 
@@ -59,28 +56,24 @@
     interstitialAd.delegate = self;
     interstitialAd.adUnitID = @"ca-app-pub-5576864578595597/8891080263";
     
-    CGFloat pauseLabelWidth = self.view.frame.size.width;
-    CGFloat pauseLabelHeight = self.view.frame.size.height;
-    CGFloat socialButtonHeight = 35;
-    CGFloat socialButtonWidth = socialButtonHeight;
+    CGFloat socialButtonSize = 35;
     
     // Social share button
-    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake((320-35)/2,
+    UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake((screenWidth-35)/2,
                                                                         10,
-                                                                        socialButtonWidth,
-                                                                        socialButtonHeight)];
+                                                                        socialButtonSize,
+                                                                        socialButtonSize)];
     
     [facbookButton setBackgroundImage:[UIImage imageNamed:@"facebook40.png"] forState:UIControlStateNormal];
-    facbookButton.layer.cornerRadius = socialButtonHeight/2;
+    facbookButton.layer.cornerRadius = socialButtonSize/2;
     facbookButton.layer.masksToBounds = YES;
     facbookButton.backgroundColor = [UIColor whiteColor];
     [facbookButton addTarget:self action:@selector(facebookShare:) forControlEvents:UIControlEventTouchDown];
     
-    
     UIButton *twitterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
     [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter40.png"] forState:UIControlStateNormal];
     twitterButton.frame = CGRectOffset(twitterButton.frame, 80, 0);
-    twitterButton.layer.cornerRadius = socialButtonHeight/2;
+    twitterButton.layer.cornerRadius = socialButtonSize/2;
     twitterButton.backgroundColor = [UIColor whiteColor];
     twitterButton.layer.masksToBounds = YES;
     [twitterButton addTarget:self action:@selector(twitterShare:) forControlEvents:UIControlEventTouchDown];
@@ -89,14 +82,24 @@
     UIButton *gamecenterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
     gamecenterButton.frame = CGRectOffset(gamecenterButton.frame, -80, 0);
     [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter70.png"] forState:UIControlStateNormal];\
-    gamecenterButton.layer.cornerRadius = socialButtonHeight/2;
+    gamecenterButton.layer.cornerRadius = socialButtonSize/2;
     [gamecenterButton addTarget:self action:@selector(showGameCenter:) forControlEvents:UIControlEventTouchDown];
     
-    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 85, pauseLabelWidth, 35) fontSize:35];
+    // Best Score Label
+    bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,
+                                                                  screenHeight*0.15,
+                                                                  screenWidth,
+                                                                  35)
+                                              fontSize:35];
+    
     bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
-    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, 140, pauseLabelWidth, 65) fontSize:65];
-    
+    // Current Score Label
+    currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,
+                                                                     screenHeight*0.25,
+                                                                     screenWidth,
+                                                                     65)
+                                                 fontSize:65];
     
     CGFloat yoffset;
     CGFloat yGap;
@@ -104,6 +107,9 @@
     if (_timeMode) {
         yoffset = 170;
         yGap = 70;
+        if (screenHeight < 568)
+            yoffset = 130;
+
     }
     else {
         yoffset = 240;
@@ -117,7 +123,7 @@
     
     // Level
     levelArray = [[NSMutableArray alloc]init];
-    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2- 30 - labelWidth,
+    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2- 30 - labelWidth,
                                                                            yoffset-10,
                                                                            labelWidth,
                                                                            labelHeight)
@@ -129,7 +135,7 @@
     [levelArray addObject:levelLabel];
     
     // ------------------- Combo ------------------- //
-    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,
+    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2,
                                                                             labelYOffset,
                                                                             labelHeight,
                                                                             labelHeight)
@@ -151,7 +157,7 @@
                                                             labelHeight) fontSize:fontSize];
     
     // ------------------- Bomb -------------------------- //
-    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,
+    CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2,
                                                                            labelYOffset+yGap,
                                                                            labelHeight,
                                                                            labelHeight)
@@ -174,7 +180,7 @@
                                          fontSize:fontSize];
     
     // ------------------- Chain ------------------- //
-    CustomLabel *chainXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((320-labelHeight)/2,
+    CustomLabel *chainXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2,
                                                                             labelYOffset+yGap*2,
                                                                             labelHeight,
                                                                             labelHeight)
@@ -201,7 +207,6 @@
     replayView.userInteractionEnabled = YES;
     [self.view addSubview:replayView];
 
-    
     // Social Button
     [self.view addSubview:facbookButton];
     [self.view addSubview:twitterButton];
@@ -252,7 +257,11 @@
 
     }
     
-    UIButton *replayBg = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-40)/2,pauseLabelHeight-40-30, 40, 40)];
+    UIButton *replayBg = [[UIButton alloc]initWithFrame:CGRectMake((screenWidth-40)/2,
+                                                                   screenHeight-40-30,
+                                                                   40,
+                                                                   40)];
+    
     [replayBg setImage:[UIImage imageNamed:@"replayButton.png"] forState:UIControlStateNormal];
     [replayBg addTarget:self action:@selector(replayGame:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:replayBg];
@@ -270,12 +279,23 @@
     
     if (_timeMode)
         [self hideLevel];
+    
+    // Home Button
+    UIButton *homeButton = [[UIButton alloc]initWithFrame:CGRectMake(5,screenHeight-35, 30, 30)];
+    [homeButton setImage:[UIImage imageNamed:@"home60.png"] forState:UIControlStateNormal];
+    [homeButton addTarget:self action:@selector(backToHome:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:homeButton];
+}
+
+-(void)backToHome:(UIButton *)button
+{
+    [self buttonAnimation:button];
+    [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)hideLevel
 {
     for (CustomLabel *c in levelArray) {
-        
         c.hidden = YES;
     }
 }
@@ -450,7 +470,7 @@
 
 -(void)buttonAnimation:(UIButton *)button
 {
-    [particleView playButtonSound];
+    [_particleView playButtonSound];
     CGAffineTransform t = button.transform;
     
     [UIView animateWithDuration:0.15 animations:^{

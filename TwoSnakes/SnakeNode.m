@@ -133,13 +133,12 @@
     else if (reminder > 6)
         randBomb = arc4random()%5;
     
-    CGFloat bombWidth = 25;
-    CGFloat bombHeight = 25;
+    CGFloat bombSize = screenWidth * 25/320;
     UIImage *bombImage;
-    UIImageView *bombImageView = [[UIImageView alloc]initWithFrame:CGRectMake((imageViewRect.size.width - bombWidth)/2,
-                                                                              (imageViewRect.size.width - bombHeight)/2,
-                                                                              bombWidth,
-                                                                              bombHeight)];
+    UIImageView *bombImageView = [[UIImageView alloc]initWithFrame:CGRectMake((imageViewRect.size.width - bombSize)/2,
+                                                                              (imageViewRect.size.width - bombSize)/2,
+                                                                              bombSize,
+                                                                              bombSize)];
     // Set bomb type
     switch (randBomb) {
         case 0:

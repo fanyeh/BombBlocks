@@ -70,9 +70,6 @@
     [self.view sendSubviewToBack:skView];
     
     CGFloat labelSize = 65;
-    CGFloat screenWidth =  [UIScreen mainScreen].bounds.size.width;
-    CGFloat screenHeight=  [UIScreen mainScreen].bounds.size.height;
-
 
     bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, screenHeight/2-labelSize-labelSize-10, screenWidth, labelSize) fontSize:labelSize];
     bombLabel.text = NSLocalizedString(@"bomb", nil);
@@ -89,19 +86,24 @@
     blockLabel.hidden= YES;
     
     _fastHandLabel.text = NSLocalizedString(@"Fast Hand",nil);
-    _classicLabel.text = NSLocalizedString(@"Classic",nil);
+    
+    if (![[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"] == 1) {
+        
+        _classicLabel.text = NSLocalizedString(@"Classic",nil);
+    } else
+        _classicLabel.text = NSLocalizedString(@"Play",nil);
 
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([language isEqualToString:@"zh-Hans"] || [language isEqualToString:@"zh-Hant"]) {
         [self.view addSubview:bombLabel];
         [self.view addSubview:boomLabel];
         [self.view addSubview:blockLabel];
-        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(170, screenHeight/2-labelSize-labelSize-52*2, 52, 52)];
+        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(screenWidth*170/320, screenHeight/2-labelSize-labelSize-52*2, 52, 52)];
 
     } else {
         [self.view addSubview:bombLabel];
         [self.view addSubview:boomLabel];
-        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(200, screenHeight/2-labelSize-labelSize-52*2+10, 52, 52)];
+        launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(screenWidth*200/320, screenHeight/2-labelSize-labelSize-52*2+10, 52, 52)];
     }
 
     launchBomb.image = [UIImage imageNamed:@"bomb_yellow.png"];
@@ -124,6 +126,9 @@
     appDelegate = [[UIApplication sharedApplication] delegate];
     
     loadAnim = YES;
+    
+    _classicView.frame = CGRectOffset(_classicView.frame, screenWidth-320, 0);
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -387,17 +392,22 @@
 
 - (void)gameButtonAnimation
 {
+    
+    CGFloat moveDistance = (screenWidth - _classicView.frame.size.width)/2 + _classicView.frame.size.width;
     [UIView animateWithDuration:0.5 animations:^{
         
-        _classicView.frame = CGRectOffset(_classicView.frame, -235, 0);
+        _classicView.frame = CGRectOffset(_classicView.frame, -moveDistance, 0);
 
     } completion:^(BOOL finished) {
         
-        [UIView animateWithDuration:0.5 animations:^{
+        if (![[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"] == 1) {
             
-            _fastHandView.frame = CGRectOffset(_fastHandView.frame, 235, 0);
-            
-        }];
+            [UIView animateWithDuration:0.5 animations:^{
+                
+                _fastHandView.frame = CGRectOffset(_fastHandView.frame, moveDistance, 0);
+                
+            }];
+        }
     }];
 }
 

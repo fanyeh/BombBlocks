@@ -17,6 +17,7 @@
     UIView *pinView;
     UIImageView *clockImageView;
     UIView *redView;
+    
 }
 
 @end
@@ -37,14 +38,19 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     count = 60;
-    countDownLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(135, 35, 50, 50) fontSize:50];
+    CGFloat counterPos = 35;
+    
+    if (screenHeight < 568)
+        counterPos = 27.5;
+    
+    countDownLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-50)/2, counterPos, 50, 50) fontSize:50];
     countDownLabel.text = [NSString stringWithFormat:@"%ld",count];
     countDownLabel.layer.cornerRadius = 5;
     [self.view addSubview:countDownLabel];
     [self hideScoreLabel];
     [self hideLevelLabel];
     
-    clockImageView = [[UIImageView alloc]initWithFrame:CGRectMake(110, 10, 100, 100)];
+    clockImageView = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-100)/2, counterPos-25, 100, 100)];
     clockImageView.image = [UIImage imageNamed:@"clock100.png"];
     [self.view addSubview:clockImageView];
     
@@ -77,15 +83,12 @@
     [anim setDuration:6]; // rotate speed
     [anim setRepeatCount:HUGE_VAL];
     [anim setAutoreverses:NO];
-//    anim.fillMode =  kCAFillModeForwards;
-//    anim.removedOnCompletion = NO;
-    
+
     [pinView.layer addAnimation:anim forKey:nil];
     
     redView =  [[UIView alloc]initWithFrame:self.view.frame];
     redView.backgroundColor = [UIColor colorWithRed:0.434 green:0.005 blue:0.010 alpha:0.400];
     redView.alpha = 0;
-//    redView.backgroundColor = [UIColor clearColor];
     redView.userInteractionEnabled = NO;
     [self.view addSubview:redView];
 }

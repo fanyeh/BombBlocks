@@ -58,6 +58,15 @@
     
     NSTimer *scanTimer;
     NSTimer *changeScoreTimer;
+    
+    // Tutorial
+    CGFloat tutorialViewHeight;
+    CGRect tutorialFrame;
+    CGRect tutorialLabelFrame;
+    NSInteger tutorialFontSize;
+    CGFloat tutorialLabelOffset;
+    
+    NSDate *pauseStart, *previousFireDate;
 }
 @end
 
@@ -78,8 +87,6 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor colorWithWhite:0.063 alpha:1.000];
-    CGFloat screenWidth =  [UIScreen mainScreen].bounds.size.width;
-    CGFloat screenHeight=  [UIScreen mainScreen].bounds.size.height;
     
     // BG image
     bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
@@ -94,6 +101,12 @@
     // -------------------- Setup game pad -------------------- //
     gamePad = [[GamePad alloc]initGamePad];
     gamePad.center = self.view.center;
+    CGFloat nextNodePos = gamePad.frame.origin.y+gamePad.frame.size.height+25;
+    
+    if (screenHeight < 568) {
+        gamePad.frame = CGRectOffset(gamePad.frame, 0, 20);
+        nextNodePos = gamePad.frame.origin.y+gamePad.frame.size.height+5;
+    }
     
     // -------------------- Setup particle views -------------------- //
     // Configure the SKView
@@ -111,7 +124,7 @@
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth - 250)/2, 20 , 250, 60) fontSize:60];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth - 250)/2,  gamePad.frame.origin.y-105 , 250, 60) fontSize:60];
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
@@ -124,7 +137,7 @@
     
     // Next Node
     CGFloat nextNodeSize = 40;
-    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, screenHeight - screenHeight*0.193 , nextNodeSize, nextNodeSize)];
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, nextNodePos , nextNodeSize, nextNodeSize)];
     snake.nextNode = nextNode;
     [snake updateNextNode:nextNode animation:YES];
     [self.view addSubview:nextNode];
@@ -142,12 +155,8 @@
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
         [appDelegate.audioPlayer play];
     
-    tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
-    if (tutorialMode == 1)
-        [self showTutorial1];
-    
     // Effects
-    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-150)/2, 93, 150,20) fontSize:20];
+    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-150)/2, gamePad.frame.origin.y-35, 150,20) fontSize:20];
     
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([language isEqualToString:@"zh-Hans"])
@@ -165,12 +174,12 @@
     [self.view addSubview:chainLabel];
     
     // Scanner
-    scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,3,314)];
+    scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,3,gamePad.frame.size.height)];
     scannerMask.backgroundColor = [UIColor colorWithRed:0.000 green:0.098 blue:0.185 alpha:0.400];
     scannerMask.alpha = 0;
     [self.view addSubview:scannerMask];
 
-    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-3,gamePad.frame.origin.y-8.5,9,331)];
+    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-3,gamePad.frame.origin.y-8.5,9,gamePad.frame.size.height+17)];
     scanner.image = [UIImage imageNamed:@"scanner331.png"];
     scanner.alpha = 0;
     [self.view addSubview:scanner];
@@ -180,34 +189,34 @@
     scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
     
     // Setting Button
-    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(45, self.view.frame.size.height-35, 30, 30)];
+    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(45, screenHeight-35, 30, 30)];
     [settingButton setImage:[UIImage imageNamed:@"setting60.png"] forState:UIControlStateNormal];
     [settingButton addTarget:self action:@selector(showSetting:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:settingButton];
     
     // Home Button
-    homeButton = [[UIButton alloc]initWithFrame:CGRectMake(5, self.view.frame.size.height-35, 30, 30)];
+    homeButton = [[UIButton alloc]initWithFrame:CGRectMake(5, screenHeight-35, 30, 30)];
     [homeButton setImage:[UIImage imageNamed:@"home60.png"] forState:UIControlStateNormal];
     [homeButton addTarget:self action:@selector(backToHome:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:homeButton];
     
     // Pause Button
-    pauseButton = [[UIButton alloc]initWithFrame:CGRectMake(320-35,self.view.frame.size.height-35, 30, 30)];
+    pauseButton = [[UIButton alloc]initWithFrame:CGRectMake(screenWidth-35,screenHeight-35, 30, 30)];
     [pauseButton setImage:[UIImage imageNamed:@"pauseButton60.png"] forState:UIControlStateNormal];
     [pauseButton addTarget:self action:@selector(pauseGame) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:pauseButton];
     
     pauseView = [[UIView alloc]initWithFrame:self.view.frame];
-    pauseView.frame = CGRectOffset(pauseView.frame, 0, -self.view.frame.size.height);
+    pauseView.frame = CGRectOffset(pauseView.frame, 0, - screenHeight);
     pauseView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.800];
     [self.view addSubview:pauseView];
     
-    playButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-60)/2,(self.view.frame.size.height-60)/2-20, 60, 60)];
+    playButton = [[UIButton alloc]initWithFrame:CGRectMake((screenWidth-60)/2,(screenHeight-60)/2-20, 60, 60)];
     [playButton setImage:[UIImage imageNamed:@"playButton120.png"] forState:UIControlStateNormal];
     [playButton addTarget:self action:@selector(playGame) forControlEvents:UIControlEventTouchDown];
     [pauseView addSubview:playButton];
     
-    CustomLabel *continueLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(60, (self.view.frame.size.height-60)/2+60, 200, 30) fontSize:30];
+    CustomLabel *continueLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(60, (screenHeight-60)/2+60, 200, 30) fontSize:30];
     continueLabel.text = NSLocalizedString(@"Continue", nil);
     [pauseView addSubview:continueLabel];
     
@@ -231,6 +240,19 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(pauseGameFromBackground) name:@"resignActive" object:nil];
     
     _gameIsPaused = NO;
+    
+    // Tutorial
+    tutorialFontSize = 20;
+    tutorialViewHeight = gamePad.frame.origin.y-10;
+    tutorialFrame = CGRectMake(0,
+                               -tutorialViewHeight,
+                               screenWidth ,
+                               tutorialViewHeight);
+    tutorialLabelOffset = 5;
+    tutorialLabelFrame = CGRectMake(0,tutorialLabelOffset,screenWidth,tutorialFontSize+5);
+    tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
+    if (tutorialMode == 1)
+        [self showTutorial1];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -331,7 +353,7 @@
     gamePad.userInteractionEnabled = YES;
     [self resumeLayer:scanner.layer];
     [self resumeLayer:scannerMask.layer];
-    [self performSelector:@selector(startScan) withObject:nil afterDelay:2.0];
+    [self resumeTimer:scanTimer];
 }
 
 -(void)pauseGame
@@ -343,14 +365,13 @@
         
         [self buttonAnimation:pauseButton];
         gamePad.userInteractionEnabled = NO;
-        [scanTimer invalidate];
-        
+        [self pauseTimer:scanTimer];
         [self pauseLayer:scanner.layer];
         [self pauseLayer:scannerMask.layer];
         
         [UIView animateWithDuration:0.5 animations:^{
             
-            pauseView.frame = CGRectOffset(pauseView.frame, 0, 568);
+            pauseView.frame = CGRectOffset(pauseView.frame, 0, screenHeight);
             
         }];
     }
@@ -359,18 +380,12 @@
 -(void)pauseGameFromBackground
 {
     if (!_gameIsPaused) {
-        
-        if(_gameIsPaused) {
-            _gameIsPaused = NO;
-        } else {
-            _gameIsPaused = YES;
-            [self buttonAnimation:pauseButton];
-            gamePad.userInteractionEnabled = NO;
-            [scanTimer invalidate];
-            [self pauseLayer:scanner.layer];
-            [self pauseLayer:scannerMask.layer];
-            pauseView.frame = CGRectOffset(pauseView.frame, 0, 568);
-        }
+        _gameIsPaused = YES;
+        gamePad.userInteractionEnabled = NO;
+        [self pauseTimer:scanTimer];
+        [self pauseLayer:scanner.layer];
+        [self pauseLayer:scannerMask.layer];
+        pauseView.frame = CGRectOffset(pauseView.frame, 0, screenHeight);
     }
 }
 
@@ -379,38 +394,51 @@
     _gameIsPaused = NO;
     [self buttonAnimation:pauseButton];
     [UIView animateWithDuration:0.5 animations:^{
-        pauseView.frame = CGRectOffset(pauseView.frame, 0, -568);
+        pauseView.frame = CGRectOffset(pauseView.frame, 0, -screenHeight);
     } completion:^(BOOL finished) {
         gamePad.userInteractionEnabled = YES;
-        
         [self resumeLayer:scanner.layer];
         [self resumeLayer:scannerMask.layer];
-        
-        [self performSelector:@selector(startScan) withObject:nil afterDelay:2.0];
+        [self resumeTimer:scanTimer];
     }];
 }
 
 -(void)startScan
 {
-    scanTimer = [NSTimer scheduledTimerWithTimeInterval:6 target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
+    [self scannerAnimation];
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
+}
+
+-(void) pauseTimer:(NSTimer *)timer
+{
+    pauseStart = [NSDate date];
+    previousFireDate = [timer fireDate];
+    [timer invalidate];
+}
+
+-(void) resumeTimer:(NSTimer *)timer
+{
+    NSTimeInterval pauseTime = scanTimeInterval + [pauseStart timeIntervalSinceDate:previousFireDate];
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:pauseTime target:self selector:@selector(startScan) userInfo:nil repeats:NO];
 }
 
 -(void)showSetting:(UIButton *)button
 {
     pauseView.hidden = YES;
-    
     if(_gameIsPaused) {
         _gameIsPaused = NO;
     } else {
         _gameIsPaused = YES;
         gamePad.userInteractionEnabled = NO;
-        [scanTimer invalidate];
+        [self pauseTimer:scanTimer];
         [self pauseLayer:scanner.layer];
         [self pauseLayer:scannerMask.layer];
     }
     [self buttonAnimation:button];
     GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
     controller.delegate = self;
+    controller.bgImage = bgImageView.image;
+    controller.particleView = _particleView;
     [self presentViewController:controller animated:YES completion:nil];
 }
 
@@ -462,14 +490,21 @@
 {
     // Scanning animation
     [_particleView scanSound];
+    CGFloat xOffset = gamePad.frame.size.height - 3;
     [UIView animateWithDuration:1 animations:^{
         
         if (scanFromRight) {
-            scanner.frame = CGRectOffset(scanner.frame, 311, 0);
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,311,314);
+            scanner.frame = CGRectOffset(scanner.frame, xOffset, 0);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
+                                           scannerMask.frame.origin.y,
+                                           xOffset,
+                                           gamePad.frame.size.height);
         } else {
-            scanner.frame = CGRectOffset(scanner.frame, -311, 0);
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,-311,314);
+            scanner.frame = CGRectOffset(scanner.frame, -xOffset, 0);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
+                                           scannerMask.frame.origin.y,
+                                           -xOffset,
+                                           gamePad.frame.size.height);
         }
         
     }completion:^(BOOL finished) {
@@ -507,20 +542,27 @@
 
 -(void)hideScanner
 {
+    CGFloat xOffset = gamePad.frame.size.height - 3;
+
     [UIView animateWithDuration:0.5 animations:^{
         
         scannerMask.alpha = 0;
         scanner.alpha = 0;
-
         
     } completion:^(BOOL finished) {
         
         if (scanFromRight) {
-            scannerMask.frame = CGRectOffset(scannerMask.frame, 311, 0);
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,3,314);
+            scannerMask.frame = CGRectOffset(scannerMask.frame, xOffset, 0);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
+                                           scannerMask.frame.origin.y,
+                                           3,
+                                           gamePad.frame.size.height);
             scanFromRight = NO;
         } else {
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,3,314);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
+                                           scannerMask.frame.origin.y,
+                                           3,
+                                           gamePad.frame.size.height);
             scanFromRight = YES;
         }
     }];
@@ -575,15 +617,15 @@
     snake.combos = 0;
     
     // Create Bomb
-    if (combosToCreateBomb > 2) {
-        
-        if (tutorialMode==3)
-            [self showTutorial4];
-        
+    if (combosToCreateBomb > 3) {
+
         combosToCreateBomb = 0;
         [gamePad createBombWithReminder:snake.reminder body:[snake snakeBody] complete:^{
             
             gamePad.userInteractionEnabled = YES;
+            
+            if (tutorialMode==3)
+                [self showTutorial4];
 
         }];
     }
@@ -605,6 +647,7 @@
     controller.delegate = self;
     controller.maxBombChain = maxBombChain;
     controller.bgImage = bgImageView.image;
+    controller.particleView = _particleView;
     
     if (levelLabel.hidden)
         controller.timeMode = YES;
@@ -680,19 +723,25 @@
 
  -(void)showTutorial1
 {
-    tutorial1BG = [[UIView alloc]initWithFrame:CGRectMake(0, -130, 320, 130)];
+    tutorial1BG = [[UIView alloc]initWithFrame:tutorialFrame];
+    
     tutorial1BG.backgroundColor = [UIColor clearColor];
     [self.view addSubview:tutorial1BG];
     
     scoreLabel.hidden = YES;
-    settingButton.hidden = YES;
+    levelLabel.hidden = YES;
     
     // 1. Swipe
-    CustomLabel *swipeText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontSize:30];
-    swipeText.text = @"Swipe to move";
+    CustomLabel *swipeText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
+                                                      fontSize:tutorialFontSize];
+    swipeText.text = NSLocalizedString(@"Swipe to move blocks" , nil);
     [tutorial1BG addSubview:swipeText];
     
-    UIImageView *swipe = [[UIImageView alloc]initWithFrame:CGRectMake((320-70)/2, 50, 70, 70)];
+    CGFloat swipeImageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
+    UIImageView *swipe = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-swipeImageSize)/2,
+                                                                       tutorialFontSize+tutorialLabelOffset+5,
+                                                                       swipeImageSize,
+                                                                       swipeImageSize)];
     swipe.image = [UIImage imageNamed:@"tutorialSwipe140.png"];
     [tutorial1BG addSubview:swipe];
     
@@ -704,16 +753,19 @@
     tutorialMode++;
     [self hideTutorial:tutorial1BG complete:^{
         
-        tutorial2BG = [[UIView alloc]initWithFrame:CGRectMake(0, -130, 320, 130)];
+        tutorial2BG = [[UIView alloc]initWithFrame:tutorialFrame];
         tutorial2BG.backgroundColor = [UIColor clearColor];
         [self.view addSubview:tutorial2BG];
         
         // 2. Combo
-        CustomLabel *tutComboText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontSize:30];
-        tutComboText.text = @"Move for combo";
+        CustomLabel *tutComboText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
+                                                             fontSize:tutorialFontSize];
+        tutComboText.text =  NSLocalizedString(@"Line up blocks to cancel blocks" , nil);
         [tutorial2BG addSubview:tutComboText];
         
-        UIImageView *tutorialCombo = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50, 320, 70)];
+        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
+
+        UIImageView *tutorialCombo = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2, tutorialFontSize+tutorialLabelOffset+5, 320*(imageSize/70), imageSize)];
         tutorialCombo.image = [UIImage imageNamed:@"tutorialCombo140.png"];
         [tutorial2BG addSubview:tutorialCombo];
         
@@ -727,16 +779,20 @@
     tutorialMode++;
     [self hideTutorial:tutorial2BG complete:^{
         
-        tutorial3BG = [[UIView alloc]initWithFrame:CGRectMake(0, -130, 320, 130)];
+        tutorial3BG = [[UIView alloc]initWithFrame:tutorialFrame];
         tutorial3BG.backgroundColor = [UIColor clearColor];
         [self.view addSubview:tutorial3BG];
         
         // 3. Bomb
-        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontSize:30];
-        tutBombText.text = @"More combo more bomb";
+        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
+                                                            fontSize:tutorialFontSize];
+        tutBombText.text =  NSLocalizedString(@"Cancel more blocks to pop bombs" , nil);
         [tutorial3BG addSubview:tutBombText];
         
-        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50, 320, 70)];
+        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
+        
+        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2, tutorialFontSize+tutorialLabelOffset+5, 320*(imageSize/70), imageSize)];
+
         tutorialBomb.image = [UIImage imageNamed:@"tutorialCreateBomb140.png"];
         [tutorial3BG addSubview:tutorialBomb];
         
@@ -750,16 +806,19 @@
     tutorialMode++;
     [self hideTutorial:tutorial3BG complete:^{
         
-        tutorial4BG = [[UIView alloc]initWithFrame:CGRectMake(0, -130, 320, 130)];
+        tutorial4BG = [[UIView alloc]initWithFrame:tutorialFrame];
         tutorial4BG.backgroundColor = [UIColor clearColor];
         [self.view addSubview:tutorial4BG];
         
         // 3. Bomb
-        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:CGRectMake(0,10, 320, 35) fontSize:30];
-        tutBombText.text = @"Trigger bomb by combo";
+        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
+                                                            fontSize:tutorialFontSize];
+        tutBombText.text =  NSLocalizedString(@"Line up with blocks to trigger bomb" , nil);
         [tutorial4BG addSubview:tutBombText];
         
-        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50, 320, 70)];
+        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
+        
+        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2, tutorialFontSize+tutorialLabelOffset+5, 320*(imageSize/70), imageSize)];
         tutorialBomb.image = [UIImage imageNamed:@"tutorialBomb140.png"];
         [tutorial4BG addSubview:tutorialBomb];
         
@@ -772,7 +831,7 @@
 {
     [UIView animateWithDuration:0.5 animations:^{
         
-        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, -130);
+        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, -tutorialViewHeight);
         
     }completion:^(BOOL finished) {
 
@@ -785,7 +844,7 @@
 {
     [UIView animateWithDuration:0.5 animations:^{
         
-        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, 130);
+        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, tutorialViewHeight);
         
     }];
 }
@@ -797,23 +856,24 @@
         [self hideTutorial:tutorial4BG complete:^{
             
             scoreLabel.hidden = NO;
-            settingButton.hidden = NO;
+            levelLabel.hidden = NO;
             
             CGAffineTransform t =  scoreLabel.transform;
-            CGAffineTransform t1 =  settingButton.transform;
-            
-            scoreLabel.transform = CGAffineTransformScale(t1, 0.1, 0.1);
-            settingButton.transform = CGAffineTransformScale(t1, 0.1, 0.1);
-            
+            CGAffineTransform t2 =  levelLabel.transform;
+
+            scoreLabel.transform = CGAffineTransformScale(t, 0.1, 0.1);
+            levelLabel.transform = CGAffineTransformScale(t2, 0.1, 0.1);
+
             [UIView animateWithDuration:0.2 animations:^{
                 
-                scoreLabel.transform = CGAffineTransformScale(t1, 1.2, 1.2);
-                settingButton.transform = CGAffineTransformScale(t1, 1.2, 1.2);
+                scoreLabel.transform = CGAffineTransformScale(t, 1.2, 1.2);
+                levelLabel.transform = CGAffineTransformScale(t2, 1.2, 1.2);
                 
             }completion:^(BOOL finished) {
                 
                 scoreLabel.transform = t;
-                settingButton.transform = t1;
+                levelLabel.transform = t2;
+
                 tutorialMode = 0;
                 
                 [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"tutorial"];
@@ -858,6 +918,13 @@
 
 - (void)replayGame
 {
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([language isEqualToString:@"zh-Hans"])
+        levelLabel.text = @"第 1 关";
+    else if ([language isEqualToString:@"zh-Hant"])
+        levelLabel.text = @"第 1 關";
+    else
+        levelLabel.text = @"Stage 1";
     nextNode.hidden = NO;
     gamePad.userInteractionEnabled = YES;
     scoreLabel.text = @"0";
