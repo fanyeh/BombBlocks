@@ -44,6 +44,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.view.backgroundColor = [UIColor blackColor];
+    
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
     [numFormatter setGroupingSize:3];
@@ -64,14 +66,14 @@
                                                                         socialButtonSize,
                                                                         socialButtonSize)];
     
-    [facbookButton setBackgroundImage:[UIImage imageNamed:@"facebook40.png"] forState:UIControlStateNormal];
+    [facbookButton setBackgroundImage:[UIImage imageNamed:@"facebook35.png"] forState:UIControlStateNormal];
     facbookButton.layer.cornerRadius = socialButtonSize/2;
     facbookButton.layer.masksToBounds = YES;
     facbookButton.backgroundColor = [UIColor whiteColor];
     [facbookButton addTarget:self action:@selector(facebookShare:) forControlEvents:UIControlEventTouchDown];
     
     UIButton *twitterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
-    [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter40.png"] forState:UIControlStateNormal];
+    [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter35.png"] forState:UIControlStateNormal];
     twitterButton.frame = CGRectOffset(twitterButton.frame, 80, 0);
     twitterButton.layer.cornerRadius = socialButtonSize/2;
     twitterButton.backgroundColor = [UIColor whiteColor];
@@ -81,7 +83,7 @@
     // Game Center Label
     UIButton *gamecenterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
     gamecenterButton.frame = CGRectOffset(gamecenterButton.frame, -80, 0);
-    [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter70.png"] forState:UIControlStateNormal];\
+    [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter35.png"] forState:UIControlStateNormal];\
     gamecenterButton.layer.cornerRadius = socialButtonSize/2;
     [gamecenterButton addTarget:self action:@selector(showGameCenter:) forControlEvents:UIControlEventTouchDown];
     
@@ -101,19 +103,19 @@
                                                                      65)
                                                  fontSize:65];
     
-    CGFloat yoffset;
+    CGFloat yoffset = currentScoreLabel.frame.origin.y + currentScoreLabel.frame.size.height + 30;
     CGFloat yGap;
 
     if (_timeMode) {
-        yoffset = 170;
-        yGap = 70;
+//        yoffset = 170;
+        yGap = 0.123*screenHeight;
         if (screenHeight < 568)
             yoffset = 130;
 
     }
     else {
-        yoffset = 240;
-        yGap = 55;
+//        yoffset = 240;
+        yGap = 0.0968*screenHeight;
     }
     
     CGFloat labelYOffset = yoffset+80;
@@ -121,9 +123,37 @@
     CGFloat labelHeight = 25;
     CGFloat fontSize = 25;
     
+    CGFloat labelGap = 0.0625*screenWidth + labelWidth;
+    CGFloat labelGap2 = 0.09375*screenWidth + labelHeight;
+    
+
+    
+    NSLog(@"Screen width = %f",screenWidth);
+    // ------------------- Combo ------------------- //
+    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2,
+                                                                            labelYOffset,
+                                                                            labelHeight,
+                                                                            labelHeight)
+                                                        fontSize:fontSize];
+    comboXLabel.text = @"x";
+    
+    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - labelGap,
+                                                                           labelYOffset,
+                                                                           labelWidth,
+                                                                           labelHeight)
+                                                       fontSize:fontSize];
+    comboLabel.text = @"Combo";
+    comboLabel.textAlignment = NSTextAlignmentLeft;
+
+    
+    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + labelGap2 ,
+                                                            labelYOffset,
+                                                            labelWidth-20,
+                                                            labelHeight) fontSize:fontSize];
+    
     // Level
     levelArray = [[NSMutableArray alloc]init];
-    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2- 30 - labelWidth,
+    CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - labelGap,
                                                                            yoffset-10,
                                                                            labelWidth,
                                                                            labelHeight)
@@ -134,28 +164,6 @@
     
     [levelArray addObject:levelLabel];
     
-    // ------------------- Combo ------------------- //
-    CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2,
-                                                                            labelYOffset,
-                                                                            labelHeight,
-                                                                            labelHeight)
-                                                        fontSize:fontSize];
-    comboXLabel.text = @"x";
-    
-    CustomLabel *comboLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - 20 - labelWidth,
-                                                                           labelYOffset,
-                                                                           labelWidth,
-                                                                           labelHeight)
-                                                       fontSize:fontSize];
-    comboLabel.text = @"Combo";
-    comboLabel.textAlignment = NSTextAlignmentLeft;
-
-    
-    comLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x + 30 + labelHeight ,
-                                                            labelYOffset,
-                                                            labelWidth-20,
-                                                            labelHeight) fontSize:fontSize];
-    
     // ------------------- Bomb -------------------------- //
     CustomLabel *bombXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2,
                                                                            labelYOffset+yGap,
@@ -164,7 +172,7 @@
                                                        fontSize:fontSize];
     bombXLabel.text = @"x";
     
-    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 20 - labelWidth,
+    CustomLabel *bLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - labelGap,
                                                                        labelYOffset+yGap,
                                                                        labelWidth,
                                                                        labelHeight)
@@ -173,7 +181,7 @@
     bLabel.textAlignment = NSTextAlignmentLeft;
 
     
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + labelGap2,
                                                              labelYOffset+yGap,
                                                              labelWidth-20,
                                                              labelHeight)
@@ -187,7 +195,7 @@
                                                         fontSize:fontSize];
     chainXLabel.text = @"x";
     
-    CustomLabel *cLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - 20 - labelWidth,
+    CustomLabel *cLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x - labelGap,
                                                                        labelYOffset+yGap*2,
                                                                        labelWidth,
                                                                        labelHeight)
@@ -195,7 +203,7 @@
     cLabel.text = NSLocalizedString(@"chain",nil);
     cLabel.textAlignment = NSTextAlignmentLeft;
     
-    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + 30 + labelHeight,
+    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(bombXLabel.frame.origin.x + labelGap2,
                                                               labelYOffset+yGap*2,
                                                               labelWidth-20,
                                                               labelHeight)
@@ -233,7 +241,7 @@
 
     [self.view addSubview:levelLabel];
     
-    CGFloat xoffset = 35;
+    CGFloat xoffset = levelLabel.frame.origin.x + 15;
     CGFloat offset = levelLabel.frame.origin.y+labelHeight+15;
     for (NSInteger i = 0; i < 10; i++) {
         
@@ -262,7 +270,7 @@
                                                                    40,
                                                                    40)];
     
-    [replayBg setImage:[UIImage imageNamed:@"replayButton.png"] forState:UIControlStateNormal];
+    [replayBg setImage:[UIImage imageNamed:@"replayButton40.png"] forState:UIControlStateNormal];
     [replayBg addTarget:self action:@selector(replayGame:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:replayBg];
     

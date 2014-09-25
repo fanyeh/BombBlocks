@@ -129,6 +129,44 @@
     
     _classicView.frame = CGRectOffset(_classicView.frame, screenWidth-320, 0);
     
+//    NSLog(@"screen height %f",screenHeight);
+
+    
+    // Adjust image position based on different screen size
+    if (screenHeight > 568) {
+        
+        [self adjustFrameOnScreenSize:_blueBody2];
+        [self adjustFrameOnScreenSize:_blueBomb];
+        [self adjustFrameOnScreenSize:_yellowBomb];
+
+        _yellowBody.frame = CGRectOffset(_blueBody2.frame, 71,70);
+        _blueBody1.frame = CGRectOffset(_blueBody2.frame,71,70);
+        
+        CGFloat offsetY = screenHeight/2 - (_yellowBomb.frame.origin.y + _yellowBomb.frame.size.width/2);
+        
+        
+        _blueBody2.frame = CGRectOffset(_blueBody2.frame,0,offsetY);
+        _blueBomb.frame = CGRectOffset(_blueBomb.frame,0,offsetY);
+        _yellowBomb.frame = CGRectOffset(_yellowBomb.frame,0,offsetY);
+        _yellowBody.frame = CGRectOffset(_yellowBody.frame,0,offsetY);
+        _blueBody1.frame = CGRectOffset(_blueBody1.frame,0,offsetY);
+        
+        offsetY = blockLabel.frame.origin.y + 101 - _classicView.frame.origin.y;
+        _classicView.frame = CGRectOffset(_classicView.frame,0,offsetY);
+        _fastHandView.frame = CGRectOffset(_fastHandView.frame,0,offsetY);
+    }
+}
+
+-(void)adjustFrameOnScreenSize:(UIView *)view
+{
+    CGFloat offsetX = (screenWidth - view.frame.size.width )/2;
+    //CGFloat offsetY =  screenHeight/568;
+    
+    view.frame = CGRectMake(offsetX,
+                            view.frame.origin.y,
+                            view.frame.size.width,
+                            view.frame.size.height);
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -304,7 +342,7 @@
         
         [beamView removeFromSuperview];
         
-        UIView *blinkView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 640, 640)];
+        UIView *blinkView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, screenHeight, screenHeight)];
         blinkView.center = self.view.center;
         blinkView.backgroundColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         blinkView.alpha = 0;
@@ -325,7 +363,6 @@
                 bombLabel.hidden = NO;
                 boomLabel.hidden = NO;
                 blockLabel.hidden = NO;
-                //_playButtonView.hidden = NO;
 
                 CGAffineTransform b1 =  bombLabel.transform;
                 CGAffineTransform b2 =  blockLabel.transform;
@@ -415,7 +452,7 @@
 -(void)explodeBody:(UIView *)body type:(AssetType)type
 {
     CGRect bodyFrame = [body convertRect:body.bounds toView:self.view];
-    bodyFrame.origin.y = self.view.frame.size.height - bodyFrame.origin.y;
+    bodyFrame.origin.y = screenHeight - bodyFrame.origin.y;
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y-bodyFrame.size.height/2;
     [particleView newExplosionWithPosX:posX andPosY:posY assetType:type];

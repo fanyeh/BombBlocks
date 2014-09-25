@@ -67,6 +67,7 @@
     CGFloat tutorialLabelOffset;
     
     NSDate *pauseStart, *previousFireDate;
+    UIView *slider1 , *slider2;
 }
 @end
 
@@ -137,7 +138,7 @@
     
     // Next Node
     CGFloat nextNodeSize = 40;
-    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((320-nextNodeSize)/2, nextNodePos , nextNodeSize, nextNodeSize)];
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((screenWidth-nextNodeSize)/2, nextNodePos , nextNodeSize, nextNodeSize)];
     snake.nextNode = nextNode;
     [snake updateNextNode:nextNode animation:YES];
     [self.view addSubview:nextNode];
@@ -178,9 +179,29 @@
     scannerMask.backgroundColor = [UIColor colorWithRed:0.000 green:0.098 blue:0.185 alpha:0.400];
     scannerMask.alpha = 0;
     [self.view addSubview:scannerMask];
+    
+    slider1 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
+                                                              gamePad.frame.origin.y-9,
+                                                              9,
+                                                              9)];
+    slider1.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:slider1];
+    slider1.alpha = 0;
 
-    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-3,gamePad.frame.origin.y-8.5,9,gamePad.frame.size.height+17)];
-    scanner.image = [UIImage imageNamed:@"scanner331.png"];
+    slider2 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
+                                                              gamePad.frame.origin.y+gamePad.frame.size.height,
+                                                              9,
+                                                              9)];
+    slider2.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:slider2];
+    slider2.alpha = 0;
+    
+    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x+3,
+                                                           gamePad.frame.origin.y,
+                                                           3,
+                                                           gamePad.frame.size.height)];
+    
+    scanner.image = [UIImage imageNamed:@"scanner.png"];
     scanner.alpha = 0;
     [self.view addSubview:scanner];
     
@@ -216,7 +237,7 @@
     [playButton addTarget:self action:@selector(playGame) forControlEvents:UIControlEventTouchDown];
     [pauseView addSubview:playButton];
     
-    CustomLabel *continueLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(60, (screenHeight-60)/2+60, 200, 30) fontSize:30];
+    CustomLabel *continueLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-200)/2, (screenHeight-60)/2+60, 200, 30) fontSize:30];
     continueLabel.text = NSLocalizedString(@"Continue", nil);
     [pauseView addSubview:continueLabel];
     
@@ -248,6 +269,7 @@
                                -tutorialViewHeight,
                                screenWidth ,
                                tutorialViewHeight);
+    
     tutorialLabelOffset = 5;
     tutorialLabelFrame = CGRectMake(0,tutorialLabelOffset,screenWidth,tutorialFontSize+5);
     tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
@@ -369,6 +391,8 @@
         [self pauseLayer:scanner.layer];
         [self pauseLayer:scannerMask.layer];
         
+        [self.view bringSubviewToFront:pauseView];
+        
         [UIView animateWithDuration:0.5 animations:^{
             
             pauseView.frame = CGRectOffset(pauseView.frame, 0, screenHeight);
@@ -380,6 +404,8 @@
 -(void)pauseGameFromBackground
 {
     if (!_gameIsPaused) {
+        [self.view bringSubviewToFront:pauseView];
+
         _gameIsPaused = YES;
         gamePad.userInteractionEnabled = NO;
         [self pauseTimer:scanTimer];
@@ -475,6 +501,8 @@
         
         scannerMask.alpha = 1;
         scanner.alpha = 1;
+        slider1.alpha = 1;
+        slider2.alpha = 1;
 
     } completion:^(BOOL finished) {
         
@@ -495,12 +523,20 @@
         
         if (scanFromRight) {
             scanner.frame = CGRectOffset(scanner.frame, xOffset, 0);
+            slider1.frame = CGRectOffset(slider1.frame, xOffset, 0);
+            slider2.frame = CGRectOffset(slider2.frame, xOffset, 0);
+
             scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
                                            scannerMask.frame.origin.y,
                                            xOffset,
                                            gamePad.frame.size.height);
+            
+            
         } else {
             scanner.frame = CGRectOffset(scanner.frame, -xOffset, 0);
+            slider1.frame = CGRectOffset(slider1.frame, -xOffset, 0);
+            slider2.frame = CGRectOffset(slider2.frame, -xOffset, 0);
+
             scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
                                            scannerMask.frame.origin.y,
                                            -xOffset,
@@ -548,6 +584,8 @@
         
         scannerMask.alpha = 0;
         scanner.alpha = 0;
+        slider1.alpha = 0;
+        slider2.alpha = 0;
         
     } completion:^(BOOL finished) {
         
@@ -724,7 +762,6 @@
  -(void)showTutorial1
 {
     tutorial1BG = [[UIView alloc]initWithFrame:tutorialFrame];
-    
     tutorial1BG.backgroundColor = [UIColor clearColor];
     [self.view addSubview:tutorial1BG];
     
@@ -742,7 +779,9 @@
                                                                        tutorialFontSize+tutorialLabelOffset+5,
                                                                        swipeImageSize,
                                                                        swipeImageSize)];
-    swipe.image = [UIImage imageNamed:@"tutorialSwipe140.png"];
+    
+
+    swipe.image = [UIImage imageNamed:@"tutorialSwipe116.png"];
     [tutorial1BG addSubview:swipe];
     
     [self showTutorial:tutorial1BG];
@@ -765,8 +804,12 @@
         
         CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
 
-        UIImageView *tutorialCombo = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2, tutorialFontSize+tutorialLabelOffset+5, 320*(imageSize/70), imageSize)];
-        tutorialCombo.image = [UIImage imageNamed:@"tutorialCombo140.png"];
+        UIImageView *tutorialCombo = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2,
+                                                                                  tutorialFontSize+tutorialLabelOffset+5,
+                                                                                  320*(imageSize/70),
+                                                                                  imageSize)];
+        
+        tutorialCombo.image = [UIImage imageNamed:@"tutorialCombo116.png"];
         [tutorial2BG addSubview:tutorialCombo];
         
         [self showTutorial:tutorial2BG];
@@ -791,9 +834,12 @@
         
         CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
         
-        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2, tutorialFontSize+tutorialLabelOffset+5, 320*(imageSize/70), imageSize)];
+        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2,
+                                                                                 tutorialFontSize+tutorialLabelOffset+5,
+                                                                                 320*(imageSize/70),
+                                                                                 imageSize)];
 
-        tutorialBomb.image = [UIImage imageNamed:@"tutorialCreateBomb140.png"];
+        tutorialBomb.image = [UIImage imageNamed:@"tutorialCreateBomb116.png"];
         [tutorial3BG addSubview:tutorialBomb];
         
         [self showTutorial:tutorial3BG];
@@ -819,7 +865,7 @@
         CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
         
         UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2, tutorialFontSize+tutorialLabelOffset+5, 320*(imageSize/70), imageSize)];
-        tutorialBomb.image = [UIImage imageNamed:@"tutorialBomb140.png"];
+        tutorialBomb.image = [UIImage imageNamed:@"tutorialBomb116.png"];
         [tutorial4BG addSubview:tutorialBomb];
         
         [self showTutorial:tutorial4BG];

@@ -63,9 +63,11 @@
     [backButton addTarget:self action:@selector(backToGame:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:backButton];
     
-    CGFloat xCord = screenWidth*0.125;
-    CGFloat yGap = screenWidth*0.3125;
     CGFloat fontSize = 30;
+    CGFloat labelSize = 90;
+    CGFloat xGap = screenWidth*80/320;
+    CGFloat yGap = screenWidth*0.3125;
+    CGFloat xCord = (screenWidth - labelSize)/2 - xGap;
     CGFloat centerY = (screenHeight - 45*4 - (yGap-45)*3)/2 ;
     
     // Sound
@@ -74,12 +76,12 @@
     [soundButton addTarget:self action:@selector(turnSound) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:soundButton];
     
-    CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY, 90, 45) fontSize:fontSize];
+    CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY, labelSize, 45) fontSize:fontSize];
     soundLabel.text = NSLocalizedString(@"Sound",nil);
     soundLabel.textAlignment = NSTextAlignmentLeft;
     [self.view  addSubview:soundLabel];
     
-    soundOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY, 90, 45) fontSize:25];
+    soundOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap+115, centerY, labelSize, 45) fontSize:25];
     [self setSoundOnLabel];
     [self.view  addSubview:soundOnLabel];
     
@@ -89,12 +91,12 @@
     [musicButton addTarget:self action:@selector(turnMusic) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:musicButton];
     
-    CustomLabel *musicLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap, 90, 45) fontSize:fontSize];
+    CustomLabel *musicLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY+yGap, labelSize, 45) fontSize:fontSize];
     musicLabel.text = NSLocalizedString(@"Music",nil);
     musicLabel.textAlignment = NSTextAlignmentLeft;
     [self.view  addSubview:musicLabel];
     
-    musicOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+65+90+30, centerY+yGap, 90, 45) fontSize:25];
+    musicOnLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap+115, centerY+yGap, labelSize, 45) fontSize:25];
     [self setMusicOnLabel];
     [self.view  addSubview:musicOnLabel];
     
@@ -104,7 +106,7 @@
     [rateButton addTarget:self action:@selector(rateThisApp) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:rateButton];
     
-    CustomLabel *ratingLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*2, 120, 45) fontSize:fontSize];
+    CustomLabel *ratingLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY+yGap*2, labelSize+30, 45) fontSize:fontSize];
     ratingLabel.text = NSLocalizedString(@"Rate Me",nil);
     ratingLabel.textAlignment = NSTextAlignmentLeft;
     [self.view  addSubview:ratingLabel];
@@ -115,7 +117,7 @@
     [tutorial addTarget:self action:@selector(startTutorial:) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:tutorial];
     
-    CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+80, centerY+yGap*3, 120, 45) fontSize:fontSize];
+    CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY+yGap*3, labelSize+30, 45) fontSize:fontSize];
     tutorialLabel.text = NSLocalizedString(@"Tutorial",nil);
     tutorialLabel.textAlignment = NSTextAlignmentLeft;
     [self.view  addSubview:tutorialLabel];
@@ -172,11 +174,11 @@
 -(void)setSoundOnLabel
 {
     if (!soundOn) {
-        soundOnLabel.text = @"OFF";
+        soundOnLabel.text = NSLocalizedString(@"OFF", nil);
         [soundButton setImage:[UIImage imageNamed:@"soundOff90.png"] forState:UIControlStateNormal];
     }
     else {
-        soundOnLabel.text = @"ON";
+        soundOnLabel.text = NSLocalizedString(@"ON", nil);
         [soundButton setImage:[UIImage imageNamed:@"soundOn90.png"] forState:UIControlStateNormal];
     }
 }
@@ -184,10 +186,10 @@
 -(void)setMusicOnLabel
 {
     if (!musicOn) {
-        musicOnLabel.text = @"OFF";
+        musicOnLabel.text = NSLocalizedString(@"OFF", nil);
         [musicButton setImage:[UIImage imageNamed:@"musicOff90.png"] forState:UIControlStateNormal];
     } else {
-        musicOnLabel.text = @"ON";
+        musicOnLabel.text = NSLocalizedString(@"ON", nil);
         [musicButton setImage:[UIImage imageNamed:@"musicOn90.png"] forState:UIControlStateNormal];
     }
 }

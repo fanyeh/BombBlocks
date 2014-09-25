@@ -36,3 +36,7 @@
 "Line up blocks to cancel blocks" = "Line up blocks to cancel blocks";
 "Cancel more blocks to pop bombs" = "Cancel more blocks to pop bombs";
 "Line up with blocks to trigger bomb" ="Line up with blocks to trigger bomb";
+
+// Music & Sound
+"ON" = "ON";
+"OFF" = "OFF";

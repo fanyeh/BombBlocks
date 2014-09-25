@@ -9,8 +9,6 @@
 "Boom" = "爆";
 "Blocks" = "了";
 
-
-
 "Sound" = "音效";
 "Music" = "音乐";
 "Rate Me" = "给我评价";
@@ -37,3 +35,7 @@
 "Line up blocks to cancel blocks" = "将相同方块排列一起来消除它们";
 "Cancel more blocks to pop bombs" = "消除更多的方块来产生炸弹";
 "Line up with blocks to trigger bomb" ="将方块与炸弹排在一起引爆";
+
+// Music & Sound
+"ON" = "已开启";
+"OFF" = "已关闭";

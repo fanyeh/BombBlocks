@@ -39,3 +39,7 @@
 "Line up blocks to cancel blocks" = "將相同方塊排列一起來消除它們";
 "Cancel more blocks to pop bombs" = "消除更多的方塊來產生炸彈";
 "Line up with blocks to trigger bomb" ="將方塊與炸彈排在一起引爆";
+
+// Music & Sound
+"ON" = "已開啟";
+"OFF" = "已關閉";

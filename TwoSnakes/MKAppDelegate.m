@@ -38,7 +38,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center
-    [[GCHelper sharedInstance] authenticateLocalUser:menuController];
+    //[[GCHelper sharedInstance] authenticateLocalUser:menuController];
 
     // Intro music
     NSURL *file  = [NSURL fileURLWithPath:[[NSBundle mainBundle]
