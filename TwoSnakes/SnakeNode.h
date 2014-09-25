@@ -34,7 +34,8 @@ struct NodeIndex {
 - (void)hideScoreLabel;
 - (void)addCountLabel;
 - (void)reduceCount;
--(void)removeCountLabel;
+- (void)removeCountLabel;
+- (void)hideCountLabel;
 
 @property (nonatomic,assign) AssetType assetType;
 @property (nonatomic,assign) BombType bombType;

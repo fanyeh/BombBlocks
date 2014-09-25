@@ -85,18 +85,14 @@
     [self addSubview:scoreLabel];
     scoreLabel.alpha = 0;
     
-    int randAsset;// = arc4random()%6;
-    
-//    if (reminder > 10)
-//        randAsset = arc4random()%6;
-//    else if (reminder > 8)
-//        randAsset = arc4random()%5;
+    int randAsset;
     if (reminder > 3)
         randAsset = arc4random()%4;
     else
         randAsset = arc4random()%3;
     
-    //randAsset = arc4random()%6;
+    //randAsset = arc4random()%4; // Non level test
+
 
     // Set bomb image
     switch (randAsset) {
@@ -132,6 +128,9 @@
         randBomb = arc4random()%4;
     else if (reminder > 6)
         randBomb = arc4random()%5;
+    
+    //randBomb = arc4random()%5; // Non level test
+
     
     CGFloat bombSize = screenWidth * 25/320;
     UIImage *bombImage;
@@ -212,11 +211,16 @@
 {
     _hasCount = YES;
     _count = 9;
-    CGFloat size = 16;
+    CGFloat size = 15;
     CGFloat pos = (self.frame.size.width-size-1);
     countLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(pos,3,size,size) fontSize:size];
     countLabel.text = [NSString stringWithFormat:@"%ld",_count];
     [self addSubview:countLabel];
+}
+
+-(void)hideCountLabel
+{
+    countLabel.hidden = YES;
 }
 
 -(void)removeCountLabel

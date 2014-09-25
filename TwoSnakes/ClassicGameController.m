@@ -125,7 +125,12 @@
     [self.view addSubview:gamePad];
     
     // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth - 250)/2,  gamePad.frame.origin.y-105 , 250, 60) fontSize:60];
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth - 250)/2,
+                                                              gamePad.frame.origin.y-105 ,
+                                                              250,
+                                                              60)
+                                          fontSize:60];
+    
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
@@ -138,7 +143,10 @@
     
     // Next Node
     CGFloat nextNodeSize = 40;
-    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((screenWidth-nextNodeSize)/2, nextNodePos , nextNodeSize, nextNodeSize)];
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((screenWidth-nextNodeSize)/2,
+                                                          nextNodePos ,
+                                                          nextNodeSize,
+                                                          nextNodeSize)];
     snake.nextNode = nextNode;
     [snake updateNextNode:nextNode animation:YES];
     [self.view addSubview:nextNode];
@@ -552,6 +560,13 @@
                 [self gameOver];
             else {
                 if (snake.combos == 0 ) {
+                    
+                    // Reduce count check
+                    for (SnakeNode *node in snake.snakeBody) {
+                        if (node.hasCount)
+                            [node reduceCount];
+                    }
+
                     
                     [snake createBody:^ {
                         

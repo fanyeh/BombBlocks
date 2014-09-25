@@ -107,11 +107,10 @@
     CGFloat yGap;
 
     if (_timeMode) {
-//        yoffset = 170;
+        yoffset -= 60;
         yGap = 0.123*screenHeight;
         if (screenHeight < 568)
             yoffset = 130;
-
     }
     else {
 //        yoffset = 240;
@@ -125,10 +124,7 @@
     
     CGFloat labelGap = 0.0625*screenWidth + labelWidth;
     CGFloat labelGap2 = 0.09375*screenWidth + labelHeight;
-    
 
-    
-    NSLog(@"Screen width = %f",screenWidth);
     // ------------------- Combo ------------------- //
     CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2,
                                                                             labelYOffset,

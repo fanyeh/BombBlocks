@@ -335,7 +335,6 @@
     [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         
         beamView.alpha = 0.0;
-        
         beamView.transform = t;
         
     } completion:^(BOOL finished) {
@@ -346,7 +345,7 @@
         blinkView.center = self.view.center;
         blinkView.backgroundColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         blinkView.alpha = 0;
-        blinkView.layer.cornerRadius = 320;
+        blinkView.layer.cornerRadius = screenHeight/2;
         [self.view addSubview:blinkView];
         
         [UIView animateWithDuration:0.15 animations:^{

@@ -268,21 +268,18 @@ static GCHelper *sharedHelper = nil;
 #pragma mark - Game Center UI method
 -(void) showGameCenterViewController:(UIViewController *)viewcontroller
 {
+    if ([GKLocalPlayer localPlayer].authenticated == NO) {
+        [self authenticateLocalUser:viewcontroller];
+    }
+    else {
 
-//    if ([GKLocalPlayer localPlayer].authenticated == NO) {
-//        [self authenticateLocalUser:viewcontroller];
-//    } else {
-
-    
     GKGameCenterViewController *gameCenterViewController= [[GKGameCenterViewController alloc] init];
     gameCenterViewController.gameCenterDelegate = self;
     gameCenterViewController.viewState = GKGameCenterViewControllerStateLeaderboards;
     [viewcontroller presentViewController: gameCenterViewController
                                  animated:YES
                                completion:nil];
-    
-
-//    }
+    }
 }
 
 #pragma mark - GKGameCenterControllerDelegate method

@@ -72,6 +72,8 @@
     [_snakeBody addObject:self];
     [self setNodeIndexRow:initNode.nodeRow andCol:initNode.nodeColumn];
     [self updateNextNode:self  animation:YES];
+    if (self.hasCount)
+        [self addCountLabel];
 }
 
 #pragma mark - Reset Snake
@@ -179,10 +181,9 @@
     SnakeNode *bodyNode = [vacantNode objectAtIndex:arc4random() % [vacantNode count]];
     
     SnakeNode *snakeBody = [[SnakeNode alloc]initWithFrame:bodyNode.frame gameAssetType:_nextNode.assetType];
-    if (_nextNode.hasCount) {
-        
+    if (_nextNode.hasCount)
         [snakeBody addCountLabel];
-    }
+    
     [snakeBody setNodeIndexRow:bodyNode.nodeRow andCol:bodyNode.nodeColumn];
     snakeBody.direction = [self snakeHead].direction;
     snakeBody.tag = [_snakeBody count];
@@ -281,6 +282,7 @@
         [node removeCountLabel];
     
     int randomAsset = arc4random() % _reminder;
+    //int randomAsset = arc4random() % 12; // Non level test
 
     node.level = ceil(randomAsset / 4) + 1;
     
@@ -457,14 +459,11 @@
     } completion:^(BOOL finished) {
         
         completBlock();
-        //[self cancelPattern:completBlock];
 
     }];
 }
 
 #pragma mark - Patterns
-
-
 
 -(void)cancelPattern:(void(^)(void))completBlock
 {
@@ -476,8 +475,9 @@
         
         for (SnakeNode *n in allPatterns) {
             
+            [n.layer removeAllAnimations];
             [_gamePad showEmptyNodeBorder:n];
-            
+                        
             // Bomb explode animation
             if (n.hasBomb)
                 [self shrinkAnimation:n showExplode:YES];
@@ -505,6 +505,9 @@
                     [n scoreLabelAnimation];
                     
                 }
+                
+                if (n.hasCount)
+                    [n hideCountLabel];
             }
             
         } completion:^(BOOL finished) {
@@ -514,26 +517,30 @@
             bombArray = [[NSMutableArray alloc]init];
             
             for (SnakeNode *n in allPatterns) {
-                
                 if (n.hasBomb) {
                     [bombArray addObject:n];
                     [n removeBomb];
+                    [_snakeBody removeObject:n];
                 }
                 else if (n.level == 1) {
                     [self explodeBody:n];
                     [n removeFromSuperview];
-                }else
+                    [_snakeBody removeObject:n];
+
+                } else {
                     [self explodeBody:n];
+                    [self reduceLevel:n];
+                }
             }
             
             // Remove all combos from snake body
-            for (SnakeNode *n in allPatterns)
-            {
-                if (n.level > 1 && !n.hasBomb)
-                    [self reduceLevel:n];
-               else
-                    [_snakeBody removeObject:n];
-            }
+//            for (SnakeNode *n in allPatterns)
+//            {
+//                if (n.level > 1 && !n.hasBomb)
+//                    [self reduceLevel:n];
+//               else
+//                    [_snakeBody removeObject:n];
+//            }
             
             if ([bombArray count] > 0)
                 [self triggerBomb:completBlock];
@@ -616,10 +623,9 @@
 - (void)reduceLevel:(SnakeNode *)node
 {
     if (node.level == 2) {
-        
+
         node.level = 1;
         [node hideScoreLabel];
-        [node.nodeImageView.layer removeAllAnimations];
         switch (node.assetType) {
             case kAssetTypeBlue:
                 node.nodeImageView.image = [UIImage imageNamed:@"blue.png"];
@@ -639,7 +645,6 @@
         
         node.level = 2;
         [node hideScoreLabel];
-        [node.nodeImageView.layer removeAllAnimations];
         switch (node.assetType) {
             case kAssetTypeBlue:
                 node.nodeImageView.image = [UIImage imageNamed:@"blue_2.png"];
@@ -1283,19 +1288,20 @@
     }
     
     if (removeBody.level == 2)
-        
-        if (removeBody.assetType == kAssetTypeBlue) {
-            // Animation to populate new body
-            CGAffineTransform t = removeBody.transform;
-            removeBody.transform = CGAffineTransformScale(t, 0.5, 0.5);
-
-            [UIView animateWithDuration:0.4 animations:^{
-                
-                removeBody.transform = t;
-
-            }];
-        }
-        else
+//        if (removeBody.assetType == kAssetTypeBlue) {
+            // Animation for circle block
+//            CGAffineTransform t = removeBody.transform;
+//            removeBody.transform = CGAffineTransformScale(t, 0.5, 0.5);
+//
+//            [UIView animateWithDuration:0.4 animations:^{
+//                
+//                removeBody.transform = t;
+//
+//            }];
+//            
+//            [self shrinkAnimation:removeBody showExplode:NO];
+//        }
+//        else
             [removeBody.layer addAnimation:[self shakeAnimation:0 repeat:NO] forKey:nil];
     else
     {
@@ -1385,34 +1391,60 @@
 - (void)shrinkAnimation:(SnakeNode *)node showExplode:(BOOL)showExplode
 {
     [node.nodeImageView.layer removeAllAnimations];
+    
     CGAffineTransform t = node.nodeImageView.transform;
     
-    [UIView animateWithDuration:0.25
-                          delay:0.0
-                        options:
-     UIViewAnimationOptionCurveEaseInOut |
-     UIViewAnimationOptionRepeat |
-     UIViewAnimationOptionAutoreverse
-     
-                     animations:^{
-                         
-                         node.nodeImageView.transform = CGAffineTransformScale(t, 0.5, 0.5);
-                     
-                     }
-                     completion:^(BOOL finished){
-                         // Do nothing
-                         node.nodeImageView.transform = t;
-                         
-                         if (showExplode) {
-                             
-                             if (node.bombType == kBombTypeExplodeBlock)
-                                 [self explodeBody:node];
-                             else if( node.bombType == kBombTypeSquareExplode)
-                                 [self explodeBombSqaureAnimation:node];
-                             else if( node.bombType == kBombTypeExplodeHorizontal || node.bombType == kBombTypeExplodeVertical)
-                                 [self explodeBombAnimation:node];
-                         }
-                     }];
+    [UIView animateWithDuration:0.2 animations:^{
+        
+        node.nodeImageView.transform = CGAffineTransformScale(t, 0.5, 0.5);
+        
+    }completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.2 animations:^{
+            
+            node.nodeImageView.transform = t;
+            
+        }completion:^(BOOL finished) {
+            
+            node.nodeImageView.transform = t;
+            
+            if (showExplode) {
+                
+                if (node.bombType == kBombTypeExplodeBlock)
+                    [self explodeBody:node];
+                else if( node.bombType == kBombTypeSquareExplode)
+                    [self explodeBombSqaureAnimation:node];
+                else if( node.bombType == kBombTypeExplodeHorizontal || node.bombType == kBombTypeExplodeVertical)
+                    [self explodeBombAnimation:node];
+            }
+        }];
+    }];
+    
+//    [UIView animateWithDuration:0.25
+//                          delay:0.0
+//                        options:
+//     UIViewAnimationOptionCurveEaseInOut |
+//     UIViewAnimationOptionRepeat |
+//     UIViewAnimationOptionAutoreverse
+//     
+//                     animations:^{
+//                         
+//                         node.nodeImageView.transform = CGAffineTransformScale(t, 0.5, 0.5);
+//                     
+//                     }
+//                     completion:^(BOOL finished){
+//                         // Do nothing
+//                         node.nodeImageView.transform = t;
+//                         
+//                         if (showExplode) {
+//                             
+//                             if (node.bombType == kBombTypeExplodeBlock)
+//                                 [self explodeBody:node];
+//                             else if( node.bombType == kBombTypeSquareExplode)
+//                                 [self explodeBombSqaureAnimation:node];
+//                             else if( node.bombType == kBombTypeExplodeHorizontal || node.bombType == kBombTypeExplodeVertical)
+//                                 [self explodeBombAnimation:node];
+//                         }
+//                     }];
 }
 
 -(CABasicAnimation *)shakeAnimation:(NSInteger)i repeat:(BOOL)repeat
