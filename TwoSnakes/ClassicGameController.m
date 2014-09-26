@@ -151,7 +151,12 @@
     [snake updateNextNode:nextNode animation:YES];
     [self.view addSubview:nextNode];
     
-    CustomLabel *nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-60)/2, nextNode.frame.origin.y + nextNodeSize, 60, 15) fontSize:15];
+    CGFloat nextLabelWidth = 90;
+    CustomLabel *nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-nextLabelWidth)/2,
+                                                                          nextNode.frame.origin.y + nextNodeSize,
+                                                                          nextLabelWidth,
+                                                                          15)
+                                                      fontSize:15];
     nextLabel.text = NSLocalizedString(@"Next", nil) ;
     [self.view addSubview:nextLabel];
 
@@ -172,6 +177,8 @@
         levelLabel.text = @"第 1 关";
     else if ([language isEqualToString:@"zh-Hant"])
         levelLabel.text = @"第 1 關";
+    else if ([language isEqualToString:@"ja"])
+        levelLabel.text = @"ステージ 1 ";
     else
         levelLabel.text = @"Stage 1";
 
@@ -315,6 +322,8 @@
         levelLabel.text = [NSString stringWithFormat:@"第 %ld 关",level];
     else if ([language isEqualToString:@"zh-Hant"])
         levelLabel.text = [NSString stringWithFormat:@"第 %ld 關",level];
+    else if ([language isEqualToString:@"ja"])
+        levelLabel.text = [NSString stringWithFormat:@"ステージ %ld",level];
     else
         levelLabel.text = [NSString stringWithFormat:@"Stage %ld",level];
     
@@ -355,6 +364,11 @@
 -(void)hideScoreLabel
 {
     scoreLabel.hidden = YES;
+}
+
+-(void)showScoreLabel
+{
+    scoreLabel.hidden = NO;
 }
 
 -(void)disableLevelCheck
@@ -487,7 +501,9 @@
 
 -(void)buttonAnimation:(UIButton *)button
 {
-    [_particleView playButtonSound];
+//    [_particleView playButtonSound];
+    [_particleView playSound:kSoundTypeButtonSound];
+
     CGAffineTransform t = button.transform;
     
     [UIView animateWithDuration:0.15 animations:^{
@@ -525,7 +541,9 @@
 -(void)performScanning
 {
     // Scanning animation
-    [_particleView scanSound];
+//    [_particleView scanSound];
+    [_particleView playSound:kSoundTypeScanSound];
+
     CGFloat xOffset = gamePad.frame.size.height - 3;
     [UIView animateWithDuration:1 animations:^{
         
@@ -646,7 +664,9 @@
                 break;
         }
         
-        [_particleView playMoveSound];
+//        [_particleView playMoveSound];
+        [_particleView playSound:kSoundTypeMoveSound];
+
 
         [snake moveAllNodesBySwipe:dir complete:^{
             
@@ -748,13 +768,22 @@
 - (UIImage *)captureView:(UIView *)view
 {
     settingButton.hidden = YES;
+    homeButton.hidden = YES;
+    pauseButton.hidden = YES;
+    gamePad.backgroundColor = [UIColor blackColor];
+    
     CGRect rect = [[UIScreen mainScreen] bounds];
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     [view.layer renderInContext:context];
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    
     settingButton.hidden = NO;
+    homeButton.hidden = NO;
+    pauseButton.hidden = NO;
+    gamePad.backgroundColor = [UIColor clearColor];
+
     return img;
 }
 
@@ -963,7 +992,9 @@
     
     [appDelegate.audioPlayer stop];
     
-    [_particleView playGameoverSound];
+//    [_particleView playGameoverSound];
+    [_particleView playSound:kSoundTypeGameoverSound];
+
     
     chainLabel.text = @"Game Over";
     chainLabel.hidden = NO;
@@ -984,8 +1015,11 @@
         levelLabel.text = @"第 1 关";
     else if ([language isEqualToString:@"zh-Hant"])
         levelLabel.text = @"第 1 關";
+    else if ([language isEqualToString:@"ja"])
+        levelLabel.text = @"ステージ 1";
     else
         levelLabel.text = @"Stage 1";
+    
     nextNode.hidden = NO;
     gamePad.userInteractionEnabled = YES;
     scoreLabel.text = @"0";

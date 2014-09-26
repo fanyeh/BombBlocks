@@ -29,5 +29,6 @@
 -(void)pauseLayer:(CALayer*)layer;
 -(void)resumeLayer:(CALayer*)layer;
 -(void)stopMusic;
+-(void)showScoreLabel;
 
 @end

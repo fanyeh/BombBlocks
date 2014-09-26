@@ -94,11 +94,16 @@
         _classicLabel.text = NSLocalizedString(@"Play",nil);
 
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if ([language isEqualToString:@"zh-Hans"] || [language isEqualToString:@"zh-Hant"]) {
+    if ([language isEqualToString:@"zh-Hans"] || [language isEqualToString:@"zh-Hant"] || [language isEqualToString:@"ja"]) {
         [self.view addSubview:bombLabel];
         [self.view addSubview:boomLabel];
         [self.view addSubview:blockLabel];
         launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(screenWidth*170/320, screenHeight/2-labelSize-labelSize-52*2, 52, 52)];
+        
+        if([language isEqualToString:@"ja"]) {
+            _classicLabel.font = [UIFont fontWithName:@"DINAlternate-Bold" size:18];
+            _fastHandLabel.font = [UIFont fontWithName:@"DINAlternate-Bold" size:18];
+        }
 
     } else {
         [self.view addSubview:bombLabel];
@@ -128,10 +133,7 @@
     loadAnim = YES;
     
     _classicView.frame = CGRectOffset(_classicView.frame, screenWidth-320, 0);
-    
-//    NSLog(@"screen height %f",screenHeight);
 
-    
     // Adjust image position based on different screen size
     if (screenHeight > 568) {
         
@@ -173,7 +175,8 @@
 {
     if (loadAnim) {
         
-        [particleView introMoveSound];
+        //[particleView introMoveSound];
+        [particleView playSound:kSoundTypeIntroMoveSound];
         [UIView animateWithDuration:1.0 animations:^{
             
             _blueBody2.frame = CGRectOffset(_blueBody2.frame, 0, 70);
@@ -190,7 +193,8 @@
                 
             } completion:^(BOOL finished) {
                 
-                [particleView introMoveSound];
+//                [particleView introMoveSound];
+                [particleView playSound:kSoundTypeIntroMoveSound];
                 [UIView animateWithDuration:1.0 animations:^{
                     
                     _blueBody2.frame = CGRectOffset(_blueBody2.frame, -71, 0);
@@ -222,7 +226,8 @@
 - (void)setCombo
 {
     
-    [particleView introMoveSound];
+//    [particleView introMoveSound];
+    [particleView playSound:kSoundTypeIntroMoveSound];
 
     [UIView animateWithDuration:1.0 animations:^{
         
@@ -259,7 +264,8 @@
                                  _blueBomb.hidden = YES;
                                  _yellowBody.hidden = YES;
 
-                                 [particleView playBreakSound];
+//                                 [particleView playBreakSound];
+                                 [particleView playSound:kSoundTypeBreakSound];
 
                                  [self vExplosion];
                                  [self explodeBody:_blueBody1 type:kAssetTypeBlue];
@@ -291,7 +297,8 @@
     beamView1.alpha = 0.8;
     beamView2.alpha = 0.8;
 
-    [particleView explodeSound];
+//    [particleView explodeSound];
+    [particleView playSound:kSoundTypeExplodeSound];
 
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         
@@ -329,7 +336,9 @@
     beamView.transform = CGAffineTransformScale(t, 0.3, 0.3);
     
     _yellowBomb.hidden = YES;
-    [particleView explodeSquareSound];
+//    [particleView explodeSquareSound];
+    [particleView playSound:kSoundTypeExplodeSquareSound];
+
     [self explodeBody:_yellowBomb type:kAssetTypeYellow];
     
     [UIView animateWithDuration:0.6 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -341,11 +350,11 @@
         
         [beamView removeFromSuperview];
         
-        UIView *blinkView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, screenHeight, screenHeight)];
+        UIView *blinkView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, screenHeight*2, screenHeight*2)];
         blinkView.center = self.view.center;
         blinkView.backgroundColor = [UIColor colorWithWhite:1.000 alpha:0.700];
         blinkView.alpha = 0;
-        blinkView.layer.cornerRadius = screenHeight/2;
+        blinkView.layer.cornerRadius = screenHeight;
         [self.view addSubview:blinkView];
         
         [UIView animateWithDuration:0.15 animations:^{
@@ -396,7 +405,9 @@
         
     } completion:^(BOOL finished) {
         
-        [particleView menuBombDropSound];
+//        [particleView menuBombDropSound];
+        [particleView playSound:kSoundTypeMenuBombDropSound];
+
         [UIView animateWithDuration:0.15 animations:^{
             
             launchBomb.frame = CGRectOffset(launchBomb.frame, 0, -52/2);
@@ -409,7 +420,9 @@
                 
             } completion:^(BOOL finished) {
                 
-                [particleView menuBombDropSound];
+//                [particleView menuBombDropSound];
+                [particleView playSound:kSoundTypeMenuBombDropSound];
+
                 launchBomb.transform = CGAffineTransformRotate(launchBomb.transform, M_PI_4/2);
                 
                 if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
@@ -470,8 +483,9 @@
 #pragma mark - New Game
 - (void)playClassicGame
 {
-    [particleView playGameSound];
-    
+//    [particleView playGameSound];
+    [particleView playSound:kSoundTypeGameSound];
+
     CGAffineTransform t = _classicView.transform;
     _classicView.transform = CGAffineTransformScale(t, 0.9, 0.9);
     
@@ -489,8 +503,9 @@
 
 - (void)playfastHandGame
 {
-    [particleView playGameSound];
-    
+//    [particleView playGameSound];
+    [particleView playSound:kSoundTypeGameSound];
+
     CGAffineTransform t = _fastHandView.transform;
     _fastHandView.transform = CGAffineTransformScale(t, 0.9, 0.9);
     

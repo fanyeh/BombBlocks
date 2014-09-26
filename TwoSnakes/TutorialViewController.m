@@ -68,7 +68,9 @@
 
 -(void)buttonAnimation:(UIButton *)button
 {
-    [_particleView playButtonSound];
+//    [_particleView playButtonSound];
+    [_particleView playSound:kSoundTypeButtonSound];
+
     CGAffineTransform t = button.transform;
     
     [UIView animateWithDuration:0.15 animations:^{

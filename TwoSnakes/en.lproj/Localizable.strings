@@ -5,16 +5,24 @@
   Created by Jack Yeh on 2014/9/9.
   Copyright (c) 2014年 MarriageKiller. All rights reserved.
 */
+
+// Intro
 "bomb" = "Bomb";
 "Boom" = "Blocks";
 "Blocks" = "Blocks";
+"Classic" = "Classic";
+"Fast Hand" = "Fast Hand";
 
-
+// Setting
 "Sound" = "Sound";
 "Music" = "Music";
 "Rate Me" = "Rate Me";
 "Tutorial" = "Tutorial";
-"Level" = "Level";
+"ON" = "ON";
+"OFF" = "OFF";
+
+// Stats
+"Level" = "Stage";
 "Bomb" = "Bomb";
 "Combo" = "Combo";
 "Best" = "Best";
@@ -22,21 +30,14 @@
 "Chain" = "Chain";
 "chain" = "Chain";
 
-"Classic" = "Classic";
-"Fast Hand" = "Fast Hand";
-
+// Game
 "Continue" = "Continue";
-
 "Next" = "Next";
-
 "Play" = "Play";
 
 // Tutorial
 "Swipe to move blocks" = "Swipe to move blocks";
-"Line up blocks to cancel blocks" = "Line up blocks to cancel blocks";
+"Line up blocks to cancel blocks" = "Line up blocks to cancel them";
 "Cancel more blocks to pop bombs" = "Cancel more blocks to pop bombs";
 "Line up with blocks to trigger bomb" ="Line up with blocks to trigger bomb";
 
-// Music & Sound
-"ON" = "ON";
-"OFF" = "OFF";

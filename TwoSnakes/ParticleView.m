@@ -11,6 +11,21 @@
 @implementation ParticleView
 {
     CAEmitterLayer* fireEmitter;
+    SKAction *moveSound;
+    SKAction *introMoveSound;
+    SKAction *comboSound;
+    SKAction *breakSound;
+    SKAction *buttonSound;
+    SKAction *gameoverSound;
+    SKAction *explodeSound;
+    SKAction *explodeColorSound;
+    SKAction *explodeSquareSound;
+    SKAction *gameSound;
+    SKAction *scanSound;
+    SKAction *tickSound;
+    SKAction *sirenSound;
+    SKAction *menuBombDropSound;
+    SKAction *randomBombSound;
 }
 
 -(id)initWithSize:(CGSize)size {
@@ -18,7 +33,21 @@
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         self.backgroundColor = [SKColor colorWithCGColor:[UIColor clearColor].CGColor];
-
+        moveSound       =  [SKAction playSoundFileNamed:@"introMove.mp3" waitForCompletion:NO];
+        introMoveSound = [SKAction playSoundFileNamed:@"introMove.mp3" waitForCompletion:NO];
+        comboSound =[SKAction playSoundFileNamed:@"combo.mp3" waitForCompletion:NO];
+        breakSound =[SKAction playSoundFileNamed:@"break.mp3" waitForCompletion:NO];
+        buttonSound =[SKAction playSoundFileNamed:@"button.mp3" waitForCompletion:NO];
+        gameoverSound =[SKAction playSoundFileNamed:@"gameover.wav" waitForCompletion:NO];
+        explodeSound =[SKAction playSoundFileNamed:@"explode.mp3" waitForCompletion:NO];
+        explodeColorSound=[SKAction playSoundFileNamed:@"explodeColor.mp3" waitForCompletion:NO];
+        explodeSquareSound= [SKAction playSoundFileNamed:@"explodeSquare.mp3" waitForCompletion:NO];
+        gameSound=[SKAction playSoundFileNamed:@"playButtonSound.mp3" waitForCompletion:NO];
+        scanSound=[SKAction playSoundFileNamed:@"scanSound.mp3" waitForCompletion:NO];
+        tickSound=[SKAction playSoundFileNamed:@"tickSound.mp3" waitForCompletion:NO];
+        sirenSound= [SKAction playSoundFileNamed:@"sirenSound.mp3" waitForCompletion:NO];
+        menuBombDropSound=[SKAction playSoundFileNamed:@"menuBombDropSound.mp3" waitForCompletion:NO];
+        randomBombSound=[SKAction playSoundFileNamed:@"randomBombSound.mp3" waitForCompletion:NO];
     }
     return self;
 }
@@ -64,10 +93,77 @@
     [self addChild:emitter];
 }
 
+-(void)playSound:(SoundType)soundType
+{
+    switch (soundType) {
+        case kSoundTypeMoveSound:
+            [self runAction:moveSound];
+            break;
+            
+        case  kSoundTypeIntroMoveSound:
+            [self runAction: introMoveSound];
+            break;
+
+        case kSoundTypeComboSound:
+            [self runAction:comboSound ];
+            break;
+
+        case kSoundTypeBreakSound:
+            [self runAction: breakSound];
+            break;
+
+        case kSoundTypeButtonSound:
+            [self runAction: buttonSound];
+            break;
+
+        case kSoundTypeGameoverSound:
+            [self runAction:gameoverSound];
+            break;
+
+        case kSoundTypeExplodeSound:
+            [self runAction: explodeSound];
+            break;
+
+        case kSoundTypeExplodeColorSound:
+            [self runAction: explodeColorSound];
+            break;
+
+        case kSoundTypeExplodeSquareSound:
+            [self runAction: explodeSquareSound];
+            break;
+
+        case kSoundTypeGameSound:
+            [self runAction:gameSound];
+            break;
+
+        case  kSoundTypeScanSound:
+            [self runAction: scanSound];
+            break;
+
+        case  kSoundTypeTickSound:
+            [self runAction: tickSound];
+            break;
+
+        case kSoundTypeSirenSound:
+            [self runAction:sirenSound];
+            break;
+
+        case kSoundTypeMenuBombDropSound:
+            [self runAction:menuBombDropSound];
+            break;
+            
+        case kSoundTypeRandomBombSound:
+            [self runAction: randomBombSound];
+            break;
+    }
+}
+
 - (void)playMoveSound
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"]) {
             [self runAction:[SKAction playSoundFileNamed:@"introMove.mp3" waitForCompletion:NO]];
+        
+    }
 }
 
 - (void)introMoveSound

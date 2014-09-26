@@ -42,12 +42,10 @@ static GCHelper *sharedHelper = nil;
         _gameCenterAvailable = [self isGameCenterAvailable];
         if (_gameCenterAvailable) {
             NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-            
             [nc addObserver:self
                    selector:@selector(authenticationChanged)
                        name:GKPlayerAuthenticationDidChangeNotificationName
                      object:nil];
-            
         }
     }
     return self;
@@ -55,10 +53,16 @@ static GCHelper *sharedHelper = nil;
 
 - (void)authenticationChanged
 {
-    
     if ([GKLocalPlayer localPlayer].isAuthenticated && !userAuthenticated) {
         NSLog(@"Authentication changed: player authenticated.");
         userAuthenticated = TRUE;
+        
+        // Update latest high score to leaderboard
+        NSInteger timeBestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"TimeBestScore"];
+        [[GCHelper sharedInstance] submitScore:timeBestScore leaderboardId:kFastHandHighScoreLeaderboardId];
+
+        NSInteger classicBestScore = [[NSUserDefaults standardUserDefaults]integerForKey:@"ClassicBestScore"];
+        [[GCHelper sharedInstance] submitScore:classicBestScore leaderboardId:kHighScoreLeaderboardId];
 
     } else if (![GKLocalPlayer localPlayer].isAuthenticated && userAuthenticated) {
         NSLog(@"Authentication changed: player not authenticated");
@@ -70,7 +74,6 @@ static GCHelper *sharedHelper = nil;
 
 - (void)authenticateLocalUser:(UIViewController *)gameViewcontroller
 {
-    
     if (!_gameCenterAvailable)
         return;
     
@@ -83,32 +86,22 @@ static GCHelper *sharedHelper = nil;
             
             // If Player has not signed in game center viewController will be game center sign in view controller
             // Otherwise viewController = nil
-            
-//            NSLog(@"Game center controller %@",viewController);
+
             
             if (viewController != nil) {
-                
-                if (gameViewcontroller.presentedViewController != nil) {
-                
+                if (gameViewcontroller.presentedViewController != nil)
                     [gameViewcontroller.presentedViewController presentViewController:viewController
                                                      animated:YES
                                                    completion:nil];
-                } else {
-                    
+                else
                     [gameViewcontroller presentViewController:viewController
                                                      animated:YES
                                                    completion:nil];
-                    
-                }
             }
-
             [localPlayer registerListener:self];
-
       };
-    } else {
-
+    } else
         NSLog(@"Already authenticated!");
-    }
 }
 
 - (void)findMatchWithMinPlayers:(int)minPlayers maxPlayers:(int)maxPlayers
@@ -249,18 +242,15 @@ static GCHelper *sharedHelper = nil;
             matchStarted = NO;
             [_delegate matchEnded];
         } else {
-            
             // Populate players dict
             _playersDict = [NSMutableDictionary dictionaryWithCapacity:players.count];
             for (GKPlayer *player in players) {
                 NSLog(@"Found player: %@", player.alias);
                 [_playersDict setObject:player forKey:player.playerID];
             }
-            
             // Notify delegate match can begin
             matchStarted = YES;
             [_delegate matchStarted];
-            
         }
     }];
 }
@@ -268,17 +258,15 @@ static GCHelper *sharedHelper = nil;
 #pragma mark - Game Center UI method
 -(void) showGameCenterViewController:(UIViewController *)viewcontroller
 {
-    if ([GKLocalPlayer localPlayer].authenticated == NO) {
+    if (![GKLocalPlayer localPlayer].isAuthenticated)
         [self authenticateLocalUser:viewcontroller];
-    }
     else {
-
-    GKGameCenterViewController *gameCenterViewController= [[GKGameCenterViewController alloc] init];
-    gameCenterViewController.gameCenterDelegate = self;
-    gameCenterViewController.viewState = GKGameCenterViewControllerStateLeaderboards;
-    [viewcontroller presentViewController: gameCenterViewController
-                                 animated:YES
-                               completion:nil];
+        GKGameCenterViewController *gameCenterViewController= [[GKGameCenterViewController alloc] init];
+        gameCenterViewController.gameCenterDelegate = self;
+        gameCenterViewController.viewState = GKGameCenterViewControllerStateDefault;
+        [viewcontroller presentViewController: gameCenterViewController
+                                     animated:YES
+                                   completion:nil];
     }
 }
 
@@ -305,7 +293,6 @@ static GCHelper *sharedHelper = nil;
     [_delegate inviteReceived];
 }
 
-
 -(void) submitScore:(int64_t)score leaderboardId:(NSString*)leaderboardId {
     //1: Check if Game Center
     // features are enabled
@@ -328,38 +315,39 @@ static GCHelper *sharedHelper = nil;
     }];
 }
 
-- (void)getScoreRankFromLeaderboard:(void(^)(NSArray *topScores))completeBlock
+- (void)getClassicScoreRankFromLeaderboard:(void(^)(NSArray *topScores))completeBlock
 {
     // features are enabled
     if (!_gameCenterAvailable) {
         NSLog(@"Player not authenticated");
         return;
     }
-    
     [GKLeaderboard loadLeaderboardsWithCompletionHandler:^(NSArray *leaderboards, NSError *error) {
-        
         for (GKLeaderboard *board in leaderboards) {
-            
             if ([board.identifier isEqualToString:kHighScoreLeaderboardId]) {
-                
                 [board loadScoresWithCompletionHandler:^(NSArray *scores, NSError *error) {
-                    
                     completeBlock(scores);
-                    
                 }];
-                
             }
         }
-    
     }];
 }
 
-- (void) loadLeaderboardSetInfo
+- (void)getFasthandScoreRankFromLeaderboard:(void(^)(NSArray *topScores))completeBlock
 {
-    [GKLeaderboardSet loadLeaderboardSetsWithCompletionHandler:^(NSArray *leaderboardSets, NSError *error) {
-        
-        self.leaderboardSets = leaderboardSets;
-        
+    // features are enabled
+    if (!_gameCenterAvailable) {
+        NSLog(@"Player not authenticated");
+        return;
+    }
+    [GKLeaderboard loadLeaderboardsWithCompletionHandler:^(NSArray *leaderboards, NSError *error) {
+        for (GKLeaderboard *board in leaderboards) {
+            if ([board.identifier isEqualToString:kFastHandHighScoreLeaderboardId]) {
+                [board loadScoresWithCompletionHandler:^(NSArray *scores, NSError *error) {
+                    completeBlock(scores);
+                }];
+            }
+        }
     }];
 }
 

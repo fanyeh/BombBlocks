@@ -5,29 +5,34 @@
   Created by Jack Yeh on 2014/9/9.
   Copyright (c) 2014年 MarriageKiller. All rights reserved.
 */
+
+// Intro
 "bomb" = "块";
 "Boom" = "爆";
 "Blocks" = "了";
+"Classic" = "经典模式";
+"Fast Hand" = "快手模式";
 
+// Setting
 "Sound" = "音效";
 "Music" = "音乐";
 "Rate Me" = "给我评价";
 "Tutorial" = "教学";
+"ON" = "已开启";
+"OFF" = "已关闭";
+
+// Stats
 "Level" = "关卡";
 "Bomb" = "炸弹";
 "Combo" = "Combo";
 "Best" = "最高分";
 "New Record" = "新纪录";
+"Chain" = "连锁爆炸";
+"chain" = "最高连锁";
 
-"Chain" = "连锁炸弹";
-"chain" = "连锁";
-
-"Classic" = "经典模式";
-"Fast Hand" = "快手模式";
+// Game
 "Continue" = "继续玩";
-
 "Next" = "下一块";
-
 "Play" = "开始游戏";
 
 // Tutorial
@@ -36,6 +41,3 @@
 "Cancel more blocks to pop bombs" = "消除更多的方块来产生炸弹";
 "Line up with blocks to trigger bomb" ="将方块与炸弹排在一起引爆";
 
-// Music & Sound
-"ON" = "已开启";
-"OFF" = "已关闭";

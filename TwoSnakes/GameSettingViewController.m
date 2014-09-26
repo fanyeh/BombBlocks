@@ -70,13 +70,23 @@
     CGFloat xCord = (screenWidth - labelSize)/2 - xGap;
     CGFloat centerY = (screenHeight - 45*4 - (yGap-45)*3)/2 ;
     
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if([language isEqualToString:@"ja"]) {
+        fontSize = 25;
+    }
+    
     // Sound
     soundButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY, 45, 45)];
     [soundButton setImage:[UIImage imageNamed:@"soundOn90.png"] forState:UIControlStateNormal];
     [soundButton addTarget:self action:@selector(turnSound) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:soundButton];
     
-    CustomLabel *soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY, labelSize, 45) fontSize:fontSize];
+    CustomLabel *soundLabel;
+    if([language isEqualToString:@"ja"])
+        soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY, labelSize+30, 45) fontSize:fontSize];
+    else
+        soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY, labelSize, 45) fontSize:fontSize];
+
     soundLabel.text = NSLocalizedString(@"Sound",nil);
     soundLabel.textAlignment = NSTextAlignmentLeft;
     [self.view  addSubview:soundLabel];
@@ -117,7 +127,7 @@
     [tutorial addTarget:self action:@selector(startTutorial:) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:tutorial];
     
-    CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY+yGap*3, labelSize+30, 45) fontSize:fontSize];
+    CustomLabel *tutorialLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY+yGap*3, labelSize+90, 45) fontSize:fontSize];
     tutorialLabel.text = NSLocalizedString(@"Tutorial",nil);
     tutorialLabel.textAlignment = NSTextAlignmentLeft;
     [self.view  addSubview:tutorialLabel];
@@ -145,7 +155,9 @@
 - (void)turnMusic
 {
     [self buttonAnimation:musicButton];
-    [_particleView playButtonSound];
+//    [_particleView playButtonSound];
+    [_particleView playSound:kSoundTypeButtonSound];
+
     if (musicOn) {
         musicOn = NO;
         [appDelegate.audioPlayer stop];
@@ -162,7 +174,9 @@
 - (void)turnSound
 {
     [self buttonAnimation:soundButton];
-    [_particleView playButtonSound];
+//    [_particleView playButtonSound];
+    [_particleView playSound:kSoundTypeButtonSound];
+
     if (soundOn)
         soundOn = NO;
     else
@@ -220,7 +234,9 @@
 
 -(void)buttonAnimation:(UIButton *)button
 {
-    [_particleView playButtonSound];
+//    [_particleView playButtonSound];
+    [_particleView playSound:kSoundTypeButtonSound];
+
     CGAffineTransform t = button.transform;
     
     [UIView animateWithDuration:0.15 animations:^{

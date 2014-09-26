@@ -471,8 +471,9 @@
     bombChain = 0;
     if ([allPatterns count] > 0) {
         
-        [_particleView playComboSound];
-        
+//        [_particleView playComboSound];
+        [_particleView playSound:kSoundTypeComboSound];
+
         for (SnakeNode *n in allPatterns) {
             
             [n.layer removeAllAnimations];
@@ -735,7 +736,9 @@
                 [self showScoreLabel:node];
                 [removedNode addObject:node];
                 [self shrinkAnimation:node showExplode:NO];
-                [_particleView explodeColorSound];
+//                [_particleView explodeColorSound];
+                [self.particleView playSound:kSoundTypeExplodeColorSound];
+
             }
         }
     } completion:^(BOOL finished) {
@@ -839,7 +842,8 @@
             [emptyNodes addObject:node];
     }
 
-    [_particleView randomBombSound];
+//    [_particleView randomBombSound];
+    [self.particleView playSound:kSoundTypeRandomBombSound];
 
     [UIView animateWithDuration:0.3 animations:^{
         
@@ -1322,7 +1326,9 @@
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
     [_gamePad bombExplosionWithPosX:posX andPosY:posY bomb:bomb];
-    [_particleView explodeSound];
+//    [_particleView explodeSound];
+    [self.particleView playSound:kSoundTypeExplodeSound];
+
 }
 
 -(void)explodeBombSqaureAnimation:(SnakeNode *)bomb
@@ -1333,7 +1339,9 @@
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
     [_gamePad bombExplosionSquare:posX andPosY:posY bomb:bomb];
-    [_particleView explodeSquareSound];
+//    [_particleView explodeSquareSound];
+    [self.particleView playSound:kSoundTypeExplodeSquareSound];
+
 }
 
 -(void)explodeColorAnimation:(SnakeNode *)bomb target:(SnakeNode *)targetNode

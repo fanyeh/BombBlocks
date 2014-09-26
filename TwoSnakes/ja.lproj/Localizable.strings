@@ -1,0 +1,43 @@
+/* 
+  Localizable.strings
+  Bomb Blocks
+
+  Created by Jack Yeh on 2014/9/9.
+  Copyright (c) 2014年 MarriageKiller. All rights reserved.
+*/
+
+// Intro
+"bomb" = "ブロック";
+"Boom" = "爆";
+"Blocks" = "発";
+"Classic" = "クラシック";
+"Fast Hand" = "速い手";
+
+// Setting
+"Sound" = "音響効果";
+"Music" = "音楽";
+"Rate Me" = "評価";
+"Tutorial" = "チュートリアル";
+"ON" = "ON";
+"OFF" = "OFF";
+
+// Stats
+"Level" = "ステージ";
+"Bomb" = "爆弾";
+"Combo" = "コンボ";
+"Best" = "ベスト";
+"New Record" = "新記録";
+"Chain" = "チェーン爆発";
+"chain" = "チェーン";
+
+// Game
+"Continue" = "続ける";
+"Next" = "次のブロック";
+"Play" = "プレー";
+
+// Tutorial
+"Swipe to move blocks" = "ブロックを移動するためにスワイプ";
+"Line up blocks to cancel blocks" = "ブロックを削除するために一緒に配置されている";
+"Cancel more blocks to pop bombs" = "ブロックを削除することで爆弾を作る";
+"Line up with blocks to trigger bomb" ="爆弾はブロックと一緒に配置された爆発させる";
+

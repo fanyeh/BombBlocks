@@ -6,32 +6,33 @@
   Copyright (c) 2014年 MarriageKiller. All rights reserved.
 */
 
-
+// Intro
 "bomb" = "塊";
 "Boom" = "爆";
 "Blocks" = "了";
+"Classic" = "經典模式";
+"Fast Hand" = "快手模式";
 
-
-
+// Setting
 "Sound" = "音效";
 "Music" = "音樂";
 "Rate Me" = "給我評價";
 "Tutorial" = "教學";
+"ON" = "已開啟";
+"OFF" = "已關閉";
+
+// Stats
 "Level" = "關卡";
 "Bomb" = "炸彈";
 "Combo" = "Combo";
 "Best" = "最高分";
 "New Record" = "新紀錄";
+"Chain" = "連鎖爆炸";
+"chain" = "最高連鎖";
 
-"Chain" = "連鎖炸彈";
-"chain" = "連鎖";
-
-"Classic" = "經典模式";
-"Fast Hand" = "快手模式";
+// Game
 "Continue" = "繼續玩";
-
 "Next" = "下一塊";
-
 "Play" = "開始遊戲";
 
 // Tutorial
@@ -40,6 +41,3 @@
 "Cancel more blocks to pop bombs" = "消除更多的方塊來產生炸彈";
 "Line up with blocks to trigger bomb" ="將方塊與炸彈排在一起引爆";
 
-// Music & Sound
-"ON" = "已開啟";
-"OFF" = "已關閉";

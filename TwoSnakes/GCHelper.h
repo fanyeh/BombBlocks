@@ -44,8 +44,8 @@
 -(void) showGameCenterViewController:(UIViewController*)viewController;
 
 // Scores
--(void) submitScore:(int64_t)score leaderboardId:(NSString*)leaderboardId;
-
-- (void)getScoreRankFromLeaderboard:(void(^)(NSArray *topScores))completeBlock;
+- (void) submitScore:(int64_t)score leaderboardId:(NSString*)leaderboardId;
+- (void)getClassicScoreRankFromLeaderboard:(void(^)(NSArray *topScores))completeBlock;
+- (void)getFasthandScoreRankFromLeaderboard:(void(^)(NSArray *topScores))completeBlock;
 
 @end

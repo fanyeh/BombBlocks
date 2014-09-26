@@ -63,11 +63,12 @@
     countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
     
     [self disableLevelCheck];
-    
+        
     // Scan speed default is 6
-    [self setScanSpeed:4];
+    [self setScanSpeed:5];
     
     [self setBgImage:[UIImage imageNamed:@"timebackground.png"]];
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -80,7 +81,7 @@
     CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
     [anim setToValue:[NSNumber numberWithFloat:0]]; // satrt angle
     [anim setFromValue:[NSNumber numberWithDouble:-2*M_PI]]; // rotation angle
-    [anim setDuration:6]; // rotate speed
+    [anim setDuration:2]; // rotate speed , smaller the faster
     [anim setRepeatCount:HUGE_VAL];
     [anim setAutoreverses:NO];
 
@@ -98,11 +99,14 @@
     count--;
     countDownLabel.text = [NSString stringWithFormat:@"%ld",count];
     if (count < 10) {
-        [self stopMusic];
-        countDownLabel.textColor = [UIColor redColor];
-        
+
+        if (count == 9)
+            [self stopMusic];
+
         if (count%2 == 1) {
-            [self.particleView sirenSound];
+//            [self.particleView sirenSound];
+            [self.particleView playSound:kSoundTypeSirenSound];
+
             [UIView animateWithDuration:0.5 animations:^{
                 
                 redView.alpha = 1;
@@ -117,7 +121,9 @@
         }
 
     } else
-        [self.particleView tickSound];
+//        [self.particleView tickSound];
+    [self.particleView playSound:kSoundTypeTickSound];
+
     
     if (count ==  0)
         [self gameOver];
@@ -125,14 +131,21 @@
 
 -(void)gameOver
 {
+    [super showScoreLabel];
+    clockImageView.hidden = YES;
+    countDownLabel.hidden = YES;
+    
     [super gameOver];
     [countDownTimer invalidate];
     [pinView.layer removeAllAnimations];
-    pinView.hidden = YES;
 }
 
 - (void)replayGame
 {
+    [super hideScoreLabel];
+    clockImageView.hidden = NO;
+    countDownLabel.hidden = NO;
+
     [super replayGame];
     pinView.hidden = NO;
     count = 60;

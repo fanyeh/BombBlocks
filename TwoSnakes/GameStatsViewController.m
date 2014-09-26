@@ -12,6 +12,7 @@
 #import "GADInterstitial.h"
 #import "Chartboost.h"
 #import "MKAppDelegate.h"
+#import "GameSettingViewController.h"
 
 @interface GameStatsViewController () <ChartboostDelegate,GADInterstitialDelegate>
 {
@@ -117,13 +118,17 @@
         yGap = 0.0968*screenHeight;
     }
     
+    CGFloat fontSize = 24;
     CGFloat labelYOffset = yoffset+80;
-    CGFloat labelWidth = 90;
-    CGFloat labelHeight = 25;
-    CGFloat fontSize = 25;
-    
+    CGFloat labelWidth = 100;
+    CGFloat labelHeight = fontSize;
     CGFloat labelGap = 0.0625*screenWidth + labelWidth;
     CGFloat labelGap2 = 0.09375*screenWidth + labelHeight;
+    
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if([language isEqualToString:@"ja"]) {
+        fontSize = 23;
+    }
 
     // ------------------- Combo ------------------- //
     CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2,
@@ -138,7 +143,7 @@
                                                                            labelWidth,
                                                                            labelHeight)
                                                        fontSize:fontSize];
-    comboLabel.text = @"Combo";
+    comboLabel.text = NSLocalizedString(@"Combo",nil);
     comboLabel.textAlignment = NSTextAlignmentLeft;
 
     
@@ -157,7 +162,6 @@
     
     levelLabel.text = NSLocalizedString(@"Level", nil);
     levelLabel.textAlignment = NSTextAlignmentLeft;
-    
     [levelArray addObject:levelLabel];
     
     // ------------------- Bomb -------------------------- //
@@ -239,27 +243,31 @@
     
     CGFloat xoffset = levelLabel.frame.origin.x + 15;
     CGFloat offset = levelLabel.frame.origin.y+labelHeight+15;
-    for (NSInteger i = 0; i < 10; i++) {
-        
-        CustomLabel *subLevelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xoffset,
-                                                                                  offset,
-                                                                                  fontSize,
-                                                                                  fontSize)
-                                                              fontSize:fontSize];
-        
-        subLevelLabel.text = [NSString stringWithFormat:@"%ld",i+1];
-        
-        if (i+1 <= _level)
-            subLevelLabel.textColor =[UIColor whiteColor];
-        else
-            subLevelLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
-        
-        [self.view addSubview:subLevelLabel];
-        xoffset += fontSize;
-        
-        [levelArray addObject:subLevelLabel];
-
-    }
+    
+    // Levels label
+    if (!_timeMode) {
+        for (NSInteger i = 0; i < 10; i++) {
+            
+            CustomLabel *subLevelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xoffset,
+                                                                                      offset,
+                                                                                      fontSize,
+                                                                                      fontSize)
+                                                                  fontSize:fontSize];
+            
+            subLevelLabel.text = [NSString stringWithFormat:@"%ld",i+1];
+            
+            if (i+1 <= _level)
+                subLevelLabel.textColor =[UIColor whiteColor];
+            else
+                subLevelLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
+            
+            [self.view addSubview:subLevelLabel];
+            xoffset += fontSize;
+            
+            [levelArray addObject:subLevelLabel];
+        }
+    } else
+        levelLabel.hidden = YES;
     
     UIButton *replayBg = [[UIButton alloc]initWithFrame:CGRectMake((screenWidth-40)/2,
                                                                    screenHeight-40-30,
@@ -276,19 +284,20 @@
     
     appDelegate = [[UIApplication sharedApplication] delegate];
 
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
-
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
         [self doVolumeFade];
-    }
-    
-    if (_timeMode)
-        [self hideLevel];
-    
+
     // Home Button
     UIButton *homeButton = [[UIButton alloc]initWithFrame:CGRectMake(5,screenHeight-35, 30, 30)];
     [homeButton setImage:[UIImage imageNamed:@"home60.png"] forState:UIControlStateNormal];
     [homeButton addTarget:self action:@selector(backToHome:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:homeButton];
+    
+    // Setting Button
+    UIButton *settingButton = [[UIButton alloc]initWithFrame:CGRectMake(45, screenHeight-35, 30, 30)];
+    [settingButton setImage:[UIImage imageNamed:@"setting60.png"] forState:UIControlStateNormal];
+    [settingButton addTarget:self action:@selector(showSetting:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:settingButton];
 }
 
 -(void)backToHome:(UIButton *)button
@@ -297,11 +306,13 @@
     [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void)hideLevel
+-(void)showSetting:(UIButton *)button
 {
-    for (CustomLabel *c in levelArray) {
-        c.hidden = YES;
-    }
+    [self buttonAnimation:button];
+    GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
+    controller.bgImage = _bgImage;
+    controller.particleView = _particleView;
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 -(void)doVolumeFade
@@ -474,7 +485,9 @@
 
 -(void)buttonAnimation:(UIButton *)button
 {
-    [_particleView playButtonSound];
+//    [_particleView playButtonSound];
+    [self.particleView playSound:kSoundTypeButtonSound];
+
     CGAffineTransform t = button.transform;
     
     [UIView animateWithDuration:0.15 animations:^{

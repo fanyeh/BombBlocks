@@ -61,12 +61,27 @@
         [numFormatter setUsesGroupingSeparator:YES];
         
         //  Set the initial body of the share sheet
-        [shareSheet setInitialText:[NSString stringWithFormat:@"I have scored %@ points @ Bomb Boom Blocks!",[numFormatter stringFromNumber:[NSNumber numberWithInteger:newScore]]]];
-        
+        NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        if ([language isEqualToString:@"zh-Hans"]) {
+
+            [shareSheet setInitialText:[NSString stringWithFormat:@"我从块爆了得到 %@ 分!",[numFormatter stringFromNumber:[NSNumber numberWithInteger:newScore]]]];
+            
+        } else if ([language isEqualToString:@"zh-Hant"]) {
+
+            [shareSheet setInitialText:[NSString stringWithFormat:@"我從塊爆了得到 %@ 分!",[numFormatter stringFromNumber:[NSNumber numberWithInteger:newScore]]]];
+            
+        } else if ([language isEqualToString:@"ja"]) {
+            
+            [shareSheet setInitialText:[NSString stringWithFormat:@"ブロック爆発で %@ ポイントを獲得してきた!",[numFormatter stringFromNumber:[NSNumber numberWithInteger:newScore]]]];
+            
+        }else {
+            [shareSheet setInitialText:[NSString stringWithFormat:@"I have scored %@ points @ Bomb Blocks!",[numFormatter stringFromNumber:[NSNumber numberWithInteger:newScore]]]];
+        }
+
         //  Share Photo
         [shareSheet addImage:_screenshot];
         
-        NSURL *appURL = [NSURL URLWithString:@"https://itunes.com.tw"];
+        NSURL *appURL = [NSURL URLWithString:@"https://itunes.apple.com/app/bomb-boom-blocks/id916465725?l=zh&ls=1&mt=8"];
         [shareSheet addURL:appURL];
         
         //  Presents the share Sheet to the user
