@@ -27,6 +27,11 @@
 {
     CGFloat nodeHeight =  screenWidth * 0.1875;
     CGFloat nodeWidth = screenWidth * 0.1875;
+    
+    if (IS_IPad) {
+        nodeHeight =  screenWidth * 0.13;
+        nodeWidth = screenWidth * 0.13;
+    }
     int column = 5;
     int row = 5;
     CGFloat gapBetweenCard = 2;

@@ -36,3 +36,6 @@
 #define OrangeDotColor [UIColor colorWithRed:0.949 green:0.427 blue:0.149 alpha:1.000]
 #define screenWidth [UIScreen mainScreen].bounds.size.width
 #define screenHeight [UIScreen mainScreen].bounds.size.height
+#define IS_IPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define IS_IPhone (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+#define IPadMiniRatio 0.6

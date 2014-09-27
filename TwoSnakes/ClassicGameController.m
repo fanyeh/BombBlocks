@@ -104,9 +104,11 @@
     gamePad.center = self.view.center;
     CGFloat nextNodePos = gamePad.frame.origin.y+gamePad.frame.size.height+25;
     
-    if (screenHeight < 568) {
+    if (screenHeight < 568 && IS_IPhone) {
         gamePad.frame = CGRectOffset(gamePad.frame, 0, 20);
         nextNodePos = gamePad.frame.origin.y+gamePad.frame.size.height+5;
+    } else if (IS_IPad) {
+        nextNodePos = gamePad.frame.origin.y+gamePad.frame.size.height+25/0.6;
     }
     
     // -------------------- Setup particle views -------------------- //
@@ -123,26 +125,50 @@
     // Present the scene.
     [skView presentScene:_particleView];
     [self.view addSubview:gamePad];
+
+    // Size adjustment between IPhone and IPad
+    CGFloat scoreLabelSize = 60;
+    CGFloat scoreOffsetY = 105;
+    CGFloat nextNodeSize = 40;
+    CGFloat nextLabelWidth = 90;
+    CGFloat nextLabelFontSize = 15;
+    CGFloat levelLabelSize = 20;
+    CGFloat levelLabelOffsetY = 35;
+    CGFloat buttonSize = 30;
+    tutorialFontSize = 20;
     
-    // Count down
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth - 250)/2,
-                                                              gamePad.frame.origin.y-105 ,
-                                                              250,
-                                                              60)
-                                          fontSize:60];
+    if (IS_IPad) {
+        nextNodeSize = nextNodeSize/IPadMiniRatio;
+        nextLabelWidth = nextLabelWidth/IPadMiniRatio;
+        nextLabelFontSize = (nextLabelFontSize-3)/IPadMiniRatio;
+        levelLabelSize = (levelLabelSize-3)/IPadMiniRatio;
+        levelLabelOffsetY =levelLabelOffsetY/IPadMiniRatio+10;
+        buttonSize = buttonSize/IPadMiniRatio;
+        tutorialFontSize = tutorialFontSize/IPadMiniRatio;
+        scoreLabelSize = (scoreLabelSize-3)/IPadMiniRatio;
+        scoreOffsetY = scoreOffsetY/IPadMiniRatio+10;
+    }
+    
+    // Score Label
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,
+                                                              gamePad.frame.origin.y-scoreOffsetY,
+                                                              screenWidth,
+                                                              scoreLabelSize)
+                                          fontSize:scoreLabelSize];
     
     scoreLabel.textColor = [UIColor whiteColor];
     scoreLabel.text = @"0";
     [self.view addSubview:scoreLabel];
-    
+    scoreArray = [[NSMutableArray alloc]init];
+
     // Setup player snake head
     snake = [[Snake alloc]initWithSnakeNode:gamePad.initialNode gamePad:gamePad];
     snake.delegate = self;
     [gamePad addSubview:snake];
     snake.particleView = _particleView;
     
+    
     // Next Node
-    CGFloat nextNodeSize = 40;
     nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((screenWidth-nextNodeSize)/2,
                                                           nextNodePos ,
                                                           nextNodeSize,
@@ -151,16 +177,13 @@
     [snake updateNextNode:nextNode animation:YES];
     [self.view addSubview:nextNode];
     
-    CGFloat nextLabelWidth = 90;
     CustomLabel *nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-nextLabelWidth)/2,
                                                                           nextNode.frame.origin.y + nextNodeSize,
                                                                           nextLabelWidth,
-                                                                          15)
-                                                      fontSize:15];
+                                                                          nextLabelFontSize)
+                                                      fontSize:nextLabelFontSize];
     nextLabel.text = NSLocalizedString(@"Next", nil) ;
     [self.view addSubview:nextLabel];
-
-    scoreArray = [[NSMutableArray alloc]init];
 
     // App delegate
     appDelegate = [[UIApplication sharedApplication] delegate];
@@ -170,7 +193,11 @@
         [appDelegate.audioPlayer play];
     
     // Effects
-    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-150)/2, gamePad.frame.origin.y-35, 150,20) fontSize:20];
+    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-150)/2,
+                                                              gamePad.frame.origin.y-levelLabelOffsetY,
+                                                              150,
+                                                              levelLabelSize)
+                                          fontSize:levelLabelSize];
     
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([language isEqualToString:@"zh-Hans"])
@@ -184,7 +211,14 @@
 
     [self.view addSubview:levelLabel];
     
-    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-300)/2, 180, 300,40) fontSize:40];
+    
+    // Chain Label
+    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-300)/2,
+                                                              180,
+                                                              300,
+                                                              scoreLabelSize/1.5)
+                                          fontSize:scoreLabelSize/1.5];
+    
     chainLabel.hidden = YES;
     chainLabel.center = self.view.center;
     [self.view addSubview:chainLabel];
@@ -224,35 +258,46 @@
     scanTimeInterval = 6;
     scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
     
-    // Setting Button
-    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(45, screenHeight-35, 30, 30)];
-    [settingButton setImage:[UIImage imageNamed:@"setting60.png"] forState:UIControlStateNormal];
-    [settingButton addTarget:self action:@selector(showSetting:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:settingButton];
-    
     // Home Button
-    homeButton = [[UIButton alloc]initWithFrame:CGRectMake(5, screenHeight-35, 30, 30)];
+    homeButton = [[UIButton alloc]initWithFrame:CGRectMake(10, screenHeight-(buttonSize+10), buttonSize, buttonSize)];
     [homeButton setImage:[UIImage imageNamed:@"home60.png"] forState:UIControlStateNormal];
     [homeButton addTarget:self action:@selector(backToHome:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:homeButton];
     
+    // Setting Button
+    settingButton = [[UIButton alloc]initWithFrame:CGRectMake(buttonSize+20, screenHeight-(buttonSize+10), buttonSize, buttonSize)];
+    [settingButton setImage:[UIImage imageNamed:@"setting60.png"] forState:UIControlStateNormal];
+    [settingButton addTarget:self action:@selector(showSetting:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:settingButton];
+    
     // Pause Button
-    pauseButton = [[UIButton alloc]initWithFrame:CGRectMake(screenWidth-35,screenHeight-35, 30, 30)];
+    pauseButton = [[UIButton alloc]initWithFrame:CGRectMake(screenWidth-(buttonSize+10),screenHeight-(buttonSize+10), buttonSize, buttonSize)];
     [pauseButton setImage:[UIImage imageNamed:@"pauseButton60.png"] forState:UIControlStateNormal];
     [pauseButton addTarget:self action:@selector(pauseGame) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:pauseButton];
     
+    // View when pause
     pauseView = [[UIView alloc]initWithFrame:self.view.frame];
     pauseView.frame = CGRectOffset(pauseView.frame, 0, - screenHeight);
     pauseView.backgroundColor = [UIColor colorWithWhite:0.000 alpha:0.800];
     [self.view addSubview:pauseView];
     
-    playButton = [[UIButton alloc]initWithFrame:CGRectMake((screenWidth-60)/2,(screenHeight-60)/2-20, 60, 60)];
+    // Play Button
+    playButton = [[UIButton alloc]initWithFrame:CGRectMake((screenWidth-buttonSize*2)/2,
+                                                           (screenHeight-buttonSize*2)/2-20,
+                                                           buttonSize*2,
+                                                           buttonSize*2)];
+    
     [playButton setImage:[UIImage imageNamed:@"playButton120.png"] forState:UIControlStateNormal];
     [playButton addTarget:self action:@selector(playGame) forControlEvents:UIControlEventTouchDown];
     [pauseView addSubview:playButton];
     
-    CustomLabel *continueLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-200)/2, (screenHeight-60)/2+60, 200, 30) fontSize:30];
+    CustomLabel *continueLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-200)/2,
+                                                                              (screenHeight-nextLabelFontSize*4)/2+nextLabelFontSize*4,
+                                                                              200,
+                                                                              nextLabelFontSize*2)
+                                                          fontSize:nextLabelFontSize*2];
+    
     continueLabel.text = NSLocalizedString(@"Continue", nil);
     [pauseView addSubview:continueLabel];
     
@@ -278,7 +323,6 @@
     _gameIsPaused = NO;
     
     // Tutorial
-    tutorialFontSize = 20;
     tutorialViewHeight = gamePad.frame.origin.y-10;
     tutorialFrame = CGRectMake(0,
                                -tutorialViewHeight,

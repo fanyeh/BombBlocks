@@ -39,27 +39,46 @@
     // Do any additional setup after loading the view.
     count = 60;
     CGFloat counterPos = 35;
-    
+    CGFloat labelSize = 50;
     if (screenHeight < 568)
         counterPos = 27.5;
     
-    countDownLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-50)/2, counterPos, 50, 50) fontSize:50];
+    if (IS_IPad) {
+        counterPos = counterPos/IPadMiniRatio;
+        labelSize = 100;
+        counterPos = 80;
+    }
+    
+    // Count down label
+    countDownLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelSize)/2,
+                                                                  counterPos,
+                                                                  labelSize,
+                                                                  labelSize)
+                                              fontSize:labelSize];
+    
     countDownLabel.text = [NSString stringWithFormat:@"%ld",count];
     countDownLabel.layer.cornerRadius = 5;
     [self.view addSubview:countDownLabel];
     [self hideScoreLabel];
     [self hideLevelLabel];
     
-    clockImageView = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-100)/2, counterPos-25, 100, 100)];
+    // Count down clock image
+    clockImageView = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-labelSize*2)/2,
+                                                                  counterPos-labelSize/2,
+                                                                  labelSize*2,
+                                                                  labelSize*2)];
+    
     clockImageView.image = [UIImage imageNamed:@"clock100.png"];
     [self.view addSubview:clockImageView];
     
-    pinView = [[UIView alloc]initWithFrame:CGRectMake(100/2-1.5,25+11,3,100/2-22)];
+    // Clock pin
+    pinView = [[UIView alloc]initWithFrame:CGRectMake(labelSize*2/2-(3/IPadMiniRatio/2),labelSize/2+11,3/IPadMiniRatio,labelSize*2/2-22)];
     pinView.backgroundColor = [UIColor redColor];
     pinView.layer.anchorPoint = CGPointMake(0.5, 1);
     pinView.layer.shouldRasterize = YES;
     [clockImageView addSubview:pinView];
-        
+    
+    // Count down timer
     countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
     
     [self disableLevelCheck];
@@ -68,7 +87,6 @@
     [self setScanSpeed:5];
     
     [self setBgImage:[UIImage imageNamed:@"timebackground.png"]];
-    
 }
 
 -(void)viewDidAppear:(BOOL)animated

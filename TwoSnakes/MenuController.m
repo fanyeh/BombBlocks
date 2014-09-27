@@ -70,17 +70,47 @@
     [self.view sendSubviewToBack:skView];
     
     CGFloat labelSize = 65;
+    CGFloat buttonOffset = 101;
+    CGFloat buttonFontSize =20;
+    if (IS_IPad) {
+        labelSize = labelSize/IPadMiniRatio;
+        buttonOffset = buttonOffset/IPadMiniRatio;
+        buttonFontSize = buttonFontSize/IPadMiniRatio;
+        
+        _classicView.frame = CGRectMake(_classicView.frame.origin.x,
+                                        _classicView.frame.origin.y,
+                                        _classicView.frame.size.width/IPadMiniRatio,
+                                        _classicView.frame.size.height/IPadMiniRatio);
+        _classicLabel.frame = CGRectMake(0, 0, _classicView.frame.size.width, _classicView.frame.size.height);
+        _classicLabel.font = [UIFont fontWithName:@"DINAlternate-Bold" size:buttonFontSize];
+        
+        _fastHandView.frame = CGRectMake(-_fastHandView.frame.size.width/IPadMiniRatio,
+                                         _classicView.frame.origin.y+_classicView.frame.size.height+15/IPadMiniRatio,
+                                         _fastHandView.frame.size.width/IPadMiniRatio,
+                                         _fastHandView.frame.size.height/IPadMiniRatio);
+        _fastHandLabel.frame = CGRectMake(0, 0, _fastHandView.frame.size.width, _fastHandView.frame.size.height);
 
-    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, screenHeight/2-labelSize-labelSize-10, screenWidth, labelSize) fontSize:labelSize];
+        _fastHandLabel.font = [UIFont fontWithName:@"DINAlternate-Bold" size:buttonFontSize];
+
+    }
+
+    bombLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,
+                                                             screenHeight/2-labelSize-labelSize-10,
+                                                             screenWidth,
+                                                             labelSize)
+                                         fontSize:labelSize];
+    
     bombLabel.text = NSLocalizedString(@"bomb", nil);
     bombLabel.hidden = YES;
 
-    boomLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame fontSize:labelSize];
+    boomLabel = [[CustomLabel alloc]initWithFrame:bombLabel.frame
+                                         fontSize:labelSize];
     boomLabel.frame = CGRectOffset(boomLabel.frame, 0, labelSize+10);
     boomLabel.text = NSLocalizedString(@"Boom",nil);
     boomLabel.hidden= YES;
 
-    blockLabel = [[CustomLabel alloc]initWithFrame:boomLabel.frame fontSize:labelSize];
+    blockLabel = [[CustomLabel alloc]initWithFrame:boomLabel.frame
+                                          fontSize:labelSize];
     blockLabel.frame = CGRectOffset(blockLabel.frame, 0, labelSize+10);
     blockLabel.text = NSLocalizedString(@"Blocks",nil);
     blockLabel.hidden= YES;
@@ -101,8 +131,8 @@
         launchBomb = [[UIImageView alloc]initWithFrame:CGRectMake(screenWidth*170/320, screenHeight/2-labelSize-labelSize-52*2, 52, 52)];
         
         if([language isEqualToString:@"ja"]) {
-            _classicLabel.font = [UIFont fontWithName:@"DINAlternate-Bold" size:18];
-            _fastHandLabel.font = [UIFont fontWithName:@"DINAlternate-Bold" size:18];
+            _classicLabel.font = [UIFont fontWithName:@"DINAlternate-Bold" size:buttonFontSize-2];
+            _fastHandLabel.font = [UIFont fontWithName:@"DINAlternate-Bold" size:buttonFontSize-2];
         }
 
     } else {
@@ -135,7 +165,7 @@
     _classicView.frame = CGRectOffset(_classicView.frame, screenWidth-320, 0);
 
     // Adjust image position based on different screen size
-    if (screenHeight > 568) {
+    if (screenHeight > 568 || IS_IPad) {
         
         [self adjustFrameOnScreenSize:_blueBody2];
         [self adjustFrameOnScreenSize:_blueBomb];
@@ -146,14 +176,13 @@
         
         CGFloat offsetY = screenHeight/2 - (_yellowBomb.frame.origin.y + _yellowBomb.frame.size.width/2);
         
-        
         _blueBody2.frame = CGRectOffset(_blueBody2.frame,0,offsetY);
         _blueBomb.frame = CGRectOffset(_blueBomb.frame,0,offsetY);
         _yellowBomb.frame = CGRectOffset(_yellowBomb.frame,0,offsetY);
         _yellowBody.frame = CGRectOffset(_yellowBody.frame,0,offsetY);
         _blueBody1.frame = CGRectOffset(_blueBody1.frame,0,offsetY);
         
-        offsetY = blockLabel.frame.origin.y + 101 - _classicView.frame.origin.y;
+        offsetY = blockLabel.frame.origin.y + buttonOffset - _classicView.frame.origin.y;
         _classicView.frame = CGRectOffset(_classicView.frame,0,offsetY);
         _fastHandView.frame = CGRectOffset(_fastHandView.frame,0,offsetY);
     }
@@ -161,13 +190,15 @@
 
 -(void)adjustFrameOnScreenSize:(UIView *)view
 {
-    CGFloat offsetX = (screenWidth - view.frame.size.width )/2;
-    //CGFloat offsetY =  screenHeight/568;
+    CGFloat ratio = 1;
+//    if (IS_IPad)
+//       ratio = IPadMiniRatio;
     
+    CGFloat offsetX = (screenWidth - (view.frame.size.width/ratio))/2;
     view.frame = CGRectMake(offsetX,
                             view.frame.origin.y,
-                            view.frame.size.width,
-                            view.frame.size.height);
+                            view.frame.size.width/ratio,
+                            view.frame.size.height/ratio);
     
 }
 

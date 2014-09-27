@@ -20,7 +20,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        CGFloat nextNodeSize = 24;
+        CGFloat nextNodeSize = frame.size.width*0.6;
         CGFloat position = (frame.size.width - nextNodeSize) / 2;
         _nodeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(position, position, nextNodeSize, nextNodeSize)];
         [self addSubview:_nodeImageView];
