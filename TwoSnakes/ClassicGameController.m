@@ -31,31 +31,29 @@
     NSInteger totalCombos;
     NSInteger combosToCreateBomb;
     BOOL swap;
-    CustomLabel *scoreLabel;
     BOOL gameIsOver;
     NSInteger scoreGap;
     NSMutableArray *scoreArray;
-    UIButton *settingButton;
     MKAppDelegate *appDelegate;
-    UIView *tutorial1BG;
-    UIView *tutorial2BG;
-    UIView *tutorial3BG;
-    UIView *tutorial4BG;
-    NSInteger tutorialMode;
+    
     UIImage *screenShot;
     CustomLabel *levelLabel;
-    CustomLabel *chainLabel;
     NSInteger maxBombChain;
     UIImageView *scanner;
     UIView *scannerMask;
     BOOL scanFromRight;
     NSTimeInterval scanTimeInterval;
-    UIButton *pauseButton;
     UIView *pauseView;
-    UIButton *playButton;
-    UIImageView *bgImageView;
-    UIButton *homeButton;
     
+    // Buttons
+    UIButton *pauseButton;
+    UIButton *settingButton;
+    UIButton *playButton;
+    UIButton *homeButton;
+
+    UIImageView *bgImageView;
+    
+    // Timers
     NSTimer *scanTimer;
     NSTimer *changeScoreTimer;
     
@@ -65,6 +63,12 @@
     CGRect tutorialLabelFrame;
     NSInteger tutorialFontSize;
     CGFloat tutorialLabelOffset;
+    
+    UIView *tutorial1BG;
+    UIView *tutorial2BG;
+    UIView *tutorial3BG;
+    UIView *tutorial4BG;
+    NSInteger tutorialMode;
     
     NSDate *pauseStart, *previousFireDate;
     UIView *slider1 , *slider2;
@@ -150,15 +154,15 @@
     }
     
     // Score Label
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,
+    _scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,
                                                               gamePad.frame.origin.y-scoreOffsetY,
                                                               screenWidth,
                                                               scoreLabelSize)
                                           fontSize:scoreLabelSize];
     
-    scoreLabel.textColor = [UIColor whiteColor];
-    scoreLabel.text = @"0";
-    [self.view addSubview:scoreLabel];
+    _scoreLabel.textColor = [UIColor whiteColor];
+    _scoreLabel.text = @"0";
+    [self.view addSubview:_scoreLabel];
     scoreArray = [[NSMutableArray alloc]init];
 
     // Setup player snake head
@@ -213,15 +217,15 @@
     
     
     // Chain Label
-    chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-300)/2,
+    _chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-300)/2,
                                                               180,
                                                               300,
                                                               scoreLabelSize/1.5)
                                           fontSize:scoreLabelSize/1.5];
     
-    chainLabel.hidden = YES;
-    chainLabel.center = self.view.center;
-    [self.view addSubview:chainLabel];
+    _chainLabel.hidden = YES;
+    _chainLabel.center = self.view.center;
+    [self.view addSubview:_chainLabel];
     
     // Scanner
     scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,3,gamePad.frame.size.height)];
@@ -382,16 +386,16 @@
 
 -(void)showBombChain:(NSInteger)bombChain
 {
-    chainLabel.text = [NSString stringWithFormat:@"%@ x %ld", NSLocalizedString(@"Chain", nil) ,bombChain];
-    CGRect originalFrame = chainLabel.frame;
-    chainLabel.hidden = NO;
+    _chainLabel.text = [NSString stringWithFormat:@"%@ x %ld", NSLocalizedString(@"Chain", nil) ,bombChain];
+    CGRect originalFrame = _chainLabel.frame;
+    _chainLabel.hidden = NO;
     [UIView animateWithDuration:2.0 animations:^{
-        chainLabel.frame = CGRectOffset(chainLabel.frame, 0, -40);
-        chainLabel.alpha = 0;
+        _chainLabel.frame = CGRectOffset(_chainLabel.frame, 0, -40);
+        _chainLabel.alpha = 0;
     } completion:^(BOOL finished) {
-        chainLabel.hidden = YES;
-        chainLabel.alpha = 1;
-        chainLabel.frame = originalFrame;
+        _chainLabel.hidden = YES;
+        _chainLabel.alpha = 1;
+        _chainLabel.frame = originalFrame;
     }];
     
     [self updateScore:bombChain*250];
@@ -407,12 +411,12 @@
 
 -(void)hideScoreLabel
 {
-    scoreLabel.hidden = YES;
+    _scoreLabel.hidden = YES;
 }
 
 -(void)showScoreLabel
 {
-    scoreLabel.hidden = NO;
+    _scoreLabel.hidden = NO;
 }
 
 -(void)disableLevelCheck
@@ -618,8 +622,12 @@
         // Check block combos and bomb trigger
         [snake cancelPattern:^{
             
-            if([snake checkIsGameover])
+            if([snake checkIsGameover]) {
+                
+                _chainLabel.text = NSLocalizedString(@"No More Moves", nil) ;
                 [self gameOver];
+                
+            }
             else {
                 if (snake.combos == 0 ) {
                     
@@ -790,7 +798,7 @@
 {
     scoreGap--;
     score++;
-    scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
+    _scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
     
     if (scoreGap == 0)
     {
@@ -853,7 +861,7 @@
     tutorial1BG.backgroundColor = [UIColor clearColor];
     [self.view addSubview:tutorial1BG];
     
-    scoreLabel.hidden = YES;
+    _scoreLabel.hidden = YES;
     levelLabel.hidden = YES;
     
     // 1. Swipe
@@ -989,23 +997,23 @@
         
         [self hideTutorial:tutorial4BG complete:^{
             
-            scoreLabel.hidden = NO;
+            _scoreLabel.hidden = NO;
             levelLabel.hidden = NO;
             
-            CGAffineTransform t =  scoreLabel.transform;
+            CGAffineTransform t =  _scoreLabel.transform;
             CGAffineTransform t2 =  levelLabel.transform;
 
-            scoreLabel.transform = CGAffineTransformScale(t, 0.1, 0.1);
+            _scoreLabel.transform = CGAffineTransformScale(t, 0.1, 0.1);
             levelLabel.transform = CGAffineTransformScale(t2, 0.1, 0.1);
 
             [UIView animateWithDuration:0.2 animations:^{
                 
-                scoreLabel.transform = CGAffineTransformScale(t, 1.2, 1.2);
+                _scoreLabel.transform = CGAffineTransformScale(t, 1.2, 1.2);
                 levelLabel.transform = CGAffineTransformScale(t2, 1.2, 1.2);
                 
             }completion:^(BOOL finished) {
                 
-                scoreLabel.transform = t;
+                _scoreLabel.transform = t;
                 levelLabel.transform = t2;
 
                 tutorialMode = 0;
@@ -1039,14 +1047,12 @@
 //    [_particleView playGameoverSound];
     [_particleView playSound:kSoundTypeGameoverSound];
 
-    
-    chainLabel.text = @"Game Over";
-    chainLabel.hidden = NO;
+    _chainLabel.hidden = NO;
     [UIView animateWithDuration:3.0 animations:^{
-        chainLabel.alpha = 0;
+        _chainLabel.alpha = 0;
     } completion:^(BOOL finished) {
-        chainLabel.hidden = YES;
-        chainLabel.alpha = 1;
+        _chainLabel.hidden = YES;
+        _chainLabel.alpha = 1;
     }];
 }
 
@@ -1066,7 +1072,7 @@
     
     nextNode.hidden = NO;
     gamePad.userInteractionEnabled = YES;
-    scoreLabel.text = @"0";
+    _scoreLabel.text = @"0";
     score = 0;
     totalCombos = 0;
     [snake resetSnake];

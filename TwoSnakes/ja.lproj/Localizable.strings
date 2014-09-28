@@ -41,3 +41,6 @@
 "Cancel more blocks to pop bombs" = "ブロックを削除することで爆弾を作る";
 "Line up with blocks to trigger bomb" ="爆弾はブロックと一緒に配置された爆発させる";
 
+"Time's up!" = "時間が終了する!";
+"No More Moves" = "移動することはできません";
+

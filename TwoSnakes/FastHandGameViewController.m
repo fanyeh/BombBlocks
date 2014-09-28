@@ -79,7 +79,9 @@
     [clockImageView addSubview:pinView];
     
     // Count down timer
-    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+    [self startCountDown];
+
+//    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
     
     [self disableLevelCheck];
         
@@ -89,10 +91,10 @@
     [self setBgImage:[UIImage imageNamed:@"timebackground.png"]];
 }
 
--(void)viewDidAppear:(BOOL)animated
-{
-    [self pinAnimation];
-}
+//-(void)viewDidAppear:(BOOL)animated
+//{
+//    [self pinAnimation];
+//}
 
 -(void)pinAnimation
 {
@@ -114,6 +116,9 @@
 
 -(void)countDown
 {
+    if (count == 60)
+        [self pinAnimation];
+
     count--;
     countDownLabel.text = [NSString stringWithFormat:@"%ld",count];
     if (count < 10) {
@@ -122,7 +127,6 @@
             [self stopMusic];
 
         if (count%2 == 1) {
-//            [self.particleView sirenSound];
             [self.particleView playSound:kSoundTypeSirenSound];
 
             [UIView animateWithDuration:0.5 animations:^{
@@ -139,23 +143,40 @@
         }
 
     } else
-//        [self.particleView tickSound];
-    [self.particleView playSound:kSoundTypeTickSound];
+        [self.particleView playSound:kSoundTypeTickSound];
 
     
-    if (count ==  0)
+    if (count ==  0) {
+        self.chainLabel.text = NSLocalizedString(@"Time's up!",nil);
         [self gameOver];
+    }
+}
+
+-(void)showSetting:(UIButton *)button
+{
+    [countDownTimer invalidate];
+    [self pauseLayer:pinView.layer];
+    [super showSetting:button];
 }
 
 -(void)gameOver
 {
-    [super showScoreLabel];
     clockImageView.hidden = YES;
     countDownLabel.hidden = YES;
-    
-    [super gameOver];
     [countDownTimer invalidate];
     [pinView.layer removeAllAnimations];
+    
+    self.scoreLabel.alpha = 0;
+    [super showScoreLabel];
+    [UIView animateWithDuration:0.5 animations:^{
+        
+        self.scoreLabel.alpha = 1;
+        
+    } completion:^(BOOL finished) {
+        
+        [super gameOver];
+        
+    }];
 }
 
 - (void)replayGame
@@ -168,14 +189,24 @@
     pinView.hidden = NO;
     count = 60;
     countDownLabel.text = [NSString stringWithFormat:@"%ld",count];
-    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+    [self startCountDown];
+
+//    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
     [self setScanSpeed:4];
+}
+
+-(void)continueGame
+{
+    [super continueGame];
+    [self startCountDown];
+
+//    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+    [self resumeLayer:pinView.layer];
 }
 
 -(void)pauseGame
 {
     [super pauseGame];
-    
     [countDownTimer invalidate];
     [self pauseLayer:pinView.layer];
 }
@@ -193,7 +224,8 @@
 -(void)playGame
 {
     [super playGame];
-    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+    [self startCountDown];
+//    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
     [self resumeLayer:pinView.layer];
 }
 
@@ -201,6 +233,11 @@
 {
     [super backToHome:button];
     [countDownTimer invalidate];
+}
+
+-(void)startCountDown
+{
+    countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
 }
 
 - (void)didReceiveMemoryWarning

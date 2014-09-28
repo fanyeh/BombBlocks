@@ -8,11 +8,14 @@
 
 #import <CoreFoundation/CoreFoundation.h>
 #import "ParticleView.h"
+#import "CustomLabel.h"
 
 @interface ClassicGameController : UIViewController
 
 @property (strong,nonatomic)ParticleView *particleView;
 @property (assign,nonatomic) BOOL gameIsPaused;
+@property (strong,nonatomic) CustomLabel *scoreLabel;
+@property (strong,nonatomic) CustomLabel *chainLabel;
 
 -(void)startTutorial;
 -(void)hideLevelLabel;
@@ -30,5 +33,7 @@
 -(void)resumeLayer:(CALayer*)layer;
 -(void)stopMusic;
 -(void)showScoreLabel;
+-(void)continueGame;
+-(void)showSetting:(UIButton *)button;
 
 @end

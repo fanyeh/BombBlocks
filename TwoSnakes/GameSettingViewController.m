@@ -58,17 +58,15 @@
 
 - (void)settingPage
 {
-    CGFloat fontSize = 30;
+    CGFloat fontSize = 25;
     CGFloat labelSize = 90;
     CGFloat backButtonSize = 35;
     CGFloat otherButtonSzie = 45;
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    CGFloat onLabelOffset = 125;
-    if([language isEqualToString:@"ja"])
-        fontSize = 25;
+    CGFloat onLabelOffset = 110;
     
     if (IS_IPad) {
-        fontSize = (fontSize-5)/IPadMiniRatio;
+        fontSize = (fontSize)/IPadMiniRatio;
         labelSize = labelSize/IPadMiniRatio;
         backButtonSize = 60;
         otherButtonSzie = otherButtonSzie/IPadMiniRatio;
@@ -86,7 +84,7 @@
     CGFloat centerY = (screenHeight - 45*4 - (yGap-45)*3)/2 ;
 
     // Sound
-    soundButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY, otherButtonSzie, otherButtonSzie)];
+    soundButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord-5, centerY, otherButtonSzie, otherButtonSzie)];
     [soundButton setImage:[UIImage imageNamed:@"soundOn90.png"] forState:UIControlStateNormal];
     [soundButton addTarget:self action:@selector(turnSound) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:soundButton];
@@ -96,7 +94,6 @@
         soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY, labelSize+30, otherButtonSzie) fontSize:fontSize];
     else
         soundLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+xGap, centerY, labelSize, otherButtonSzie) fontSize:fontSize];
-
     soundLabel.text = NSLocalizedString(@"Sound",nil);
     soundLabel.textAlignment = NSTextAlignmentLeft;
     [self.view  addSubview:soundLabel];
@@ -106,7 +103,7 @@
     [self.view  addSubview:soundOnLabel];
     
     // Music
-    musicButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap, otherButtonSzie, otherButtonSzie)];
+    musicButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord-5, centerY+yGap, otherButtonSzie, otherButtonSzie)];
     [musicButton setImage:[UIImage imageNamed:@"musicOn90.png"] forState:UIControlStateNormal];
     [musicButton addTarget:self action:@selector(turnMusic) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:musicButton];
@@ -121,7 +118,7 @@
     [self.view  addSubview:musicOnLabel];
     
     // Rating
-    rateButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap*2, otherButtonSzie, otherButtonSzie)];
+    rateButton = [[UIButton alloc]initWithFrame:CGRectMake(xCord-5, centerY+yGap*2, otherButtonSzie, otherButtonSzie)];
     [rateButton setImage:[UIImage imageNamed:@"rating90.png"] forState:UIControlStateNormal];
     [rateButton addTarget:self action:@selector(rateThisApp) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:rateButton];
@@ -132,7 +129,7 @@
     [self.view  addSubview:ratingLabel];
     
     // Tutorial
-    tutorial = [[UIButton alloc]initWithFrame:CGRectMake(xCord, centerY+yGap*3, otherButtonSzie, otherButtonSzie)];
+    tutorial = [[UIButton alloc]initWithFrame:CGRectMake(xCord-5, centerY+yGap*3, otherButtonSzie, otherButtonSzie)];
     [tutorial setImage:[UIImage imageNamed:@"tutorial90.png"] forState:UIControlStateNormal];
     [tutorial addTarget:self action:@selector(startTutorial:) forControlEvents:UIControlEventTouchDown];
     [self.view  addSubview:tutorial];
