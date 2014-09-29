@@ -41,5 +41,24 @@
 "Cancel more blocks to pop bombs" = "消除更多的方塊來產生炸彈";
 "Line up with blocks to trigger bomb" ="將方塊與炸彈排在一起引爆";
 
-"Time's up!" = "時間到!";
+"Time's up!" = "時間終了!";
 "No More Moves" = "不能移動了";
+
+"How To Play" = "怎麼玩";
+"Block Type" = "方塊型別";
+"Type A : Movable , 1 x combo to eliminate" = "A型 : 可移動 , 需要 1 x Combo 來消除";
+"Type B : Unmovable , 2 x combo to eliminate" = "B型 : 不可移動 , 需要 2 x Combo 來消除";
+"Type C : Unmovable , 3 x combo to eliminate" = "C型 : 不可移動 , 需要 3 x Combo 來消除";
+
+"Bomb Type" = "炸彈型別";
+"V-Bomb" = "V-炸彈";
+"H-Bomb" = "H-炸彈";
+"R-Bomb" = "R-炸彈";
+"S-Bomb" = "S-炸彈";
+"C-Bomb" = "C-炸彈";
+
+"Trigger to eliminate all blocks/bombs in vertical line" = "引爆炸彈會消除位於直線上的方塊或炸彈" ;
+"Trigger to eliminate all blocks/bombs in horizontal line" = "引爆炸彈會消除位於橫線上的方塊或炸彈";
+"Trigger to randomly swap all blocks postion" = "引爆炸彈後會隨機將方塊位置變換";
+"Trigger to eliminate blocks/bombs within the circle" = "引爆炸彈會消除位於圓圈內的方塊或炸彈";
+"Trigger to eliminate blocks/bombs with same color" = "引爆炸彈會消除相同顏色的炸彈或方塊";

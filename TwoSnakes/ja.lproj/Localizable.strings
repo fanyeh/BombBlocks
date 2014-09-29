@@ -41,6 +41,25 @@
 "Cancel more blocks to pop bombs" = "ブロックを削除することで爆弾を作る";
 "Line up with blocks to trigger bomb" ="爆弾はブロックと一緒に配置された爆発させる";
 
-"Time's up!" = "時間が終了する!";
+"Time's up!" = "時間終了";
 "No More Moves" = "移動することはできません";
+
+"How To Play" = "プレイの仕方";
+"Block Type" = "ブロックの種類";
+"Type A : Movable , 1 x combo to eliminate" = "A タイプ : 移動可能な , 1 × コンボによって排除";
+"Type B : Unmovable , 2 x combo to eliminate" = "B タイプ : 移動不能 , 2 × コンボによって排除";
+"Type C : Unmovable , 3 x combo to eliminate" = "C タイプ : 移動不能 , 3 × コンボによって排除";
+
+"Bomb Type" = "爆弾の種類";
+"V-Bomb" = "V-爆弾";
+"H-Bomb" = "H-爆弾";
+"R-Bomb" = "R-爆弾";
+"S-Bomb" = "S-爆弾";
+"C-Bomb" = "C-爆弾";
+
+"Trigger to eliminate all blocks/bombs in vertical line" = "爆発爆弾が直線上に位置するブロックや爆弾を排除するであろう";
+"Trigger to eliminate all blocks/bombs in horizontal line" = "爆発爆弾や爆弾はダッシュボードの上にあるブロックを排除するであろう";
+"Trigger to randomly swap all blocks postion" = "ブロック位置は、ランダムに爆弾を爆発させる変換される";
+"Trigger to eliminate blocks/bombs within the circle" = "爆弾を爆発させたり爆弾が円内に位置したブロックを排除するであろう";
+"Trigger to eliminate blocks/bombs with same color" = "爆弾は、同じ排除する色やブロックの爆弾を爆発させるだろう";
 

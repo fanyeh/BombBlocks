@@ -43,3 +43,22 @@
 
 "Time's up!" = "时间到!";
 "No More Moves" = "不能移动了";
+
+"How To Play" = "怎么玩";
+"Block Type" = "方块型别";
+"Type A : Movable , 1 x combo to eliminate" = "A型 : 可移动 , 需要 1 x Combo 来消除";
+"Type B : Unmovable , 2 x combo to eliminate" = "B型 : 不可移动 , 需要 2 x Combo 来消除";
+"Type C : Unmovable , 3 x combo to eliminate" = "C型 : 不可移动 , 需要 3 x Combo 来消除";
+
+"Bomb Type" = "炸弹型别";
+"V-Bomb" = "V-炸弹";
+"H-Bomb" = "H-炸弹";
+"R-Bomb" = "R-炸弹";
+"S-Bomb" = "S-炸弹";
+"C-Bomb" = "C-炸弹";
+
+"Trigger to eliminate all blocks/bombs in vertical line" = "引爆炸弹会消除位于直线上的方块或炸弹" ;
+"Trigger to eliminate all blocks/bombs in horizo​​ntal line" = "引爆炸弹会消除位于横线上的方块或炸弹";
+"Trigger to randomly swap all blocks postion" = "引爆炸弹后会随机将方块位置变换";
+"Trigger to eliminate blocks/bombs within the circle" = "引爆炸弹会消除位于圆圈内的方块或炸弹";
+"Trigger to eliminate blocks/bombs with same color" = "引爆炸弹会消除相同颜色的炸弹或方块";

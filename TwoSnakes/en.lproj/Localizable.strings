@@ -43,3 +43,24 @@
 
 "Time's up!" = "Time's up!";
 "No More Moves" = "No More Moves";
+
+"How To Play" = "How To Play";
+
+"Block Type" = "Block Type";
+"Type A : Movable , 1 x combo to eliminate" = "Type A : Movable , 1 x Combo to eliminate";
+"Type B : Unmovable , 2 x combo to eliminate" = "Type B : Unmovable , 2 x Combo to eliminate";
+"Type C : Unmovable , 3 x combo to eliminate" = "Type C : Unmovable , 3 x Combo to eliminate";
+
+"Bomb Type" = "Bomb Type";
+"V-Bomb" = "V-Bomb";
+"H-Bomb" = "H-Bomb";
+"R-Bomb" = "R-Bomb";
+"S-Bomb" = "S-Bomb";
+"C-Bomb" = "C-Bomb";
+
+"Trigger to eliminate all blocks/bombs in vertical line" = "Trigger to eliminate all blocks/bombs in vertical line" ;
+"Trigger to eliminate all blocks/bombs in horizontal line" = "Trigger to eliminate all blocks/bombs in horizontal line";
+"Trigger to randomly swap all blocks postion" = "Trigger to randomly swap all blocks postion";
+"Trigger to eliminate blocks/bombs within the circle" = "Trigger to eliminate blocks/bombs within the circle";
+"Trigger to eliminate blocks/bombs with same color" = "Trigger to eliminate blocks/bombs with same color";
+

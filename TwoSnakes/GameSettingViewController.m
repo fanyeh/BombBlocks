@@ -140,7 +140,6 @@
     [self.view  addSubview:tutorialLabel];
     
     appDelegate = [[UIApplication sharedApplication] delegate];
-
 }
 
 -(void)backToGame:(UIButton *)sender

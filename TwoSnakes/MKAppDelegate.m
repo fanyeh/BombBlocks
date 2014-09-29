@@ -11,6 +11,7 @@
 #import "ClassicGameController.h"
 #import "GameStatsViewController.h"
 #import "FastHandGameViewController.h"
+#import "TutorialViewController.h"
 
 @implementation MKAppDelegate
 {
@@ -18,6 +19,7 @@
     ClassicGameController *classicController;
     FastHandGameViewController *fastHandController;
     GameStatsViewController *statsController;
+    TutorialViewController *tutorialController;
 }
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -33,8 +35,9 @@
     classicController = [[ClassicGameController alloc]init];
     statsController = [[GameStatsViewController alloc]init];
     fastHandController = [[FastHandGameViewController alloc]init];
-    
-    [self.window setRootViewController:menuController];
+    tutorialController = [[TutorialViewController alloc]init];
+
+    [self.window setRootViewController:tutorialController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center
