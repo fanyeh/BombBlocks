@@ -59,7 +59,7 @@
 "C-Bomb" = "C-爆弾";
 
 "Trigger to eliminate all blocks/bombs in vertical line" = "爆発爆弾が直線上に位置するブロックや爆弾を排除するであろう";
-"Trigger to eliminate all blocks/bombs in horizontal line" = "爆発爆弾や爆弾はダッシュボードの上にあるブロックを排除するであろう";
+"Trigger to eliminate all blocks/bombs in horizo​​ntal line" = "爆発爆弾や爆弾はダッシュボードの上にあるブロックを排除するであろう";
 "Trigger to randomly swap all blocks postion" = "ブロック位置は、ランダムに爆弾を爆発させる変換される";
 "Trigger to eliminate blocks/bombs within the circle" = "爆弾を爆発させたり爆弾が円内に位置したブロックを排除するであろう";
 "Trigger to eliminate blocks/bombs with same color" = "爆弾は、同じ排除する色やブロックの爆弾を爆発させるだろう";

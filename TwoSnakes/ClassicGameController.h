@@ -17,7 +17,7 @@
 @property (strong,nonatomic) CustomLabel *scoreLabel;
 @property (strong,nonatomic) CustomLabel *chainLabel;
 
--(void)startTutorial;
+//-(void)startTutorial;
 -(void)hideLevelLabel;
 -(void)hideScoreLabel;
 -(void)gameOver;

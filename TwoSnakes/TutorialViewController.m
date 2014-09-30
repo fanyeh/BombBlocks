@@ -9,6 +9,7 @@
 #import "TutorialViewController.h"
 #import "ParticleView.h"
 #import "CustomLabel.h"
+#import "ClassicGameController.h"
 
 @interface TutorialViewController ()
 {
@@ -36,8 +37,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *tut3ImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *tut4ImageView;
 
-
-
 @end
 
 @implementation TutorialViewController
@@ -56,8 +55,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-//    UIImageView *bgImageView = [[UIImageView alloc]initWithImage:_bgImage];
-    UIImageView *bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
+    UIImageView *bgImageView;
+    if (_bgImage)
+        bgImageView = [[UIImageView alloc]initWithImage:_bgImage];
+    else
+        bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
     [self.view addSubview:bgImageView];
     [self.view sendSubviewToBack:bgImageView];
     
@@ -84,22 +86,53 @@
     if(screenHeight > 568 && IS_IPhone) {
         titlePosY = 30;
         titleSize = titleSize + 5;
-        blockFontSize =17;
         shiftX = screenWidth - _labelGroupView.frame.size.width;
         _labelGroupView.frame = CGRectMake(0, _labelGroupView.frame.origin.y, screenWidth, _labelGroupView.frame.size.height);
-        
-        [self shiftView:_tut1 shiftValue:shiftX/1.9];
-        [self shiftView:_tut1ImageView shiftValue:shiftX/1.9];
-        
-        [self shiftView:_tut3 shiftValue:shiftX/1.9];
-        [self shiftView:_tut3ImageView shiftValue:shiftX/1.9];
-        
-        [self shiftView:_tut2 shiftValue:shiftX*1.5];
-        [self shiftView:_tut2ImageView shiftValue:shiftX*1.5];
-        
-        [self shiftView:_tut4 shiftValue:shiftX*1.5];
-        [self shiftView:_tut4ImageView shiftValue:shiftX*1.5];
-        
+        blockFontSize = 20;
+
+        if (screenHeight > 667) {
+            [self shiftViewForIpad:_tut1 shiftValueX:shiftX*0.7 shiftValueY:-10];
+            [self shiftViewForIpad:_tut1ImageView shiftValueX:shiftX*0.4 shiftValueY:10];
+            
+            [self shiftViewForIpad:_tut3 shiftValueX:shiftX*0.7 shiftValueY:80];
+            [self shiftViewForIpad:_tut3ImageView shiftValueX:shiftX*0.4 shiftValueY:100];
+            
+            [self shiftViewForIpad:_tut2 shiftValueX:shiftX*1.2 shiftValueY:40];
+            [self shiftViewForIpad:_tut2ImageView shiftValueX:shiftX*0.9 shiftValueY:60];
+
+            [self shiftViewForIpad:_tut4 shiftValueX:shiftX*1.0 shiftValueY:110];
+            [self shiftViewForIpad:_tut4ImageView shiftValueX:shiftX*0.6 shiftValueY:130];
+            
+            _tut1.frame = CGRectMake(_tut1.frame.origin.x, _tut1.frame.origin.y, _tut1.frame.size.width/1.5, _tut1.frame.size.height);
+            _tut2.frame = CGRectMake(_tut2.frame.origin.x, _tut2.frame.origin.y, _tut2.frame.size.width/1.5, _tut2.frame.size.height);
+            _tut3.frame = CGRectMake(_tut3.frame.origin.x, _tut3.frame.origin.y, _tut3.frame.size.width/1.6, _tut3.frame.size.height);
+            _tut4.frame = CGRectMake(_tut4.frame.origin.x, _tut4.frame.origin.y, _tut4.frame.size.width/1.4, _tut4.frame.size.height);
+            
+            
+        } else {
+            
+            [self shiftViewForIphone:_tut1 shiftValueX:shiftX*0.7 shiftValueY:-10];
+            [self shiftViewForIphone:_tut1ImageView shiftValueX:shiftX*0.4 shiftValueY:10];
+            
+            [self shiftViewForIphone:_tut3 shiftValueX:shiftX*0.7 shiftValueY:60];
+            [self shiftViewForIphone:_tut3ImageView shiftValueX:shiftX*0.4 shiftValueY:80];
+            
+            [self shiftViewForIphone:_tut2 shiftValueX:shiftX*1.2 shiftValueY:40];
+            [self shiftViewForIphone:_tut2ImageView shiftValueX:shiftX*0.9 shiftValueY:60];
+            
+            [self shiftViewForIphone:_tut4 shiftValueX:shiftX*1.0 shiftValueY:90];
+            [self shiftViewForIphone:_tut4ImageView shiftValueX:shiftX*0.6 shiftValueY:110];
+            
+            _tut1.frame = CGRectMake(_tut1.frame.origin.x, _tut1.frame.origin.y, _tut1.frame.size.width/1.5, _tut1.frame.size.height);
+            _tut2.frame = CGRectMake(_tut2.frame.origin.x, _tut2.frame.origin.y, _tut2.frame.size.width/1.4, _tut2.frame.size.height);
+            _tut3.frame = CGRectMake(_tut3.frame.origin.x, _tut3.frame.origin.y, _tut3.frame.size.width/1.5, _tut3.frame.size.height);
+            _tut4.frame = CGRectMake(_tut4.frame.origin.x, _tut4.frame.origin.y, _tut4.frame.size.width/1.4, _tut4.frame.size.height);
+            
+            if ([language isEqualToString:@"ja"]||screenHeight < 568)
+                blockFontSize = 17;
+
+        }
+
         _tut1.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
         _tut2.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
         _tut3.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
@@ -162,12 +195,6 @@
     _labelGroupView.center = self.view.center;
 }
 
--(void)shiftView:(UIView *)view shiftValue:(CGFloat)value
-{
-    view.frame = CGRectOffset(view.frame, value, 20);
-
-}
-
 -(void)shiftViewIPhone4:(UIView *)view
 {
     view.frame = CGRectOffset(view.frame, 0, -50);
@@ -176,7 +203,13 @@
 -(void)shiftViewForIpad:(UIView *)view shiftValueX:(CGFloat)valueX shiftValueY:(CGFloat)valueY
 {
     view.frame = CGRectOffset(view.frame, valueX, valueY);
-    view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width/IPadMiniRatio, view.frame.size.height/IPadMiniRatio);
+    view.frame = CGRectMake(view.frame.origin.x,view.frame.origin.y,view.frame.size.width/IPadMiniRatio,view.frame.size.height/IPadMiniRatio);
+}
+
+-(void)shiftViewForIphone:(UIView *)view shiftValueX:(CGFloat)valueX shiftValueY:(CGFloat)valueY
+{
+    view.frame = CGRectOffset(view.frame, valueX, valueY);
+    view.frame = CGRectMake(view.frame.origin.x,view.frame.origin.y,view.frame.size.width/0.7,view.frame.size.height/0.7);
 }
 
 -(void)nextToBlock:(UIButton *)button
@@ -258,6 +291,12 @@
         yStart = yStart + 15;
         //blockFontSize = 20;
         gapBetweenBlock = 40;
+        
+        if (screenHeight > 667)
+            gapBetweenBlock = 75;
+        else if (screenHeight == 667)
+            gapBetweenBlock = 50;
+
         
     } else if (IS_IPad) {
         yStart = yStart + 30;
@@ -361,8 +400,13 @@
         yStart = yStart + 15;
         fontSize = 23;
         subFontSize = 17;
-        //xCord = 10;
         descLabelWidth = descLabelWidth - 5;
+        
+        if (screenHeight > 667)
+            yOffset = yOffset + 25;
+        else if (screenHeight == 667)
+            yOffset = yOffset + 10;
+
     } else if (IS_IPad) {
         imageSize = 75;
         fontSize = 38;
@@ -532,9 +576,15 @@
 
 - (void)doneAction:(UIButton *)sender
 {
-    
     [self buttonAnimation:sender];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if ([[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"] == 1) {
+        
+        [[NSUserDefaults standardUserDefaults]setInteger:0 forKey:@"tutorial"];
+        ClassicGameController *classicGameController =  [[ClassicGameController alloc]init];
+        [self presentViewController:classicGameController animated:YES completion:nil];
+
+    } else
+        [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)buttonAnimation:(UIButton *)button

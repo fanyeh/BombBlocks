@@ -494,7 +494,7 @@
                 if (n.hasBomb) {
                     
                     bombChain++;
-                    [_delegate hideLastTutorial];
+//                    [_delegate hideLastTutorial];
                     n.scoreAdder = 50;
                     [n scoreLabelAnimation];
                     

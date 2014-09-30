@@ -58,24 +58,23 @@
     NSTimer *changeScoreTimer;
     
     // Tutorial
-    CGFloat tutorialViewHeight;
-    CGRect tutorialFrame;
-    CGRect tutorialLabelFrame;
-    NSInteger tutorialFontSize;
-    CGFloat tutorialLabelOffset;
-    
-    UIView *tutorial1BG;
-    UIView *tutorial2BG;
-    UIView *tutorial3BG;
-    UIView *tutorial4BG;
-    NSInteger tutorialMode;
+//    CGFloat tutorialViewHeight;
+//    CGRect tutorialFrame;
+//    CGRect tutorialLabelFrame;
+//    NSInteger tutorialFontSize;
+//    CGFloat tutorialLabelOffset;
+//    
+//    UIView *tutorial1BG;
+//    UIView *tutorial2BG;
+//    UIView *tutorial3BG;
+//    UIView *tutorial4BG;
+//    NSInteger tutorialMode;
     
     NSDate *pauseStart, *previousFireDate;
     UIView *slider1 , *slider2;
     
     NSURL *currentSongURL;
     CGFloat sliderWidth;
-
 }
 @end
 
@@ -143,7 +142,7 @@
     CGFloat levelLabelSize = 20;
     CGFloat levelLabelOffsetY = 40;
     CGFloat buttonSize = 30;
-    tutorialFontSize = 20;
+//    tutorialFontSize = 20;
     CGFloat sliderLength = 9;
     sliderWidth =3;
     if (IS_IPad) {
@@ -153,7 +152,7 @@
         levelLabelSize = (levelLabelSize-3)/IPadMiniRatio;
         levelLabelOffsetY =levelLabelOffsetY/IPadMiniRatio+10;
         buttonSize = buttonSize/IPadMiniRatio;
-        tutorialFontSize = tutorialFontSize/IPadMiniRatio;
+//        tutorialFontSize = tutorialFontSize/IPadMiniRatio;
         scoreLabelSize = (scoreLabelSize-3)/IPadMiniRatio;
         scoreOffsetY = scoreOffsetY/IPadMiniRatio+10;
         sliderLength = sliderLength/IPadMiniRatio;
@@ -340,17 +339,17 @@
     _gameIsPaused = NO;
     
     // Tutorial
-    tutorialViewHeight = gamePad.frame.origin.y-10;
-    tutorialFrame = CGRectMake(0,
-                               -tutorialViewHeight,
-                               screenWidth ,
-                               tutorialViewHeight);
-    
-    tutorialLabelOffset = 5;
-    tutorialLabelFrame = CGRectMake(0,tutorialLabelOffset,screenWidth,tutorialFontSize+5);
-    tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
-    if (tutorialMode == 1)
-        [self showTutorial1];
+//    tutorialViewHeight = gamePad.frame.origin.y-10;
+//    tutorialFrame = CGRectMake(0,
+//                               -tutorialViewHeight,
+//                               screenWidth ,
+//                               tutorialViewHeight);
+//    
+//    tutorialLabelOffset = 5;
+//    tutorialLabelFrame = CGRectMake(0,tutorialLabelOffset,screenWidth,tutorialFontSize+5);
+//    tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
+//    if (tutorialMode == 1)
+//        [self showTutorial1];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -570,7 +569,9 @@
     pauseView.hidden = YES;
     [scanTimer invalidate];
     [changeScoreTimer invalidate];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+
+//    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)buttonAnimation:(UIButton *)button
@@ -682,8 +683,8 @@
                         [self actionsAfterMove];
                     }];
                 } else {
-                    if (tutorialMode==2)
-                        [self showTutorial3];
+//                    if (tutorialMode==2)
+//                        [self showTutorial3];
                     [self actionsAfterMove];
                 }
             }
@@ -731,8 +732,8 @@
 {
     if (gamePad.userInteractionEnabled && ![snake checkIsGameover]) {
         
-        if (tutorialMode==1)
-            [self showTutorial2];
+//        if (tutorialMode==1)
+//            [self showTutorial2];
         
         MoveDirection dir;
         switch (sender.direction) {
@@ -781,8 +782,8 @@
             
             gamePad.userInteractionEnabled = YES;
             
-            if (tutorialMode==3)
-                [self showTutorial4];
+//            if (tutorialMode==3)
+//                [self showTutorial4];
 
         }];
     }
@@ -878,183 +879,183 @@
 
 #pragma mark - Tutorial
 
--(void)startTutorial
-{
-    [self replayGame];
-    tutorialMode = 1;
-    [self showTutorial1];
-}
-
- -(void)showTutorial1
-{
-    tutorial1BG = [[UIView alloc]initWithFrame:tutorialFrame];
-    tutorial1BG.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:tutorial1BG];
-    
-    _scoreLabel.hidden = YES;
-    levelLabel.hidden = YES;
-    
-    // 1. Swipe
-    CustomLabel *swipeText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
-                                                      fontSize:tutorialFontSize];
-    swipeText.text = NSLocalizedString(@"Swipe to move blocks" , nil);
-    [tutorial1BG addSubview:swipeText];
-    
-    CGFloat swipeImageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
-    UIImageView *swipe = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-swipeImageSize)/2,
-                                                                       tutorialFontSize+tutorialLabelOffset+5,
-                                                                       swipeImageSize,
-                                                                       swipeImageSize)];
-    
-
-    swipe.image = [UIImage imageNamed:@"tutorialSwipe116.png"];
-    [tutorial1BG addSubview:swipe];
-    
-    [self showTutorial:tutorial1BG];
-}
-
--(void)showTutorial2
-{
-    tutorialMode++;
-    [self hideTutorial:tutorial1BG complete:^{
-        
-        tutorial2BG = [[UIView alloc]initWithFrame:tutorialFrame];
-        tutorial2BG.backgroundColor = [UIColor clearColor];
-        [self.view addSubview:tutorial2BG];
-        
-        // 2. Combo
-        CustomLabel *tutComboText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
-                                                             fontSize:tutorialFontSize];
-        tutComboText.text =  NSLocalizedString(@"Line up blocks to cancel blocks" , nil);
-        [tutorial2BG addSubview:tutComboText];
-        
-        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
-
-        UIImageView *tutorialCombo = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2,
-                                                                                  tutorialFontSize+tutorialLabelOffset+5,
-                                                                                  320*(imageSize/70),
-                                                                                  imageSize)];
-        
-        tutorialCombo.image = [UIImage imageNamed:@"tutorialCombo116.png"];
-        [tutorial2BG addSubview:tutorialCombo];
-        
-        [self showTutorial:tutorial2BG];
-
-    }];
-}
-
--(void)showTutorial3
-{
-    tutorialMode++;
-    [self hideTutorial:tutorial2BG complete:^{
-        
-        tutorial3BG = [[UIView alloc]initWithFrame:tutorialFrame];
-        tutorial3BG.backgroundColor = [UIColor clearColor];
-        [self.view addSubview:tutorial3BG];
-        
-        // 3. Bomb
-        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
-                                                            fontSize:tutorialFontSize];
-        tutBombText.text =  NSLocalizedString(@"Cancel more blocks to pop bombs" , nil);
-        [tutorial3BG addSubview:tutBombText];
-        
-        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
-        
-        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2,
-                                                                                 tutorialFontSize+tutorialLabelOffset+5,
-                                                                                 320*(imageSize/70),
-                                                                                 imageSize)];
-
-        tutorialBomb.image = [UIImage imageNamed:@"tutorialCreateBomb116.png"];
-        [tutorial3BG addSubview:tutorialBomb];
-        
-        [self showTutorial:tutorial3BG];
-        
-    }];
-}
-
--(void)showTutorial4
-{
-    tutorialMode++;
-    [self hideTutorial:tutorial3BG complete:^{
-        
-        tutorial4BG = [[UIView alloc]initWithFrame:tutorialFrame];
-        tutorial4BG.backgroundColor = [UIColor clearColor];
-        [self.view addSubview:tutorial4BG];
-        
-        // 3. Bomb
-        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
-                                                            fontSize:tutorialFontSize];
-        tutBombText.text =  NSLocalizedString(@"Line up with blocks to trigger bomb" , nil);
-        [tutorial4BG addSubview:tutBombText];
-        
-        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
-        
-        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2, tutorialFontSize+tutorialLabelOffset+5, 320*(imageSize/70), imageSize)];
-        tutorialBomb.image = [UIImage imageNamed:@"tutorialBomb116.png"];
-        [tutorial4BG addSubview:tutorialBomb];
-        
-        [self showTutorial:tutorial4BG];
-        
-    }];
-}
-
--(void)hideTutorial:(UIView *)tutorialView  complete:(void(^)(void))completeBlock
-{
-    [UIView animateWithDuration:0.5 animations:^{
-        
-        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, -tutorialViewHeight);
-        
-    }completion:^(BOOL finished) {
-
-        [tutorialView removeFromSuperview];
-        completeBlock();
-    } ];
-}
-
--(void)showTutorial:(UIView *)tutorialView
-{
-    [UIView animateWithDuration:0.5 animations:^{
-        
-        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, tutorialViewHeight);
-        
-    }];
-}
-
-- (void)hideLastTutorial
-{
-    if (tutorialMode == 4) {
-        
-        [self hideTutorial:tutorial4BG complete:^{
-            
-            _scoreLabel.hidden = NO;
-            levelLabel.hidden = NO;
-            
-            CGAffineTransform t =  _scoreLabel.transform;
-            CGAffineTransform t2 =  levelLabel.transform;
-
-            _scoreLabel.transform = CGAffineTransformScale(t, 0.1, 0.1);
-            levelLabel.transform = CGAffineTransformScale(t2, 0.1, 0.1);
-
-            [UIView animateWithDuration:0.2 animations:^{
-                
-                _scoreLabel.transform = CGAffineTransformScale(t, 1.2, 1.2);
-                levelLabel.transform = CGAffineTransformScale(t2, 1.2, 1.2);
-                
-            }completion:^(BOOL finished) {
-                
-                _scoreLabel.transform = t;
-                levelLabel.transform = t2;
-
-                tutorialMode = 0;
-                
-                [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"tutorial"];
-
-            }];
-            
-        }];
-    }
-}
+//-(void)startTutorial
+//{
+//    [self replayGame];
+//    tutorialMode = 1;
+//    [self showTutorial1];
+//}
+//
+// -(void)showTutorial1
+//{
+//    tutorial1BG = [[UIView alloc]initWithFrame:tutorialFrame];
+//    tutorial1BG.backgroundColor = [UIColor clearColor];
+//    [self.view addSubview:tutorial1BG];
+//    
+//    _scoreLabel.hidden = YES;
+//    levelLabel.hidden = YES;
+//    
+//    // 1. Swipe
+//    CustomLabel *swipeText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
+//                                                      fontSize:tutorialFontSize];
+//    swipeText.text = NSLocalizedString(@"Swipe to move blocks" , nil);
+//    [tutorial1BG addSubview:swipeText];
+//    
+//    CGFloat swipeImageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
+//    UIImageView *swipe = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-swipeImageSize)/2,
+//                                                                       tutorialFontSize+tutorialLabelOffset+5,
+//                                                                       swipeImageSize,
+//                                                                       swipeImageSize)];
+//    
+//
+//    swipe.image = [UIImage imageNamed:@"tutorialSwipe116.png"];
+//    [tutorial1BG addSubview:swipe];
+//    
+//    [self showTutorial:tutorial1BG];
+//}
+//
+//-(void)showTutorial2
+//{
+//    tutorialMode++;
+//    [self hideTutorial:tutorial1BG complete:^{
+//        
+//        tutorial2BG = [[UIView alloc]initWithFrame:tutorialFrame];
+//        tutorial2BG.backgroundColor = [UIColor clearColor];
+//        [self.view addSubview:tutorial2BG];
+//        
+//        // 2. Combo
+//        CustomLabel *tutComboText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
+//                                                             fontSize:tutorialFontSize];
+//        tutComboText.text =  NSLocalizedString(@"Line up blocks to cancel blocks" , nil);
+//        [tutorial2BG addSubview:tutComboText];
+//        
+//        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
+//
+//        UIImageView *tutorialCombo = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2,
+//                                                                                  tutorialFontSize+tutorialLabelOffset+5,
+//                                                                                  320*(imageSize/70),
+//                                                                                  imageSize)];
+//        
+//        tutorialCombo.image = [UIImage imageNamed:@"tutorialCombo116.png"];
+//        [tutorial2BG addSubview:tutorialCombo];
+//        
+//        [self showTutorial:tutorial2BG];
+//
+//    }];
+//}
+//
+//-(void)showTutorial3
+//{
+//    tutorialMode++;
+//    [self hideTutorial:tutorial2BG complete:^{
+//        
+//        tutorial3BG = [[UIView alloc]initWithFrame:tutorialFrame];
+//        tutorial3BG.backgroundColor = [UIColor clearColor];
+//        [self.view addSubview:tutorial3BG];
+//        
+//        // 3. Bomb
+//        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
+//                                                            fontSize:tutorialFontSize];
+//        tutBombText.text =  NSLocalizedString(@"Cancel more blocks to pop bombs" , nil);
+//        [tutorial3BG addSubview:tutBombText];
+//        
+//        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
+//        
+//        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2,
+//                                                                                 tutorialFontSize+tutorialLabelOffset+5,
+//                                                                                 320*(imageSize/70),
+//                                                                                 imageSize)];
+//
+//        tutorialBomb.image = [UIImage imageNamed:@"tutorialCreateBomb116.png"];
+//        [tutorial3BG addSubview:tutorialBomb];
+//        
+//        [self showTutorial:tutorial3BG];
+//        
+//    }];
+//}
+//
+//-(void)showTutorial4
+//{
+//    tutorialMode++;
+//    [self hideTutorial:tutorial3BG complete:^{
+//        
+//        tutorial4BG = [[UIView alloc]initWithFrame:tutorialFrame];
+//        tutorial4BG.backgroundColor = [UIColor clearColor];
+//        [self.view addSubview:tutorial4BG];
+//        
+//        // 3. Bomb
+//        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
+//                                                            fontSize:tutorialFontSize];
+//        tutBombText.text =  NSLocalizedString(@"Line up with blocks to trigger bomb" , nil);
+//        [tutorial4BG addSubview:tutBombText];
+//        
+//        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
+//        
+//        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2, tutorialFontSize+tutorialLabelOffset+5, 320*(imageSize/70), imageSize)];
+//        tutorialBomb.image = [UIImage imageNamed:@"tutorialBomb116.png"];
+//        [tutorial4BG addSubview:tutorialBomb];
+//        
+//        [self showTutorial:tutorial4BG];
+//        
+//    }];
+//}
+//
+//-(void)hideTutorial:(UIView *)tutorialView  complete:(void(^)(void))completeBlock
+//{
+//    [UIView animateWithDuration:0.5 animations:^{
+//        
+//        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, -tutorialViewHeight);
+//        
+//    }completion:^(BOOL finished) {
+//
+//        [tutorialView removeFromSuperview];
+//        completeBlock();
+//    } ];
+//}
+//
+//-(void)showTutorial:(UIView *)tutorialView
+//{
+//    [UIView animateWithDuration:0.5 animations:^{
+//        
+//        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, tutorialViewHeight);
+//        
+//    }];
+//}
+//
+//- (void)hideLastTutorial
+//{
+//    if (tutorialMode == 4) {
+//        
+//        [self hideTutorial:tutorial4BG complete:^{
+//            
+//            _scoreLabel.hidden = NO;
+//            levelLabel.hidden = NO;
+//            
+//            CGAffineTransform t =  _scoreLabel.transform;
+//            CGAffineTransform t2 =  levelLabel.transform;
+//
+//            _scoreLabel.transform = CGAffineTransformScale(t, 0.1, 0.1);
+//            levelLabel.transform = CGAffineTransformScale(t2, 0.1, 0.1);
+//
+//            [UIView animateWithDuration:0.2 animations:^{
+//                
+//                _scoreLabel.transform = CGAffineTransformScale(t, 1.2, 1.2);
+//                levelLabel.transform = CGAffineTransformScale(t2, 1.2, 1.2);
+//                
+//            }completion:^(BOOL finished) {
+//                
+//                _scoreLabel.transform = t;
+//                levelLabel.transform = t2;
+//
+//                tutorialMode = 0;
+//                
+//                [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"tutorial"];
+//
+//            }];
+//            
+//        }];
+//    }
+//}
 
 - (void)stopMusic
 {

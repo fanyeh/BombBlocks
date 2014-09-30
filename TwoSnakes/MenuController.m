@@ -12,6 +12,7 @@
 #import "CustomLabel.h"
 #import "MKAppDelegate.h"
 #import "FastHandGameViewController.h"
+#import "TutorialViewController.h"
 
 @interface MenuController ()
 {
@@ -126,12 +127,10 @@
     
     _fastHandLabel.text = NSLocalizedString(@"Fast Hand",nil);
     
-    if (![[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"] == 1) {
-        
+    if (![[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"] == 1)
         _classicLabel.text = NSLocalizedString(@"Classic",nil);
-    } else
+    else
         _classicLabel.text = NSLocalizedString(@"Play",nil);
-
     
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([language isEqualToString:@"zh-Hans"] || [language isEqualToString:@"zh-Hant"] || [language isEqualToString:@"ja"]) {
@@ -207,18 +206,22 @@
     }
 }
 
+-(void)viewDidDisappear:(BOOL)animated
+{
+    _classicLabel.text = NSLocalizedString(@"Classic",nil);
+    
+    CGFloat moveDistance = (screenWidth - _classicView.frame.size.width)/2 + _classicView.frame.size.width;
+    _fastHandView.frame = CGRectOffset(_fastHandView.frame, moveDistance, 0);
+
+}
+
 -(void)adjustFrameOnScreenSize:(UIView *)view
 {
-    CGFloat ratio = 1;
-//    if (IS_IPad)
-//       ratio = IPadMiniRatio;
-    
-    CGFloat offsetX = (screenWidth - (view.frame.size.width/ratio))/2;
+    CGFloat offsetX = (screenWidth - (view.frame.size.width))/2;
     view.frame = CGRectMake(offsetX,
                             view.frame.origin.y,
-                            view.frame.size.width/ratio,
-                            view.frame.size.height/ratio);
-    
+                            view.frame.size.width,
+                            view.frame.size.height);
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -539,8 +542,15 @@
     } completion:^(BOOL finished) {
         
         _classicView.transform = t;
-        ClassicGameController *classicGameController =  [[ClassicGameController alloc]init];
-        [self presentViewController:classicGameController animated:YES completion:nil];
+        
+        if (![[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"] == 1) {
+            ClassicGameController *classicGameController =  [[ClassicGameController alloc]init];
+            [self presentViewController:classicGameController animated:YES completion:nil];
+        }
+        else {
+            TutorialViewController *controller = [[TutorialViewController alloc]init];
+            [self presentViewController:controller animated:YES completion:nil];
+        }
     }];
 }
 

@@ -59,7 +59,7 @@
 "C-Bomb" = "C-炸彈";
 
 "Trigger to eliminate all blocks/bombs in vertical line" = "引爆炸彈會消除位於直線上的方塊或炸彈" ;
-"Trigger to eliminate all blocks/bombs in horizontal line" = "引爆炸彈會消除位於橫線上的方塊或炸彈";
+"Trigger to eliminate all blocks/bombs in horizo​​ntal line" = "引爆炸彈會消除位於橫線上的方塊或炸彈";
 "Trigger to randomly swap all blocks postion" = "引爆炸彈後會隨機將方塊位置變換";
 "Trigger to eliminate blocks/bombs within the circle" = "引爆炸彈會消除位於圓圈內的方塊或炸彈";
 "Trigger to eliminate blocks/bombs with same color" = "引爆炸彈會消除相同顏色的炸彈或方塊";
