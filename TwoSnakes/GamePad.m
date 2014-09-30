@@ -25,41 +25,45 @@
 
 - (id)initGamePad
 {
-    CGFloat nodeHeight =  screenWidth * 0.1875;
-    CGFloat nodeWidth = screenWidth * 0.1875;
-    
-    if (IS_IPad) {
-        nodeHeight =  screenWidth * 0.13;
-        nodeWidth = screenWidth * 0.13;
-    }
+    CGFloat nodeSize =  screenWidth * 0.1875;
     int column = 5;
     int row = 5;
     CGFloat gapBetweenCard = 2;
     CGFloat gapFromBoundary = 3;
-    CGRect frame = CGRectMake(0, 0, nodeWidth*column+gapFromBoundary*2-gapBetweenCard, nodeHeight*row+gapFromBoundary*2-gapBetweenCard);
+    
+    if (IS_IPad) {
+        nodeSize =  screenWidth * 0.13;
+        gapBetweenCard = 2/IPadMiniRatio;
+        gapFromBoundary = 3/IPadMiniRatio;
+    }
+    
+    CGRect frame = CGRectMake(0,0,nodeSize*column+gapFromBoundary*2+4*gapBetweenCard,nodeSize*row+gapFromBoundary*2+4*gapBetweenCard);
 
     self = [self initWithFrame:frame];
     if (self) {
         // Initialization code
-
         _emptyNodeArray = [[NSMutableArray alloc]init];
         int randomX = arc4random() % column;
         int randomY = arc4random() % row;
+        CGFloat assetPosX ;
+        CGFloat assetPosY ;
+        
         for (int i = 0 ; i < column; i ++ ) {
             
             for (int j = 0 ; j < row ; j++) {
                 
-                CGFloat assetPosX = gapFromBoundary+nodeWidth*i;
-                CGFloat assetPosY = gapFromBoundary+nodeHeight*j;
-                SnakeNode *emptyNode = [[SnakeNode alloc]initWithEmptyFrame:CGRectMake(assetPosX, assetPosY, nodeWidth - gapBetweenCard, nodeHeight - gapBetweenCard)];
+                assetPosX = gapFromBoundary+nodeSize*i+gapBetweenCard*i;
+                assetPosY = gapFromBoundary+nodeSize*j+gapBetweenCard*j;
+                
+                SnakeNode *emptyNode = [[SnakeNode alloc]initWithEmptyFrame:CGRectMake(assetPosX,assetPosY,nodeSize,nodeSize)];
+                
                 [emptyNode setNodeIndexRow:j andCol:i];
-
                 [self addSubview:emptyNode];
                 [_emptyNodeArray addObject:emptyNode];
                 
-                if (i == randomX && j == randomY) {
+                // Setup initial node
+                if (i == randomX && j == randomY)
                     _initialNode = emptyNode;
-                }
             }
         }
     }

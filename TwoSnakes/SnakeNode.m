@@ -34,21 +34,27 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        CGFloat imageSize = frame.size.width - 18;
+        CGFloat gapFromBound = 18;
+        CGFloat scoreFontSize = 18;
+        CGFloat scorePosY = 10;
         
-        CGRect imageViewRect = CGRectMake((frame.size.width-imageSize)/2,
-                                          (frame.size.height-imageSize)/2,
-                                          imageSize,
-                                          imageSize);
+        if (IS_IPad) {
+            gapFromBound = gapFromBound/IPadMiniRatio;
+            scoreFontSize = scoreFontSize/IPadMiniRatio;
+            scorePosY= scorePosY/IPadMiniRatio;
+        }
         
+        CGFloat imageSize = frame.size.width - gapFromBound;
+        CGRect imageViewRect = CGRectMake((frame.size.width-imageSize)/2,(frame.size.height-imageSize)/2,imageSize,imageSize);
         _assetType = assetType;
         _nodeImageView = [[UIImageView alloc]initWithFrame:imageViewRect];
         [self addSubview:_nodeImageView];
         
-        scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontSize:17];
-        scoreLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
+        // Block score Label
+        scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,scorePosY,self.frame.size.width,scoreFontSize) fontSize:scoreFontSize];
         [self addSubview:scoreLabel];
         scoreLabel.alpha = 0;
+
         _hasCount = NO;
     }
     return self;
@@ -59,9 +65,11 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        self.layer.cornerRadius = 3;//6;
+        self.layer.cornerRadius = 3;
         self.layer.masksToBounds = YES;
         self.layer.borderWidth = 2.5;
+        if (IS_IPad)
+            self.layer.borderWidth = 2.5/IPadMiniRatio;
         self.layer.borderColor = FontColor.CGColor;
         _hasBomb = NO;
     }
@@ -71,30 +79,36 @@
 - (void)setBombWithReminder:(NSInteger)reminder complete:(void(^)(void))completBlock
 {
     // Initialization code
-    CGFloat imageSize = self.frame.size.width - 10;
-    
-    CGRect imageViewRect = CGRectMake((self.frame.size.width-imageSize)/2,
-                                      (self.frame.size.height-imageSize)/2,
-                                      imageSize,
-                                      imageSize);
-    
+    CGFloat gapFromBound = 10;
+    CGFloat scoreFontSize = 18;
+    CGFloat scorePosY = 10;
+
+    if (IS_IPad) {
+        scoreFontSize = scoreFontSize/IPadMiniRatio;
+        gapFromBound = gapFromBound/IPadMiniRatio;
+        scorePosY= scorePosY/IPadMiniRatio;
+    }
+
+    // Set up node image
+    CGFloat imageSize = self.frame.size.width - gapFromBound;
+    CGRect imageViewRect = CGRectMake(gapFromBound/2,gapFromBound/2,imageSize,imageSize);
     _nodeImageView = [[UIImageView alloc]initWithFrame:imageViewRect];
+    [self addSubview:_nodeImageView];
     
-    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((self.frame.size.width - 55)/2, 10 , 55, 20) fontSize:17];
-    scoreLabel.font = [UIFont fontWithName:@"GeezaPro-Bold" size:17];
+    // Block score Label
+    scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,scorePosY,self.frame.size.width,scoreFontSize )fontSize:scoreFontSize];
     [self addSubview:scoreLabel];
     scoreLabel.alpha = 0;
     
+    // Determin bomb color
     int randAsset;
     if (reminder > 3)
         randAsset = arc4random()%4;
     else
         randAsset = arc4random()%3;
-    
     //randAsset = arc4random()%4; // Non level test
 
-
-    // Set bomb image
+    // Set bomb color image
     switch (randAsset) {
         case 0:
             _nodeImageView.image = [UIImage imageNamed:@"bomb_blue.png"];
@@ -128,43 +142,39 @@
         randBomb = arc4random()%4;
     else if (reminder > 6)
         randBomb = arc4random()%5;
-    
     //randBomb = arc4random()%5; // Non level test
 
+    // Bomb Type Image
+    CGFloat bombSize = imageSize/2;
+    UIImageView *bombImageView = [[UIImageView alloc]initWithFrame:CGRectMake((imageSize-bombSize)/2,(imageSize-bombSize)/2,bombSize,bombSize)];
     
-    CGFloat bombSize = screenWidth * 25/320;
-    UIImage *bombImage;
-    UIImageView *bombImageView = [[UIImageView alloc]initWithFrame:CGRectMake((imageViewRect.size.width - bombSize)/2,
-                                                                              (imageViewRect.size.width - bombSize)/2,
-                                                                              bombSize,
-                                                                              bombSize)];
     // Set bomb type
     switch (randBomb) {
         case 0:
             _bombType = kBombTypeExplodeHorizontal;
-            bombImage = [UIImage imageNamed:@"explodeHorizontal.png"];
+            bombImageView.image = [UIImage imageNamed:@"explodeHorizontal.png"];
             break;
         case 1:
             _bombType = kBombTypeExplodeVertical;
-            bombImage = [UIImage imageNamed:@"explodeVertical.png"];
+            bombImageView.image = [UIImage imageNamed:@"explodeVertical.png"];
             break;
         case 2:
             _bombType = kBombTypeRandom;
-            bombImage = [UIImage imageNamed:@"randomBomb.png"];
+            bombImageView.image = [UIImage imageNamed:@"randomBomb.png"];
             break;
         case 3:
             _bombType = kBombTypeSquareExplode;
-            bombImage = [UIImage imageNamed:@"squareExplode.png"];
+            bombImageView.image = [UIImage imageNamed:@"squareExplode.png"];
             break;
         case 4:
             _bombType = kBombTypeExplodeBlock;
-            bombImage = [UIImage imageNamed:@"explode.png"];
+            bombImageView.image = [UIImage imageNamed:@"explode.png"];
             break;
     }
-    bombImageView.image = bombImage;
     [_nodeImageView addSubview:bombImageView];
-    [self addSubview:_nodeImageView];
-        self.hasBomb = YES;
+
+    // Node is a bomb
+    self.hasBomb = YES;
     
     // Animation to populate new body
     CGAffineTransform t = _nodeImageView.transform;
@@ -198,13 +208,19 @@
     [self bringSubviewToFront:scoreLabel];
     scoreLabel.text = [NSString stringWithFormat:@"+%ld",self.scoreAdder];
     scoreLabel.alpha = 1;
-    scoreLabel.frame = CGRectOffset(scoreLabel.frame, 0, -10);
+    if (IS_IPad)
+        scoreLabel.frame = CGRectOffset(scoreLabel.frame, 0, -10/IPadMiniRatio);
+    else
+        scoreLabel.frame = CGRectOffset(scoreLabel.frame, 0, -10);
 }
 
 -(void)hideScoreLabel
 {
     scoreLabel.alpha = 0;
-    scoreLabel.frame = CGRectOffset(scoreLabel.frame, 0, 10);
+    if (IS_IPad)
+        scoreLabel.frame = CGRectOffset(scoreLabel.frame, 0, 10/IPadMiniRatio);
+    else
+        scoreLabel.frame = CGRectOffset(scoreLabel.frame, 0, 10);
 }
 
 -(void)addCountLabel

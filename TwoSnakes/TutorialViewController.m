@@ -60,40 +60,39 @@
     UIImageView *bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
     [self.view addSubview:bgImageView];
     [self.view sendSubviewToBack:bgImageView];
-    language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    titleSize = 45;
-    titlePosY = 10;
-    blockFontSize = 19;
-    subFontSize = 16;
-    
-    if ([language isEqualToString:@"ja"]||screenHeight < 568) {
-        blockFontSize = 16;
-        _tut1.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
-        _tut2.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
-        _tut3.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
-        _tut4.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
-        titleSize = 35;
-        blockFontSize = 16;
-        subFontSize = 14;
-    }
     
     _tut1.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"Swipe to move blocks", nil)];
     _tut2.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"Line up blocks to cancel blocks", nil)];
     _tut3.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"Cancel more blocks to pop bombs", nil)];
     _tut4.text = [NSString stringWithFormat:@"%@", NSLocalizedString(@"Line up with blocks to trigger bomb", nil)];
     
+    
+    language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    titleSize = 45;
+    titlePosY = 10;
+    blockFontSize = 19;
+    subFontSize = 16;
     CGFloat nextButtonSize = 35;
+
+    if ([language isEqualToString:@"ja"]||screenHeight < 568) {
+        blockFontSize = 16;
+        titleSize = 35;
+        blockFontSize = 16;
+        subFontSize = 14;
+    }
     
     if(screenHeight > 568 && IS_IPhone) {
         titlePosY = 30;
+        titleSize = titleSize + 5;
+        blockFontSize =17;
         shiftX = screenWidth - _labelGroupView.frame.size.width;
         _labelGroupView.frame = CGRectMake(0, _labelGroupView.frame.origin.y, screenWidth, _labelGroupView.frame.size.height);
         
-        [self shiftView:_tut1 shiftValue:shiftX/2];
-        [self shiftView:_tut1ImageView shiftValue:shiftX/2];
+        [self shiftView:_tut1 shiftValue:shiftX/1.9];
+        [self shiftView:_tut1ImageView shiftValue:shiftX/1.9];
         
-        [self shiftView:_tut3 shiftValue:shiftX/2];
-        [self shiftView:_tut3ImageView shiftValue:shiftX/2];
+        [self shiftView:_tut3 shiftValue:shiftX/1.9];
+        [self shiftView:_tut3ImageView shiftValue:shiftX/1.9];
         
         [self shiftView:_tut2 shiftValue:shiftX*1.5];
         [self shiftView:_tut2ImageView shiftValue:shiftX*1.5];
@@ -101,16 +100,20 @@
         [self shiftView:_tut4 shiftValue:shiftX*1.5];
         [self shiftView:_tut4ImageView shiftValue:shiftX*1.5];
         
+        _tut1.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
+        _tut2.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
+        _tut3.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
+        _tut4.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
+        
     } else if (IS_IPad) {
-//        
         _tut1.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize/IPadMiniRatio];
         _tut2.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize/IPadMiniRatio];
         _tut3.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize/IPadMiniRatio];
         _tut4.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize/IPadMiniRatio];
-//
+        
         shiftX = screenWidth - _labelGroupView.frame.size.width;
         _labelGroupView.frame = CGRectMake(0, _labelGroupView.frame.origin.y, screenWidth, _labelGroupView.frame.size.height);
-//
+        
         [self shiftViewForIpad:_tut1 shiftValueX:shiftX*0.6 shiftValueY:90];
         [self shiftViewForIpad:_tut1ImageView shiftValueX:shiftX*0.65 shiftValueY:130];
         
@@ -126,6 +129,17 @@
         titleSize = titleSize/IPadMiniRatio;
         titlePosY = 50;
         nextButtonSize = 60;
+    } else if (screenHeight < 568) {
+        
+        [self shiftViewIPhone4:_tut1];
+        [self shiftViewIPhone4:_tut2];
+        [self shiftViewIPhone4:_tut3];
+        [self shiftViewIPhone4:_tut4];
+
+        [self shiftViewIPhone4:_tut1ImageView];
+        [self shiftViewIPhone4:_tut2ImageView];
+        [self shiftViewIPhone4:_tut3ImageView];
+        [self shiftViewIPhone4:_tut4ImageView];
     }
     
     nextButtonFrame = CGRectMake(screenWidth-(nextButtonSize+10),screenHeight-(nextButtonSize+10),nextButtonSize,nextButtonSize);
@@ -133,7 +147,7 @@
     
     mainNextButton = [[UIButton alloc]initWithFrame:nextButtonFrame];
     [mainNextButton setImage:[UIImage imageNamed:@"nextButton.png"] forState:UIControlStateNormal];
-    [mainNextButton addTarget:self action:@selector(nextToBlock) forControlEvents:UIControlEventTouchDown];
+    [mainNextButton addTarget:self action:@selector(nextToBlock:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:mainNextButton];
     
     mainCloseButton = [[UIButton alloc]initWithFrame:previousButtonFrame];
@@ -141,18 +155,22 @@
     [mainCloseButton addTarget:self action:@selector(doneAction:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:mainCloseButton];
 
-    howToPlayLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, titlePosY, screenWidth, titleSize) fontSize:titleSize];
+    howToPlayLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, titlePosY, screenWidth, titleSize) fontSize:titleSize-5];
     howToPlayLabel.text = NSLocalizedString(@"How To Play",nil);
     [self.view addSubview:howToPlayLabel];
-    
-    
-    _labelGroupView.center = self.view.center;
 
+    _labelGroupView.center = self.view.center;
 }
 
 -(void)shiftView:(UIView *)view shiftValue:(CGFloat)value
 {
     view.frame = CGRectOffset(view.frame, value, 20);
+
+}
+
+-(void)shiftViewIPhone4:(UIView *)view
+{
+    view.frame = CGRectOffset(view.frame, 0, -50);
 }
 
 -(void)shiftViewForIpad:(UIView *)view shiftValueX:(CGFloat)valueX shiftValueY:(CGFloat)valueY
@@ -161,8 +179,9 @@
     view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width/IPadMiniRatio, view.frame.size.height/IPadMiniRatio);
 }
 
--(void)nextToBlock
+-(void)nextToBlock:(UIButton *)button
 {
+    [self buttonAnimation:button];
     _labelGroupView.hidden = YES;
     howToPlayLabel.hidden = YES;
     mainCloseButton.hidden = YES;
@@ -170,8 +189,9 @@
     [self showBlockTypeView];
 }
 
--(void)previousToMain
+-(void)previousToMain:(UIButton *)button
 {
+    [self buttonAnimation:button];
     [UIView animateWithDuration:0.5 animations:^{
         blockTypeView.frame = CGRectOffset(blockTypeView.frame, screenWidth, 0);
     }completion:^(BOOL finished) {
@@ -182,14 +202,16 @@
     }];
 }
 
--(void)nextToBomb
+-(void)nextToBomb:(UIButton *)button
 {
+    [self buttonAnimation:button];
     blockTypeView.frame = CGRectOffset(blockTypeView.frame, -screenWidth, 0);
     [self showBombTypeView];
 }
 
--(void)previousToBlock
+-(void)previousToBlock:(UIButton *)button
 {
+    [self buttonAnimation:button];
     [UIView animateWithDuration:0.5 animations:^{
         bombTypeView.frame = CGRectOffset(bombTypeView.frame, screenWidth, 0);
     }completion:^(BOOL finished) {
@@ -205,15 +227,15 @@
     
     UIButton *nextButton = [[UIButton alloc]initWithFrame:nextButtonFrame];
     [nextButton setImage:[UIImage imageNamed:@"nextButton.png"] forState:UIControlStateNormal];
-    [nextButton addTarget:self action:@selector(nextToBomb) forControlEvents:UIControlEventTouchDown];
+    [nextButton addTarget:self action:@selector(nextToBomb:) forControlEvents:UIControlEventTouchDown];
     [blockTypeView addSubview:nextButton];
     
     UIButton *previousButton = [[UIButton alloc]initWithFrame:previousButtonFrame];
     [previousButton setImage:[UIImage imageNamed:@"previousButton.png"] forState:UIControlStateNormal];
-    [previousButton addTarget:self action:@selector(previousToMain) forControlEvents:UIControlEventTouchDown];
+    [previousButton addTarget:self action:@selector(previousToMain:) forControlEvents:UIControlEventTouchDown];
     [blockTypeView addSubview:previousButton];
     
-    CustomLabel *titleLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, titlePosY, screenWidth, titleSize) fontSize:titleSize];
+    CustomLabel *titleLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, titlePosY, screenWidth, titleSize) fontSize:titleSize-5];
     titleLabel.text = NSLocalizedString(@"Block Type",nil);
     [blockTypeView addSubview:titleLabel];
     
@@ -234,7 +256,7 @@
     } else if (screenHeight > 568 && IS_IPhone) {
         
         yStart = yStart + 15;
-        blockFontSize = 21;
+        //blockFontSize = 20;
         gapBetweenBlock = 40;
         
     } else if (IS_IPad) {
@@ -314,10 +336,10 @@
     
     UIButton *previousButton = [[UIButton alloc]initWithFrame:previousButtonFrame];
     [previousButton setImage:[UIImage imageNamed:@"previousButton.png"] forState:UIControlStateNormal];
-    [previousButton addTarget:self action:@selector(previousToBlock) forControlEvents:UIControlEventTouchDown];
+    [previousButton addTarget:self action:@selector(previousToBlock:) forControlEvents:UIControlEventTouchDown];
     [bombTypeView addSubview:previousButton];
     
-    CustomLabel *titleLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, titlePosY, screenWidth, titleSize) fontSize:titleSize];
+    CustomLabel *titleLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0, titlePosY, screenWidth, titleSize) fontSize:titleSize-5];
     titleLabel.text = NSLocalizedString(@"Bomb Type",nil);
     [bombTypeView addSubview:titleLabel];
     
@@ -326,9 +348,10 @@
     CGFloat xGap = 20;
     CGFloat yOffset = imageSize+40;
     CGFloat labelWidth = screenWidth - (xCord+imageSize+xGap+5);
-    CGFloat fontSize = 23;
+    CGFloat fontSize = 21;
     CGFloat yStart = titleLabel.frame.origin.y+titleSize+40;
     CGFloat descLabelHeight = 50;
+    CGFloat descLabelWidth = labelWidth;
     
     if (screenHeight < 568) {
         yStart = yStart - 15;
@@ -336,9 +359,10 @@
         fontSize = 20;
     } else if (screenHeight > 568 && IS_IPhone) {
         yStart = yStart + 15;
-        fontSize = 25;
-        subFontSize = 18;
-        xCord = 15;
+        fontSize = 23;
+        subFontSize = 17;
+        //xCord = 10;
+        descLabelWidth = descLabelWidth - 5;
     } else if (IS_IPad) {
         imageSize = 75;
         fontSize = 38;
@@ -348,14 +372,18 @@
         xGap = xGap/IPadMiniRatio;
         labelWidth = screenWidth - (xCord+imageSize+xGap+5);
         yStart = yStart + 20;
+        descLabelWidth = labelWidth;
+        descLabelHeight = fontSize/21*50;
     }
     
-    // Vertical Bomb
+    // Vertical Bomb Image -------------------------------------------------- //
     UIImageView *verticalBombView = [[UIImageView alloc]initWithFrame:CGRectMake(xCord,
                                                                                  yStart ,
                                                                                  imageSize,
                                                                                  imageSize)];
     verticalBombView.image = [UIImage imageNamed:@"verticalBomb.png"];
+    
+    // Vertical Bomb Name
     CustomLabel *verticalLabel  = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+imageSize+xGap,
                                                                                yStart-10,
                                                                                labelWidth,
@@ -364,9 +392,10 @@
     verticalLabel.text = NSLocalizedString(@"V-Bomb", nil) ;
     verticalLabel.textAlignment = NSTextAlignmentLeft;
     
+    // Vertical Bomb Description
     CustomLabel *verticalDescLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(xCord+imageSize+xGap,
                                                                                   yStart-10,
-                                                                                  labelWidth,
+                                                                                  descLabelWidth,
                                                                                   descLabelHeight)
                                                               fontSize:subFontSize];
     
@@ -380,46 +409,51 @@
     [bombTypeView addSubview:verticalLabel];
     [bombTypeView addSubview:verticalDescLabel];
     
-    // Horizontal Bomb
+    // Horizontal Bomb Image -------------------------------------------------- //
     UIImageView *horizontalBombView = [[UIImageView alloc]initWithFrame:verticalBombView.frame];
     horizontalBombView.frame = CGRectOffset(verticalBombView.frame, 0, yOffset);
     horizontalBombView.image = [UIImage imageNamed:@"horizontalBomb.png"];
     
+    // Horiztiontal Bomb Name
     CustomLabel *horizontalLabel  = [[CustomLabel alloc]initWithFrame:verticalLabel.frame
                                                              fontSize:fontSize];
     horizontalLabel.frame = CGRectOffset(verticalLabel.frame, 0, yOffset);
     horizontalLabel.text = NSLocalizedString(@"H-Bomb", nil);
     horizontalLabel.textAlignment = NSTextAlignmentLeft;
     
+    // Horizontal Bomb Description
     CustomLabel *horizontalDescLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(horizontalLabel.frame.origin.x,
                                                                                     horizontalLabel.frame.origin.y,
-                                                                                    labelWidth,
+                                                                                    descLabelWidth,
                                                                                     descLabelHeight)
                                                                 fontSize:subFontSize];
     
     horizontalDescLabel.frame = CGRectOffset(horizontalDescLabel.frame, 0, fontSize);
     horizontalDescLabel.textAlignment = NSTextAlignmentLeft;
     horizontalDescLabel.numberOfLines = -1;
-    horizontalDescLabel.text = NSLocalizedString(@"Trigger to eliminate all blocks/bombs in horizontal line",nil);
+    horizontalDescLabel.text = NSLocalizedString(@"Trigger to eliminate all blocks/bombs in horizo​​ntal line",nil);
     horizontalDescLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
 
     [bombTypeView addSubview:horizontalBombView];
     [bombTypeView addSubview:horizontalLabel];
     [bombTypeView addSubview:horizontalDescLabel];
     
-    // Random Bomb
+    // Random Bomb Image -------------------------------------------------- //
     UIImageView *randomBombView = [[UIImageView alloc]initWithFrame:horizontalBombView.frame];
     randomBombView.frame = CGRectOffset(horizontalBombView.frame, 0, yOffset);
     randomBombView.image = [UIImage imageNamed:@"randomBombTut.png"];
+    
+    // Random Bomb Name
     CustomLabel *randomLabel  = [[CustomLabel alloc]initWithFrame:horizontalLabel.frame
                                                          fontSize:fontSize];
     randomLabel.frame = CGRectOffset(horizontalLabel.frame, 0, yOffset);
     randomLabel.text = NSLocalizedString(@"R-Bomb", nil);
     randomLabel.textAlignment = NSTextAlignmentLeft;
     
+    // Random Bomb Description
     CustomLabel *randomDescLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(randomLabel.frame.origin.x,
                                                                                 randomLabel.frame.origin.y,
-                                                                                labelWidth,
+                                                                                descLabelWidth,
                                                                                 descLabelHeight)
                                                             fontSize:subFontSize];
     
@@ -433,19 +467,22 @@
     [bombTypeView addSubview:randomLabel];
     [bombTypeView addSubview:randomDescLabel];
     
-    // Circle Bomb
+    // Circle Bomb Image -------------------------------------------------- //
     UIImageView *circleBombView = [[UIImageView alloc]initWithFrame:randomBombView.frame];
     circleBombView.frame = CGRectOffset(randomBombView.frame, 0, yOffset);
     circleBombView.image = [UIImage imageNamed:@"circleBomb.png"];
+    
+    // Circle Bomb Name
     CustomLabel *circleLabel  = [[CustomLabel alloc]initWithFrame:randomLabel.frame
                                                          fontSize:fontSize];
     circleLabel.frame = CGRectOffset(randomLabel.frame, 0, yOffset);
     circleLabel.text = NSLocalizedString(@"S-Bomb", nil);
     circleLabel.textAlignment = NSTextAlignmentLeft;
 
+    // Circle Bomb Description
     CustomLabel *circleDescLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(circleLabel.frame.origin.x,
                                                                                 circleLabel.frame.origin.y,
-                                                                                labelWidth,
+                                                                                descLabelWidth,
                                                                                 descLabelHeight)
                                                             fontSize:subFontSize];
     
@@ -459,19 +496,22 @@
     [bombTypeView addSubview:circleLabel];
     [bombTypeView addSubview:circleDescLabel];
     
-    // Color Bomb
+    // Color Bomb Image -------------------------------------------------- //
     UIImageView *colorBombView = [[UIImageView alloc]initWithFrame:circleBombView.frame];
     colorBombView.frame = CGRectOffset(circleBombView.frame, 0, yOffset);
     colorBombView.image = [UIImage imageNamed:@"colorBomb.png"];
+    
+    // Color Bomb Name
     CustomLabel *colorLabel  = [[CustomLabel alloc]initWithFrame:circleLabel.frame
                                                         fontSize:fontSize];
     colorLabel.frame = CGRectOffset(circleLabel.frame, 0, yOffset);
     colorLabel.text =NSLocalizedString(@"C-Bomb", nil);
     colorLabel.textAlignment = NSTextAlignmentLeft;
     
+    // // Color Bomb Description
     CustomLabel *colorDescLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(colorLabel.frame.origin.x,
                                                                                colorLabel.frame.origin.y,
-                                                                               labelWidth,
+                                                                               descLabelWidth,
                                                                                descLabelHeight)
                                                            fontSize:subFontSize];
     
@@ -490,12 +530,8 @@
     }];
 }
 
-- (void)didReceiveMemoryWarning
+- (void)doneAction:(UIButton *)sender
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-- (IBAction)doneAction:(id)sender {
     
     [self buttonAnimation:sender];
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -503,7 +539,6 @@
 
 -(void)buttonAnimation:(UIButton *)button
 {
-//    [_particleView playButtonSound];
     [_particleView playSound:kSoundTypeButtonSound];
 
     CGAffineTransform t = button.transform;
@@ -516,6 +551,11 @@
         
         button.transform = t;
     }];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
 }
 
 - (BOOL)prefersStatusBarHidden

@@ -20,6 +20,7 @@
 "Tutorial" = "Tutorial";
 "ON" = "ON";
 "OFF" = "OFF";
+"Setting" = "Setting";
 
 // Stats
 "Level" = "Stage";
@@ -27,7 +28,7 @@
 "Combo" = "Combo";
 "Best" = "Best";
 "New Record" = "New Record";
-"Chain" = "Chain";
+"Chain" = "Chain Explode";
 "chain" = "Chain";
 
 // Game
@@ -37,8 +38,8 @@
 
 // Tutorial
 "Swipe to move blocks" = "Swipe to move blocks";
-"Line up blocks to cancel blocks" = "Line up blocks to cancel them";
-"Cancel more blocks to pop bombs" = "Cancel more blocks to pop bombs";
+"Line up blocks to cancel blocks" = "Line up blocks to eliminate them";
+"Cancel more blocks to pop bombs" = "Eliminate more blocks to pop bombs";
 "Line up with blocks to trigger bomb" ="Line up with blocks to trigger bomb";
 
 "Time's up!" = "Time's up!";

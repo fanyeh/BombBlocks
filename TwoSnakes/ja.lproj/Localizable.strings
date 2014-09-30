@@ -20,6 +20,7 @@
 "Tutorial" = "チュートリアル";
 "ON" = "ON";
 "OFF" = "OFF";
+"Setting" = "設定";
 
 // Stats
 "Level" = "ステージ";
@@ -42,7 +43,7 @@
 "Line up with blocks to trigger bomb" ="爆弾はブロックと一緒に配置された爆発させる";
 
 "Time's up!" = "時間終了";
-"No More Moves" = "移動することはできません";
+"No More Moves" = "移動不能";
 
 "How To Play" = "プレイの仕方";
 "Block Type" = "ブロックの種類";

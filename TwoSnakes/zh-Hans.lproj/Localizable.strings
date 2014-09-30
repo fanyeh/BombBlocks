@@ -20,6 +20,7 @@
 "Tutorial" = "游戏教学";
 "ON" = "已开启";
 "OFF" = "已关闭";
+"Setting" = "设置";
 
 // Stats
 "Level" = "关卡";

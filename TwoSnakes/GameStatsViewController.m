@@ -26,6 +26,7 @@
     NSNumberFormatter *numFormatter; //Formatter for score
     MKAppDelegate *appDelegate;
     NSMutableArray *levelArray;
+    NSURL *currentSongURL;
 }
 @end
 
@@ -60,7 +61,24 @@
     interstitialAd.adUnitID = @"ca-app-pub-5576864578595597/8891080263";
     
     CGFloat socialButtonSize = 35;
+    CGFloat bestScoreSize = 35;
+    CGFloat currentScoreSize = 65;
+    CGFloat replayButtonSize = 40;
+    CGFloat settingButtonSize = 30;
+    CGFloat replayButtonGap = 30;
+    CGFloat settingButtonGap = 5;
+    CGFloat socialButtonOffset = 80;
     
+    if (IS_IPad) {
+        socialButtonSize = 60;
+        bestScoreSize = bestScoreSize/IPadMiniRatio;
+        currentScoreSize = currentScoreSize/IPadMiniRatio;
+        replayButtonSize = 70;
+        settingButtonSize = 50;
+        replayButtonGap = replayButtonGap/IPadMiniRatio;
+        settingButtonGap = settingButtonGap/IPadMiniRatio;
+        socialButtonOffset = socialButtonOffset/IPadMiniRatio;
+    }
     // Social share button
     UIButton *facbookButton = [[UIButton alloc]initWithFrame:CGRectMake((screenWidth-35)/2,
                                                                         10,
@@ -75,7 +93,7 @@
     
     UIButton *twitterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
     [twitterButton setBackgroundImage:[UIImage imageNamed:@"twitter35.png"] forState:UIControlStateNormal];
-    twitterButton.frame = CGRectOffset(twitterButton.frame, 80, 0);
+    twitterButton.frame = CGRectOffset(twitterButton.frame, socialButtonOffset, 0);
     twitterButton.layer.cornerRadius = socialButtonSize/2;
     twitterButton.backgroundColor = [UIColor whiteColor];
     twitterButton.layer.masksToBounds = YES;
@@ -83,7 +101,7 @@
     
     // Game Center Label
     UIButton *gamecenterButton = [[UIButton alloc]initWithFrame:facbookButton.frame];
-    gamecenterButton.frame = CGRectOffset(gamecenterButton.frame, -80, 0);
+    gamecenterButton.frame = CGRectOffset(gamecenterButton.frame, -socialButtonOffset, 0);
     [gamecenterButton setBackgroundImage:[UIImage imageNamed:@"gamecenter35.png"] forState:UIControlStateNormal];\
     gamecenterButton.layer.cornerRadius = socialButtonSize/2;
     [gamecenterButton addTarget:self action:@selector(showGameCenter:) forControlEvents:UIControlEventTouchDown];
@@ -92,8 +110,8 @@
     bestScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,
                                                                   screenHeight*0.15,
                                                                   screenWidth,
-                                                                  35)
-                                              fontSize:35];
+                                                                  bestScoreSize)
+                                              fontSize:bestScoreSize];
     
     bestScoreLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     
@@ -101,8 +119,8 @@
     currentScoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,
                                                                      screenHeight*0.25,
                                                                      screenWidth,
-                                                                     65)
-                                                 fontSize:65];
+                                                                     currentScoreSize)
+                                                 fontSize:currentScoreSize];
     
     CGFloat yoffset = currentScoreLabel.frame.origin.y + currentScoreLabel.frame.size.height + 30;
     CGFloat yGap;
@@ -124,6 +142,14 @@
     CGFloat labelHeight = fontSize;
     CGFloat labelGap = 0.0625*screenWidth + labelWidth;
     CGFloat labelGap2 = 0.09375*screenWidth + labelHeight;
+    
+    if (IS_IPad) {
+        labelGap = labelGap/IPadMiniRatio;
+        fontSize = fontSize/IPadMiniRatio;
+        labelYOffset = yoffset+80/IPadMiniRatio;
+        labelHeight = labelHeight/IPadMiniRatio;
+        labelWidth = labelWidth/IPadMiniRatio;
+    }
     
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if([language isEqualToString:@"ja"]) {
@@ -241,8 +267,11 @@
 
     [self.view addSubview:levelLabel];
     
-    CGFloat xoffset = levelLabel.frame.origin.x + 15;
+    CGFloat xoffset = (screenWidth - (fontSize*10))/2;
     CGFloat offset = levelLabel.frame.origin.y+labelHeight+15;
+    
+    if (IS_IPad)
+        offset = levelLabel.frame.origin.y+labelHeight+15/IPadMiniRatio;
     
     // Levels label
     if (!_timeMode) {
@@ -269,10 +298,10 @@
     } else
         levelLabel.hidden = YES;
     
-    UIButton *replayBg = [[UIButton alloc]initWithFrame:CGRectMake((screenWidth-40)/2,
-                                                                   screenHeight-40-30,
-                                                                   40,
-                                                                   40)];
+    UIButton *replayBg = [[UIButton alloc]initWithFrame:CGRectMake((screenWidth-replayButtonSize)/2,
+                                                                   screenHeight-replayButtonSize-replayButtonGap,
+                                                                   replayButtonSize,
+                                                                   replayButtonSize)];
     
     [replayBg setImage:[UIImage imageNamed:@"replayButton40.png"] forState:UIControlStateNormal];
     [replayBg addTarget:self action:@selector(replayGame:) forControlEvents:UIControlEventTouchDown];
@@ -284,17 +313,25 @@
     
     appDelegate = [[UIApplication sharedApplication] delegate];
 
-    if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
+    if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
+        currentSongURL =[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"easy-living" ofType:@"mp3"]];
         [self doVolumeFade];
+    }
 
     // Home Button
-    UIButton *homeButton = [[UIButton alloc]initWithFrame:CGRectMake(5,screenHeight-35, 30, 30)];
+    UIButton *homeButton = [[UIButton alloc]initWithFrame:CGRectMake(settingButtonGap,
+                                                                     screenHeight-(settingButtonSize+settingButtonGap),
+                                                                     settingButtonSize,
+                                                                     settingButtonSize)];
     [homeButton setImage:[UIImage imageNamed:@"home60.png"] forState:UIControlStateNormal];
     [homeButton addTarget:self action:@selector(backToHome:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:homeButton];
     
     // Setting Button
-    UIButton *settingButton = [[UIButton alloc]initWithFrame:CGRectMake(45, screenHeight-35, 30, 30)];
+    UIButton *settingButton = [[UIButton alloc]initWithFrame:CGRectMake(settingButtonGap*3+settingButtonSize,
+                                                                        screenHeight-(settingButtonSize+settingButtonGap),
+                                                                        settingButtonSize,
+                                                                        settingButtonSize)];
     [settingButton setImage:[UIImage imageNamed:@"setting60.png"] forState:UIControlStateNormal];
     [settingButton addTarget:self action:@selector(showSetting:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:settingButton];
@@ -303,6 +340,8 @@
 -(void)backToHome:(UIButton *)button
 {
     [self buttonAnimation:button];
+    currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
+    [self doVolumeFade];
     [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -325,8 +364,7 @@
     } else {
         // Stop and get the sound ready for playing again
         [appDelegate.audioPlayer stop];
-        //appDelegate.audioPlayer.currentTime = 0;
-        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"easy-living" ofType:@"mp3"]] error:nil];
+        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:currentSongURL error:nil];
         appDelegate.audioPlayer.numberOfLoops = -1;
         [appDelegate.audioPlayer prepareToPlay];
         
@@ -499,6 +537,29 @@
         button.transform = t;
     }];
 }
+
+//-(void)doVolumeFade
+//{
+//    if (appDelegate.audioPlayer.volume > 0.1) {
+//        
+//        appDelegate.audioPlayer.volume -=  0.05 ;
+//        [self performSelector:@selector(doVolumeFade) withObject:nil afterDelay:0.2];
+//        
+//    } else {
+//        // Stop and get the sound ready for playing again
+//        [appDelegate.audioPlayer stop];
+//        //appDelegate.audioPlayer.currentTime = 0;
+//        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:currentSongURL error:nil];
+//        appDelegate.audioPlayer.numberOfLoops = -1;
+//        [appDelegate.audioPlayer prepareToPlay];
+//        
+//        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
+//            [appDelegate.audioPlayer play];
+//            appDelegate.audioPlayer.volume = 0;
+//            [self volumeFadeIn];
+//        }
+//    }
+//}
 
 
 - (void)didReceiveMemoryWarning

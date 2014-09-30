@@ -31,23 +31,6 @@ typedef enum {
 @interface ParticleView : SKScene
 
 - (void)newExplosionWithPosX:(float)posX andPosY:(float)posY assetType:(AssetType)type;
-//- (void)playMoveSound;
-//- (void)introMoveSound;
-//- (void)playComboSound;
-//- (void)playButtonSound;
-//- (void)playGameoverSound;
-//- (void)explodeSound;
-//- (void)explodeSquareSound;
-//- (void)playBreakSound;
-//- (void)explodeColorSound;
-//- (void)playGameSound;
-//- (void)scanSound;
-//- (void)tickSound;
-//- (void)sirenSound;
-//- (void)menuBombDropSound;
-//- (void)randomBombSound;
-
--(void)playSound:(SoundType)soundType;
-
+- (void)playSound:(SoundType)soundType;
 
 @end

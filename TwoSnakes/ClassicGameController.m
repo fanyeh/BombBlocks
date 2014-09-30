@@ -72,6 +72,10 @@
     
     NSDate *pauseStart, *previousFireDate;
     UIView *slider1 , *slider2;
+    
+    NSURL *currentSongURL;
+    CGFloat sliderWidth;
+
 }
 @end
 
@@ -137,10 +141,11 @@
     CGFloat nextLabelWidth = 90;
     CGFloat nextLabelFontSize = 15;
     CGFloat levelLabelSize = 20;
-    CGFloat levelLabelOffsetY = 35;
+    CGFloat levelLabelOffsetY = 40;
     CGFloat buttonSize = 30;
     tutorialFontSize = 20;
-    
+    CGFloat sliderLength = 9;
+    sliderWidth =3;
     if (IS_IPad) {
         nextNodeSize = nextNodeSize/IPadMiniRatio;
         nextLabelWidth = nextLabelWidth/IPadMiniRatio;
@@ -151,6 +156,8 @@
         tutorialFontSize = tutorialFontSize/IPadMiniRatio;
         scoreLabelSize = (scoreLabelSize-3)/IPadMiniRatio;
         scoreOffsetY = scoreOffsetY/IPadMiniRatio+10;
+        sliderLength = sliderLength/IPadMiniRatio;
+        sliderWidth = sliderWidth/IPadMiniRatio;
     }
     
     // Score Label
@@ -200,9 +207,9 @@
     levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-150)/2,
                                                               gamePad.frame.origin.y-levelLabelOffsetY,
                                                               150,
-                                                              levelLabelSize)
+                                                              levelLabelSize+5)
                                           fontSize:levelLabelSize];
-    
+    //levelLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([language isEqualToString:@"zh-Hans"])
         levelLabel.text = @"第 1 关";
@@ -217,41 +224,47 @@
     
     
     // Chain Label
-    _chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-300)/2,
+    CGFloat chainWidth = gamePad.frame.size.width;
+    _chainLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-chainWidth)/2,
                                                               180,
-                                                              300,
-                                                              scoreLabelSize/1.5)
-                                          fontSize:scoreLabelSize/1.5];
+                                                              chainWidth,
+                                                              scoreLabelSize/1.6)
+                                          fontSize:scoreLabelSize/1.6];
     
     _chainLabel.hidden = YES;
     _chainLabel.center = self.view.center;
     [self.view addSubview:_chainLabel];
     
     // Scanner
-    scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,3,gamePad.frame.size.height)];
+    scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
+                                                          gamePad.frame.origin.y,
+                                                          sliderWidth,
+                                                          gamePad.frame.size.height)];
+    
     scannerMask.backgroundColor = [UIColor colorWithRed:0.000 green:0.098 blue:0.185 alpha:0.400];
     scannerMask.alpha = 0;
     [self.view addSubview:scannerMask];
-    
-    slider1 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
-                                                              gamePad.frame.origin.y-9,
-                                                              9,
-                                                              9)];
+
+    // Slider holder
+    slider1 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-sliderWidth,
+                                                      gamePad.frame.origin.y-sliderLength,
+                                                      sliderLength,
+                                                      sliderLength)];
     slider1.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:slider1];
     slider1.alpha = 0;
 
-    slider2 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
-                                                              gamePad.frame.origin.y+gamePad.frame.size.height,
-                                                              9,
-                                                              9)];
+    slider2 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-sliderWidth,
+                                                      gamePad.frame.origin.y+gamePad.frame.size.height,
+                                                      sliderLength,
+                                                      sliderLength)];
     slider2.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:slider2];
     slider2.alpha = 0;
     
-    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x+3,
+    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
                                                            gamePad.frame.origin.y,
-                                                           3,
+                                                           sliderWidth,
                                                            gamePad.frame.size.height)];
     
     scanner.image = [UIImage imageNamed:@"scanner.png"];
@@ -443,8 +456,7 @@
 {
     _gameIsPaused = NO;
     gamePad.userInteractionEnabled = YES;
-    [self resumeLayer:scanner.layer];
-    [self resumeLayer:scannerMask.layer];
+    [self resumeSlider];
     [self resumeTimer:scanTimer];
 }
 
@@ -458,9 +470,8 @@
         [self buttonAnimation:pauseButton];
         gamePad.userInteractionEnabled = NO;
         [self pauseTimer:scanTimer];
-        [self pauseLayer:scanner.layer];
-        [self pauseLayer:scannerMask.layer];
-        
+        [self pauseSlider];
+
         [self.view bringSubviewToFront:pauseView];
         
         [UIView animateWithDuration:0.5 animations:^{
@@ -471,6 +482,22 @@
     }
 }
 
+-(void)pauseSlider
+{
+    [self pauseLayer:scanner.layer];
+    [self pauseLayer:scannerMask.layer];
+    [self pauseLayer:slider1.layer];
+    [self pauseLayer:slider2.layer];
+}
+
+-(void)resumeSlider
+{
+    [self resumeLayer:scanner.layer];
+    [self resumeLayer:scannerMask.layer];
+    [self resumeLayer:slider1.layer];
+    [self resumeLayer:slider2.layer];
+}
+
 -(void)pauseGameFromBackground
 {
     if (!_gameIsPaused) {
@@ -479,8 +506,7 @@
         _gameIsPaused = YES;
         gamePad.userInteractionEnabled = NO;
         [self pauseTimer:scanTimer];
-        [self pauseLayer:scanner.layer];
-        [self pauseLayer:scannerMask.layer];
+        [self pauseSlider];
         pauseView.frame = CGRectOffset(pauseView.frame, 0, screenHeight);
     }
 }
@@ -493,8 +519,7 @@
         pauseView.frame = CGRectOffset(pauseView.frame, 0, -screenHeight);
     } completion:^(BOOL finished) {
         gamePad.userInteractionEnabled = YES;
-        [self resumeLayer:scanner.layer];
-        [self resumeLayer:scannerMask.layer];
+        [self resumeSlider];
         [self resumeTimer:scanTimer];
     }];
 }
@@ -527,8 +552,7 @@
         _gameIsPaused = YES;
         gamePad.userInteractionEnabled = NO;
         [self pauseTimer:scanTimer];
-        [self pauseLayer:scanner.layer];
-        [self pauseLayer:scannerMask.layer];
+        [self pauseSlider];
     }
     [self buttonAnimation:button];
     GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
@@ -541,6 +565,8 @@
 -(void)backToHome:(UIButton *)button
 {
     [self buttonAnimation:button];
+    currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
+    [self doVolumeFade];
     pauseView.hidden = YES;
     [scanTimer invalidate];
     [changeScoreTimer invalidate];
@@ -549,7 +575,6 @@
 
 -(void)buttonAnimation:(UIButton *)button
 {
-//    [_particleView playButtonSound];
     [_particleView playSound:kSoundTypeButtonSound];
 
     CGAffineTransform t = button.transform;
@@ -562,6 +587,37 @@
         
         button.transform = t;
     }];
+}
+
+-(void)doVolumeFade
+{
+    if (appDelegate.audioPlayer.volume > 0.1) {
+        
+        appDelegate.audioPlayer.volume -=  0.1;
+        [self performSelector:@selector(doVolumeFade) withObject:nil afterDelay:0.2];
+        
+    } else {
+        // Stop and get the sound ready for playing again
+        [appDelegate.audioPlayer stop];
+        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:currentSongURL error:nil];
+        appDelegate.audioPlayer.numberOfLoops = -1;
+        [appDelegate.audioPlayer prepareToPlay];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
+            [appDelegate.audioPlayer play];
+            appDelegate.audioPlayer.volume = 0;
+            [self volumeFadeIn];
+        }
+    }
+}
+
+- (void)volumeFadeIn
+{
+    if (appDelegate.audioPlayer.volume < 1) {
+        
+        appDelegate.audioPlayer.volume +=  0.1;
+        [self performSelector:@selector(volumeFadeIn) withObject:nil afterDelay:0.2];
+    }
 }
 
 #pragma mark - Scan
@@ -589,68 +645,46 @@
 -(void)performScanning
 {
     // Scanning animation
-//    [_particleView scanSound];
     [_particleView playSound:kSoundTypeScanSound];
 
-    CGFloat xOffset = gamePad.frame.size.height - 3;
+    CGFloat xOffset = gamePad.frame.size.width - sliderWidth;
     [UIView animateWithDuration:1 animations:^{
         
         if (scanFromRight) {
+            
             scanner.frame = CGRectOffset(scanner.frame, xOffset, 0);
             slider1.frame = CGRectOffset(slider1.frame, xOffset, 0);
             slider2.frame = CGRectOffset(slider2.frame, xOffset, 0);
-
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
-                                           scannerMask.frame.origin.y,
-                                           xOffset,
-                                           gamePad.frame.size.height);
-            
-            
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,xOffset,gamePad.frame.size.height);
         } else {
             scanner.frame = CGRectOffset(scanner.frame, -xOffset, 0);
             slider1.frame = CGRectOffset(slider1.frame, -xOffset, 0);
             slider2.frame = CGRectOffset(slider2.frame, -xOffset, 0);
-
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
-                                           scannerMask.frame.origin.y,
-                                           -xOffset,
-                                           gamePad.frame.size.height);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,-xOffset,gamePad.frame.size.height);
         }
         
     }completion:^(BOOL finished) {
         
         // Check block combos and bomb trigger
         [snake cancelPattern:^{
-            
             if([snake checkIsGameover]) {
-                
                 _chainLabel.text = NSLocalizedString(@"No More Moves", nil) ;
                 [self gameOver];
-                
             }
             else {
                 if (snake.combos == 0 ) {
-                    
                     // Reduce count check
                     for (SnakeNode *node in snake.snakeBody) {
                         if (node.hasCount)
                             [node reduceCount];
                     }
-
-                    
                     [snake createBody:^ {
-                        
                         [self actionsAfterMove];
-                        
                     }];
-                    
                 } else {
-                    
                     if (tutorialMode==2)
                         [self showTutorial3];
-                    
                     [self actionsAfterMove];
-                    
                 }
             }
         }];
@@ -663,7 +697,7 @@
 
 -(void)hideScanner
 {
-    CGFloat xOffset = gamePad.frame.size.height - 3;
+    CGFloat xOffset = gamePad.frame.size.height - sliderWidth;
 
     [UIView animateWithDuration:0.5 animations:^{
         
@@ -716,10 +750,8 @@
                 break;
         }
         
-//        [_particleView playMoveSound];
         [_particleView playSound:kSoundTypeMoveSound];
-
-
+        
         [snake moveAllNodesBySwipe:dir complete:^{
             
             // Reduce count check
@@ -756,7 +788,6 @@
     }
     else
         gamePad.userInteractionEnabled = YES;
-
 }
 
 #pragma mark - Snake Delegate
@@ -800,8 +831,7 @@
     score++;
     _scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
     
-    if (scoreGap == 0)
-    {
+    if (scoreGap == 0) {
         [changeScoreTimer invalidate];
 
         [scoreArray removeObjectAtIndex:0];
@@ -1041,10 +1071,7 @@
     screenShot = [self captureView:self.view];
     [snake setGameoverImage];
     gameIsOver = YES;
-    
     [appDelegate.audioPlayer stop];
-    
-//    [_particleView playGameoverSound];
     [_particleView playSound:kSoundTypeGameoverSound];
 
     _chainLabel.hidden = NO;
@@ -1088,7 +1115,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
     [_particleView removeAllChildren];
     [_particleView removeAllActions];
 }

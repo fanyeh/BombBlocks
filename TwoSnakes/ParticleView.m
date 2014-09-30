@@ -48,6 +48,7 @@
         sirenSound= [SKAction playSoundFileNamed:@"sirenSound.mp3" waitForCompletion:NO];
         menuBombDropSound=[SKAction playSoundFileNamed:@"menuBombDropSound.mp3" waitForCompletion:NO];
         randomBombSound=[SKAction playSoundFileNamed:@"randomBombSound.mp3" waitForCompletion:NO];
+
     }
     return self;
 }
@@ -95,159 +96,70 @@
 
 -(void)playSound:(SoundType)soundType
 {
-    switch (soundType) {
-        case kSoundTypeMoveSound:
-            [self runAction:moveSound];
-            break;
-            
-        case  kSoundTypeIntroMoveSound:
-            [self runAction: introMoveSound];
-            break;
-
-        case kSoundTypeComboSound:
-            [self runAction:comboSound ];
-            break;
-
-        case kSoundTypeBreakSound:
-            [self runAction: breakSound];
-            break;
-
-        case kSoundTypeButtonSound:
-            [self runAction: buttonSound];
-            break;
-
-        case kSoundTypeGameoverSound:
-            [self runAction:gameoverSound];
-            break;
-
-        case kSoundTypeExplodeSound:
-            [self runAction: explodeSound];
-            break;
-
-        case kSoundTypeExplodeColorSound:
-            [self runAction: explodeColorSound];
-            break;
-
-        case kSoundTypeExplodeSquareSound:
-            [self runAction: explodeSquareSound];
-            break;
-
-        case kSoundTypeGameSound:
-            [self runAction:gameSound];
-            break;
-
-        case  kSoundTypeScanSound:
-            [self runAction: scanSound];
-            break;
-
-        case  kSoundTypeTickSound:
-            [self runAction: tickSound];
-            break;
-
-        case kSoundTypeSirenSound:
-            [self runAction:sirenSound];
-            break;
-
-        case kSoundTypeMenuBombDropSound:
-            [self runAction:menuBombDropSound];
-            break;
-            
-        case kSoundTypeRandomBombSound:
-            [self runAction: randomBombSound];
-            break;
-    }
-}
-
-- (void)playMoveSound
-{
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"]) {
-            [self runAction:[SKAction playSoundFileNamed:@"introMove.mp3" waitForCompletion:NO]];
         
+        switch (soundType) {
+            case kSoundTypeMoveSound:
+                [self runAction:moveSound];
+                break;
+                
+            case  kSoundTypeIntroMoveSound:
+                [self runAction: introMoveSound];
+                break;
+                
+            case kSoundTypeComboSound:
+                [self runAction:comboSound ];
+                break;
+                
+            case kSoundTypeBreakSound:
+                [self runAction: breakSound];
+                break;
+                
+            case kSoundTypeButtonSound:
+                [self runAction: buttonSound];
+                break;
+                
+            case kSoundTypeGameoverSound:
+                [self runAction:gameoverSound];
+                break;
+                
+            case kSoundTypeExplodeSound:
+                [self runAction: explodeSound];
+                break;
+                
+            case kSoundTypeExplodeColorSound:
+                [self runAction: explodeColorSound];
+                break;
+                
+            case kSoundTypeExplodeSquareSound:
+                [self runAction: explodeSquareSound];
+                break;
+                
+            case kSoundTypeGameSound:
+                [self runAction:gameSound];
+                break;
+                
+            case  kSoundTypeScanSound:
+                [self runAction: scanSound];
+                break;
+                
+            case  kSoundTypeTickSound:
+                [self runAction: tickSound];
+                break;
+                
+            case kSoundTypeSirenSound:
+                [self runAction:sirenSound];
+                break;
+                
+            case kSoundTypeMenuBombDropSound:
+                [self runAction:menuBombDropSound];
+                break;
+                
+            case kSoundTypeRandomBombSound:
+                [self runAction: randomBombSound];
+                break;
+        }
     }
-}
-
-- (void)introMoveSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"introMove.mp3" waitForCompletion:NO]];
-}
-
-- (void)playComboSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"combo.mp3" waitForCompletion:NO]];
-}
-
-- (void)playBreakSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"break.mp3" waitForCompletion:NO]];
-}
-
-- (void)playButtonSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"button.mp3" waitForCompletion:NO]];
-}
-
-- (void)playGameoverSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"gameover.wav" waitForCompletion:NO]];
-}
-
-- (void)explodeSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"explode.mp3" waitForCompletion:NO]];
-}
-
-- (void)explodeColorSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"explodeColor.mp3" waitForCompletion:NO]];
-}
-
-- (void)explodeSquareSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"explodeSquare.mp3" waitForCompletion:NO]];
-}
-
-- (void)playGameSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"playButtonSound.mp3" waitForCompletion:NO]];
-}
-
-- (void)scanSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"scanSound.mp3" waitForCompletion:NO]];
-}
-
-- (void)tickSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"tickSound.mp3" waitForCompletion:NO]];
-}
-
-- (void)sirenSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"sirenSound.mp3" waitForCompletion:NO]];
-}
-
-- (void)menuBombDropSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"menuBombDropSound.mp3" waitForCompletion:NO]];
-}
-
-- (void)randomBombSound
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"sound"])
-        [self runAction:[SKAction playSoundFileNamed:@"randomBombSound.mp3" waitForCompletion:NO]];
 }
 
 @end

@@ -37,7 +37,7 @@
     fastHandController = [[FastHandGameViewController alloc]init];
     tutorialController = [[TutorialViewController alloc]init];
 
-    [self.window setRootViewController:tutorialController];
+    [self.window setRootViewController:menuController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     // Connect to game center
