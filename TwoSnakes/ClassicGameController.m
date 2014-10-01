@@ -563,10 +563,10 @@
     NSTimeInterval remainTime = scanTimeInterval - [pauseStart timeIntervalSinceDate:previousFireDate]; // 2 seconds is scanning animation time
     scanTimer = [NSTimer scheduledTimerWithTimeInterval:remainTime target:self selector:@selector(startScan) userInfo:nil repeats:NO];
     
-    NSLog(@"pauseStart %@",pauseStart);
-    NSLog(@"previousFireDate %@",previousFireDate);
-    NSLog(@"Paused time %f",[pauseStart timeIntervalSinceDate:previousFireDate]);
-    NSLog(@"Next scan in %f seconds",remainTime);
+//    NSLog(@"pauseStart %@",pauseStart);
+//    NSLog(@"previousFireDate %@",previousFireDate);
+//    NSLog(@"Paused time %f",[pauseStart timeIntervalSinceDate:previousFireDate]);
+//    NSLog(@"Next scan in %f seconds",remainTime);
 }
 
 #pragma mark - Scan

@@ -32,7 +32,7 @@
     CGFloat gapFromBoundary = 3;
     
     if (IS_IPad) {
-        nodeSize =  screenWidth * 0.13;
+        nodeSize =  screenWidth * 0.13; //100
         gapBetweenCard = 2/IPadMiniRatio;
         gapFromBoundary = 3/IPadMiniRatio;
     }

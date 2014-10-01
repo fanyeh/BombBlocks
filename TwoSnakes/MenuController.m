@@ -263,7 +263,7 @@
             }];
         }];
         loadAnim = NO;
-    } else {
+    } else if ( _fastHandView.hidden) {
         
         _fastHandView.hidden = NO;
     }
@@ -498,7 +498,7 @@
         } else {
             
             // Hide fast hand label if game is first time launch
-            _fastHandLabel.hidden = YES;
+            _fastHandView.hidden = YES;
             _fastHandView.frame = CGRectOffset(_fastHandView.frame, moveDistance, 0);
             
         }

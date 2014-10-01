@@ -42,6 +42,10 @@
             gapFromBound = gapFromBound/IPadMiniRatio;
             scoreFontSize = scoreFontSize/IPadMiniRatio;
             scorePosY= scorePosY/IPadMiniRatio;
+        } else if (screenHeight > 568) {
+            gapFromBound = gapFromBound * frame.size.width/60;
+            scoreFontSize = scoreFontSize * frame.size.width/60;
+            scorePosY= scorePosY * frame.size.width/60;
         }
         
         CGFloat imageSize = frame.size.width - gapFromBound;
@@ -87,6 +91,10 @@
         scoreFontSize = scoreFontSize/IPadMiniRatio;
         gapFromBound = gapFromBound/IPadMiniRatio;
         scorePosY= scorePosY/IPadMiniRatio;
+    } else if (screenHeight > 568) {
+        gapFromBound = gapFromBound * self.frame.size.width/60;
+        scoreFontSize = scoreFontSize * self.frame.size.width/60;
+        scorePosY= scorePosY * self.frame.size.width/60;
     }
 
     // Set up node image
@@ -102,11 +110,11 @@
     
     // Determin bomb color
     int randAsset;
-//    if (reminder > 3)
-//        randAsset = arc4random()%4;
-//    else
-//        randAsset = arc4random()%3;
-    randAsset = arc4random()%4; // Non level test
+    if (reminder > 3)
+        randAsset = arc4random()%4;
+    else
+        randAsset = arc4random()%3;
+//    randAsset = arc4random()%4; // Non level test
 
     // Set bomb color image
     switch (randAsset) {
@@ -134,15 +142,15 @@
     
     // Determine bomb type
     int randBomb;
-//    if (reminder < 5)
-//        randBomb = arc4random()%2;
-//    else if (reminder == 5)
-//        randBomb = arc4random()%3;
-//    else if (reminder == 6)
-//        randBomb = arc4random()%4;
-//    else if (reminder > 6)
-//        randBomb = arc4random()%5;
-    randBomb = arc4random()%5; // Non level test
+    if (reminder < 5)
+        randBomb = arc4random()%2;
+    else if (reminder == 5)
+        randBomb = arc4random()%3;
+    else if (reminder == 6)
+        randBomb = arc4random()%4;
+    else if (reminder > 6)
+        randBomb = arc4random()%5;
+//    randBomb = arc4random()%5; // Non level test
 
     // Bomb Type Image
     CGFloat bombSize = imageSize/2;

@@ -287,8 +287,8 @@
     if (node.hasCount)
         [node removeCountLabel];
     
-//    int randomAsset = arc4random() % _reminder;
-    int randomAsset = arc4random() % 12; // Non level test
+    int randomAsset = arc4random() % _reminder;
+//    int randomAsset = arc4random() % 12; // Non level test
 
     node.level = ceil(randomAsset / 4) + 1;
     
@@ -1277,11 +1277,8 @@
     }
     if (removeBody.level == 2) {
         
-        if (removeBody.assetType == kAssetTypeBlue)
-            [self blinkAnimation:removeBody];
-        else
-            [removeBody.layer addAnimation:[self shakeAnimation:0 repeat:NO] forKey:nil];
-        
+        [removeBody.layer addAnimation:[self shakeAnimation:0 repeat:NO] forKey:nil];
+
     }
     else {
         // Convert to Sprite kit coordinate
@@ -1344,28 +1341,28 @@
 
 #pragma mark - Body Animations
 
-- (void)blinkAnimation:(SnakeNode *)node
-{
-    // Stop the animation after a while (0.4 sec)
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC);
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void)
-                   {
-                       [node.nodeImageView.layer removeAllAnimations];
-                       node.nodeImageView.alpha = 1.0f;
-                   });
-
-    [UIView animateWithDuration:0.15
-                          delay:0.0
-                        options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAutoreverse | UIViewAnimationOptionRepeat
-                     animations:^{
-        
-                         node.nodeImageView.alpha = 0.0f;
-        
-                     }
-                     completion:^(BOOL finished){
-                         
-                     }];
-}
+//- (void)blinkAnimation:(SnakeNode *)node
+//{
+//    // Stop the animation after a while (0.4 sec)
+//    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC);
+//    dispatch_after(popTime, dispatch_get_main_queue(), ^(void)
+//                   {
+//                       [node.nodeImageView.layer removeAllAnimations];
+//                       node.nodeImageView.alpha = 1.0f;
+//                   });
+//
+//    [UIView animateWithDuration:0.15
+//                          delay:0.0
+//                        options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAutoreverse | UIViewAnimationOptionRepeat
+//                     animations:^{
+//        
+//                         node.nodeImageView.alpha = 0.0f;
+//        
+//                     }
+//                     completion:^(BOOL finished){
+//                         
+//                     }];
+//}
 
 - (void)shrinkAnimation:(SnakeNode *)node showExplode:(BOOL)showExplode
 {
