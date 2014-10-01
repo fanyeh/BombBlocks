@@ -84,21 +84,29 @@
     _combos = 0;
     _reminder = 3;
     NSInteger count = [_snakeBody count] - 1;
+    
+    // Play 1st song
     currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
     [self doVolumeFade];
     
+    // Clean existing nodes
     for (int i = 0 ; i < count;i++ ) {
         SnakeNode *n = [_snakeBody lastObject];
         [n removeFromSuperview];
         [_snakeBody removeLastObject];
     }
-    SnakeNode *headNode = [_snakeBody firstObject];
+    
+    // Create new frame and index for head node
     int newInitNodeIndex = arc4random() % [_gamePad.emptyNodeArray count];
     SnakeNode *newInitNode = [_gamePad.emptyNodeArray objectAtIndex:newInitNodeIndex];
 
+    // Create new head node
+    SnakeNode *headNode = [_snakeBody firstObject];
     headNode.frame = newInitNode.frame;
     [headNode setNodeIndexRow:newInitNode.nodeRow andCol:newInitNode.nodeColumn];
     [self updateNextNode:headNode animation:NO];
+    if(headNode.hasCount)
+       [headNode addCountLabel];
 }
 
 - (NodeIndex)updateSnakeNodeIndex:(SnakeNode *)node toFrame:(CGRect)toFrame
@@ -214,39 +222,37 @@
         } completion:^(BOOL finished) {
             
             completBlock();
-            //[self cancelPattern:completBlock];
             
         }];
-        
     }];
 }
 
 -(void)levelChecker
 {
     if (_checkLevel) {
-        if (totalBombs == 125) {
+        if (totalBombs == 105) {
             _reminder = 12;
             [_delegate showLevel:_reminder-2];
         }
-        else if (totalBombs == 100) {
+        else if (totalBombs == 85) {
             _reminder = 11;
             currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-rain" ofType:@"mp3"]];
             [self doVolumeFade];
             [_delegate showLevel:_reminder-2];
             [_delegate updateScanTimeInterval];
         }
-        else if (totalBombs == 80) {
+        else if (totalBombs == 70) {
             _reminder = 10;
             [_delegate showLevel:_reminder-2];
         }
-        else if (totalBombs == 60) {
+        else if (totalBombs == 55) {
             _reminder = 9;
             currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"cool-business-model" ofType:@"mp3"]];
             [self doVolumeFade];
             [_delegate showLevel:_reminder-2];
             [_delegate updateScanTimeInterval];
         }
-        else if (totalBombs == 45) {
+        else if (totalBombs == 40) {
             _reminder = 8;
             [_delegate showLevel:_reminder-2];
         }
@@ -281,8 +287,8 @@
     if (node.hasCount)
         [node removeCountLabel];
     
-    int randomAsset = arc4random() % _reminder;
-    //int randomAsset = arc4random() % 12; // Non level test
+//    int randomAsset = arc4random() % _reminder;
+    int randomAsset = arc4random() % 12; // Non level test
 
     node.level = ceil(randomAsset / 4) + 1;
     
@@ -471,7 +477,6 @@
     bombChain = 0;
     if ([allPatterns count] > 0) {
         
-//        [_particleView playComboSound];
         [_particleView playSound:kSoundTypeComboSound];
 
         for (SnakeNode *n in allPatterns) {
@@ -492,20 +497,16 @@
             for (SnakeNode *n in allPatterns) {
                 
                 if (n.hasBomb) {
-                    
                     bombChain++;
-//                    [_delegate hideLastTutorial];
                     n.scoreAdder = 50;
-                    [n scoreLabelAnimation];
-                    
+                    //[_delegate hideLastTutorial];
                 }
-                else if (n.level < 3) {
-                    
+                else  {
                     n.scoreAdder = ([allPatterns count]-2) * 5 + 5;
                     [_delegate updateScore:n.scoreAdder];
-                    [n scoreLabelAnimation];
-                    
                 }
+                
+                [n scoreLabelAnimation];
                 
                 if (n.hasCount)
                     [n hideCountLabel];
@@ -533,21 +534,10 @@
                     [self reduceLevel:n];
                 }
             }
-            
-            // Remove all combos from snake body
-//            for (SnakeNode *n in allPatterns)
-//            {
-//                if (n.level > 1 && !n.hasBomb)
-//                    [self reduceLevel:n];
-//               else
-//                    [_snakeBody removeObject:n];
-//            }
-            
             if ([bombArray count] > 0)
                 [self triggerBomb:completBlock];
             else
                 [self cancelPattern:completBlock];
-            
         }];
     }
     else  {
@@ -572,7 +562,6 @@
             [self newSnake];
         completBlock();
     }
-
 }
 
 - (void)explodeByBomb:(SnakeNode *)bomb complete:(void(^)(void))completBlock
@@ -732,11 +721,9 @@
             if (node.assetType ==  bomb.assetType) {
                 
                 [self explodeColorAnimation:bomb target:node];
-                
                 [self showScoreLabel:node];
                 [removedNode addObject:node];
                 [self shrinkAnimation:node showExplode:NO];
-//                [_particleView explodeColorSound];
                 [self.particleView playSound:kSoundTypeExplodeColorSound];
 
             }
@@ -842,7 +829,6 @@
             [emptyNodes addObject:node];
     }
 
-//    [_particleView randomBombSound];
     [self.particleView playSound:kSoundTypeRandomBombSound];
 
     [UIView animateWithDuration:0.3 animations:^{
@@ -944,8 +930,7 @@
 
 -(void)squarePatternCheck
 {
-    NSMutableArray *patternArray = [[NSMutableArray alloc]init];
-    
+    NSMutableArray *patternArray;// = [[NSMutableArray alloc]init];
     NSMutableArray *bodyArray = [NSMutableArray arrayWithArray:_snakeBody];
     
     [bodyArray removeObjectsInArray:squarePatterns];
@@ -1290,25 +1275,15 @@
         totalBombs++;
         [self levelChecker];
     }
-    
-    if (removeBody.level == 2)
-//        if (removeBody.assetType == kAssetTypeBlue) {
-            // Animation for circle block
-//            CGAffineTransform t = removeBody.transform;
-//            removeBody.transform = CGAffineTransformScale(t, 0.5, 0.5);
-//
-//            [UIView animateWithDuration:0.4 animations:^{
-//                
-//                removeBody.transform = t;
-//
-//            }];
-//            
-//            [self shrinkAnimation:removeBody showExplode:NO];
-//        }
-//        else
+    if (removeBody.level == 2) {
+        
+        if (removeBody.assetType == kAssetTypeBlue)
+            [self blinkAnimation:removeBody];
+        else
             [removeBody.layer addAnimation:[self shakeAnimation:0 repeat:NO] forKey:nil];
-    else
-    {
+        
+    }
+    else {
         // Convert to Sprite kit coordinate
         CGRect bodyFrame = [removeBody convertRect:removeBody.bounds toView:_gamePad];
         bodyFrame.origin.y = _gamePad.frame.size.height - bodyFrame.origin.y;
@@ -1326,9 +1301,7 @@
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
     [_gamePad bombExplosionWithPosX:posX andPosY:posY bomb:bomb];
-//    [_particleView explodeSound];
     [self.particleView playSound:kSoundTypeExplodeSound];
-
 }
 
 -(void)explodeBombSqaureAnimation:(SnakeNode *)bomb
@@ -1339,9 +1312,7 @@
     CGFloat posX = bodyFrame.origin.x+bodyFrame.size.width/2;
     CGFloat posY = bodyFrame.origin.y+bodyFrame.size.height/2;
     [_gamePad bombExplosionSquare:posX andPosY:posY bomb:bomb];
-//    [_particleView explodeSquareSound];
     [self.particleView playSound:kSoundTypeExplodeSquareSound];
-
 }
 
 -(void)explodeColorAnimation:(SnakeNode *)bomb target:(SnakeNode *)targetNode
@@ -1356,7 +1327,7 @@
     pathLayer.path = path.CGPath;
     pathLayer.strokeColor = bomb.nodeColor.CGColor;
     pathLayer.fillColor = nil;
-    pathLayer.lineWidth = 4.0f;
+    pathLayer.lineWidth = 3.0f;
     pathLayer.lineJoin = kCALineJoinBevel;
     pathLayer.opacity = 0.7;
     pathLayer.name = @"beam";
@@ -1365,7 +1336,7 @@
 
     CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
     pathAnimation.delegate = _gamePad;
-    pathAnimation.duration = 0.4;
+    pathAnimation.duration = 0.3;
     pathAnimation.fromValue = [NSNumber numberWithFloat:0.1f];
     pathAnimation.toValue = [NSNumber numberWithFloat:1.0f];
     [pathLayer addAnimation:pathAnimation forKey:@"strokeEnd"];
@@ -1375,24 +1346,24 @@
 
 - (void)blinkAnimation:(SnakeNode *)node
 {
-    node.nodeImageView.alpha = 1.0f;
-    
-    [UIView animateWithDuration:0.08
+    // Stop the animation after a while (0.4 sec)
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void)
+                   {
+                       [node.nodeImageView.layer removeAllAnimations];
+                       node.nodeImageView.alpha = 1.0f;
+                   });
+
+    [UIView animateWithDuration:0.15
                           delay:0.0
-                        options:
-     
-     UIViewAnimationOptionCurveEaseInOut |
-     UIViewAnimationOptionRepeat |
-     UIViewAnimationOptionAutoreverse |
-     UIViewAnimationOptionAllowUserInteraction
-     
+                        options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionAutoreverse | UIViewAnimationOptionRepeat
                      animations:^{
-                         
+        
                          node.nodeImageView.alpha = 0.0f;
+        
                      }
                      completion:^(BOOL finished){
-                         // Do nothing
-
+                         
                      }];
 }
 
@@ -1417,7 +1388,7 @@
             
             if (showExplode) {
                 
-                if (node.bombType == kBombTypeExplodeBlock)
+                if (node.bombType == kBombTypeExplodeBlock  || node.bombType == kBombTypeRandom)
                     [self explodeBody:node];
                 else if( node.bombType == kBombTypeSquareExplode)
                     [self explodeBombSqaureAnimation:node];
@@ -1527,6 +1498,9 @@
     if (flipBodyArray != nil) {
         
         SnakeNode *n = [flipBodyArray lastObject];
+        
+        if (n.hasCount)
+            [n removeCountLabel];
 
         switch (n.assetType) {
             case kAssetTypeBlue:

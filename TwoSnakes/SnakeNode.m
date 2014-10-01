@@ -102,11 +102,11 @@
     
     // Determin bomb color
     int randAsset;
-    if (reminder > 3)
-        randAsset = arc4random()%4;
-    else
-        randAsset = arc4random()%3;
-    //randAsset = arc4random()%4; // Non level test
+//    if (reminder > 3)
+//        randAsset = arc4random()%4;
+//    else
+//        randAsset = arc4random()%3;
+    randAsset = arc4random()%4; // Non level test
 
     // Set bomb color image
     switch (randAsset) {
@@ -134,15 +134,15 @@
     
     // Determine bomb type
     int randBomb;
-    if (reminder < 5)
-        randBomb = arc4random()%2;
-    else if (reminder == 5)
-        randBomb = arc4random()%3;
-    else if (reminder == 6)
-        randBomb = arc4random()%4;
-    else if (reminder > 6)
-        randBomb = arc4random()%5;
-    //randBomb = arc4random()%5; // Non level test
+//    if (reminder < 5)
+//        randBomb = arc4random()%2;
+//    else if (reminder == 5)
+//        randBomb = arc4random()%3;
+//    else if (reminder == 6)
+//        randBomb = arc4random()%4;
+//    else if (reminder > 6)
+//        randBomb = arc4random()%5;
+    randBomb = arc4random()%5; // Non level test
 
     // Bomb Type Image
     CGFloat bombSize = imageSize/2;
@@ -228,8 +228,19 @@
     _hasCount = YES;
     _count = 9;
     CGFloat size = 15;
+    CGFloat yOffset = 3;
+    
+    if (IS_IPad) {
+        size = size/IPadMiniRatio;
+        yOffset = yOffset/IPadMiniRatio;
+    } else if (screenHeight > 568 && IS_IPhone) {
+        
+        size = size * screenWidth/320;
+        yOffset = yOffset * screenWidth/320;
+    }
+    
     CGFloat pos = (self.frame.size.width-size-1);
-    countLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(pos,3,size,size) fontSize:size];
+    countLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(pos,yOffset,size,size) fontSize:size];
     countLabel.text = [NSString stringWithFormat:@"%ld",_count];
     [self addSubview:countLabel];
 }

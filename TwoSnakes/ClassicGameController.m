@@ -159,6 +159,17 @@
         sliderWidth = sliderWidth/IPadMiniRatio;
     }
     
+    if (IS_IPhone && screenHeight > 568) {
+        scoreOffsetY = scoreOffsetY * screenWidth/320;
+        levelLabelOffsetY = levelLabelOffsetY * screenWidth/320;
+        scoreLabelSize  = scoreLabelSize * screenWidth/320;
+        levelLabelSize = levelLabelSize * screenWidth/320;
+        nextNodePos = nextNodePos + 10;
+        nextNodeSize = nextNodeSize * screenWidth/320;
+        nextLabelFontSize = nextLabelFontSize * screenWidth/320;
+        nextLabelWidth= nextLabelWidth * screenWidth/320;
+    }
+    
     // Score Label
     _scoreLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(0,
                                                               gamePad.frame.origin.y-scoreOffsetY,
@@ -289,7 +300,7 @@
     // Pause Button
     pauseButton = [[UIButton alloc]initWithFrame:CGRectMake(screenWidth-(buttonSize+10),screenHeight-(buttonSize+10), buttonSize, buttonSize)];
     [pauseButton setImage:[UIImage imageNamed:@"pauseButton60.png"] forState:UIControlStateNormal];
-    [pauseButton addTarget:self action:@selector(pauseGame) forControlEvents:UIControlEventTouchDown];
+    [pauseButton addTarget:self action:@selector(pauseGamePress) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:pauseButton];
     
     // View when pause
@@ -354,6 +365,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     pauseView.hidden = NO;
 }
 
@@ -375,6 +387,23 @@
 }
 
 #pragma mark - Effects
+
+-(void)buttonAnimation:(UIButton *)button
+{
+    [_particleView playSound:kSoundTypeButtonSound];
+    
+    CGAffineTransform t = button.transform;
+    
+    [UIView animateWithDuration:0.15 animations:^{
+        
+        button.transform = CGAffineTransformScale(t, 0.85, 0.85);
+        
+    } completion:^(BOOL finished) {
+        
+        button.transform = t;
+    }];
+}
+
 -(void)showLevel:(NSInteger)level
 {
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
@@ -449,117 +478,7 @@
     bgImageView.image = image;
 }
 
-#pragma mark - Controls
-
--(void)continueGame
-{
-    _gameIsPaused = NO;
-    gamePad.userInteractionEnabled = YES;
-    [self resumeSlider];
-    [self resumeTimer:scanTimer];
-}
-
--(void)pauseGame
-{
-    if(_gameIsPaused) {
-        _gameIsPaused = NO;
-    } else {
-        _gameIsPaused = YES;
-        
-        [self buttonAnimation:pauseButton];
-        gamePad.userInteractionEnabled = NO;
-        [self pauseTimer:scanTimer];
-        [self pauseSlider];
-
-        [self.view bringSubviewToFront:pauseView];
-        
-        [UIView animateWithDuration:0.5 animations:^{
-            
-            pauseView.frame = CGRectOffset(pauseView.frame, 0, screenHeight);
-            
-        }];
-    }
-}
-
--(void)pauseSlider
-{
-    [self pauseLayer:scanner.layer];
-    [self pauseLayer:scannerMask.layer];
-    [self pauseLayer:slider1.layer];
-    [self pauseLayer:slider2.layer];
-}
-
--(void)resumeSlider
-{
-    [self resumeLayer:scanner.layer];
-    [self resumeLayer:scannerMask.layer];
-    [self resumeLayer:slider1.layer];
-    [self resumeLayer:slider2.layer];
-}
-
--(void)pauseGameFromBackground
-{
-    if (!_gameIsPaused) {
-        [self.view bringSubviewToFront:pauseView];
-
-        _gameIsPaused = YES;
-        gamePad.userInteractionEnabled = NO;
-        [self pauseTimer:scanTimer];
-        [self pauseSlider];
-        pauseView.frame = CGRectOffset(pauseView.frame, 0, screenHeight);
-    }
-}
-
--(void)playGame
-{
-    _gameIsPaused = NO;
-    [self buttonAnimation:pauseButton];
-    [UIView animateWithDuration:0.5 animations:^{
-        pauseView.frame = CGRectOffset(pauseView.frame, 0, -screenHeight);
-    } completion:^(BOOL finished) {
-        gamePad.userInteractionEnabled = YES;
-        [self resumeSlider];
-        [self resumeTimer:scanTimer];
-    }];
-}
-
--(void)startScan
-{
-    [self scannerAnimation];
-    scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
-}
-
--(void) pauseTimer:(NSTimer *)timer
-{
-    pauseStart = [NSDate date];
-    previousFireDate = [timer fireDate];
-    [timer invalidate];
-}
-
--(void) resumeTimer:(NSTimer *)timer
-{
-    NSTimeInterval pauseTime = scanTimeInterval + [pauseStart timeIntervalSinceDate:previousFireDate];
-    scanTimer = [NSTimer scheduledTimerWithTimeInterval:pauseTime target:self selector:@selector(startScan) userInfo:nil repeats:NO];
-}
-
--(void)showSetting:(UIButton *)button
-{
-    pauseView.hidden = YES;
-    if(_gameIsPaused) {
-        _gameIsPaused = NO;
-    } else {
-        _gameIsPaused = YES;
-        gamePad.userInteractionEnabled = NO;
-        [self pauseTimer:scanTimer];
-        [self pauseSlider];
-    }
-    [self buttonAnimation:button];
-    GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
-    controller.delegate = self;
-    controller.bgImage = bgImageView.image;
-    controller.particleView = _particleView;
-    [self presentViewController:controller animated:YES completion:nil];
-}
+#pragma mark - Control Buttons
 
 -(void)backToHome:(UIButton *)button
 {
@@ -570,61 +489,91 @@
     [scanTimer invalidate];
     [changeScoreTimer invalidate];
     [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
-
-//    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void)buttonAnimation:(UIButton *)button
+-(void)showSetting:(UIButton *)button
 {
-    [_particleView playSound:kSoundTypeButtonSound];
+    [self buttonAnimation:button];
+    pauseView.hidden = YES;
+    [self pauseGame];
+    GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
+    controller.delegate = self;
+    controller.bgImage = bgImageView.image;
+    controller.particleView = _particleView;
+    [self presentViewController:controller animated:YES completion:nil];
+}
 
-    CGAffineTransform t = button.transform;
-    
-    [UIView animateWithDuration:0.15 animations:^{
-        
-        button.transform = CGAffineTransformScale(t, 0.85, 0.85);
-        
+-(void)pauseGamePress
+{
+    [self buttonAnimation:pauseButton];
+    [self pauseGame];
+}
+
+- (void)pauseGame
+{
+    if(!_gameIsPaused) {
+        _gameIsPaused = YES;
+        gamePad.userInteractionEnabled = NO;
+        [self pauseSlider];
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            pauseView.frame = CGRectOffset(pauseView.frame, 0, screenHeight);
+            
+        }];
+    }
+}
+
+-(void)playGame
+{
+    [self buttonAnimation:playButton];
+    [self continueGame];
+}
+
+-(void)continueGame
+{
+    [self.view bringSubviewToFront:pauseView];
+    [UIView animateWithDuration:0.5 animations:^{
+        pauseView.frame = CGRectOffset(pauseView.frame, 0, -screenHeight);
     } completion:^(BOOL finished) {
-        
-        button.transform = t;
+        _gameIsPaused = NO;
+        gamePad.userInteractionEnabled = YES;
+        [self resumeSlider];
     }];
 }
 
--(void)doVolumeFade
+-(void)pauseGameFromBackground
 {
-    if (appDelegate.audioPlayer.volume > 0.1) {
-        
-        appDelegate.audioPlayer.volume -=  0.1;
-        [self performSelector:@selector(doVolumeFade) withObject:nil afterDelay:0.2];
-        
-    } else {
-        // Stop and get the sound ready for playing again
-        [appDelegate.audioPlayer stop];
-        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:currentSongURL error:nil];
-        appDelegate.audioPlayer.numberOfLoops = -1;
-        [appDelegate.audioPlayer prepareToPlay];
-        
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
-            [appDelegate.audioPlayer play];
-            appDelegate.audioPlayer.volume = 0;
-            [self volumeFadeIn];
-        }
+    if (!_gameIsPaused) {
+        _gameIsPaused = YES;
+        gamePad.userInteractionEnabled = NO;
+        [self pauseSlider];
+        pauseView.frame = CGRectOffset(pauseView.frame, 0, screenHeight);
     }
 }
 
-- (void)volumeFadeIn
+-(void) pauseTimer:(NSTimer *)timer
 {
-    if (appDelegate.audioPlayer.volume < 1) {
-        
-        appDelegate.audioPlayer.volume +=  0.1;
-        [self performSelector:@selector(volumeFadeIn) withObject:nil afterDelay:0.2];
-    }
+    pauseStart = [NSDate date];
+    //previousFireDate = [timer fireDate];
+    [timer invalidate];
+}
+
+-(void) resumeTimer:(NSTimer *)timer
+{
+    NSTimeInterval remainTime = scanTimeInterval - [pauseStart timeIntervalSinceDate:previousFireDate]; // 2 seconds is scanning animation time
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:remainTime target:self selector:@selector(startScan) userInfo:nil repeats:NO];
+    
+    NSLog(@"pauseStart %@",pauseStart);
+    NSLog(@"previousFireDate %@",previousFireDate);
+    NSLog(@"Paused time %f",[pauseStart timeIntervalSinceDate:previousFireDate]);
+    NSLog(@"Next scan in %f seconds",remainTime);
 }
 
 #pragma mark - Scan
 
 -(void)scannerAnimation
 {
+    previousFireDate = [NSDate date];
     // Show Scanner
     [UIView animateWithDuration:0.5 animations:^{
         
@@ -652,7 +601,6 @@
     [UIView animateWithDuration:1 animations:^{
         
         if (scanFromRight) {
-            
             scanner.frame = CGRectOffset(scanner.frame, xOffset, 0);
             slider1.frame = CGRectOffset(slider1.frame, xOffset, 0);
             slider2.frame = CGRectOffset(slider2.frame, xOffset, 0);
@@ -693,13 +641,11 @@
         // Hide Scanner
         [self hideScanner];
     }];
-
 }
 
 -(void)hideScanner
 {
     CGFloat xOffset = gamePad.frame.size.height - sliderWidth;
-
     [UIView animateWithDuration:0.5 animations:^{
         
         scannerMask.alpha = 0;
@@ -724,6 +670,30 @@
             scanFromRight = YES;
         }
     }];
+}
+
+-(void)startScan
+{
+    [self scannerAnimation];
+    scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
+}
+
+-(void)pauseSlider
+{
+    [self pauseTimer:scanTimer];
+    [self pauseLayer:scanner.layer];
+    [self pauseLayer:scannerMask.layer];
+    [self pauseLayer:slider1.layer];
+    [self pauseLayer:slider2.layer];
+}
+
+-(void)resumeSlider
+{
+    [self resumeLayer:scanner.layer];
+    [self resumeLayer:scannerMask.layer];
+    [self resumeLayer:slider1.layer];
+    [self resumeLayer:slider2.layer];
+    [self resumeTimer:scanTimer];
 }
 
 #pragma mark - Move
@@ -762,7 +732,7 @@
             }
 
             [snake createBody:^ {
-                
+                // Do nothing
             }];
         }];
     }
@@ -1056,6 +1026,39 @@
 //        }];
 //    }
 //}
+
+#pragma mark - Sound & Music
+
+-(void)doVolumeFade
+{
+    if (appDelegate.audioPlayer.volume > 0.1) {
+        
+        appDelegate.audioPlayer.volume -=  0.1;
+        [self performSelector:@selector(doVolumeFade) withObject:nil afterDelay:0.2];
+        
+    } else {
+        // Stop and get the sound ready for playing again
+        [appDelegate.audioPlayer stop];
+        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:currentSongURL error:nil];
+        appDelegate.audioPlayer.numberOfLoops = -1;
+        [appDelegate.audioPlayer prepareToPlay];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
+            [appDelegate.audioPlayer play];
+            appDelegate.audioPlayer.volume = 0;
+            [self volumeFadeIn];
+        }
+    }
+}
+
+- (void)volumeFadeIn
+{
+    if (appDelegate.audioPlayer.volume < 1) {
+        
+        appDelegate.audioPlayer.volume +=  0.1;
+        [self performSelector:@selector(volumeFadeIn) withObject:nil afterDelay:0.2];
+    }
+}
 
 - (void)stopMusic
 {

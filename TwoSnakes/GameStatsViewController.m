@@ -131,10 +131,8 @@
         if (screenHeight < 568)
             yoffset = 130;
     }
-    else {
-//        yoffset = 240;
+    else
         yGap = 0.0968*screenHeight;
-    }
     
     CGFloat fontSize = 24;
     CGFloat labelYOffset = yoffset+80;
@@ -143,19 +141,19 @@
     CGFloat labelGap = 0.0625*screenWidth + labelWidth;
     CGFloat labelGap2 = 0.09375*screenWidth + labelHeight;
     
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if([language isEqualToString:@"ja"])
+        fontSize = 23;
+    
     if (IS_IPad) {
         labelGap = labelGap/IPadMiniRatio;
         fontSize = fontSize/IPadMiniRatio;
+        yoffset = currentScoreLabel.frame.origin.y + currentScoreLabel.frame.size.height + 30/IPadMiniRatio;
         labelYOffset = yoffset+80/IPadMiniRatio;
         labelHeight = labelHeight/IPadMiniRatio;
         labelWidth = labelWidth/IPadMiniRatio;
     }
     
-    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if([language isEqualToString:@"ja"]) {
-        fontSize = 23;
-    }
-
     // ------------------- Combo ------------------- //
     CustomLabel *comboXLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-labelHeight)/2,
                                                                             labelYOffset,
@@ -183,7 +181,7 @@
     CustomLabel *levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake(comboXLabel.frame.origin.x - labelGap,
                                                                            yoffset-10,
                                                                            labelWidth,
-                                                                           labelHeight)
+                                                                           labelHeight+10)
                                                        fontSize:fontSize];
     
     levelLabel.text = NSLocalizedString(@"Level", nil);
@@ -523,7 +521,6 @@
 
 -(void)buttonAnimation:(UIButton *)button
 {
-//    [_particleView playButtonSound];
     [self.particleView playSound:kSoundTypeButtonSound];
 
     CGAffineTransform t = button.transform;

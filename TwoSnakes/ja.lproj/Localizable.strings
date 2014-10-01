@@ -64,3 +64,7 @@
 "Trigger to eliminate blocks/bombs within the circle" = "爆弾を爆発させたり爆弾が円内に位置したブロックを排除するであろう";
 "Trigger to eliminate blocks/bombs with same color" = "爆弾は、同じ排除する色やブロックの爆弾を爆発させるだろう";
 
+"No Internet Connection" = "インターネットに接続しない";
+"Check your internet connection and try again" = "インターネット接続を確認し、再試行してください";
+"Close" = "クローズ";
+

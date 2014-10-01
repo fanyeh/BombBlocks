@@ -81,6 +81,10 @@
         titleSize = 35;
         blockFontSize = 16;
         subFontSize = 14;
+        _tut1.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
+        _tut2.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
+        _tut3.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
+        _tut4.font = [UIFont fontWithName:@"DINAlternate-Bold" size:blockFontSize];
     }
     
     if(screenHeight > 568 && IS_IPhone) {
@@ -283,11 +287,9 @@
     CGFloat descLabelWidth = screenWidth - descOffsetX*2;
 
     if (screenHeight < 568) {
-    
-        labelSize = labelSize - 30;
+        labelSize = blockFontSize*2+10;
         
     } else if (screenHeight > 568 && IS_IPhone) {
-        
         yStart = yStart + 15;
         //blockFontSize = 20;
         gapBetweenBlock = 40;
@@ -297,7 +299,6 @@
         else if (screenHeight == 667)
             gapBetweenBlock = 50;
 
-        
     } else if (IS_IPad) {
         yStart = yStart + 30;
         blockFontSize = 30;

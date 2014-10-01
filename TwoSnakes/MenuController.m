@@ -183,8 +183,8 @@
     _classicView.frame = CGRectOffset(_classicView.frame, screenWidth-320, 0);
 
     // Adjust image position based on different screen size
-    if (screenHeight > 568 || IS_IPad) {
-        
+//    if (screenHeight > 568 || IS_IPad) {
+    
         [self adjustFrameOnScreenSize:_blueBody2];
         [self adjustFrameOnScreenSize:_blueBomb];
         [self adjustFrameOnScreenSize:_yellowBomb];
@@ -203,16 +203,7 @@
         offsetY = blockLabel.frame.origin.y + buttonOffset - _classicView.frame.origin.y;
         _classicView.frame = CGRectOffset(_classicView.frame,0,offsetY);
         _fastHandView.frame = CGRectOffset(_fastHandView.frame,0,offsetY);
-    }
-}
-
--(void)viewDidDisappear:(BOOL)animated
-{
-    _classicLabel.text = NSLocalizedString(@"Classic",nil);
-    
-    CGFloat moveDistance = (screenWidth - _classicView.frame.size.width)/2 + _classicView.frame.size.width;
-    _fastHandView.frame = CGRectOffset(_fastHandView.frame, moveDistance, 0);
-
+//    }
 }
 
 -(void)adjustFrameOnScreenSize:(UIView *)view
@@ -226,6 +217,7 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [super viewDidAppear:animated];
     if (loadAnim) {
         
         //[particleView introMoveSound];
@@ -273,7 +265,7 @@
         loadAnim = NO;
     } else {
         
-        
+        _fastHandView.hidden = NO;
     }
 }
 
@@ -488,7 +480,6 @@
 
 - (void)gameButtonAnimation
 {
-    
     CGFloat moveDistance = (screenWidth - _classicView.frame.size.width)/2 + _classicView.frame.size.width;
     [UIView animateWithDuration:0.5 animations:^{
         
@@ -503,10 +494,16 @@
                 _fastHandView.frame = CGRectOffset(_fastHandView.frame, moveDistance, 0);
                 
             }];
+            
+        } else {
+            
+            // Hide fast hand label if game is first time launch
+            _fastHandLabel.hidden = YES;
+            _fastHandView.frame = CGRectOffset(_fastHandView.frame, moveDistance, 0);
+            
         }
     }];
 }
-
 
 -(void)explodeBody:(UIView *)body type:(AssetType)type
 {

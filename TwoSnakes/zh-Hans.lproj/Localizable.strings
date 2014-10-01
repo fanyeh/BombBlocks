@@ -63,3 +63,7 @@
 "Trigger to randomly swap all blocks postion" = "引爆炸弹后会随机将方块位置变换";
 "Trigger to eliminate blocks/bombs within the circle" = "引爆炸弹会消除位于圆圈内的方块或炸弹";
 "Trigger to eliminate blocks/bombs with same color" = "引爆炸弹会消除相同颜色的炸弹或方块";
+
+"No Internet Connection" = "目前没有互联网连接";
+"Check your internet connection and try again" = "请确认您的互联网连接后再试一次";
+"Close" = "关闭";

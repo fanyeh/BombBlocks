@@ -25,7 +25,7 @@
 -(void)setScanSpeed:(NSTimeInterval)interval;
 -(void)replayGame;
 -(void)setBgImage:(UIImage *)image;
--(void)pauseGame;
+-(void)pauseGamePress;
 -(void)playGame;
 -(void)pauseGameFromBackground;
 -(void)backToHome:(UIButton *)button;

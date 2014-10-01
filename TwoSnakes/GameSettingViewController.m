@@ -85,8 +85,10 @@
         titlePosY = 50;
         tutorialLabelWidth = labelSize+90/IPadMiniRatio;
         yGap = yGap/IPadMiniRatio;
-    } else if(screenHeight > 568 && IS_IPhone)
+    } else if(screenHeight > 568 && IS_IPhone) {
         titlePosY = 30;
+        titleSize = titleSize + 5;
+    }
     
     CGFloat xCord = (screenWidth - labelSize)/2 - xGap;
     CGFloat centerY = (screenHeight - otherButtonSize*4 - (yGap-otherButtonSize)*3)/2 ;
@@ -165,7 +167,7 @@
 -(void)backToGame:(UIButton *)sender
 {
     [self buttonAnimation:sender];
-    [_delegate continueGame];
+//    [_delegate continueGame];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
