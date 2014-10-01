@@ -188,13 +188,6 @@
     [self setScanSpeed:4];
 }
 
-//-(void)continueGame
-//{
-//    [super continueGame];
-//    [self startCountDown];
-//    [self resumeLayer:pinView.layer];
-//}
-
 -(void)pauseGamePress
 {
     [super pauseGamePress];
@@ -204,11 +197,11 @@
 
 -(void)pauseGameFromBackground
 {
-    [super pauseGameFromBackground];
     if (!self.gameIsPaused) {
         [countDownTimer invalidate];
         [self pauseLayer:pinView.layer];
     }
+    [super pauseGameFromBackground];
 }
 
 -(void)playGame

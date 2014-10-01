@@ -511,6 +511,7 @@
 
 - (void)pauseGame
 {
+    [self.view bringSubviewToFront:pauseView];
     if(!_gameIsPaused) {
         _gameIsPaused = YES;
         gamePad.userInteractionEnabled = NO;
@@ -531,7 +532,6 @@
 
 -(void)continueGame
 {
-    [self.view bringSubviewToFront:pauseView];
     [UIView animateWithDuration:0.5 animations:^{
         pauseView.frame = CGRectOffset(pauseView.frame, 0, -screenHeight);
     } completion:^(BOOL finished) {
@@ -543,6 +543,7 @@
 
 -(void)pauseGameFromBackground
 {
+    [self.view bringSubviewToFront:pauseView];
     if (!_gameIsPaused) {
         _gameIsPaused = YES;
         gamePad.userInteractionEnabled = NO;
@@ -776,10 +777,14 @@
     controller.bgImage = bgImageView.image;
     controller.particleView = _particleView;
     
-    if (levelLabel.hidden)
+    if (levelLabel.hidden) {
         controller.timeMode = YES;
-    else
+        controller.leaderboardID = kFastHandHighScoreLeaderboardId;
+    }
+    else {
         controller.timeMode = NO;
+        controller.leaderboardID = kHighScoreLeaderboardId;
+    }
     
     [self presentViewController:controller animated:YES completion:nil];
 }
@@ -1070,7 +1075,7 @@
 -(void)gameOver
 {
     gamePad.userInteractionEnabled = NO;
-    [scanTimer invalidate];
+    [self pauseSlider];
     [changeScoreTimer invalidate];
     screenShot = [self captureView:self.view];
     [snake setGameoverImage];

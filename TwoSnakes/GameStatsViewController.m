@@ -439,7 +439,8 @@
 - (void)showGameCenter:(UIButton *)button
 {
     [self buttonAnimation:button];
-    [[GCHelper sharedInstance] showGameCenterViewController:self];
+//    [[GCHelper sharedInstance] showGameCenterViewController:self];
+    [[GCHelper sharedInstance] showGameCenterViewController:self leaderboardID:_leaderboardID];
 }
 
 - (void)facebookShare:(UIButton *)button

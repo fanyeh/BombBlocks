@@ -256,14 +256,15 @@ static GCHelper *sharedHelper = nil;
 }
 
 #pragma mark - Game Center UI method
--(void) showGameCenterViewController:(UIViewController *)viewcontroller
+-(void) showGameCenterViewController:(UIViewController *)viewcontroller leaderboardID:(NSString *)leaderboardID
 {
     if (![GKLocalPlayer localPlayer].isAuthenticated)
         [self authenticateLocalUser:viewcontroller];
     else {
         GKGameCenterViewController *gameCenterViewController= [[GKGameCenterViewController alloc] init];
         gameCenterViewController.gameCenterDelegate = self;
-        gameCenterViewController.viewState = GKGameCenterViewControllerStateDefault;
+        gameCenterViewController.viewState = GKGameCenterViewControllerStateLeaderboards;
+        gameCenterViewController.leaderboardIdentifier = leaderboardID;
         [viewcontroller presentViewController: gameCenterViewController
                                      animated:YES
                                    completion:nil];

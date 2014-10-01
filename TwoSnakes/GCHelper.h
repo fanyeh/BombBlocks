@@ -41,7 +41,9 @@
 - (void)authenticateLocalUser:(UIViewController *)gameViewcontroller;
 
 // Game Center UI
--(void) showGameCenterViewController:(UIViewController*)viewController;
+//-(void) showGameCenterViewController:(UIViewController*)viewController;
+-(void) showGameCenterViewController:(UIViewController *)viewcontroller leaderboardID:(NSString *)leaderboardID;
+
 
 // Scores
 - (void) submitScore:(int64_t)score leaderboardId:(NSString*)leaderboardId;

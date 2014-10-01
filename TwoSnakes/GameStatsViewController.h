@@ -27,6 +27,7 @@
 @property (nonatomic,strong) UIImage *gameImage;
 @property (nonatomic,strong) UIImage *bgImage;
 @property (nonatomic,strong) ParticleView *particleView;
+@property (strong,nonatomic) NSString *leaderboardID;
 
 @property (weak,nonatomic) id<replayDelegate>delegate;
 
