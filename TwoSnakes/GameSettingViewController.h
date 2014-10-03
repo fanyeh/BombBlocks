@@ -12,7 +12,7 @@
 @protocol continueDelegate <NSObject>
 @required
 
--(void)continueGame;
+-(void)continueGameFromSetting;
 
 @end
 

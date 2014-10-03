@@ -109,12 +109,14 @@
     scoreLabel.alpha = 0;
     
     // Determin bomb color
+    
     int randAsset;
     if (reminder > 3)
         randAsset = arc4random()%4;
     else
         randAsset = arc4random()%3;
-//    randAsset = arc4random()%4; // Non level test
+    
+//    int randAsset = arc4random()%4; // Non level test
 
     // Set bomb color image
     switch (randAsset) {
@@ -141,6 +143,7 @@
     }
     
     // Determine bomb type
+    
     int randBomb;
     if (reminder < 5)
         randBomb = arc4random()%2;
@@ -150,7 +153,8 @@
         randBomb = arc4random()%4;
     else if (reminder > 6)
         randBomb = arc4random()%5;
-//    randBomb = arc4random()%5; // Non level test
+    
+//    int randBomb = arc4random()%5; // Non level test
 
     // Bomb Type Image
     CGFloat bombSize = imageSize/2;

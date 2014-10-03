@@ -28,7 +28,7 @@
 "Combo" = "Combo";
 "Best" = "Best";
 "New Record" = "New Record";
-"Chain" = "Chain Explode";
+"Chain" = "Chain Explosion";
 "chain" = "Chain";
 
 // Game
@@ -39,7 +39,7 @@
 // Tutorial
 "Swipe to move blocks" = "Swipe to move blocks";
 "Line up blocks to cancel blocks" = "Line up blocks to eliminate them";
-"Cancel more blocks to pop bombs" = "Eliminate more blocks to pop bombs";
+"Cancel more blocks to pop bombs" = "Eliminate blocks to create bomb";
 "Line up with blocks to trigger bomb" ="Line up with blocks to trigger bomb";
 
 "Time's up!" = "Time's up!";
@@ -68,3 +68,5 @@
 "No Internet Connection" = "No Internet Connection";
 "Check your internet connection and try again" = "Check your internet connection and try again";
 "Close" = "Close";
+
+"Score" = "Score";

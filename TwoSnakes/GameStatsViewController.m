@@ -45,7 +45,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    appDelegate = [[UIApplication sharedApplication] delegate];
+
     self.view.backgroundColor = [UIColor blackColor];
     
     numFormatter = [[NSNumberFormatter alloc] init];
@@ -307,10 +308,9 @@
     
     [self showReplayView];
     
-    //[self showChartboost];
+    // -------------------------------------- Show Chartboost Ad -----------------------------------------//
+    [self showChartboost];
     
-    appDelegate = [[UIApplication sharedApplication] delegate];
-
     if([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
         currentSongURL =[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"easy-living" ofType:@"mp3"]];
         [self doVolumeFade];
@@ -439,7 +439,6 @@
 - (void)showGameCenter:(UIButton *)button
 {
     [self buttonAnimation:button];
-//    [[GCHelper sharedInstance] showGameCenterViewController:self];
     [[GCHelper sharedInstance] showGameCenterViewController:self leaderboardID:_leaderboardID];
 }
 
@@ -487,6 +486,7 @@
 }
 
 - (void)didFailToLoadInterstitial:(NSString *)location withError:(CBLoadError)error {
+    
     switch(error){
         case CBLoadErrorInternetUnavailable: {
             NSLog(@"Failed to load Interstitial, no Internet connection !");
@@ -535,30 +535,6 @@
         button.transform = t;
     }];
 }
-
-//-(void)doVolumeFade
-//{
-//    if (appDelegate.audioPlayer.volume > 0.1) {
-//        
-//        appDelegate.audioPlayer.volume -=  0.05 ;
-//        [self performSelector:@selector(doVolumeFade) withObject:nil afterDelay:0.2];
-//        
-//    } else {
-//        // Stop and get the sound ready for playing again
-//        [appDelegate.audioPlayer stop];
-//        //appDelegate.audioPlayer.currentTime = 0;
-//        appDelegate.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:currentSongURL error:nil];
-//        appDelegate.audioPlayer.numberOfLoops = -1;
-//        [appDelegate.audioPlayer prepareToPlay];
-//        
-//        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"]) {
-//            [appDelegate.audioPlayer play];
-//            appDelegate.audioPlayer.volume = 0;
-//            [self volumeFadeIn];
-//        }
-//    }
-//}
-
 
 - (void)didReceiveMemoryWarning
 {

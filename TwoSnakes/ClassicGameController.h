@@ -16,10 +16,13 @@
 @property (assign,nonatomic) BOOL gameIsPaused;
 @property (strong,nonatomic) CustomLabel *scoreLabel;
 @property (strong,nonatomic) CustomLabel *chainLabel;
+@property (strong,nonatomic) CustomLabel *levelLabel;
+@property (nonatomic,assign) BOOL timeMode;
 
-//-(void)startTutorial;
 -(void)hideLevelLabel;
+-(void)showLevelLabel;
 -(void)hideScoreLabel;
+-(void)showScoreLabel;
 -(void)gameOver;
 -(void)disableLevelCheck;
 -(void)setScanSpeed:(NSTimeInterval)interval;
@@ -32,8 +35,8 @@
 -(void)pauseLayer:(CALayer*)layer;
 -(void)resumeLayer:(CALayer*)layer;
 -(void)stopMusic;
--(void)showScoreLabel;
 -(void)continueGame;
 -(void)showSetting:(UIButton *)button;
+-(void)resumeGameFromBackground;
 
 @end

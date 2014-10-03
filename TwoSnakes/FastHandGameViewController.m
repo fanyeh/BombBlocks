@@ -36,6 +36,9 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.timeMode = YES;
+    
     count = 60;
     CGFloat counterPos = 35;
     CGFloat labelSize = 50;
@@ -45,7 +48,6 @@
     }
     
     if (IS_IPad) {
-//        counterPos = counterPos/IPadMiniRatio;
         labelSize = 100;
         counterPos = 80;
     } else if (IS_IPhone && screenHeight > 568) {
@@ -82,6 +84,12 @@
     pinView.layer.shouldRasterize = YES;
     [clockImageView addSubview:pinView];
     
+    redView =  [[UIView alloc]initWithFrame:self.view.frame];
+    redView.backgroundColor = [UIColor colorWithRed:0.434 green:0.005 blue:0.010 alpha:0.400];
+    redView.alpha = 0;
+    redView.userInteractionEnabled = NO;
+    [self.view addSubview:redView];
+    
     // Count down timer
     [self startCountDown];
     
@@ -102,14 +110,7 @@
     [anim setDuration:2]; // rotate speed , smaller the faster
     [anim setRepeatCount:HUGE_VAL];
     [anim setAutoreverses:NO];
-
     [pinView.layer addAnimation:anim forKey:nil];
-    
-    redView =  [[UIView alloc]initWithFrame:self.view.frame];
-    redView.backgroundColor = [UIColor colorWithRed:0.434 green:0.005 blue:0.010 alpha:0.400];
-    redView.alpha = 0;
-    redView.userInteractionEnabled = NO;
-    [self.view addSubview:redView];
 }
 
 -(void)countDown
@@ -158,19 +159,22 @@
 
 -(void)gameOver
 {
+    [super gameOver];
     clockImageView.hidden = YES;
     countDownLabel.hidden = YES;
     [countDownTimer invalidate];
+    
     [pinView.layer removeAllAnimations];
+    
     self.scoreLabel.alpha = 0;
-    [super showScoreLabel];
+    self.levelLabel.alpha = 0;
+    [self showScoreLabel];
+    [self showLevelLabel];
+    
     [UIView animateWithDuration:0.5 animations:^{
         
         self.scoreLabel.alpha = 1;
-        
-    } completion:^(BOOL finished) {
-        
-        [super gameOver];
+        self.levelLabel.alpha = 1;
         
     }];
 }
@@ -178,6 +182,7 @@
 - (void)replayGame
 {
     [super hideScoreLabel];
+    [super hideLevelLabel];
     clockImageView.hidden = NO;
     countDownLabel.hidden = NO;
     [super replayGame];
@@ -202,6 +207,14 @@
         [self pauseLayer:pinView.layer];
     }
     [super pauseGameFromBackground];
+}
+
+- (void)resumeGameFromBackground
+{
+    [super resumeGameFromBackground];
+    [self startCountDown];
+    [self resumeLayer:pinView.layer];
+    [self pinAnimation];
 }
 
 -(void)playGame

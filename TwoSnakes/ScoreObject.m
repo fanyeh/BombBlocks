@@ -14,12 +14,9 @@
 {
     self = [super init];
     if (self) {
-        
         _score = score;
         _interval = 0.1/score;
-        
     }
-    
     return self;
 }
 @end

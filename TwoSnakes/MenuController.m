@@ -38,7 +38,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *classicLabel;
 @property (weak, nonatomic) IBOutlet UILabel *fastHandLabel;
 
-
 @end
 
 @implementation MenuController
@@ -58,11 +57,8 @@
     // Do any additional setup after loading the view from its nib.
     
     // Configure the SKView
-    //SKView * skView = [[SKView alloc]initWithFrame:self.view.frame];
     SKView * skView = [[SKView alloc]initWithFrame:CGRectMake(0, 0, screenWidth, screenHeight)];
 
-    //skView.backgroundColor = [UIColor clearColor];
-    
     // Create and configure the scene.
     particleView = [[ParticleView alloc]initWithSize:skView.bounds.size];
     particleView.scaleMode = SKSceneScaleModeAspectFill;
@@ -170,11 +166,11 @@
     
     UITapGestureRecognizer *playClassic = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(playClassicGame)];
     [_classicView addGestureRecognizer:playClassic];
-    _classicView.layer.cornerRadius = 15;
+    _classicView.layer.cornerRadius = _classicView.frame.size.width/10;
     
     UITapGestureRecognizer *playFastHand= [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(playfastHandGame)];
     [_fastHandView addGestureRecognizer:playFastHand];
-    _fastHandView.layer.cornerRadius = 15;
+    _fastHandView.layer.cornerRadius = _fastHandView.frame.size.width/10;
 
     appDelegate = [[UIApplication sharedApplication] delegate];
     
@@ -183,27 +179,24 @@
     _classicView.frame = CGRectOffset(_classicView.frame, screenWidth-320, 0);
 
     // Adjust image position based on different screen size
-//    if (screenHeight > 568 || IS_IPad) {
-    
-        [self adjustFrameOnScreenSize:_blueBody2];
-        [self adjustFrameOnScreenSize:_blueBomb];
-        [self adjustFrameOnScreenSize:_yellowBomb];
+    [self adjustFrameOnScreenSize:_blueBody2];
+    [self adjustFrameOnScreenSize:_blueBomb];
+    [self adjustFrameOnScreenSize:_yellowBomb];
 
-        _yellowBody.frame = CGRectOffset(_blueBody2.frame, 71,70);
-        _blueBody1.frame = CGRectOffset(_blueBody2.frame,71,70);
-        
-        CGFloat offsetY = screenHeight/2 - (_yellowBomb.frame.origin.y + _yellowBomb.frame.size.width/2);
-        
-        _blueBody2.frame = CGRectOffset(_blueBody2.frame,0,offsetY);
-        _blueBomb.frame = CGRectOffset(_blueBomb.frame,0,offsetY);
-        _yellowBomb.frame = CGRectOffset(_yellowBomb.frame,0,offsetY);
-        _yellowBody.frame = CGRectOffset(_yellowBody.frame,0,offsetY);
-        _blueBody1.frame = CGRectOffset(_blueBody1.frame,0,offsetY);
-        
-        offsetY = blockLabel.frame.origin.y + buttonOffset - _classicView.frame.origin.y;
-        _classicView.frame = CGRectOffset(_classicView.frame,0,offsetY);
-        _fastHandView.frame = CGRectOffset(_fastHandView.frame,0,offsetY);
-//    }
+    _yellowBody.frame = CGRectOffset(_blueBody2.frame, 71,70);
+    _blueBody1.frame = CGRectOffset(_blueBody2.frame,71,70);
+    
+    CGFloat offsetY = screenHeight/2 - (_yellowBomb.frame.origin.y + _yellowBomb.frame.size.width/2);
+    
+    _blueBody2.frame = CGRectOffset(_blueBody2.frame,0,offsetY);
+    _blueBomb.frame = CGRectOffset(_blueBomb.frame,0,offsetY);
+    _yellowBomb.frame = CGRectOffset(_yellowBomb.frame,0,offsetY);
+    _yellowBody.frame = CGRectOffset(_yellowBody.frame,0,offsetY);
+    _blueBody1.frame = CGRectOffset(_blueBody1.frame,0,offsetY);
+    
+    offsetY = blockLabel.frame.origin.y + buttonOffset - _classicView.frame.origin.y;
+    _classicView.frame = CGRectOffset(_classicView.frame,0,offsetY);
+    _fastHandView.frame = CGRectOffset(_fastHandView.frame,0,offsetY);
 }
 
 -(void)adjustFrameOnScreenSize:(UIView *)view
@@ -220,7 +213,6 @@
     [super viewDidAppear:animated];
     if (loadAnim) {
         
-        //[particleView introMoveSound];
         [particleView playSound:kSoundTypeIntroMoveSound];
         [UIView animateWithDuration:1.0 animations:^{
             
@@ -266,6 +258,12 @@
     } else if ( _fastHandView.hidden) {
         
         _fastHandView.hidden = NO;
+        CGFloat moveDistance = (screenWidth - _classicView.frame.size.width)/2 + _classicView.frame.size.width;
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            _fastHandView.frame = CGRectOffset(_fastHandView.frame, moveDistance, 0);
+            
+        }];
     }
 }
 
@@ -497,9 +495,9 @@
             
         } else {
             
-            // Hide fast hand label if game is first time launch
+            // Hide fast hand view if game is first time launch
             _fastHandView.hidden = YES;
-            _fastHandView.frame = CGRectOffset(_fastHandView.frame, moveDistance, 0);
+//            _fastHandView.frame = CGRectOffset(_fastHandView.frame, moveDistance, 0);
             
         }
     }];
@@ -519,8 +517,8 @@
     if (appDelegate.audioPlayer.volume < 1) {
         
         appDelegate.audioPlayer.volume +=  0.1;
-
         [self performSelector:@selector(firstLauchMusicPlay) withObject:nil afterDelay:0.2];
+        
     }
 }
 

@@ -484,14 +484,15 @@
             [n.layer removeAllAnimations];
             [_gamePad showEmptyNodeBorder:n];
                         
-            // Bomb explode animation
+            // Animation to show bomb/block explodsion
             if (n.hasBomb)
                 [self shrinkAnimation:n showExplode:YES];
             else
                 [self shrinkAnimation:n showExplode:NO];
         }
         
-        [UIView animateWithDuration: 0.5 animations:^{
+        // Animation to show score label
+        [UIView animateWithDuration: 0.4 animations:^{
             
             // Show scores
             for (SnakeNode *n in allPatterns) {
@@ -1271,15 +1272,15 @@
 
 -(void)explodeBody:(SnakeNode *)removeBody
 {
+    // Check if need advance to next level
     if (removeBody.hasBomb) {
         totalBombs++;
         [self levelChecker];
     }
-    if (removeBody.level == 2) {
-        
+    
+    // If block block is level 2 then shake
+    if (removeBody.level == 2)
         [removeBody.layer addAnimation:[self shakeAnimation:0 repeat:NO] forKey:nil];
-
-    }
     else {
         // Convert to Sprite kit coordinate
         CGRect bodyFrame = [removeBody convertRect:removeBody.bounds toView:_gamePad];
@@ -1326,7 +1327,7 @@
     pathLayer.fillColor = nil;
     pathLayer.lineWidth = 3.0f;
     pathLayer.lineJoin = kCALineJoinBevel;
-    pathLayer.opacity = 0.7;
+    pathLayer.opacity = 0.6;
     pathLayer.name = @"beam";
     
     [_gamePad.layer addSublayer:pathLayer];
@@ -1394,33 +1395,6 @@
             }
         }];
     }];
-    
-//    [UIView animateWithDuration:0.25
-//                          delay:0.0
-//                        options:
-//     UIViewAnimationOptionCurveEaseInOut |
-//     UIViewAnimationOptionRepeat |
-//     UIViewAnimationOptionAutoreverse
-//     
-//                     animations:^{
-//                         
-//                         node.nodeImageView.transform = CGAffineTransformScale(t, 0.5, 0.5);
-//                     
-//                     }
-//                     completion:^(BOOL finished){
-//                         // Do nothing
-//                         node.nodeImageView.transform = t;
-//                         
-//                         if (showExplode) {
-//                             
-//                             if (node.bombType == kBombTypeExplodeBlock)
-//                                 [self explodeBody:node];
-//                             else if( node.bombType == kBombTypeSquareExplode)
-//                                 [self explodeBombSqaureAnimation:node];
-//                             else if( node.bombType == kBombTypeExplodeHorizontal || node.bombType == kBombTypeExplodeVertical)
-//                                 [self explodeBombAnimation:node];
-//                         }
-//                     }];
 }
 
 -(CABasicAnimation *)shakeAnimation:(NSInteger)i repeat:(BOOL)repeat
@@ -1513,7 +1487,6 @@
                 n.nodeImageView.image = [UIImage imageNamed:@"go_yellow.png"];
                 break;
         }
-        
         [flipBodyArray removeLastObject];
         
         if ([flipBodyArray count] > 0) {
@@ -1530,7 +1503,6 @@
 -(void)flip
 {
     SnakeNode *n = [flipBodyArray lastObject];
-    
     CABasicAnimation* anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation.y"];
     anim.delegate = self;
     [anim setToValue:[NSNumber numberWithFloat:0]]; // satrt angle
@@ -1538,7 +1510,6 @@
     [anim setDuration:0.1]; // rotate speed
     [anim setRepeatCount:0];
     [anim setAutoreverses:NO];
-    
     [n.nodeImageView.layer addAnimation:anim forKey:nil];
 }
 

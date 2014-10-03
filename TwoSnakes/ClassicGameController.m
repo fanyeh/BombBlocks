@@ -37,7 +37,6 @@
     MKAppDelegate *appDelegate;
     
     UIImage *screenShot;
-    CustomLabel *levelLabel;
     NSInteger maxBombChain;
     UIImageView *scanner;
     UIView *scannerMask;
@@ -57,24 +56,14 @@
     NSTimer *scanTimer;
     NSTimer *changeScoreTimer;
     
-    // Tutorial
-//    CGFloat tutorialViewHeight;
-//    CGRect tutorialFrame;
-//    CGRect tutorialLabelFrame;
-//    NSInteger tutorialFontSize;
-//    CGFloat tutorialLabelOffset;
-//    
-//    UIView *tutorial1BG;
-//    UIView *tutorial2BG;
-//    UIView *tutorial3BG;
-//    UIView *tutorial4BG;
-//    NSInteger tutorialMode;
-    
     NSDate *pauseStart, *previousFireDate;
     UIView *slider1 , *slider2;
     
     NSURL *currentSongURL;
     CGFloat sliderWidth;
+    CGFloat sliderLength;
+    
+    BOOL controllerIsPresenting;
 }
 @end
 
@@ -93,14 +82,21 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    // Do any additional setup after loading the view.
+
     self.view.backgroundColor = [UIColor colorWithWhite:0.063 alpha:1.000];
+    
+    // App delegate
+    appDelegate = [[UIApplication sharedApplication] delegate];
+    
+    // Play Mode
+    _timeMode = NO;
     
     // BG image
     bgImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"Background.png"]];
     [self.view addSubview:bgImageView];
     
-    // Do any additional setup after loading the view.
+    // Score number formatter
     numFormatter = [[NSNumberFormatter alloc] init];
     [numFormatter setGroupingSeparator:@","];
     [numFormatter setGroupingSize:3];
@@ -114,9 +110,8 @@
     if (screenHeight < 568 && IS_IPhone) {
         gamePad.frame = CGRectOffset(gamePad.frame, 0, 20);
         nextNodePos = gamePad.frame.origin.y+gamePad.frame.size.height+5;
-    } else if (IS_IPad) {
+    } else if (IS_IPad)
         nextNodePos = gamePad.frame.origin.y+gamePad.frame.size.height+25/0.6;
-    }
     
     // -------------------- Setup particle views -------------------- //
     // Configure the SKView
@@ -142,8 +137,7 @@
     CGFloat levelLabelSize = 20;
     CGFloat levelLabelOffsetY = 40;
     CGFloat buttonSize = 30;
-//    tutorialFontSize = 20;
-    CGFloat sliderLength = 9;
+    sliderLength = 9;
     sliderWidth =3;
     if (IS_IPad) {
         nextNodeSize = nextNodeSize/IPadMiniRatio;
@@ -152,7 +146,6 @@
         levelLabelSize = (levelLabelSize-3)/IPadMiniRatio;
         levelLabelOffsetY =levelLabelOffsetY/IPadMiniRatio+10;
         buttonSize = buttonSize/IPadMiniRatio;
-//        tutorialFontSize = tutorialFontSize/IPadMiniRatio;
         scoreLabelSize = (scoreLabelSize-3)/IPadMiniRatio;
         scoreOffsetY = scoreOffsetY/IPadMiniRatio+10;
         sliderLength = sliderLength/IPadMiniRatio;
@@ -188,16 +181,13 @@
     [gamePad addSubview:snake];
     snake.particleView = _particleView;
     
-    
     // Next Node
-    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((screenWidth-nextNodeSize)/2,
-                                                          nextNodePos ,
-                                                          nextNodeSize,
-                                                          nextNodeSize)];
+    nextNode = [[SnakeNode alloc]initWithFrame:CGRectMake((screenWidth-nextNodeSize)/2,nextNodePos,nextNodeSize,nextNodeSize)];
     snake.nextNode = nextNode;
     [snake updateNextNode:nextNode animation:YES];
     [self.view addSubview:nextNode];
     
+    // Next Label
     CustomLabel *nextLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-nextLabelWidth)/2,
                                                                           nextNode.frame.origin.y + nextNodeSize,
                                                                           nextLabelWidth,
@@ -206,31 +196,19 @@
     nextLabel.text = NSLocalizedString(@"Next", nil) ;
     [self.view addSubview:nextLabel];
 
-    // App delegate
-    appDelegate = [[UIApplication sharedApplication] delegate];
-
     // Turn music
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"music"])
         [appDelegate.audioPlayer play];
     
     // Effects
-    levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-150)/2,
+    _levelLabel = [[CustomLabel alloc]initWithFrame:CGRectMake((screenWidth-150)/2,
                                                               gamePad.frame.origin.y-levelLabelOffsetY,
                                                               150,
                                                               levelLabelSize+5)
                                           fontSize:levelLabelSize];
-    //levelLabel.textColor = [UIColor colorWithWhite:0.400 alpha:1.000];
-    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if ([language isEqualToString:@"zh-Hans"])
-        levelLabel.text = @"第 1 关";
-    else if ([language isEqualToString:@"zh-Hant"])
-        levelLabel.text = @"第 1 關";
-    else if ([language isEqualToString:@"ja"])
-        levelLabel.text = @"ステージ 1 ";
-    else
-        levelLabel.text = @"Stage 1";
-
-    [self.view addSubview:levelLabel];
+    
+    [self resetLevelLabel];
+    [self.view addSubview:_levelLabel];
     
     
     // Chain Label
@@ -245,38 +223,24 @@
     _chainLabel.center = self.view.center;
     [self.view addSubview:_chainLabel];
     
-    // Scanner
-    scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
-                                                          gamePad.frame.origin.y,
-                                                          sliderWidth,
-                                                          gamePad.frame.size.height)];
-    
+    // -------------- Scanner ----------------------------- //
+    scannerMask = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,sliderWidth,gamePad.frame.size.height)];
     scannerMask.backgroundColor = [UIColor colorWithRed:0.000 green:0.098 blue:0.185 alpha:0.400];
     scannerMask.alpha = 0;
     [self.view addSubview:scannerMask];
 
     // Slider holder
-    slider1 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-sliderWidth,
-                                                      gamePad.frame.origin.y-sliderLength,
-                                                      sliderLength,
-                                                      sliderLength)];
+    slider1 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-sliderWidth,gamePad.frame.origin.y-sliderLength,sliderLength,sliderLength)];
     slider1.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:slider1];
     slider1.alpha = 0;
 
-    slider2 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-sliderWidth,
-                                                      gamePad.frame.origin.y+gamePad.frame.size.height,
-                                                      sliderLength,
-                                                      sliderLength)];
+    slider2 = [[UIView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x-sliderWidth,gamePad.frame.origin.y+gamePad.frame.size.height,sliderLength,sliderLength)];
     slider2.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:slider2];
     slider2.alpha = 0;
     
-    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,
-                                                           gamePad.frame.origin.y,
-                                                           sliderWidth,
-                                                           gamePad.frame.size.height)];
-    
+    scanner = [[UIImageView alloc]initWithFrame:CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,sliderWidth,gamePad.frame.size.height)];
     scanner.image = [UIImage imageNamed:@"scanner.png"];
     scanner.alpha = 0;
     [self.view addSubview:scanner];
@@ -285,6 +249,7 @@
     scanTimeInterval = 6;
     scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
     
+    // ------------------------------- Controll Buttons ---------------------------------------//
     // Home Button
     homeButton = [[UIButton alloc]initWithFrame:CGRectMake(10, screenHeight-(buttonSize+10), buttonSize, buttonSize)];
     [homeButton setImage:[UIImage imageNamed:@"home60.png"] forState:UIControlStateNormal];
@@ -346,44 +311,35 @@
     [gamePad addGestureRecognizer:swipeUp];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(pauseGameFromBackground) name:@"resignActive" object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(resumeGameFromBackground) name:@"becomeActive" object:nil];
     
     _gameIsPaused = NO;
-    
-    // Tutorial
-//    tutorialViewHeight = gamePad.frame.origin.y-10;
-//    tutorialFrame = CGRectMake(0,
-//                               -tutorialViewHeight,
-//                               screenWidth ,
-//                               tutorialViewHeight);
-//    
-//    tutorialLabelOffset = 5;
-//    tutorialLabelFrame = CGRectMake(0,tutorialLabelOffset,screenWidth,tutorialFontSize+5);
-//    tutorialMode = [[NSUserDefaults standardUserDefaults]integerForKey:@"tutorial"];
-//    if (tutorialMode == 1)
-//        [self showTutorial1];
+}
+
+- (void)resetLevelLabel
+{
+    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+    if ([language isEqualToString:@"zh-Hans"])
+        _levelLabel.text = @"第 1 关";
+    else if ([language isEqualToString:@"zh-Hant"])
+        _levelLabel.text = @"第 1 關";
+    else if ([language isEqualToString:@"ja"])
+        _levelLabel.text = @"ステージ 1 ";
+    else
+        _levelLabel.text = @"Stage 1";
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     pauseView.hidden = NO;
+    controllerIsPresenting = YES;
 }
 
--(void)pauseLayer:(CALayer*)layer
+-(void)viewWillDisappear:(BOOL)animated
 {
-    CFTimeInterval pausedTime = [layer convertTime:CACurrentMediaTime() fromLayer:nil];
-    layer.speed = 0.0;
-    layer.timeOffset = pausedTime;
-}
-
--(void)resumeLayer:(CALayer*)layer
-{
-    CFTimeInterval pausedTime = [layer timeOffset];
-    layer.speed = 1.0;
-    layer.timeOffset = 0.0;
-    layer.beginTime = 0.0;
-    CFTimeInterval timeSincePause = [layer convertTime:CACurrentMediaTime() fromLayer:nil] - pausedTime;
-    layer.beginTime = timeSincePause;
+    [super viewWillDisappear:animated];
+    controllerIsPresenting = NO;
 }
 
 #pragma mark - Effects
@@ -408,19 +364,19 @@
 {
     NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
     if ([language isEqualToString:@"zh-Hans"])
-        levelLabel.text = [NSString stringWithFormat:@"第 %ld 关",level];
+        _levelLabel.text = [NSString stringWithFormat:@"第 %ld 关",level];
     else if ([language isEqualToString:@"zh-Hant"])
-        levelLabel.text = [NSString stringWithFormat:@"第 %ld 關",level];
+        _levelLabel.text = [NSString stringWithFormat:@"第 %ld 關",level];
     else if ([language isEqualToString:@"ja"])
-        levelLabel.text = [NSString stringWithFormat:@"ステージ %ld",level];
+        _levelLabel.text = [NSString stringWithFormat:@"ステージ %ld",level];
     else
-        levelLabel.text = [NSString stringWithFormat:@"Stage %ld",level];
+        _levelLabel.text = [NSString stringWithFormat:@"Stage %ld",level];
     
-    levelLabel.alpha = 0;
+    _levelLabel.alpha = 0;
 
     [UIView animateWithDuration:2 animations:^{
         
-        levelLabel.alpha = 1;
+        _levelLabel.alpha = 1;
         
     }];
 }
@@ -447,7 +403,13 @@
 
 -(void)hideLevelLabel
 {
-    levelLabel.hidden = YES;
+    _levelLabel.hidden = YES;
+}
+
+-(void)showLevelLabel
+{
+    _levelLabel.hidden = NO;
+    _levelLabel.text = NSLocalizedString( @"Score", nil);
 }
 
 -(void)hideScoreLabel
@@ -483,26 +445,18 @@
 -(void)backToHome:(UIButton *)button
 {
     [self buttonAnimation:button];
+    
     currentSongURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"goodbye-dream" ofType:@"mp3"]];
     [self doVolumeFade];
     pauseView.hidden = YES;
+    
     [scanTimer invalidate];
     [changeScoreTimer invalidate];
+    
     [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void)showSetting:(UIButton *)button
-{
-    [self buttonAnimation:button];
-    pauseView.hidden = YES;
-    [self pauseGame];
-    GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
-    controller.delegate = self;
-    controller.bgImage = bgImageView.image;
-    controller.particleView = _particleView;
-    [self presentViewController:controller animated:YES completion:nil];
-}
-
+// Pause button Presssed
 -(void)pauseGamePress
 {
     [self buttonAnimation:pauseButton];
@@ -512,6 +466,7 @@
 - (void)pauseGame
 {
     [self.view bringSubviewToFront:pauseView];
+    [self changeScoreWithoutAnimation];
     if(!_gameIsPaused) {
         _gameIsPaused = YES;
         gamePad.userInteractionEnabled = NO;
@@ -524,6 +479,7 @@
     }
 }
 
+// Play button pressed
 -(void)playGame
 {
     [self buttonAnimation:playButton];
@@ -533,29 +489,67 @@
 -(void)continueGame
 {
     [UIView animateWithDuration:0.5 animations:^{
+        
         pauseView.frame = CGRectOffset(pauseView.frame, 0, -screenHeight);
+        
     } completion:^(BOOL finished) {
+        
         _gameIsPaused = NO;
         gamePad.userInteractionEnabled = YES;
         [self resumeSlider];
     }];
 }
 
+// Background or Setting button pressed
+-(void)showSetting:(UIButton *)button
+{
+    [self buttonAnimation:button];
+    [self pauseGameFromBackground];
+
+    // Present setting view controller
+    GameSettingViewController *controller =  [[GameSettingViewController alloc]init];
+    controller.delegate = self;
+    controller.bgImage = bgImageView.image;
+    controller.particleView = _particleView;
+    [self presentViewController:controller animated:YES completion:nil];
+}
+
+-(void)continueGameFromSetting
+{
+    _gameIsPaused = NO;
+    gamePad.userInteractionEnabled = YES;
+    [self resumeSlider];
+}
+
 -(void)pauseGameFromBackground
 {
-    [self.view bringSubviewToFront:pauseView];
-    if (!_gameIsPaused) {
-        _gameIsPaused = YES;
-        gamePad.userInteractionEnabled = NO;
-        [self pauseSlider];
-        pauseView.frame = CGRectOffset(pauseView.frame, 0, screenHeight);
+    if (controllerIsPresenting) {
+        NSLog(@"Enter BG");
+        [self changeScoreWithoutAnimation];
+        if (!_gameIsPaused) {
+            _gameIsPaused = YES;
+            gamePad.userInteractionEnabled = NO;
+            [self pauseSlider];
+        } else {
+            pauseView.frame = CGRectOffset(pauseView.frame, 0, -screenHeight);
+        }
     }
 }
 
+- (void)resumeGameFromBackground
+{
+    if (controllerIsPresenting) {
+        NSLog(@"Resume from BG");
+        _gameIsPaused = NO;
+        gamePad.userInteractionEnabled = YES;
+        [self resumeSlider];
+    }
+}
+
+// Timer and Layers
 -(void) pauseTimer:(NSTimer *)timer
 {
     pauseStart = [NSDate date];
-    //previousFireDate = [timer fireDate];
     [timer invalidate];
 }
 
@@ -563,11 +557,23 @@
 {
     NSTimeInterval remainTime = scanTimeInterval - [pauseStart timeIntervalSinceDate:previousFireDate]; // 2 seconds is scanning animation time
     scanTimer = [NSTimer scheduledTimerWithTimeInterval:remainTime target:self selector:@selector(startScan) userInfo:nil repeats:NO];
-    
-//    NSLog(@"pauseStart %@",pauseStart);
-//    NSLog(@"previousFireDate %@",previousFireDate);
-//    NSLog(@"Paused time %f",[pauseStart timeIntervalSinceDate:previousFireDate]);
-//    NSLog(@"Next scan in %f seconds",remainTime);
+}
+
+-(void)pauseLayer:(CALayer*)layer
+{
+    CFTimeInterval pausedTime = [layer convertTime:CACurrentMediaTime() fromLayer:nil];
+    layer.speed = 0.0;
+    layer.timeOffset = pausedTime;
+}
+
+-(void)resumeLayer:(CALayer*)layer
+{
+    CFTimeInterval pausedTime = [layer timeOffset];
+    layer.speed = 1.0;
+    layer.timeOffset = 0.0;
+    layer.beginTime = 0.0;
+    CFTimeInterval timeSincePause = [layer convertTime:CACurrentMediaTime() fromLayer:nil] - pausedTime;
+    layer.beginTime = timeSincePause;
 }
 
 #pragma mark - Scan
@@ -576,20 +582,20 @@
 {
     previousFireDate = [NSDate date];
     // Show Scanner
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.4 animations:^{
         
         scannerMask.alpha = 1;
         scanner.alpha = 1;
         slider1.alpha = 1;
         slider2.alpha = 1;
-
+        
     } completion:^(BOOL finished) {
         
         [_particleView removeAllChildren];
         [_particleView removeAllActions];
         [self performScanning];
         gamePad.userInteractionEnabled = NO;
-
+        
     }];
 }
 
@@ -599,7 +605,7 @@
     [_particleView playSound:kSoundTypeScanSound];
 
     CGFloat xOffset = gamePad.frame.size.width - sliderWidth;
-    [UIView animateWithDuration:1 animations:^{
+    [UIView animateWithDuration:0.8 animations:^{
         
         if (scanFromRight) {
             scanner.frame = CGRectOffset(scanner.frame, xOffset, 0);
@@ -632,14 +638,11 @@
                         [self actionsAfterMove];
                     }];
                 } else {
-//                    if (tutorialMode==2)
-//                        [self showTutorial3];
+                    
                     [self actionsAfterMove];
                 }
             }
         }];
-        
-        // Hide Scanner
         [self hideScanner];
     }];
 }
@@ -647,7 +650,7 @@
 -(void)hideScanner
 {
     CGFloat xOffset = gamePad.frame.size.height - sliderWidth;
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.4 animations:^{
         
         scannerMask.alpha = 0;
         scanner.alpha = 0;
@@ -658,16 +661,10 @@
         
         if (scanFromRight) {
             scannerMask.frame = CGRectOffset(scannerMask.frame, xOffset, 0);
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
-                                           scannerMask.frame.origin.y,
-                                           3,
-                                           gamePad.frame.size.height);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,sliderWidth,gamePad.frame.size.height);
             scanFromRight = NO;
         } else {
-            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,
-                                           scannerMask.frame.origin.y,
-                                           3,
-                                           gamePad.frame.size.height);
+            scannerMask.frame = CGRectMake(scannerMask.frame.origin.x,scannerMask.frame.origin.y,sliderWidth,gamePad.frame.size.height);
             scanFromRight = YES;
         }
     }];
@@ -703,8 +700,7 @@
 {
     if (gamePad.userInteractionEnabled && ![snake checkIsGameover]) {
         
-//        if (tutorialMode==1)
-//            [self showTutorial2];
+        [_particleView playSound:kSoundTypeMoveSound];
         
         MoveDirection dir;
         switch (sender.direction) {
@@ -721,8 +717,6 @@
                 dir = kMoveDirectionRight;
                 break;
         }
-        
-        [_particleView playSound:kSoundTypeMoveSound];
         
         [snake moveAllNodesBySwipe:dir complete:^{
             
@@ -752,9 +746,6 @@
         [gamePad createBombWithReminder:snake.reminder body:[snake snakeBody] complete:^{
             
             gamePad.userInteractionEnabled = YES;
-            
-//            if (tutorialMode==3)
-//                [self showTutorial4];
 
         }];
     }
@@ -777,14 +768,12 @@
     controller.bgImage = bgImageView.image;
     controller.particleView = _particleView;
     
-    if (levelLabel.hidden) {
-        controller.timeMode = YES;
+    // Determine play mode
+    controller.timeMode = _timeMode;
+    if (_timeMode)
         controller.leaderboardID = kFastHandHighScoreLeaderboardId;
-    }
-    else {
-        controller.timeMode = NO;
+    else
         controller.leaderboardID = kHighScoreLeaderboardId;
-    }
     
     [self presentViewController:controller animated:YES completion:nil];
 }
@@ -809,20 +798,27 @@
     
     if (scoreGap == 0) {
         [changeScoreTimer invalidate];
-
         [scoreArray removeObjectAtIndex:0];
         
         if ([scoreArray count]>0) {
             ScoreObject *scoreObject = [scoreArray firstObject];
             scoreGap = scoreObject.score;
-            changeScoreTimer = [NSTimer scheduledTimerWithTimeInterval:scoreObject.interval
-                                                                target:self
-                                                              selector:@selector(changeScore)
-                                                              userInfo:nil
-                                                               repeats:YES];
+            changeScoreTimer = [NSTimer scheduledTimerWithTimeInterval:scoreObject.interval target:self selector:@selector(changeScore) userInfo:nil repeats:YES];
         }
     }
 }
+
+-(void)changeScoreWithoutAnimation
+{
+    [changeScoreTimer invalidate];
+    score += scoreGap;
+    for (ScoreObject *so in scoreArray) {
+        score += so.score;
+    }
+    _scoreLabel.text = [numFormatter stringFromNumber:[NSNumber numberWithInteger:score]];
+    [scoreArray removeAllObjects];
+}
+
 - (UIImage *)captureView:(UIView *)view
 {
     settingButton.hidden = YES;
@@ -851,186 +847,6 @@
     scanTimeInterval -= 0.5;
     scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
 }
-
-#pragma mark - Tutorial
-
-//-(void)startTutorial
-//{
-//    [self replayGame];
-//    tutorialMode = 1;
-//    [self showTutorial1];
-//}
-//
-// -(void)showTutorial1
-//{
-//    tutorial1BG = [[UIView alloc]initWithFrame:tutorialFrame];
-//    tutorial1BG.backgroundColor = [UIColor clearColor];
-//    [self.view addSubview:tutorial1BG];
-//    
-//    _scoreLabel.hidden = YES;
-//    levelLabel.hidden = YES;
-//    
-//    // 1. Swipe
-//    CustomLabel *swipeText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
-//                                                      fontSize:tutorialFontSize];
-//    swipeText.text = NSLocalizedString(@"Swipe to move blocks" , nil);
-//    [tutorial1BG addSubview:swipeText];
-//    
-//    CGFloat swipeImageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
-//    UIImageView *swipe = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-swipeImageSize)/2,
-//                                                                       tutorialFontSize+tutorialLabelOffset+5,
-//                                                                       swipeImageSize,
-//                                                                       swipeImageSize)];
-//    
-//
-//    swipe.image = [UIImage imageNamed:@"tutorialSwipe116.png"];
-//    [tutorial1BG addSubview:swipe];
-//    
-//    [self showTutorial:tutorial1BG];
-//}
-//
-//-(void)showTutorial2
-//{
-//    tutorialMode++;
-//    [self hideTutorial:tutorial1BG complete:^{
-//        
-//        tutorial2BG = [[UIView alloc]initWithFrame:tutorialFrame];
-//        tutorial2BG.backgroundColor = [UIColor clearColor];
-//        [self.view addSubview:tutorial2BG];
-//        
-//        // 2. Combo
-//        CustomLabel *tutComboText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
-//                                                             fontSize:tutorialFontSize];
-//        tutComboText.text =  NSLocalizedString(@"Line up blocks to cancel blocks" , nil);
-//        [tutorial2BG addSubview:tutComboText];
-//        
-//        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
-//
-//        UIImageView *tutorialCombo = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2,
-//                                                                                  tutorialFontSize+tutorialLabelOffset+5,
-//                                                                                  320*(imageSize/70),
-//                                                                                  imageSize)];
-//        
-//        tutorialCombo.image = [UIImage imageNamed:@"tutorialCombo116.png"];
-//        [tutorial2BG addSubview:tutorialCombo];
-//        
-//        [self showTutorial:tutorial2BG];
-//
-//    }];
-//}
-//
-//-(void)showTutorial3
-//{
-//    tutorialMode++;
-//    [self hideTutorial:tutorial2BG complete:^{
-//        
-//        tutorial3BG = [[UIView alloc]initWithFrame:tutorialFrame];
-//        tutorial3BG.backgroundColor = [UIColor clearColor];
-//        [self.view addSubview:tutorial3BG];
-//        
-//        // 3. Bomb
-//        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
-//                                                            fontSize:tutorialFontSize];
-//        tutBombText.text =  NSLocalizedString(@"Cancel more blocks to pop bombs" , nil);
-//        [tutorial3BG addSubview:tutBombText];
-//        
-//        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
-//        
-//        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2,
-//                                                                                 tutorialFontSize+tutorialLabelOffset+5,
-//                                                                                 320*(imageSize/70),
-//                                                                                 imageSize)];
-//
-//        tutorialBomb.image = [UIImage imageNamed:@"tutorialCreateBomb116.png"];
-//        [tutorial3BG addSubview:tutorialBomb];
-//        
-//        [self showTutorial:tutorial3BG];
-//        
-//    }];
-//}
-//
-//-(void)showTutorial4
-//{
-//    tutorialMode++;
-//    [self hideTutorial:tutorial3BG complete:^{
-//        
-//        tutorial4BG = [[UIView alloc]initWithFrame:tutorialFrame];
-//        tutorial4BG.backgroundColor = [UIColor clearColor];
-//        [self.view addSubview:tutorial4BG];
-//        
-//        // 3. Bomb
-//        CustomLabel *tutBombText = [[CustomLabel alloc]initWithFrame:tutorialLabelFrame
-//                                                            fontSize:tutorialFontSize];
-//        tutBombText.text =  NSLocalizedString(@"Line up with blocks to trigger bomb" , nil);
-//        [tutorial4BG addSubview:tutBombText];
-//        
-//        CGFloat imageSize = tutorialViewHeight - (tutorialFontSize+tutorialLabelOffset+5);
-//        
-//        UIImageView *tutorialBomb = [[UIImageView alloc]initWithFrame:CGRectMake((screenWidth-(320*(imageSize/70)))/2, tutorialFontSize+tutorialLabelOffset+5, 320*(imageSize/70), imageSize)];
-//        tutorialBomb.image = [UIImage imageNamed:@"tutorialBomb116.png"];
-//        [tutorial4BG addSubview:tutorialBomb];
-//        
-//        [self showTutorial:tutorial4BG];
-//        
-//    }];
-//}
-//
-//-(void)hideTutorial:(UIView *)tutorialView  complete:(void(^)(void))completeBlock
-//{
-//    [UIView animateWithDuration:0.5 animations:^{
-//        
-//        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, -tutorialViewHeight);
-//        
-//    }completion:^(BOOL finished) {
-//
-//        [tutorialView removeFromSuperview];
-//        completeBlock();
-//    } ];
-//}
-//
-//-(void)showTutorial:(UIView *)tutorialView
-//{
-//    [UIView animateWithDuration:0.5 animations:^{
-//        
-//        tutorialView.frame = CGRectOffset(tutorialView.frame, 0, tutorialViewHeight);
-//        
-//    }];
-//}
-//
-//- (void)hideLastTutorial
-//{
-//    if (tutorialMode == 4) {
-//        
-//        [self hideTutorial:tutorial4BG complete:^{
-//            
-//            _scoreLabel.hidden = NO;
-//            levelLabel.hidden = NO;
-//            
-//            CGAffineTransform t =  _scoreLabel.transform;
-//            CGAffineTransform t2 =  levelLabel.transform;
-//
-//            _scoreLabel.transform = CGAffineTransformScale(t, 0.1, 0.1);
-//            levelLabel.transform = CGAffineTransformScale(t2, 0.1, 0.1);
-//
-//            [UIView animateWithDuration:0.2 animations:^{
-//                
-//                _scoreLabel.transform = CGAffineTransformScale(t, 1.2, 1.2);
-//                levelLabel.transform = CGAffineTransformScale(t2, 1.2, 1.2);
-//                
-//            }completion:^(BOOL finished) {
-//                
-//                _scoreLabel.transform = t;
-//                levelLabel.transform = t2;
-//
-//                tutorialMode = 0;
-//                
-//                [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"tutorial"];
-//
-//            }];
-//            
-//        }];
-//    }
-//}
 
 #pragma mark - Sound & Music
 
@@ -1075,20 +891,36 @@
 -(void)gameOver
 {
     gamePad.userInteractionEnabled = NO;
-    [self pauseSlider];
-    [changeScoreTimer invalidate];
-    screenShot = [self captureView:self.view];
-    [snake setGameoverImage];
     gameIsOver = YES;
+    
+    // Stop music
     [appDelegate.audioPlayer stop];
     [_particleView playSound:kSoundTypeGameoverSound];
+    
+    // Stop timer
+    [scanTimer invalidate];
+    [changeScoreTimer invalidate];
 
+    // Update score to latest
+    [self changeScoreWithoutAnimation];
+    
+    // Take game screen shot
+    screenShot = [self captureView:self.view];
+
+    // Trigger Game Over Image and push to stat view controller
+    [snake setGameoverImage];
+    
+    // Show Game Over message
     _chainLabel.hidden = NO;
     [UIView animateWithDuration:3.0 animations:^{
+        
         _chainLabel.alpha = 0;
+        
     } completion:^(BOOL finished) {
+        
         _chainLabel.hidden = YES;
         _chainLabel.alpha = 1;
+        
     }];
 }
 
@@ -1096,25 +928,36 @@
 
 - (void)replayGame
 {
-    NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    if ([language isEqualToString:@"zh-Hans"])
-        levelLabel.text = @"第 1 关";
-    else if ([language isEqualToString:@"zh-Hant"])
-        levelLabel.text = @"第 1 關";
-    else if ([language isEqualToString:@"ja"])
-        levelLabel.text = @"ステージ 1";
-    else
-        levelLabel.text = @"Stage 1";
-    
-    nextNode.hidden = NO;
-    gamePad.userInteractionEnabled = YES;
+    // Reset labels
+    [self resetLevelLabel];
     _scoreLabel.text = @"0";
+    
+    // Reset Stats
+    gamePad.userInteractionEnabled = YES;
     score = 0;
     totalCombos = 0;
-    [snake resetSnake];
-    [gamePad reset];
     gameIsOver = NO;
+
+    // Reset Snake
+    [snake resetSnake];
     [snake updateNextNode:nextNode animation:NO];
+
+    // Rest Gamepad
+    [gamePad reset];
+    nextNode.hidden = NO;
+
+    // Reset scanner
+    scannerMask.frame =CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,sliderWidth,gamePad.frame.size.height);
+    slider1.frame = CGRectMake(gamePad.frame.origin.x-sliderWidth,gamePad.frame.origin.y-sliderLength,sliderLength,sliderLength);
+    slider2.frame = CGRectMake(gamePad.frame.origin.x-sliderWidth,gamePad.frame.origin.y+gamePad.frame.size.height,sliderLength,sliderLength);
+    scanner.frame = CGRectMake(gamePad.frame.origin.x,gamePad.frame.origin.y,sliderWidth,gamePad.frame.size.height);
+    
+    scannerMask.alpha = 0;
+    slider1.alpha = 0;
+    slider2.alpha = 0;
+    scanner.alpha =0;
+    
+    scanFromRight = YES;
     scanTimeInterval = 6;
     scanTimer = [NSTimer scheduledTimerWithTimeInterval:scanTimeInterval target:self selector:@selector(scannerAnimation) userInfo:nil repeats:YES];
 }

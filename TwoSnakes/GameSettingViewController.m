@@ -167,7 +167,7 @@
 -(void)backToGame:(UIButton *)sender
 {
     [self buttonAnimation:sender];
-//    [_delegate continueGame];
+    [_delegate continueGameFromSetting];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -243,11 +243,10 @@
         NSDictionary *productParameters = @{ SKStoreProductParameterITunesItemIdentifier :@"916465725"};
         
         [storeController loadProductWithParameters:productParameters completionBlock:^(BOOL result, NSError *error) {
-            if (result) {
-                
+            if (result)
                 [self presentViewController:storeController animated:YES completion:nil];
-                
-            }
+//            else
+//                NSLog(@"rate error %@",error);
         }];
     }
 }
